@@ -1,0 +1,18 @@
+/* 
+   Fichier CSS pour la page de création de diagnostic
+   Les classes .rounded-4, .transition-all, .transform-hover sont dans common.css.
+*/
+
+/* Personnalisation de Select2 pour correspondre au design du formulaire */
+.select2-container--default .select2-selection--multiple {
+    border-radius: 15px;
+    border: 2px solid #edeff2;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+/* Style de la checkbox de garantie lors de la sélection */
+.form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}

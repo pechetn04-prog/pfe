@@ -1,0 +1,123 @@
+/* 
+   Fichier CSS pour les Statistiques Administrateur
+   Design Corporatif Moderne avec graphiques plein écran et cartes de données contrastées.
+*/
+
+/* Variables :root et gradients centralisés dans theme.css */
+
+.stats-container {
+    padding: 2rem;
+    width: 100%;
+}
+
+/* KPI Cards */
+.kpi-card {
+    border: none;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    color: white;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+}
+
+.kpi-card.blue { background: var(--primary-gradient); }
+.kpi-card.green { background: var(--success-gradient); }
+.kpi-card.orange { background: var(--warning-gradient); }
+.kpi-card.red { background: var(--danger-gradient); }
+.kpi-card.purple { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); }
+
+.kpi-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+}
+
+.kpi-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+}
+
+.kpi-icon {
+    font-size: 2.5rem;
+    opacity: 0.3;
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+}
+
+/* Section Containers */
+.stats-section {
+    background: white;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    border: 1px solid #f1f5f9;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title i {
+    color: #2563eb;
+}
+
+/* Tables */
+.stats-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.stats-table th {
+    background: #f8fafc;
+    padding: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #64748b;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.stats-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.875rem;
+    color: #334155;
+}
+
+.stats-table tr:hover td {
+    background: #fdfdfd;
+}
+
+/* Chart Canvas Wrapper */
+.chart-wrapper {
+    position: relative;
+    height: 350px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        padding: 1rem;
+    }
+    
+    .kpi-value {
+        font-size: 1.75rem;
+    }
+}

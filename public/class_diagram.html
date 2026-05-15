@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Diagramme de Classe - Système SAV</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e293b;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      margin-bottom: 30px;
+    }
+
+    /* ─── Layout principal ─── */
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    /* ─── Classe UML ─── */
+    .cls {
+      border: 2px solid #334155;
+      border-radius: 6px;
+      min-width: 200px;
+      background: #ffffff;
+      font-size: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .cls-name {
+      background: #1e293b;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      text-align: center;
+      padding: 7px 10px;
+      border-radius: 4px 4px 0 0;
+      letter-spacing: 0.5px;
+    }
+
+    /* Couleurs par classe */
+    .cls.vente .cls-name {
+      background: #0284c7;
+    }
+
+    .cls.user .cls-name {
+      background: #7c3aed;
+    }
+
+    .cls.ticket .cls-name {
+      background: #b45309;
+    }
+
+    .cls.diag .cls-name {
+      background: #059669;
+    }
+
+    .cls.interv .cls-name {
+      background: #dc2626;
+    }
+
+    .cls.devis .cls-name {
+      background: #0891b2;
+    }
+
+    .cls.facture .cls-name {
+      background: #be185d;
+    }
+
+    .cls.piece .cls-name {
+      background: #4338ca;
+    }
+
+    .cls.panne .cls-name {
+      background: #64748b;
+    }
+
+    .cls.suivi .cls-name {
+      background: #d97706;
+    }
+
+    .cls.msg .cls-name {
+      background: #16a34a;
+    }
+
+    .cls.mouv .cls-name {
+      background: #7e22ce;
+    }
+
+    .cls.company .cls-name {
+      background: #475569;
+    }
+
+    .cls-attrs {
+      padding: 8px 12px;
+      border-top: 1px solid #e2e8f0;
+      line-height: 1.7;
+      color: #334155;
+    }
+
+    .cls-attrs div::before {
+      content: '+ ';
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .cls-sep {
+      border-top: 1px dashed #cbd5e1;
+      margin: 4px 0;
+    }
+
+    .cls-method {
+      color: #2563eb;
+      font-style: italic;
+    }
+
+    .cls-method::before {
+      content: '▶ ';
+      color: #60a5fa;
+      font-style: normal;
+    }
+
+    /* ─── Légende des relations ─── */
+    .legend {
+      margin-top: 30px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 32px;
+      justify-content: center;
+      font-size: 12px;
+      color: #475569;
+      max-width: 900px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-line {
+      width: 36px;
+      height: 2px;
+      background: #94a3b8;
+      position: relative;
+    }
+
+    .legend-line::after {
+      content: '▶';
+      position: absolute;
+      right: -8px;
+      top: -7px;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .legend-line.many {
+      border-top: 2px dashed #94a3b8;
+      background: none;
+    }
+
+    /* ─── Relations texte ─── */
+    .relations {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 24px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .relations h3 {
+      font-size: 13px;
+      color: #1e293b;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .rel-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 4px 20px;
+    }
+
+    .rel {
+      font-size: 12px;
+      color: #475569;
+      padding: 3px 0;
+      border-bottom: 1px dotted #f1f5f9;
+    }
+
+    .rel strong {
+      color: #1e293b;
+    }
+
+    .rel .mult {
+      color: #7c3aed;
+      font-weight: 600;
+    }
+
+    .rel .label {
+      color: #059669;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>📊 Diagramme de Classe — Système SAV</h1>
+  <p class="subtitle">Architecture des entités du Service Après-Vente (Laravel)</p>
+
+  <div class="diagram">
+
+    <!-- LIGNE 1 : Vente seule en haut -->
+    <div class="row">
+      <div class="cls vente">
+        <div class="cls-name">Vente</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>string imei</div>
+          <div>string modele</div>
+          <div>string client_nom</div>
+          <div>datetime date_vente</div>
+          <div>int duree_garantie_mois</div>
+          <div>string numero_facture_vente</div>
+          <div class="cls-sep"></div>
+          <div class="cls-method">getEstSousGarantieAttribute()</div>
+          <div class="cls-method">getDateExpirationAttribute()</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIGNE 2 : User + Ticket -->
+    <div class="row">
+      <div class="cls user">
+        <div class="cls-name">User</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>string name</div>
+          <div>string email</div>
+          <div>string password</div>
+          <div>string role</div>
+          <div>string telephone</div>
+          <div>bool actif</div>
+        </div>
+      </div>
+
+      <div class="cls ticket">
+        <div class="cls-name">Ticket</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>string num_ticket</div>
+          <div>string imei</div>
+          <div>datetime date_reception</div>
+          <div>string client_nom</div>
+          <div>string client_tel</div>
+          <div>string client_email</div>
+          <div>string statut</div>
+          <div>bool sous_garantie</div>
+          <div>bool garantie_annulee</div>
+          <div class="cls-sep"></div>
+          <div class="cls-method">isWarrantyValid()</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIGNE 3 : Diagnostic + Intervention + Devis + Facture -->
+    <div class="row">
+      <div class="cls diag">
+        <div class="cls-name">Diagnostic</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>int ticket_id</div>
+          <div>int technicien_id</div>
+          <div>string constat</div>
+          <div>string recommandation</div>
+          <div>string etat_batterie</div>
+          <div>string photo_panne</div>
+          <div>string pieces_necessaires</div>
+          <div>string motif_exclusion</div>
+        </div>
+      </div>
+
+      <div class="cls interv">
+        <div class="cls-name">Intervention</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>int ticket_id</div>
+          <div>int technicien_id</div>
+          <div>datetime date_fin</div>
+          <div>string compte_rendu</div>
+          <div>float main_doeuvre</div>
+          <div>string photo_intervention</div>
+        </div>
+      </div>
+
+      <div class="cls devis">
+        <div class="cls-name">Devis</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>string numero</div>
+          <div>int ticket_id</div>
+          <div>decimal montant_total</div>
+          <div>decimal frais_mod</div>
+          <div>string statut</div>
+          <div>date date_creation</div>
+          <div>date date_decision</div>
+        </div>
+      </div>
+
+      <div class="cls facture">
+        <div class="cls-name">Facture</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>int ticket_id</div>
+          <div>string numero</div>
+          <div>decimal montant_total</div>
+          <div>date date_facture</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIGNE 4 : Panne + Piece + SuiviTicket + TicketMessage -->
+    <div class="row">
+      <div class="cls panne">
+        <div class="cls-name">Panne</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>string nom</div>
+        </div>
+      </div>
+
+      <div class="cls piece">
+        <div class="cls-name">Piece</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>string nom</div>
+          <div>string reference</div>
+          <div>string categorie</div>
+          <div>int quantite</div>
+          <div>decimal prix_unitaire</div>
+          <div>int seuil_alerte</div>
+        </div>
+      </div>
+
+      <div class="cls suivi">
+        <div class="cls-name">SuiviTicket</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>int ticket_id</div>
+          <div>string ancien_statut</div>
+          <div>string nouveau_statut</div>
+          <div>string commentaire</div>
+          <div>int user_id</div>
+        </div>
+      </div>
+
+      <div class="cls msg">
+        <div class="cls-name">TicketMessage</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>int ticket_id</div>
+          <div>int user_id</div>
+          <div>string message</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIGNE 5 : MouvementStock + CompanySetting -->
+    <div class="row">
+      <div class="cls mouv">
+        <div class="cls-name">MouvementStock</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>int piece_id</div>
+          <div>int user_id</div>
+          <div>string type</div>
+          <div>int quantite</div>
+          <div>string motif</div>
+          <div>string reference_type</div>
+          <div>int reference_id</div>
+        </div>
+      </div>
+
+      <div class="cls company">
+        <div class="cls-name">CompanySetting</div>
+        <div class="cls-attrs">
+          <div>int id</div>
+          <div>string nom_societe</div>
+          <div>string adresse</div>
+          <div>string telephone</div>
+          <div>string email</div>
+          <div>string logo</div>
+          <div>string devise</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Relations -->
+    <div class="relations">
+      <h3>🔗 Relations entre les entités</h3>
+      <div class="rel-list">
+        <div class="rel"><strong>Ticket</strong> <span class="mult">1</span> → <span class="mult">0..1</span>
+          <strong>Diagnostic</strong> — <span class="label">possède</span></div>
+        <div class="rel"><strong>Ticket</strong> <span class="mult">1</span> → <span class="mult">0..1</span>
+          <strong>Intervention</strong> — <span class="label">possède</span></div>
+        <div class="rel"><strong>Ticket</strong> <span class="mult">1</span> → <span class="mult">0..1</span>
+          <strong>Devis</strong> — <span class="label">génère</span></div>
+        <div class="rel"><strong>Ticket</strong> <span class="mult">1</span> → <span class="mult">0..1</span>
+          <strong>Facture</strong> — <span class="label">génère</span></div>
+        <div class="rel"><strong>Ticket</strong> <span class="mult">1</span> → <span class="mult">*</span>
+          <strong>TicketMessage</strong> — <span class="label">contient</span></div>
+        <div class="rel"><strong>Ticket</strong> <span class="mult">1</span> → <span class="mult">*</span>
+          <strong>SuiviTicket</strong> — <span class="label">historique</span></div>
+        <div class="rel"><strong>Ticket</strong> <span class="mult">*</span> → <span class="mult">0..1</span>
+          <strong>Vente</strong> — <span class="label">garantie via IMEI</span></div>
+        <div class="rel"><strong>User</strong> <span class="mult">1</span> → <span class="mult">*</span>
+          <strong>Ticket</strong> — <span class="label">technicien assigné</span></div>
+        <div class="rel"><strong>User</strong> <span class="mult">1</span> → <span class="mult">*</span>
+          <strong>SuiviTicket</strong> — <span class="label">effectue</span></div>
+        <div class="rel"><strong>User</strong> <span class="mult">1</span> → <span class="mult">*</span>
+          <strong>MouvementStock</strong> — <span class="label">enregistre</span></div>
+        <div class="rel"><strong>Diagnostic</strong> <span class="mult">*</span> ↔ <span class="mult">*</span>
+          <strong>Panne</strong> — <span class="label">identifie</span></div>
+        <div class="rel"><strong>Intervention</strong> <span class="mult">*</span> ↔ <span class="mult">*</span>
+          <strong>Piece</strong> — <span class="label">utilise (pivot: quantite)</span></div>
+        <div class="rel"><strong>Devis</strong> <span class="mult">*</span> ↔ <span class="mult">*</span>
+          <strong>Piece</strong> — <span class="label">inclut (pivot: quantite)</span></div>
+        <div class="rel"><strong>Piece</strong> <span class="mult">1</span> → <span class="mult">*</span>
+          <strong>MouvementStock</strong> — <span class="label">subit</span></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

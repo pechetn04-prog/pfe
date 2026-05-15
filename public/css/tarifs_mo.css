@@ -1,0 +1,185 @@
+/* Tarifs Main d'Œuvre Styles */
+.tarifs-page {
+    padding: 20px;
+    min-height: 100vh;
+    background: #f4f7fb;
+}
+
+.tarifs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.tarifs-header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.tarifs-header p {
+    margin: 0.25rem 0 0;
+    color: #718096;
+}
+
+.tarifs-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.filter-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+}
+
+.filter-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.tarifs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tarifs-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #4a5568;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.tarifs-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.tarif-type {
+    font-weight: 500;
+    color: #1a202c;
+    margin-bottom: 0.25rem;
+}
+
+.tarif-amount {
+    font-weight: 600;
+    color: #3b82f6;
+}
+
+.tarif-currency {
+    font-size: 0.75rem;
+    color: #a0aec0;
+    margin-left: 2px;
+}
+
+.badge-status {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.badge-actif {
+    color: #276749;
+    background: #c6f6d5;
+}
+
+.badge-inactif {
+    color: #c53030;
+    background: #fed7d7;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s;
+}
+
+.btn-action:hover {
+    transform: scale(1.1);
+}
+
+.btn-toggle-on { color: #48bb78; font-size: 1.2rem; }
+.btn-toggle-off { color: #cbd5e0; font-size: 1.2rem; }
+.btn-edit-action { color: #3b82f6; font-size: 1.1rem; }
+
+/* Modals */
+.modal-custom-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-custom-header {
+    border-bottom: 1px solid #edf2f7;
+    padding: 1.5rem;
+}
+
+.modal-custom-body {
+    padding: 1.5rem;
+}
+
+.modal-custom-footer {
+    border-top: none;
+    padding: 1.5rem;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.form-label-custom {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.form-input-custom {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f8fafc;
+}
+
+.btn-pill {
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-pill-secondary {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.btn-pill-primary {
+    background-color: #3b82f6;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+}

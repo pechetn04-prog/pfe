@@ -1,0 +1,622 @@
+/* ================================================================
+ * common.css — Classes utilitaires partagées pour le SAV
+ * ================================================================
+ * Ce fichier regroupe TOUTES les classes réutilisées dans plusieurs
+ * fichiers CSS ou vues Blade, afin d'éliminer les duplications.
+ * Il est chargé globalement via layouts/app.blade.php.
+ * ================================================================ */
+
+/* ============================================================
+ * 1. TYPOGRAPHIE
+ * ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Application ULTIME de la police globale (exclut les icônes FontAwesome) */
+*:not(i):not(.fas):not(.far):not(.fab):not(.fa) {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+body,
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.fw-800 {
+    font-weight: 800;
+}
+
+.fw-black {
+    font-weight: 900;
+}
+
+.text-slate-800 {
+    color: #1e293b;
+}
+
+
+/* ============================================================
+ * 2. ARRONDIS & FORMES
+ * ============================================================ */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+
+/* ============================================================
+ * 3. BACKGROUNDS SUBTILS (Compatibilité Bootstrap 5.2-)
+ * ============================================================ */
+.bg-secondary-subtle {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+}
+
+.bg-primary-subtle {
+    background-color: #eef2ff !important;
+    color: #4f46e5 !important;
+}
+
+.bg-warning-subtle {
+    background-color: #fffbeb !important;
+    color: #b45309 !important;
+}
+
+.bg-info-subtle {
+    background-color: #f0f9ff !important;
+    color: #0369a1 !important;
+}
+
+.bg-success-subtle {
+    background-color: #f0fdf4 !important;
+    color: #15803d !important;
+}
+
+.bg-danger-subtle {
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+}
+
+.bg-dark-subtle {
+    background-color: #f8fafc !important;
+    color: #334155 !important;
+}
+
+.bg-light-subtle {
+    background-color: #f8fafc !important;
+    color: #64748b !important;
+}
+
+.border-bottom-subtle {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+
+/* ============================================================
+ * 4. BOUTONS COMMUNS (UNIFICATION GLOBALE)
+ * ============================================================ */
+
+/* Base pour tous les boutons */
+.btn {
+    font-weight: 600 !important;
+    border-radius: 12px !important; /* Arrondi moderne standard */
+    padding: 10px 20px;
+    transition: all 0.25s ease !important;
+    border: none !important;
+}
+
+/* Bouton Primaire (Style Premium par défaut) */
+.btn-primary, 
+.btn-primary-premium,
+.btn-create {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    box-shadow: 0 8px 15px -3px rgba(37, 99, 235, 0.25) !important;
+}
+
+.btn-primary:hover, 
+.btn-primary-premium:hover,
+.btn-create:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 20px -5px rgba(37, 99, 235, 0.35) !important;
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+}
+
+/* Bouton Secondaire / Light */
+.btn-secondary, 
+.btn-light {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    box-shadow: none !important;
+}
+
+.btn-secondary:hover, 
+.btn-light:hover {
+    background: #e2e8f0 !important;
+    transform: translateY(-1px);
+}
+
+/* Bouton Succès */
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    box-shadow: 0 8px 15px -3px rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Bouton Danger */
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: white !important;
+}
+
+/* Style Pill (Arrondi complet) */
+.btn-pill,
+.rounded-pill {
+    border-radius: 9999px !important;
+}
+
+/* Boutons de type Link (pour les icônes de tableaux) */
+.btn-link {
+    text-decoration: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 8px !important;
+}
+
+.btn-link:hover {
+    transform: scale(1.15);
+    background: rgba(0,0,0,0.03) !important;
+}
+
+
+/* ============================================================
+ * 5. FORMULAIRES COMMUNS
+ * ============================================================ */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Premium inputs (users/create, register) */
+.input-group-premium {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-premium .icon {
+    position: absolute;
+    left: 18px;
+    color: #94a3b8;
+    z-index: 10;
+    font-size: 0.9rem;
+}
+
+.form-control-premium,
+.form-select-premium {
+    width: 100%;
+    padding: 12px 18px 12px 48px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #f8fafc;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    outline: none !important;
+}
+
+.form-control-premium:focus,
+.form-select-premium:focus {
+    border-color: #2563eb;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+
+/* ============================================================
+ * 6. ALERTES
+ * ============================================================ */
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.alert-error ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+}
+
+
+/* ============================================================
+ * 7. LIGNES VIDES (TABLEAUX)
+ * ============================================================ */
+.empty-row {
+    text-align: center;
+    color: #64748b;
+    padding: 20px;
+}
+
+
+/* ============================================================
+ * 8. TRANSITIONS & ANIMATIONS COMMUNES
+ * ============================================================ */
+.transition,
+.transition-all {
+    transition: all 0.2s ease;
+}
+
+.transform-hover {
+    transition: transform 0.2s ease;
+}
+
+.transform-hover:hover {
+    transform: translateY(-2px);
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+
+/* ============================================================
+ * 9. IMPRESSION
+ * ============================================================ */
+@media print {
+
+    .btn,
+    .sidebar,
+    .app-sidebar,
+    .app-topbar,
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    .container,
+    .container-fluid {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+}
+
+/* ============================================================
+ * 10. PAGINATION STANDARDIZÉE
+ * ============================================================ */
+.pagination {
+    margin-bottom: 0;
+    gap: 5px;
+}
+
+.pagination .page-link {
+    border-radius: 8px !important;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.pagination .page-link:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: #2563eb;
+}
+
+font-size: 0.8rem;
+}
+
+/* ============================================================
+ * 11. OMBRES & EFFETS PREMIUM
+ * ============================================================ */
+.shadow-soft {
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow-premium {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.glass-dark {
+    background: rgba(15, 23, 42, 0.8) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+
+/* ============================================================
+ * 12. INTERACTIONS & ANIMATIONS
+ * ============================================================ */
+.hover-lift {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease !important;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3) !important;
+}
+
+@keyframes pulse-soft {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+
+/* ============================================================
+ * 13. HELPERS DE MISE EN PAGE & TEXTE
+ * ============================================================ */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-auto-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bg-blur {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+/* ============================================================
+ * 14. BARRE DE DÉFILEMENT PERSONNALISÉE
+ * ============================================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ============================================================
+ * 15. RESULT SELECTION CARDS (PREMIUM LIGHT)
+ * ============================================================ */
+.result-selection-grid {
+    margin-top: 15px;
+}
+
+.result-card-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.result-radio-check {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.result-card {
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.result-card:hover {
+    background: var(--bg-page, #f8fafc);
+    border-color: var(--primary-color, #2563eb);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-premium, 0 10px 15px -3px rgba(0, 0, 0, 0.05));
+}
+
+.result-card-icon {
+    font-size: 24px;
+    margin-right: 20px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.result-card-content {
+    flex-grow: 1;
+}
+
+.result-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main, #1e293b);
+    margin-bottom: 4px;
+    transition: color 0.3s ease;
+}
+
+.result-card-description {
+    font-size: 0.88rem;
+    color: var(--text-muted, #64748b);
+    line-height: 1.5;
+    transition: color 0.3s ease;
+}
+
+.result-card-check {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color, #e2e8f0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    transition: all 0.3s ease;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Success State (Réparé / Réparable) */
+.result-card.success .result-card-icon { background: #dcfce7; color: #16a34a; }
+.result-radio-check:checked + .result-card.success {
+    border-color: #16a34a;
+    background: #f0fdf4;
+}
+.result-radio-check:checked + .result-card.success .result-card-check {
+    background: #16a34a;
+    border-color: #16a34a;
+}
+
+/* Danger State (Non réparé / Irréparable) */
+.result-card.danger .result-card-icon { background: #fee2e2; color: #dc2626; }
+.result-radio-check:checked + .result-card.danger {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+.result-radio-check:checked + .result-card.danger .result-card-check {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Warning State (En attente pièce) */
+.result-card.warning .result-card-icon { background: #ffedd5; color: #f97316; }
+.result-radio-check:checked + .result-card.warning {
+    border-color: #f97316;
+    background: #fff7ed;
+}
+.result-radio-check:checked + .result-card.warning .result-card-check {
+    background: #f97316;
+    border-color: #f97316;
+}
+
+.result-radio-check:checked + .result-card .result-card-check::after {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
+/* Pulse Animation for Auto-selection (Stock Rupture) */
+.pulse-danger {
+    animation: pulse-danger-border 2s infinite;
+}
+
+@keyframes pulse-danger-border {
+    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}

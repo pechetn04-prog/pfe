@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Dossier;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class TechnicienDashboardController extends Controller
+{
+    public function index()
+    {
+        $user = Auth::user();
+        
+        $totalAssigne = Dossier::where('technicien_id', $user->id)->count();
+        $aDiagnostiquer = Dossier::where('technicien_id', $user->id)->where('statut', 'AFFECTE')->count();
+        $enReparation = Dossier::where('technicien_id', $user->id)->where('statut', 'EN_REPARATION')->count();
+        $terminesMois = Dossier::where('technicien_id', $user->id)
+            ->whereIn('statut', ['REPARE', 'IRREPARABLE', 'LIVRE'])
+            ->whereMonth('updated_at', now()->month)
+            ->count();
+            
+        $dossiersEnCours = Dossier::where('technicien_id', $user->id)
+            ->whereNotIn('statut', ['LIVRE', 'CLOTURE'])
+            ->count();
+
+        $dossiersDiagnostique = Dossier::where('technicien_id', $user->id)
+            ->whereIn('statut', ['AFFECTE', 'EN_DIAGNOSTIC'])
+            ->with(['client', 'appareil'])
+            ->latest('updated_at')
+            ->take(5)
+            ->get();
+
+        $dossiersReparation = Dossier::where('technicien_id', $user->id)
+            ->where('statut', 'EN_REPARATION')
+            ->with(['client', 'appareil'])
+            ->latest('updated_at')
+            ->take(5)
+            ->get();
+
+        return view('technicien.dashboard', compact(
+            'totalAssigne', 'aDiagnostiquer', 'enReparation', 'terminesMois', 'dossiersEnCours', 
+            'dossiersDiagnostique', 'dossiersReparation'
+        ));
+    }
+
+    public function tickets(Request $request)
+    {
+        $query = Dossier::where('technicien_id', Auth::id())
+            ->with(['client', 'appareil'])
+            ->latest();
+
+        if ($request->has('statut')) {
+            $query->where('statut', $request->statut);
+        }
+
+        $dossiers = $query->paginate(20);
+        
+        $statuts = [
+            'AFFECTE'        => 'Assigné',
+            'EN_DIAGNOSTIC'  => 'En Diagnostic',
+            'EN_ATTENTE_DEVIS' => 'Attente Devis',
+            'EN_REPARATION'  => 'En Réparation',
+            'ATTENTE_PIECE'  => 'En attente pièces',
+            'REPARE'         => 'Terminés',
+            'IRREPARABLE'    => 'Irréparable',
+        ];
+
+        return view('technicien.tickets', compact('dossiers', 'statuts'));
+    }
+
+    public function stock()
+    {
+        return redirect()->route('stock.index');
+    }
+}

@@ -1,0 +1,253 @@
+/* ================================================================
+ * theme.css — Fichier de design centralisé pour le SAV
+ * ================================================================
+ * COMMENT ÇA MARCHE ?
+ * On définit des "variables CSS" (aussi appelées Custom Properties)
+ * dans :root (la racine du document = toute la page).
+ * Ensuite, dans n'importe quel autre fichier CSS, on écrit :
+ *     color: var(--btn-primary);
+ * au lieu de répéter :
+ *     color: #2563eb;
+ * Si on veut changer le bleu partout → on change UNIQUEMENT ici.
+ * ================================================================ */
+
+:root {
+
+    /* ============================================================
+     * 1. PALETTE DE COULEURS BRUTES
+     *    Ce sont les couleurs de base du projet.
+     *    On les utilise rarement directement, on préfère passer
+     *    par les variables "sémantiques" ci-dessous.
+     * ============================================================ */
+    --color-blue-600: #2563eb;
+    --color-blue-700: #1d4ed8;
+    --color-blue-100: #dbeafe;
+
+    --color-green-600: #16a34a;
+    --color-green-700: #15803d;
+    --color-green-100: #dcfce7;
+
+    --color-red-600: #dc2626;
+    --color-red-700: #b91c1c;
+    --color-red-100: #fee2e2;
+
+    --color-orange-500: #f97316;
+    --color-orange-100: #ffedd5;
+
+    --color-yellow-400: #facc15;
+    --color-yellow-100: #fef9c3;
+
+    --color-gray-200: #e2e8f0;
+    --color-gray-600: #475569;
+    --color-gray-900: #0f172a;
+
+    --color-white: #ffffff;
+
+
+    /* ============================================================
+     * 2. COULEURS SÉMANTIQUES GLOBALES
+     *    Utilisées partout dans le projet (remplace les :root
+     *    dispersés dans sidebar.css, ticket_show.css, etc.)
+     * ============================================================ */
+    --primary-color: var(--color-blue-600);
+    --primary-hover: var(--color-blue-700);
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #06b6d4;
+    --dark-color: #1e293b;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --bg-page: #f8fafc;
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+
+    /* ============================================================
+     * 3. SIDEBAR
+     * ============================================================ */
+    --sidebar-width: 280px;
+    --topbar-height: 72px;
+    --bg-sidebar: #0f172a;
+    --accent-color: var(--color-blue-600);
+    --accent-hover: var(--color-blue-700);
+    --sidebar-text: #94a3b8;
+    --sidebar-text-active: #ffffff;
+
+
+    /* ============================================================
+     * 4. BOUTONS PRINCIPAUX (Actions importantes)
+     * ============================================================ */
+
+    /* Bouton PRIMAIRE — ex: "Créer", "Sauvegarder", "Valider" */
+    --btn-primary-bg: var(--color-blue-600);
+    --btn-primary-bg-hover: var(--color-blue-700);
+    --btn-primary-text: var(--color-white);
+
+    /* Bouton SUCCÈS — ex: "Confirmer", "Livrer", "Approuver" */
+    --btn-success-bg: var(--color-green-600);
+    --btn-success-bg-hover: var(--color-green-700);
+    --btn-success-text: var(--color-white);
+
+    /* Bouton DANGER — ex: "Supprimer", "Annuler" */
+    --btn-danger-bg: var(--color-red-600);
+    --btn-danger-bg-hover: var(--color-red-700);
+    --btn-danger-text: var(--color-white);
+
+    /* Bouton AVERTISSEMENT — ex: "Suspendre", "Mettre en attente" */
+    --btn-warning-bg: var(--color-orange-500);
+    --btn-warning-bg-hover: #ea6c0a;
+    --btn-warning-text: var(--color-white);
+
+
+    /* ============================================================
+     * 5. BOUTONS OUTLINE (Bords seulement, fond transparent)
+     *    Utilisés pour les actions secondaires
+     * ============================================================ */
+
+    /* Bouton MODIFIER — ex: "Éditer", "Modifier" */
+    --btn-edit-bg: var(--color-blue-100);
+    --btn-edit-bg-hover: #feeabf;
+    --btn-edit-text: var(--color-blue-600);
+
+    /* Bouton RÉINITIALISER — ex: "Annuler filtre", "Retour" */
+    --btn-reset-bg: var(--color-gray-200);
+    --btn-reset-bg-hover: #cbd5e1;
+    --btn-reset-text: var(--color-gray-900);
+
+
+    /* ============================================================
+     * 6. COULEURS DES BADGES DE STATUT (Tickets, Rôles...)
+     * ============================================================ */
+
+    --badge-recu-bg: #f1f5f9;
+    --badge-recu-text: #475569;
+
+    --badge-affecte-bg: #dbeafe;
+    --badge-affecte-text: #1d4ed8;
+
+    --badge-diagnostic-bg: #fef3c7;
+    --badge-diagnostic-text: #92400e;
+
+    --badge-reparation-bg: #cffafe;
+    --badge-reparation-text: #0e7490;
+
+    --badge-repare-bg: #dcfce7;
+    --badge-repare-text: #166534;
+
+    --badge-attente-bg: #ffedd5;
+    --badge-attente-text: #9a3412;
+
+    --badge-irreparable-bg: #fee2e2;
+    --badge-irreparable-text: #991b1b;
+
+    --badge-remplacement-bg: #e0f2fe;
+    --badge-remplacement-text: #0369a1;
+
+    --badge-livre-bg: #dcfce7;
+    --badge-livre-text: #15803d;
+
+    --badge-cloture-bg: #f1f5f9;
+    --badge-cloture-text: #334155;
+
+
+    /* ============================================================
+     * 7. BADGES DE RÔLES UTILISATEURS
+     * ============================================================ */
+
+    --role-admin-bg: #ede9fe;
+    --role-admin-text: #5b21b6;
+
+    --role-agent-bg: #dbeafe;
+    --role-agent-text: #1d4ed8;
+
+    --role-tech-bg: #fef3c7;
+    --role-tech-text: #92400e;
+
+
+    /* ============================================================
+     * 8. GRADIENTS (Statistiques Admin)
+     * ============================================================ */
+    --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --danger-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ================================================================
+ * CLASSES RÉUTILISABLES — Copier-coller dans n'importe quelle vue
+ * ================================================================ */
+
+/* --- Boutons principaux --- */
+.sav-btn {
+    display: inline-block;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.sav-btn:hover {
+    transform: translateY(-1px);
+}
+
+.sav-btn-primary {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+}
+
+.sav-btn-primary:hover {
+    background: var(--btn-primary-bg-hover);
+}
+
+.sav-btn-success {
+    background: var(--btn-success-bg);
+    color: var(--btn-success-text);
+}
+
+.sav-btn-success:hover {
+    background: var(--btn-success-bg-hover);
+}
+
+.sav-btn-danger {
+    background: var(--btn-danger-bg);
+    color: var(--btn-danger-text);
+}
+
+.sav-btn-danger:hover {
+    background: var(--btn-danger-bg-hover);
+}
+
+.sav-btn-warning {
+    background: var(--btn-warning-bg);
+    color: var(--btn-warning-text);
+}
+
+.sav-btn-warning:hover {
+    background: var(--btn-warning-bg-hover);
+}
+
+.sav-btn-edit {
+    background: var(--btn-edit-bg);
+    color: var(--btn-edit-text);
+}
+
+.sav-btn-edit:hover {
+    background: var(--btn-edit-bg-hover);
+}
+
+.sav-btn-reset {
+    background: var(--btn-reset-bg);
+    color: var(--btn-reset-text);
+}
+
+.sav-btn-reset:hover {
+    background: var(--btn-reset-bg-hover);
+}

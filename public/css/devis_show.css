@@ -1,0 +1,13 @@
+/* 
+   Fichier CSS pour la page de détails des devis (Show)
+   Les classes .extra-small, .rounded-4 sont dans common.css.
+*/
+
+.card { 
+    border-radius: 12px; 
+}
+
+.table thead th { 
+    font-weight: 600; 
+    border-top: none; 
+}

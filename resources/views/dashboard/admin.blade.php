@@ -1,0 +1,351 @@
+@extends('layouts.app')
+
+@section('title', 'Tableau de Bord Administrateur')
+
+@section('content')
+    <div class="container-fluid">
+
+        {{-- En-tête --}}
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-0">Tableau de Bord</h1>
+                <small class="text-muted">Vue d'ensemble du service SAV — {{ now()->format('d/m/Y') }}</small>
+            </div>
+            <a href="{{ route('dossiers.create') }}" class="btn btn-primary px-4 shadow-sm">
+                <i class="fas fa-plus me-2"></i> Nouveau Dossier
+            </a>
+        </div>
+
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show"><i
+                    class="fas fa-check-circle me-2"></i>{{ session('success') }}<button type="button" class="btn-close"
+                    data-bs-dismiss="alert"></button></div>
+        @endif
+
+        {{-- 8 KPIs principaux Style Premium --}}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
+            @php
+                $adminKpis = [
+                    ['label' => 'TOTAL TICKETS', 'val' => $stats['total'], 'icon' => 'fa-folder-open', 'class' => 'bg-soft-primary'],
+                    ['label' => 'NOUVEAUX REÇUS', 'val' => $stats['recu'], 'icon' => 'fa-inbox', 'class' => 'bg-soft-danger'],
+                    ['label' => 'EN DIAGNOSTIC', 'val' => $stats['en_diagnostic'], 'icon' => 'fa-microscope', 'class' => 'bg-soft-warning'],
+                    ['label' => 'ATTENTE DEVIS', 'val' => $stats['attente_devis'], 'icon' => 'fa-file-invoice-dollar', 'class' => 'bg-soft-info'],
+                    ['label' => 'EN RÉPARATION', 'val' => $stats['en_reparation'], 'icon' => 'fa-tools', 'class' => 'bg-soft-success'],
+                    ['label' => 'ATTENTE PIÈCES', 'val' => $stats['attente_pieces'], 'icon' => 'fa-clock', 'class' => 'bg-soft-danger'],
+                    ['label' => 'LIVRÉS / CLOS', 'val' => $stats['cloture'], 'icon' => 'fa-check-double', 'class' => 'bg-soft-slate'],
+                    ['label' => 'UTILISATEURS', 'val' => $stats['users'], 'icon' => 'fa-users', 'class' => 'bg-soft-purple'],
+                ];
+            @endphp
+            @foreach($adminKpis as $k)
+                <div class="col">
+                    <div class="card kpi-card">
+                        <div class="card-body">
+                            <div class="kpi-icon-wrapper {{ $k['class'] }}">
+                                <i class="fas {{ $k['icon'] }}"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">{{ $k['val'] }}</div>
+                                <div class="kpi-label">{{ $k['label'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="row g-4 mb-4">
+            {{-- Dossiers récents --}}
+            <div class="col-xl-8">
+                <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px;">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0 text-dark">
+                            <span class="p-2 bg-primary bg-opacity-10 rounded-3 me-2"><i
+                                    class="fas fa-list text-primary"></i></span>
+                            Dossiers Récents
+                        </h6>
+                        <a href="{{ route('dossiers.index') }}"
+                            class="btn btn-sm btn-link text-decoration-none fw-bold small">Voir tout</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="small text-muted text-uppercase">
+                                    <th class="ps-4" style="font-size: 0.65rem;">N° Dossier</th>
+                                    <th style="font-size: 0.65rem;">Client</th>
+                                    <th style="font-size: 0.65rem;">Statut</th>
+                                    <th style="font-size: 0.65rem;">Date</th>
+                                    <th class="text-end pe-4" style="font-size: 0.65rem;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recentDossiers as $d)
+                                    @php
+                                        $statClasses = [
+                                            'RECU' => 'bg-light text-muted',
+                                            'AFFECTE' => 'bg-secondary text-white',
+                                            'EN_DIAGNOSTIC' => 'bg-info text-dark',
+                                            'EN_REPARATION' => 'bg-primary text-white',
+                                            'EN_ATTENTE_DEVIS' => 'bg-warning text-dark',
+                                            'REPARE' => 'bg-success text-white',
+                                            'FACTURE' => 'bg-success text-white',
+                                            'LIVRE' => 'bg-success text-white',
+                                            'CLOTURE' => 'bg-dark text-white',
+                                            'IRREPARABLE' => 'bg-danger text-white',
+                                        ];
+                                    @endphp
+                                    <tr>
+                                        <td class="ps-4 py-3">
+                                            <div class="fw-bold text-dark">#{{ $d->num_dossier }}</div>
+                                            <div class="text-muted" style="font-size: 0.65rem;">
+                                                {{ $d->appareil->modele ?? '—' }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-dark">{{ $d->client->name ?? '—' }}</div>
+                                            <div class="text-muted" style="font-size: 0.65rem;">
+                                                {{ $d->client->telephone ?? '—' }}</div>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="badge {{ $statClasses[$d->statut] ?? 'bg-secondary' }} rounded-pill px-3 py-1"
+                                                style="font-size: 0.65rem;">
+                                                {{ str_replace('_', ' ', $d->statut) }}
+                                            </span>
+                                        </td>
+                                        <td class="text-muted small">
+                                            {{ $d->created_at ? $d->created_at->format('d/m/Y') : '—' }}</td>
+                                        <td class="text-end pe-4">
+                                            <a href="{{ route('dossiers.show', $d->id) }}"
+                                                class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold"
+                                                style="font-size: 0.75rem;">
+                                                Voir
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Dossiers en attente de pièces (Nouvelle section) --}}
+            @if($dossiersAttentePieces->count() > 0)
+            <div class="col-xl-4">
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0 text-dark">
+                            <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-clock text-danger"></i></span>
+                            En Attente Pièces
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @foreach($dossiersAttentePieces as $d)
+                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="small fw-bold text-dark">#{{ $d->num_dossier }}</div>
+                                        <div class="text-muted" style="font-size: 0.65rem;">{{ $d->appareil->modele ?? '—' }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="small text-muted">{{ $d->updated_at->diffForHumans() }}</div>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1" style="font-size: 0.6rem;">BLOQUÉ</span>
+                                    </div>
+                                </div>
+                            </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0 text-center pb-3">
+                        <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_PIECE']) }}" class="btn btn-sm btn-link text-decoration-none fw-bold small">Voir tout</a>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Alertes de Stock --}}
+            <div class="col-xl-4">
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0 text-dark">
+                            <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i
+                                    class="fas fa-exclamation-circle text-danger"></i></span>
+                            Alertes Stock
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @forelse($stockAlerts as $alert)
+                                <div
+                                    class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom mx-2 px-2">
+                                    <div>
+                                        <div class="small fw-bold text-dark">{{ $alert->nom }}</div>
+                                        <div class="text-muted" style="font-size: 0.65rem;">Réf: {{ $alert->reference }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span
+                                            class="badge {{ $alert->quantite == 0 ? 'bg-danger' : 'bg-warning text-dark' }} rounded-pill">
+                                            {{ $alert->quantite }} restant(s)
+                                        </span>
+                                        <div class="text-muted" style="font-size: 0.65rem;">Seuil: {{ $alert->seuil_alerte }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="p-4 text-center">
+                                    <i class="fas fa-check-circle text-success fa-2x mb-2 opacity-25"></i>
+                                    <div class="small text-muted">Aucune alerte de stock</div>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                    @if($stockAlerts->count() > 0)
+                        <div class="card-footer bg-white border-0 text-center pb-3">
+                            <a href="{{ route('stock.index') }}"
+                                class="btn btn-sm btn-light rounded-pill px-3 fw-bold small">Gérer le stock</a>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Raccourcis Admin --}}
+                <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0 text-dark">
+                            <span class="p-2 bg-warning bg-opacity-10 rounded-3 me-2"><i class="fas fa-bolt text-warning"></i></span>
+                            Actions Rapides
+                        </h6>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('users.index') }}" class="btn btn-outline-primary btn-sm rounded-pill text-start ps-3"><i class="fas fa-users me-2"></i> Utilisateurs</a>
+                            <a href="{{ route('admin.statistiques') }}" class="btn btn-outline-primary btn-sm rounded-pill text-start ps-3"><i class="fas fa-file-invoice-dollar me-2"></i> Statistiques financières</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Graphiques d'activité --}}
+        <div class="row g-4 mb-4">
+            <div class="col-lg-12">
+                <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 fw-bold text-dark"><i class="fas fa-chart-line text-primary me-2"></i> Activité (7 derniers jours)</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="activityChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="m-0 fw-bold text-dark"><i class="fas fa-chart-pie text-primary me-2"></i> Répartition des Statuts (%)</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="m-0 fw-bold text-dark"><i class="fas fa-shield-alt text-primary me-2"></i> État des Garanties (%)</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="warrantyChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(document).ready(function() {
+    // Configuration commune pour les graphiques circulaires
+    const doughnutOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label || '';
+                        let value = context.raw || 0;
+                        let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        let percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                        return `${label}: ${value} (${percentage}%)`;
+                    }
+                }
+            }
+        },
+        cutout: '70%'
+    };
+
+    // 1. Graphique d'Activité (Ligne)
+    new Chart(document.getElementById('activityChart'), {
+        type: 'line',
+        data: {
+            labels: {!! json_encode($stats['labels_7_days']) !!},
+            datasets: [{
+                label: 'Nouveaux dossiers',
+                data: {!! json_encode($stats['data_7_days']) !!},
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#2563eb'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { display: false } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // 2. Graphique des Statuts (Doughnut)
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {!! json_encode(array_keys($stats['status_distribution'])) !!},
+            datasets: [{
+                data: {!! json_encode(array_values($stats['status_distribution'])) !!},
+                backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: doughnutOptions
+    });
+
+    // 3. Graphique des Garanties (Doughnut)
+    new Chart(document.getElementById('warrantyChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {!! json_encode(array_keys($stats['warranty_distribution'])) !!},
+            datasets: [{
+                data: {!! json_encode(array_values($stats['warranty_distribution'])) !!},
+                backgroundColor: ['#10b981', '#ef4444', '#6b7280'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: doughnutOptions
+    });
+});
+</script>
+@endpush
+@endsection

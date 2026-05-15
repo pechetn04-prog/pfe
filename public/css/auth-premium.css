@@ -1,0 +1,100 @@
+/* 
+    Système d'Authentification Premium - Version Centrée
+    Ce fichier gère l'apparence des pages de Connexion, Inscription et Récupération.
+*/
+
+/* Conteneur principal qui centre le formulaire sur la page */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc; /* Fond très clair pour faire ressortir la carte */
+    padding: 20px;
+}
+
+/* Carte principale (Card) contenant le formulaire */
+.login-wrapper {
+    width: 100%;
+    max-width: 480px; /* Largeur optimale pour la lecture sur tous supports */
+    background: #ffffff;
+    border-radius: 28px; /* Bords très arrondis pour l'aspect premium */
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05); /* Ombre portée douce */
+    border: 1px solid #e2e8f0;
+}
+
+/* Espacement interne du formulaire */
+.login-card {
+    padding: 45px 40px;
+}
+
+/* En-tête de la carte (Titre et instructions) */
+.login-card-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.login-card-header h2 {
+    font-weight: 800;
+    color: #1e293b;
+    font-size: 1.75rem;
+}
+
+/* Masquage des éléments spécifiques aux designs alternatifs (ex: bandeaux) */
+.login-brand {
+    display: none;
+}
+
+/* Style des boutons Premium (Connexion / Inscription) */
+.btn-premium-blue, .login-btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px;
+    width: 100%;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+    cursor: pointer;
+}
+
+/* Effets d'interaction au survol du bouton */
+.btn-premium-blue:hover, .login-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px); /* Petit effet de soulèvement */
+    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
+    color: white;
+}
+
+/* Boîtes d'alertes (Erreurs de validation) */
+.alert-box { 
+    border-radius: 12px; 
+    padding: 14px 16px; 
+    margin-bottom: 18px; 
+    font-size: 14px; 
+}
+
+.alert-danger-box { 
+    background: #fef2f2; 
+    border: 1px solid #fecaca; 
+    color: #b91c1c; 
+}
+
+/* Liens secondaires (Mot de passe oublié, etc.) */
+.forgot-password-link {
+    font-size: 0.85rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}

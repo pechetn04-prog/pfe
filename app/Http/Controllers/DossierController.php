@@ -1,0 +1,527 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Dossier;
+use App\Models\User;
+use App\Models\Vente;
+use App\Models\Appareil;
+use App\Models\SuiviDossier;
+use App\Models\ParametreSociete;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+class DossierController extends Controller
+{
+    /**
+     * Liste de tous les dossiers (Admin / Agent).
+     */
+    public function index(Request $request)
+    {
+        $query = Dossier::with('client', 'technicien');
+
+        if ($request->filled('statut')) {
+            $query->where('statut', $request->statut);
+        }
+
+        $dossiers = $query->latest()->paginate(20);
+        return view('dossiers.index', compact('dossiers'));
+    }
+
+    /**
+     * Formulaire de création de dossier.
+     */
+    public function create()
+    {
+        $techniciens = User::where('role', 'Technicien')->where('actif', true)->get();
+        return view('dossiers.create', compact('techniciens'));
+    }
+
+    /**
+     * UC03 (Réception) — Enregistrer un nouveau dossier SAV.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'imei' => 'required|string',
+            'modele' => 'required|string',
+            'client_nom' => 'required|string',
+            'client_telephone' => 'required|string',
+        ]);
+
+        // 1. Vérifier si un dossier actif existe déjà pour cet IMEI
+        $dossierExistant = Dossier::whereHas('appareil', function ($q) use ($request) {
+            $q->where('imei', $request->imei);
+        })->whereNotIn('statut', ['LIVRE', 'CLOTURE'])->first();
+
+        if ($dossierExistant) {
+            return back()->withInput()->with('error', "Un dossier (#{$dossierExistant->num_dossier}) est déjà ouvert pour cet IMEI.");
+        }
+
+        // 2. Récupérer ou créer l'appareil
+        $appareil = Appareil::where('imei', $request->imei)->first();
+        if (!$appareil) {
+            $appareil = Appareil::create([
+                'imei' => $request->imei,
+                'modele' => $request->modele,
+                'reference_produit' => $request->reference_produit,
+            ]);
+        }
+
+        // 3. Gérer le client (User role Client)
+        $client = null;
+        if ($request->client_email) {
+            $client = User::firstOrCreate(
+                ['email' => $request->client_email],
+                [
+                    'name' => $request->client_nom,
+                    'password' => Hash::make('sav12345'),
+                    'role' => 'Client',
+                    'telephone' => $request->client_telephone,
+                    'actif' => true
+                ]
+            );
+        } else {
+            // Création d'un client sans email (pseudo-anonyme ou via tel)
+            $client = User::where('telephone', $request->client_telephone)->where('role', 'Client')->first();
+            if (!$client) {
+                $client = User::create([
+                    'name' => $request->client_nom,
+                    'email' => 'client_' . time() . '@maisontel.dz', // Email technique par défaut
+                    'password' => Hash::make('sav12345'),
+                    'role' => 'Client',
+                    'telephone' => $request->client_telephone,
+                    'actif' => true
+                ]);
+            }
+        }
+
+        // 4. Vérification de la garantie via les ventes
+        $vente = Vente::where('imei', $request->imei)->first();
+        $sousGarantie = false;
+        if ($vente) {
+            $finGarantie = Carbon::parse($vente->date_vente)->addMonths($vente->duree_garantie_mois);
+            $sousGarantie = now()->lessThanOrEqualTo($finGarantie);
+        }
+
+        // 5. Création du dossier
+        $numDossier = 'D' . now()->format('Ymd') . '-' . str_pad(Dossier::count() + 1, 4, '0', STR_PAD_LEFT);
+
+        $pannesSelectees = is_array($request->type_pannes) ? implode(', ', $request->type_pannes) : '';
+        $panneComplete = $pannesSelectees ? '[' . $pannesSelectees . '] ' . $request->panne_declaree : $request->panne_declaree;
+
+        $dossier = Dossier::create([
+            'num_dossier' => $numDossier,
+            'appareil_id' => $appareil->id,
+            'client_id' => $client->id,
+            'agent_id' => Auth::id(),
+            'technicien_id' => $request->technicien_id,
+            'date_reception' => now(),
+            'date_vente' => $vente ? $vente->date_vente : null,
+            'fin_garantie' => $vente ? Carbon::parse($vente->date_vente)->addMonths($vente->duree_garantie_mois) : null,
+            'statut' => $request->technicien_id ? 'AFFECTE' : 'RECU',
+            'sous_garantie' => $sousGarantie,
+            'panne_declaree' => $panneComplete,
+            'etat_appareil' => $request->etat_appareil,
+            'accessoires_remis' => is_array($request->accessoires) ? implode(', ', $request->accessoires) : $request->accessoires,
+        ]);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => null,
+            'nouveau_statut' => $dossier->statut,
+            'commentaire' => 'Ouverture du dossier SAV.',
+        ]);
+
+        // Notification au client par email
+        if ($client && $client->email && !str_contains($client->email, '@maisontel.dz')) {
+            $client->notify(new \App\Notifications\TicketCreatedNotification($dossier));
+        }
+
+        return redirect()->route('dossiers.show', $dossier->id)
+            ->with('success', "Le dossier #{$numDossier} a été créé avec succès.");
+    }
+
+    /**
+     * Détail d'un dossier.
+     */
+    public function show(Dossier $dossier)
+    {
+        // Sécurité : Un technicien ne peut voir que ses propres dossiers
+        if (Auth::user()->role === 'Technicien' && $dossier->technicien_id !== Auth::id()) {
+            abort(403, "Vous n'êtes pas autorisé à consulter ce dossier.");
+        }
+
+        $dossier->load([
+            'client',
+            'technicien',
+            'appareil',
+            'suivi.user',
+            'diagnostic.pieces',
+            'diagnostic.tarifsMo',
+            'intervention.pieces',
+            'devis',
+            'facture',
+            'messages.user',
+        ]);
+
+        $techniciens = User::where('role', 'Technicien')->where('actif', true)->get();
+
+        return view('dossiers.show', compact('dossier', 'techniciens'));
+    }
+
+    /**
+     * UC15 — Affecter / réaffecter un technicien à un dossier.
+     */
+    public function assign(Request $request, Dossier $dossier)
+    {
+        $request->validate([
+            'technicien_id' => 'required|exists:users,id',
+            'commentaire' => 'nullable|string|max:500',
+        ]);
+
+        // UC15 : Bloquer si dossier clôturé ou livré
+        if (in_array($dossier->statut, ['LIVRE', 'CLOTURE', 'FACTURE'])) {
+            return back()->with('error', 'Impossible de réaffecter un dossier clôturé ou livré.');
+        }
+
+        // UC15 : Bloquer si même technicien
+        if ($dossier->technicien_id == $request->technicien_id) {
+            return back()->with('error', 'Ce technicien est déjà affecté à ce dossier.');
+        }
+
+        $ancienStatut = $dossier->statut;
+        $dossier->update([
+            'technicien_id' => $request->technicien_id,
+            'statut' => 'AFFECTE',
+        ]);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
+            'nouveau_statut' => 'AFFECTE',
+            'commentaire' => $request->commentaire ?? 'Technicien réaffecté.',
+        ]);
+
+        return back()->with('success', 'Technicien affecté avec succès.');
+    }
+
+    /**
+     * Vérification IMEI via AJAX (UC03).
+     */
+    public function checkImei(Request $request)
+    {
+        $imei = trim($request->query('imei'));
+
+        $appareil = Appareil::where('imei', $imei)->first();
+        $vente = Vente::where('imei', $imei)->first();
+
+        $venteInfo = null;
+        if ($vente) {
+            $dateVente = Carbon::parse($vente->date_vente);
+            $finGarantie = $dateVente->copy()->addMonths($vente->duree_garantie_mois);
+            $sousGarantie = now()->lessThanOrEqualTo($finGarantie);
+
+            $venteInfo = [
+                'date_vente' => $dateVente->format('d/m/Y'),
+                'fin_garantie' => $finGarantie->format('d/m/Y'),
+                'duree' => $vente->duree_garantie_mois . ' mois',
+                'sous_garantie' => $sousGarantie,
+                'facture' => $vente->numero_facture_vente ?? '—',
+            ];
+        }
+
+        if ($appareil) {
+            return response()->json([
+                'found' => true,
+                'source' => 'appareil',
+                'device' => [
+                    'modele' => $appareil->modele,
+                    'reference_produit' => $appareil->reference_produit,
+                    'client_nom' => $appareil->client->name ?? '',
+                    'client_email' => $appareil->client->email ?? '',
+                    'client_telephone' => $appareil->client->telephone ?? '',
+                ],
+                'vente' => $venteInfo
+            ]);
+        }
+
+        if ($vente) {
+            return response()->json([
+                'found' => true,
+                'source' => 'vente',
+                'device' => [
+                    'modele' => $vente->modele,
+                    'reference_produit' => $vente->reference_produit,
+                    'client_nom' => $vente->client_nom,
+                    'client_email' => $vente->client_email,
+                    'client_telephone' => '',
+                ],
+                'vente' => $venteInfo
+            ]);
+        }
+
+        return response()->json([
+            'found' => false,
+            'message' => 'Appareil non répertorié dans nos ventes (Hors Vente).',
+            'sous_garantie' => false
+        ]);
+    }
+
+    /**
+     * Suggérer des techniciens disponibles via AJAX.
+     */
+    public function suggestTechnicians(Request $request)
+    {
+        $techniciens = User::where('role', 'Technicien')
+            ->where('actif', true)
+            ->withCount([
+                'dossiers as dossiers_en_cours' => function ($q) {
+                    $q->whereNotIn('statut', ['LIVRE', 'CLOTURE']);
+                }
+            ])
+            ->orderBy('dossiers_en_cours')
+            ->get(['id', 'name', 'specialite']);
+
+        return response()->json($techniciens);
+    }
+
+    /**
+     * UC07 — Lancer la réparation (basculer statut EN_REPARATION).
+     */
+    public function lancerReparation(Dossier $dossier)
+    {
+        $ancienStatut = $dossier->statut;
+        $dossier->update(['statut' => 'EN_REPARATION']);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
+            'nouveau_statut' => 'EN_REPARATION',
+            'commentaire' => 'Réparation lancée.',
+        ]);
+
+        return back()->with('success', 'Statut mis à jour : En Réparation.');
+    }
+
+    /**
+     * UC09 — Marquer le dossier comme livré.
+     */
+    public function livrer(Dossier $dossier)
+    {
+        // UC09 : Bloquer si hors garantie et non facturé
+        if (!$dossier->sous_garantie && !in_array($dossier->statut, ['FACTURE', 'IRREPARABLE', 'REMPLACEMENT_PRET'])) {
+            return back()->with('error', 'Veuillez générer la facture avant de livrer.');
+        }
+
+        $ancienStatut = $dossier->statut;
+        $dossier->update([
+            'statut' => 'LIVRE',
+            'date_livraison' => now(),
+        ]);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
+            'nouveau_statut' => 'LIVRE',
+            'commentaire' => 'Appareil remis au client.',
+        ]);
+
+        return back()->with('success', 'Dossier marqué comme livré.');
+    }
+
+    /**
+     * UC09 — Clôturer définitivement le dossier.
+     */
+    public function cloturer(Dossier $dossier)
+    {
+        // UC09 : Bloquer si pas encore livré
+        if ($dossier->statut !== 'LIVRE') {
+            return back()->with('error', 'Impossible de clôturer un dossier non livré.');
+        }
+
+        $dossier->update([
+            'statut' => 'CLOTURE',
+            'date_cloture' => now(),
+        ]);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => 'LIVRE',
+            'nouveau_statut' => 'CLOTURE',
+            'commentaire' => 'Dossier clôturé définitivement.',
+        ]);
+
+        return back()->with('success', 'Dossier clôturé avec succès.');
+    }
+
+    /**
+     * UC12 — Formulaire de préparation du remplacement (irréparable sous garantie).
+     */
+    public function preparerRemplacement(Dossier $dossier)
+    {
+        return view('dossiers.preparer-remplacement', compact('dossier'));
+    }
+
+    /**
+     * UC12 — Enregistrer le remplacement et basculer statut.
+     */
+    public function storeRemplacement(Request $request, Dossier $dossier)
+    {
+        $request->validate([
+            'imei_remplacement' => 'required|string',
+            'modele_remplacement' => 'nullable|string',
+        ]);
+
+        $ancienStatut = $dossier->statut;
+        $dossier->update([
+            'statut' => 'REMPLACEMENT_PRET',
+            'imei_remplacement' => $request->imei_remplacement,
+            'modele_remplacement' => $request->modele_remplacement,
+        ]);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
+            'nouveau_statut' => 'REMPLACEMENT_PRET',
+            'commentaire' => 'Appareil de remplacement préparé.',
+        ]);
+
+        return redirect()->route('dossiers.show', $dossier->id)
+            ->with('success', 'Remplacement enregistré.');
+    }
+
+    /**
+     * Étiquette d'identification du dossier (impression).
+     */
+    public function etiquette(Dossier $dossier)
+    {
+        return view('dossiers.etiquette', compact('dossier'));
+    }
+
+    /**
+     * Valider la demande de remplacement (Admin).
+     */
+    public function validateReplacement(Dossier $dossier)
+    {
+        $dossier->update(['statut' => 'REMPLACEMENT_VALIDE']);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => 'ATTENTE_VALIDATION_REMPLACEMENT',
+            'nouveau_statut' => 'REMPLACEMENT_VALIDE',
+            'commentaire' => 'Demande de remplacement validée par l\'administration.',
+        ]);
+
+        return back()->with('success', 'Remplacement validé. Vous pouvez maintenant préparer l\'appareil de remplacement.');
+    }
+
+    /**
+     * Refuser la demande de remplacement (Admin).
+     */
+    public function refuseReplacement(Dossier $dossier)
+    {
+        $dossier->update(['statut' => 'IRREPARABLE']);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => 'ATTENTE_VALIDATION_REMPLACEMENT',
+            'nouveau_statut' => 'IRREPARABLE',
+            'commentaire' => 'Demande de remplacement refusée. Dossier marqué comme irréparable.',
+        ]);
+
+        return back()->with('warning', 'Remplacement refusé.');
+    }
+
+    /**
+     * Marquer une pièce comme introuvable.
+     */
+    public function pieceIntrouvable(Request $request, Dossier $dossier)
+    {
+        $ancienStatut = $dossier->statut;
+        $dossier->update(['statut' => 'ATTENTE_PIECE']);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
+            'nouveau_statut' => 'ATTENTE_PIECE',
+            'commentaire' => 'Pièce introuvable. Dossier en attente de réapprovisionnement.',
+        ]);
+
+        return back()->with('warning', 'Dossier mis en attente pièce.');
+    }
+
+    // ─── PDFs ──────────────────────────────────────────────────────────────
+
+    /**
+     * PDF du bon de réception.
+     */
+    public function receptionPdf(Dossier $dossier)
+    {
+        $dossier->load('client', 'technicien', 'appareil');
+        $company = ParametreSociete::first();
+        $pdf = Pdf::loadView('dossiers.reception-pdf', compact('dossier', 'company'))
+            ->setPaper('a4', 'portrait');
+        return $pdf->stream("bon-reception-{$dossier->num_dossier}.pdf");
+    }
+
+    /**
+     * PDF du rapport de diagnostic.
+     */
+    public function diagnosticReport(Dossier $dossier)
+    {
+        $dossier->load('client', 'technicien', 'appareil', 'diagnostic.pieces', 'diagnostic.tarifsMo');
+        $company = ParametreSociete::first();
+        $pdf = Pdf::loadView('dossiers.diagnostic-pdf', compact('dossier', 'company'))
+            ->setPaper('a4', 'portrait');
+        return $pdf->stream("diagnostic-{$dossier->num_dossier}.pdf");
+    }
+
+    /**
+     * PDF du rapport d'intervention.
+     */
+    public function interventionReport(Dossier $dossier)
+    {
+        $dossier->load('client', 'technicien', 'appareil', 'intervention.pieces', 'intervention.tarifsMo');
+        $company = ParametreSociete::first();
+        $pdf = Pdf::loadView('dossiers.intervention-pdf', compact('dossier', 'company'))
+            ->setPaper('a4', 'portrait');
+        return $pdf->stream("intervention-{$dossier->num_dossier}.pdf");
+    }
+
+    /**
+     * Commencer le diagnostic (Passage au statut EN_DIAGNOSTIC).
+     */
+    public function startDiagnostic(Dossier $dossier)
+    {
+        if ($dossier->technicien_id != Auth::id() && Auth::user()->role !== 'Admin') {
+            abort(403);
+        }
+
+        if ($dossier->statut === 'AFFECTE') {
+            $dossier->update(['statut' => 'EN_DIAGNOSTIC']);
+
+            \App\Models\SuiviDossier::create([
+                'dossier_id' => $dossier->id,
+                'user_id' => Auth::id(),
+                'ancien_statut' => 'AFFECTE',
+                'nouveau_statut' => 'EN_DIAGNOSTIC',
+                'commentaire' => 'Le technicien a commencé le diagnostic.',
+            ]);
+        }
+
+        return redirect()->route('diagnostics.create', $dossier->id);
+    }
+}

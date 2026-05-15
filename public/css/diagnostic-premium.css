@@ -1,0 +1,79 @@
+/* 
+ * Diagnostic Premium Design System
+ * Focus: Technical, clean, and professional.
+ */
+
+:root {
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-800: #1e293b;
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+}
+
+.diagnostic-container {
+    background-color: var(--slate-100);
+    min-height: 100vh;
+}
+
+.card-premium {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+}
+
+.card-premium:hover {
+    transform: translateY(-2px);
+}
+
+.info-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.upload-area {
+    border: 2px dashed #cbd5e1;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background-color: #eff6ff;
+}
+
+.btn-premium {
+    border-radius: 50rem;
+    padding: 0.75rem 2rem;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.piece-row select, .piece-row input {
+    border: none;
+    background-color: #f8fafc;
+}
+
+.ligne-mo-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.decision-btn {
+    padding: 1rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    border-width: 2px;
+}

@@ -1,0 +1,16 @@
+/* Styles pour la liste des utilisateurs */
+
+.form-switch .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+
+.table thead th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #6c757d;
+}

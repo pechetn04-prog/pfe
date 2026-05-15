@@ -1,0 +1,68 @@
+/* 
+   Fichier CSS pour les Cartes KPI du Tableau de Bord - Style Maison Tel Premium
+*/
+
+.kpi-card {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.kpi-card .card-body {
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.kpi-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.kpi-icon-wrapper i {
+    font-size: 1.25rem;
+}
+
+.kpi-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1e293b;
+}
+
+.kpi-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #64748b;
+    text-uppercase: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+/* Couleurs personnalisées pour les icônes */
+.bg-soft-primary { background-color: #eff6ff; color: #2563eb; }
+.bg-soft-warning { background-color: #fff7ed; color: #f59e0b; }
+.bg-soft-info    { background-color: #f0f9ff; color: #0ea5e9; }
+.bg-soft-success { background-color: #f0fdf4; color: #10b981; }
+.bg-soft-danger  { background-color: #fef2f2; color: #ef4444; }
+.bg-soft-purple  { background-color: #f5f3ff; color: #8b5cf6; }
+.bg-soft-slate   { background-color: #f8fafc; color: #64748b; }

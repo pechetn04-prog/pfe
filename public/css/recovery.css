@@ -1,0 +1,20 @@
+/* recovery.css - Styles additionnels pour la récupération de mot de passe */
+
+.recovery-page {
+    /* Hérite principalement de .login-page dans auth.css */
+}
+
+.recovery-card {
+    /* Hérite principalement de .login-card dans auth.css */
+}
+
+/* Vous pouvez ajouter ici des styles spécifiques si besoin */
+.status-message {
+    padding: 1rem;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
