@@ -38,11 +38,13 @@ class DossierController extends Controller
     {
         $techniciens = User::where('role', 'Technicien')
             ->where('actif', true)
-            ->withCount(['dossiers as dossiers_en_cours' => function($q) {
-                $q->whereNotIn('statut', ['LIVRE', 'CLOTURE']);
-            }])
+            ->withCount([
+                'dossiers as dossiers_en_cours' => function ($q) {
+                    $q->whereNotIn('statut', ['LIVRE', 'CLOTURE']);
+                }
+            ])
             ->get();
-            
+
         return view('dossiers.create', compact('techniciens'));
     }
 
@@ -79,7 +81,7 @@ class DossierController extends Controller
 
         // 3. Gérer le client (Recherche par email OU téléphone pour éviter les doublons)
         $client = User::where('role', 'Client')
-            ->where(function($q) use ($request) {
+            ->where(function ($q) use ($request) {
                 if ($request->client_email) {
                     $q->where('email', $request->client_email);
                 }
@@ -92,16 +94,16 @@ class DossierController extends Controller
             $email = $request->client_email ?: 'client_' . str_replace('.', '', microtime(true)) . '@maisontel.dz';
             // Mot de passe par défaut = numéro de téléphone (sinon sav12345)
             $defaultPassword = $request->client_telephone ?: 'sav12345';
-            
+
             $client = User::create([
-                'name'      => $request->client_nom,
-                'email'     => $email,
-                'password'  => Hash::make($defaultPassword),
-                'role'      => 'Client',
+                'name' => $request->client_nom,
+                'email' => $email,
+                'password' => Hash::make($defaultPassword),
+                'role' => 'Client',
                 'telephone' => $request->client_telephone,
-                'actif'     => true
+                'actif' => true
             ]);
-            
+
             // Stocker le mot de passe en clair pour le passer à la notification
             $client->_plainPassword = $defaultPassword;
         } else {
@@ -406,29 +408,29 @@ class DossierController extends Controller
 
         // Enregistrer le nouvel appareil dans la table ventes avec type REMPLACEMENT
         Vente::create([
-            'type'                 => 'REMPLACEMENT',
-            'imei'                 => $request->imei_remplacement,
-            'modele'               => $modele,
-            'client_nom'           => $dossier->client->name,
-            'date_vente'           => now()->toDateString(),
-            'duree_garantie_mois'  => 12,
-            'reference_produit'    => $dossier->appareil->reference_produit ?? null,
+            'type' => 'REMPLACEMENT',
+            'imei' => $request->imei_remplacement,
+            'modele' => $modele,
+            'client_nom' => $dossier->client->name,
+            'date_vente' => now()->toDateString(),
+            'duree_garantie_mois' => 12,
+            'reference_produit' => $dossier->appareil->reference_produit ?? null,
             'numero_facture_vente' => 'SAV-REMP-' . $dossier->num_dossier,
         ]);
 
         // Mettre à jour le dossier
         $dossier->update([
-            'statut'              => 'REMPLACEMENT_PRET',
-            'imei_remplacement'   => $request->imei_remplacement,
+            'statut' => 'REMPLACEMENT_PRET',
+            'imei_remplacement' => $request->imei_remplacement,
             'modele_remplacement' => $modele,
         ]);
 
         SuiviDossier::create([
-            'dossier_id'    => $dossier->id,
-            'user_id'       => Auth::id(),
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
-            'nouveau_statut'=> 'REMPLACEMENT_PRET',
-            'commentaire'   => "Appareil de remplacement préparé — IMEI : {$request->imei_remplacement} / Modèle : {$modele}.",
+            'nouveau_statut' => 'REMPLACEMENT_PRET',
+            'commentaire' => "Appareil de remplacement préparé — IMEI : {$request->imei_remplacement} / Modèle : {$modele}.",
         ]);
 
         return redirect()->route('dossiers.show', $dossier->id)
