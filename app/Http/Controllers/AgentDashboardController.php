@@ -13,14 +13,14 @@ class AgentDashboardController extends Controller
         $total = Dossier::count();
 
         $stats = [
-            'total'          => Dossier::count(),
-            'recu'           => Dossier::where('statut', 'RECU')->count(),
-            'affecte'        => Dossier::where('statut', 'AFFECTE')->count(),
-            'en_diagnostic'  => Dossier::where('statut', 'EN_DIAGNOSTIC')->count(),
-            'attente_devis'  => Dossier::where('statut', 'EN_ATTENTE_DEVIS')->count(),
-            'en_reparation'  => Dossier::where('statut', 'EN_REPARATION')->count(),
+            'total' => Dossier::count(),
+            'recu' => Dossier::where('statut', 'RECU')->count(),
+            'affecte' => Dossier::where('statut', 'AFFECTE')->count(),
+            'en_diagnostic' => Dossier::where('statut', 'EN_DIAGNOSTIC')->count(),
+            'attente_devis' => Dossier::where('statut', 'EN_ATTENTE_DEVIS')->count(),
+            'en_reparation' => Dossier::where('statut', 'EN_REPARATION')->count(),
             'attente_pieces' => Dossier::where('statut', 'ATTENTE_PIECE')->count(),
-            'prets'          => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'REMPLACEMENT_PRET'])->count(),
+            'prets' => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'REMPLACEMENT_PRET'])->count(),
             'prets_aujourdhui' => Dossier::whereIn('statut', ['REPARE', 'FACTURE'])->whereDate('date_reparation', now())->count(),
         ];
 

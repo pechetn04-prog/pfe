@@ -4,121 +4,120 @@
     <meta charset="UTF-8">
     <title>Rapport de Diagnostic — #{{ $dossier->num_dossier }}</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; color: #1e293b; margin: 0; padding: 20px; }
-        .header { display: flex; justify-content: space-between; border-bottom: 3px solid #2563eb; padding-bottom: 15px; margin-bottom: 25px; }
-        .company h1 { font-size: 20px; color: #2563eb; margin: 0 0 4px 0; }
-        .doc-title h2 { font-size: 16px; margin: 0; color: #0f172a; text-align: right; }
-        .doc-title .num { font-size: 22px; font-weight: 900; color: #2563eb; text-align: right; }
-        .section { margin-bottom: 20px; }
-        .section-title { background: #1e3a5f; color: white; padding: 6px 12px; font-weight: bold; font-size: 11px; text-transform: uppercase; border-radius: 4px; margin-bottom: 12px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .field .label { color: #64748b; font-size: 10px; text-transform: uppercase; margin-bottom: 2px; }
-        .field .val { font-weight: bold; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; min-height: 18px; }
-        .decision-box { padding: 10px 16px; border-radius: 6px; font-weight: bold; font-size: 13px; display: inline-block; margin-top: 8px; }
-        .decision-reparable { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        .decision-irreparable { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-        .garantie-ok { background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 10px; font-size: 10px; }
-        .garantie-non { background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 10px; font-size: 10px; }
-        .exclusion-box { background: #fef3c7; border: 1px solid #fcd34d; padding: 8px 12px; border-radius: 6px; font-size: 11px; margin-top: 6px; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
-        th { background: #f1f5f9; padding: 6px 10px; text-align: left; font-weight: bold; color: #475569; text-transform: uppercase; font-size: 10px; }
-        td { padding: 6px 10px; border-bottom: 1px solid #e2e8f0; }
-        .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 9px; color: #94a3b8; text-align: center; }
-        .signature { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
-        .sign-box { border-top: 1px solid #94a3b8; padding-top: 8px; color: #64748b; font-size: 10px; }
+        body { font-family: Arial, sans-serif; font-size: 11px; color: #333; margin: 0; padding: 0; }
+        .invoice-box { padding: 30px; }
+        .header { border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px; }
+        .company-info { float: left; width: 55%; }
+        .invoice-info { float: right; width: 45%; text-align: right; }
+        .company-name { font-size: 22px; font-weight: bold; color: #2563eb; margin-bottom: 5px; }
+        .invoice-title { font-size: 18px; font-weight: bold; color: #333; }
+        .section-title { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 6px 12px; font-weight: bold; font-size: 10px; text-transform: uppercase; color: #1e3a5f; margin-bottom: 12px; margin-top: 20px; }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 8px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .label { color: #64748b; font-weight: bold; width: 35%; }
+        .val { font-weight: bold; color: #0f172a; }
+        
+        .box { border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; background-color: #fcfcfc; min-height: 40px; line-height: 1.6; }
+        
+        .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table th { background-color: #f1f5f9; color: #475569; padding: 8px; text-align: left; font-size: 9px; text-transform: uppercase; }
+        .table td { padding: 8px; border-bottom: 1px solid #eee; }
+        
+        .decision-box { margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; }
+        .reparable { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .irreparable { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        
+        .footer { position: fixed; bottom: 30px; left: 30px; right: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 9px; color: #777; }
+        .clear { clear: both; }
+        .signature { margin-top: 40px; }
+        .signature-box { float: left; width: 45%; border: 1px solid #eee; height: 100px; padding: 10px; color: #94a3b8; font-size: 10px; }
     </style>
 </head>
 <body>
+    <div class="invoice-box">
+        <div class="header">
+            <div class="company-info">
+                @if($company && $company->logo)
+                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 50px; margin-bottom: 8px;"><br>
+                @endif
+                <div class="company-name">{{ $company->nom_societe ?? 'MAISON TEL' }}</div>
+                <div>{{ $company->adresse ?? '' }}</div>
+                <div>Tél : {{ $company->telephone ?? '' }}</div>
+            </div>
+            <div class="invoice-info">
+                <div class="invoice-title">RAPPORT DE DIAGNOSTIC</div>
+                <div style="font-size: 18px; font-weight: bold; margin: 5px 0; color: #2563eb;">#{{ $dossier->num_dossier }}</div>
+                <div>Date : {{ now()->format('d/m/Y') }}</div>
+            </div>
+            <div class="clear"></div>
+        </div>
 
-<div class="header">
-    <div class="company">
-        <h1>📱 Maison Tel</h1>
-        <div>{{ $company->adresse ?? '' }}</div>
-        <div>Tél : {{ $company->telephone ?? '' }}</div>
-    </div>
-    <div class="doc-title">
-        <h2>RAPPORT DE DIAGNOSTIC</h2>
-        <div class="num">#{{ $dossier->num_dossier }}</div>
-        <div style="text-align:right;">Date : {{ now()->format('d/m/Y') }}</div>
-    </div>
-</div>
-
-<div class="section">
-    <div class="section-title">Informations Dossier</div>
-    <div class="grid-2">
-        <div class="field"><div class="label">Client</div><div class="val">{{ $dossier->client->name ?? '—' }}</div></div>
-        <div class="field"><div class="label">IMEI</div><div class="val">{{ $dossier->imei }}</div></div>
-        <div class="field"><div class="label">Technicien</div><div class="val">{{ $dossier->technicien->name ?? '—' }}</div></div>
-        <div class="field"><div class="label">Garantie</div><div class="val">
-            <span class="{{ $dossier->sous_garantie ? 'garantie-ok' : 'garantie-non' }}">
-                {{ $dossier->sous_garantie ? 'Sous garantie' : 'Hors garantie' }}
-            </span>
-        </div></div>
-        <div class="field"><div class="label">Panne déclarée</div><div class="val">{{ $dossier->panne_declaree }}</div></div>
-        <div class="field"><div class="label">Date diagnostic</div><div class="val">{{ now()->format('d/m/Y') }}</div></div>
-    </div>
-</div>
-
-@if($dossier->diagnostic)
-@php $diag = $dossier->diagnostic; @endphp
-
-<div class="section">
-    <div class="section-title">Constat Technique</div>
-    <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; min-height: 50px;">
-        {{ $diag->constat ?? $diag->constat_technique ?? 'Non renseigné' }}
-    </div>
-</div>
-
-<div class="section">
-    <div class="section-title">Recommandation</div>
-    <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; min-height: 40px;">
-        {{ $diag->recommandation ?? 'Non renseignée' }}
-    </div>
-</div>
-
-@if($diag->exclusion_garantie ?? false)
-<div class="exclusion-box">
-    ⚠️ <strong>Exclusion de garantie :</strong> {{ $diag->motif_exclusion ?? $diag->exclusion_commentaire ?? 'Motif non précisé' }}
-</div>
-@endif
-
-@if($diag->pieces && $diag->pieces->count())
-<div class="section" style="margin-top:16px;">
-    <div class="section-title">Pièces Nécessaires</div>
-    <table>
-        <thead><tr><th>Référence</th><th>Désignation</th><th>Qté</th><th>Prix Unitaire TTC</th></tr></thead>
-        <tbody>
-            @foreach($diag->pieces as $p)
+        <div class="section-title">Informations Dossier & Client</div>
+        <table class="info-table">
             <tr>
-                <td>{{ $p->reference ?? '—' }}</td>
-                <td>{{ $p->nom }}</td>
-                <td>{{ $p->pivot->quantite ?? 1 }}</td>
-                <td>{{ number_format($p->prix_vente ?? 0, 3, ',', ' ') }} DA</td>
+                <td class="label">Client</td><td class="val">{{ $dossier->client->name ?? '—' }}</td>
+                <td class="label">Technicien</td><td class="val">{{ $dossier->technicien->name ?? '—' }}</td>
             </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-@endif
+            <tr>
+                <td class="label">Appareil / Modèle</td><td class="val">{{ $dossier->appareil->modele ?? '—' }}</td>
+                <td class="label">IMEI / S/N</td><td class="val">{{ $dossier->imei }}</td>
+            </tr>
+            <tr>
+                <td class="label">Garantie</td><td class="val">{{ $dossier->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE' }}</td>
+                <td class="label">Panne déclarée</td><td class="val">{{ $dossier->panne_declaree }}</td>
+            </tr>
+        </table>
 
-<div style="margin-top: 16px;">
-    <div class="section-title" style="display:inline-block;">Décision Technique</div><br>
-    @if($diag->is_reparable ?? false)
-        <span class="decision-box decision-reparable">✓ Appareil RÉPARABLE</span>
-    @else
-        <span class="decision-box decision-irreparable">✗ Appareil IRRÉPARABLE</span>
-    @endif
-</div>
-@endif
+        @if($dossier->diagnostic)
+            @php $diag = $dossier->diagnostic; @endphp
+            <div class="section-title">Constat Technique</div>
+            <div class="box">{{ $diag->constat ?? 'Aucun constat renseigné.' }}</div>
 
-<div class="signature">
-    <div class="sign-box">Signature Technicien</div>
-    <div class="sign-box">Cachet & Signature SAV</div>
-</div>
+            <div class="section-title">Recommandation du Technicien</div>
+            <div class="box">{{ $diag->recommandation ?? 'Aucune recommandation.' }}</div>
 
-<div class="footer">
-    Document confidentiel — Généré le {{ now()->format('d/m/Y à H:i') }} — Maison Tel SAV
-</div>
+            @if($diag->pieces && $diag->pieces->count())
+                <div class="section-title">Pièces & Composants à prévoir</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Référence</th>
+                            <th>Désignation</th>
+                            <th style="text-align: center;">Qté</th>
+                            <th style="text-align: right;">Prix Unit. TTC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($diag->pieces as $p)
+                        <tr>
+                            <td>{{ $p->reference ?? '—' }}</td>
+                            <td>{{ $p->nom }}</td>
+                            <td style="text-align: center;">{{ $p->pivot->quantite ?? 1 }}</td>
+                            <td style="text-align: right;">{{ number_format($p->prix_vente ?? 0, 3, ',', ' ') }} {{ $company->devise ?? 'DA' }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
 
+            <div class="decision-box {{ ($diag->is_reparable ?? true) ? 'reparable' : 'irreparable' }}">
+                DÉCISION : {{ ($diag->is_reparable ?? true) ? 'APPAREIL RÉPARABLE' : 'APPAREIL IRRÉPARABLE' }}
+            </div>
+        @else
+            <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                Aucun diagnostic n'a encore été saisi pour ce dossier.
+            </div>
+        @endif
+
+        <div class="signature">
+            <div class="signature-box">Signature Technicien</div>
+            <div class="signature-box" style="float: right;">Cachet & Signature SAV</div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="footer">
+            {{ $company->nom_societe ?? 'MAISON TEL' }} — Rapport généré le {{ now()->format('d/m/Y H:i') }}
+        </div>
+    </div>
 </body>
 </html>

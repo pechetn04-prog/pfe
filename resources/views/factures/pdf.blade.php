@@ -26,9 +26,15 @@
     <div class="invoice-box">
         <div class="header">
             <div class="company-info">
+                @if($company && $company->logo)
+                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 50px; margin-bottom: 5px;"><br>
+                @endif
                 <div class="company-name">{{ $company->nom_societe ?? 'Maison Tel' }}</div>
                 <div>{{ $company->adresse ?? 'Adresse non configurée' }}</div>
                 <div>Tél : {{ $company->telephone ?? '—' }} | Email : {{ $company->email ?? '—' }}</div>
+                @if($company && $company->numero_fiscal)
+                    <div style="margin-top: 2px;">MF/RC : {{ $company->numero_fiscal }}</div>
+                @endif
             </div>
             <div class="invoice-info">
                 <div class="invoice-title">FACTURE</div>
@@ -103,29 +109,29 @@
         <div class="totals">
             <div class="total-row">
                 <span style="float: left;">Total Hors Taxe :</span>
-                <span style="float: right;">{{ number_format($htTotal, 3, ',', ' ') }} DA</span>
+                <span style="float: right;">{{ number_format($htTotal, 3, ',', ' ') }} {{ $company->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
             <div class="total-row">
                 <span style="float: left;">TVA (19%) :</span>
-                <span style="float: right;">{{ number_format($tvaTotal, 3, ',', ' ') }} DA</span>
+                <span style="float: right;">{{ number_format($tvaTotal, 3, ',', ' ') }} {{ $company->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
             <div class="total-row">
                 <span style="float: left; font-weight: bold;">Total Brut TTC :</span>
-                <span style="float: right; font-weight: bold;">{{ number_format($ttcTotal, 3, ',', ' ') }} DA</span>
+                <span style="float: right; font-weight: bold;">{{ number_format($ttcTotal, 3, ',', ' ') }} {{ $company->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
             @if($facture->remise > 0)
             <div class="total-row" style="color: #dc2626;">
                 <span style="float: left;">Remise ({{ $facture->remise }}%) :</span>
-                <span style="float: right;">- {{ number_format($montantRemise, 3, ',', ' ') }} DA</span>
+                <span style="float: right;">- {{ number_format($montantRemise, 3, ',', ' ') }} {{ $company->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
             @endif
             <div class="grand-total">
                 <span style="float: left;">NET À PAYER TTC :</span>
-                <span style="float: right;">{{ number_format($facture->montant_total, 3, ',', ' ') }} DA</span>
+                <span style="float: right;">{{ number_format($facture->montant_total, 3, ',', ' ') }} {{ $company->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
         </div>
@@ -133,7 +139,7 @@
 
         <div style="margin-top: 50px;">
             <p style="font-size: 11px; color: #555;">Arrêté la présente facture à la somme de : <br>
-            <strong>{{ \Illuminate\Support\Str::upper((new NumberFormatter("fr", NumberFormatter::SPELLOUT))->format($facture->montant_total)) }} DINARS ALGERIENS</strong></p>
+            <strong>{{ \Illuminate\Support\Str::upper((new NumberFormatter("fr", NumberFormatter::SPELLOUT))->format($facture->montant_total)) }} {{ $company->devise ?? 'DINARS' }}</strong></p>
         </div>
 
         <div class="footer">

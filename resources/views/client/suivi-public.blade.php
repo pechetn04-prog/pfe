@@ -8,124 +8,177 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Outfit', sans-serif; background: #f1f5f9; }
-        .navbar-brand { font-weight: 800; font-size: 1.3rem; }
-        .status-badge { font-size: 1rem; padding: 0.5rem 1.5rem; border-radius: 30px; }
-        .timeline { position: relative; padding-left: 2rem; }
-        .timeline::before { content: ''; position: absolute; left: 0.6rem; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
-        .timeline-item { position: relative; padding-bottom: 1.5rem; }
-        .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: #2563eb; position: absolute; left: -1.6rem; top: 4px; border: 2px solid white; box-shadow: 0 0 0 2px #2563eb; }
-        .timeline-dot.done { background: #10b981; box-shadow: 0 0 0 2px #10b981; }
-        .card { border-radius: 14px; }
-        .info-label { font-size: 0.72rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; }
-        .info-val { font-weight: 600; color: #0f172a; }
+        body { font-family: 'Outfit', sans-serif; background: #f8fafc; color: #1e293b; }
+        .bg-soft-primary { background-color: #eff6ff; }
+        .bg-soft-success { background-color: #ecfdf5; }
+        .bg-soft-danger { background-color: #fef2f2; }
+        .btn-white { background-color: white !important; color: #2563eb !important; border: 1px solid #e2e8f0; }
+        
+        /* Timeline Styling */
+        .custom-timeline { position: relative; padding-left: 30px; }
+        .custom-timeline::before { content: ''; position: absolute; left: 6px; top: 0; height: 100%; width: 2px; background: #e2e8f0; }
+        .timeline-item { position: relative; }
+        .timeline-marker { 
+            position: absolute; left: -30px; top: 5px; width: 14px; height: 14px; 
+            border-radius: 50%; background: white; border: 3px solid #2563eb; z-index: 1;
+        }
+        .timeline-item:first-child .timeline-marker { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        
+        .transition-all { transition: all 0.2s ease; }
+        .transition-all:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body>
 
-{{-- Navbar --}}
-<nav class="navbar navbar-light bg-white border-bottom px-4 py-3">
-    <a class="navbar-brand" href="{{ route('client.suivi') }}">📱 Maison Tel</a>
-    <a href="{{ route('client.suivi') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
-        <i class="fas fa-search me-1"></i> Nouvelle recherche
-    </a>
-</nav>
+<div class="container-fluid px-4 py-5">
+    <div class="row">
+        <div class="col-12">
 
-<div class="container py-4" style="max-width: 760px;">
-
-    {{-- Header dossier --}}
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-                <div>
-                    <div class="text-muted small mb-1">Dossier SAV</div>
-                    <h1 class="h4 fw-bold mb-1">#{{ $dossier->num_dossier }}</h1>
-                    <div class="text-muted small">
-                        <i class="fas fa-calendar-alt me-1"></i>
-                        Reçu le {{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}
+            {{-- En-tête avec navigation --}}
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="d-flex align-items-center">
+                    <a href="{{ route('client.suivi') }}" class="btn btn-white border shadow-sm rounded-pill p-2 d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                        <i class="fas fa-arrow-left text-primary"></i>
+                    </a>
+                    <div>
+                        <h1 class="h3 fw-bold mb-0 text-dark">Suivi de réparation</h1>
+                        <span class="badge bg-soft-primary text-primary px-3 py-1 rounded-pill small">#{{ $dossier->num_dossier }}</span>
                     </div>
                 </div>
-                <div class="text-end">
-                    @php
-                        $badges = [
-                            'AFFECTE'          => ['secondary', 'Affecté'],
-                            'EN_DIAGNOSTIC'    => ['info',      'Diagnostic en cours'],
-                            'EN_ATTENTE_DEVIS' => ['warning',   'Devis en cours'],
-                            'EN_REPARATION'    => ['primary',   'En réparation'],
-                            'ATTENTE_PIECE'    => ['warning',   'Attente pièce'],
-                            'REPARE'           => ['success',   'Réparé ✓'],
-                            'FACTURE'          => ['success',   'Facturé ✓'],
-                            'LIVRE'            => ['success',   'Livré ✓'],
-                            'CLOTURE'          => ['dark',      'Clôturé'],
-                            'IRREPARABLE'      => ['danger',    'Irréparable'],
-                            'DEVIS_REFUSE'     => ['danger',    'Devis refusé'],
-                            'REMPLACEMENT_PRET'=> ['success',   'Remplacement prêt'],
-                        ];
-                        $b = $badges[$dossier->statut] ?? ['secondary', $dossier->statut];
-                    @endphp
-                    <span class="badge bg-{{ $b[0] }} status-badge">{{ $b[1] }}</span>
-                    <div class="small text-muted mt-1">
-                        <span class="badge {{ $dossier->sous_garantie ? 'bg-success' : 'bg-light text-muted' }} rounded-pill">
-                            {{ $dossier->sous_garantie ? '🛡️ Sous garantie' : 'Hors garantie' }}
-                        </span>
+                <div class="text-end d-none d-md-block">
+                    <div class="text-muted small mb-1">Reçu le</div>
+                    <div class="fw-bold text-dark">{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</div>
+                </div>
+            </div>
+
+            {{-- Action Suivante Recommandée (Public) --}}
+            @if($dossier->statut === 'EN_ATTENTE_DEVIS')
+            <div class="card border-0 shadow-lg mb-5 overflow-hidden" style="border-radius: 20px; background: #2563eb; color: white;">
+                <div class="card-body p-4 text-center py-5">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-lock fs-4"></i>
                     </div>
+                    <h4 class="fw-bold mb-2">Un devis est prêt pour validation</h4>
+                    <p class="mb-4 opacity-75">Pour accepter ou refuser ce devis, veuillez vous connecter à votre espace client.</p>
+                    <a href="{{ route('login') }}" class="btn btn-white rounded-pill px-5 py-2 fw-bold shadow-sm">
+                        Se connecter au portail
+                    </a>
+                </div>
+            </div>
+            @endif
+
+            <div class="row g-4">
+                
+                {{-- Panneau GAUCHE (7/12) : Détails et Journal --}}
+                <div class="col-lg-7 order-2 order-lg-1">
+                    
+                    {{-- Carte Infos Appareil --}}
+                    <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="border-radius: 24px; background: white;">
+                        <div class="card-header bg-white border-0 py-4 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0 text-dark">Informations Appareil</h5>
+                            <i class="fas fa-mobile-alt text-muted fs-4"></i>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <div class="row g-4">
+                                <div class="col-sm-4">
+                                    <label class="small text-muted fw-bold text-uppercase mb-1 d-block">Appareil</label>
+                                    <div class="fw-bold text-dark fs-5 text-truncate">{{ $dossier->appareil->modele ?? '—' }}</div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="small text-muted fw-bold text-uppercase mb-1 d-block">IMEI (Masqué)</label>
+                                    <div class="fw-bold text-dark fs-5 text-truncate">{{ substr($dossier->imei, 0, 6) }}*****{{ substr($dossier->imei, -2) }}</div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="small text-muted fw-bold text-uppercase mb-1 d-block">Garantie</label>
+                                    <div class="mt-1">
+                                        @if($dossier->sous_garantie)
+                                            <span class="badge bg-soft-success text-success px-3 py-1 rounded-pill fw-bold">
+                                                <i class="fas fa-shield-alt me-1"></i> Sous Garantie
+                                            </span>
+                                        @else
+                                            <span class="badge bg-soft-danger text-danger px-3 py-1 rounded-pill fw-bold">
+                                                <i class="fas fa-exclamation-circle me-1"></i> Hors Garantie
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="small text-muted fw-bold text-uppercase mb-1 d-block">Panne déclarée</label>
+                                    <div class="text-dark bg-light p-3 rounded-4" style="font-size: 0.95rem;">
+                                        {{ $dossier->panne_declaree }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Journal de Suivi (Timeline stylée) --}}
+                    <div class="card border-0 shadow-sm" style="border-radius: 24px; background: white;">
+                        <div class="card-header bg-white border-0 py-4 px-4">
+                            <h5 class="fw-bold mb-0 text-dark">Historique des étapes</h5>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <div class="custom-timeline">
+                                @forelse($dossier->suivi->sortByDesc('created_at') as $suivi)
+                                <div class="timeline-item">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content pb-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="small fw-bold text-primary">{{ \Carbon\Carbon::parse($suivi->created_at)->diffForHumans() }}</span>
+                                            <span class="text-muted" style="font-size: 0.75rem;">{{ \Carbon\Carbon::parse($suivi->created_at)->format('H:i') }}</span>
+                                        </div>
+                                        <div class="text-dark small">{{ $suivi->commentaire }}</div>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="text-center py-4 text-muted italic">Aucun historique disponible pour le moment.</div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Panneau DROIT (5/12) : État --}}
+                <div class="col-lg-5 order-1 order-lg-2">
+                    
+                    {{-- Carte d'État Héro --}}
+                    <div class="card border-0 shadow-lg p-5 mb-4 overflow-hidden" style="border-radius: 30px; background: white;">
+                        @php
+                            $statusConfig = [
+                                'RECU' => ['icon' => 'fa-box-open', 'color' => '#64748b', 'label' => 'Dossier Reçu', 'desc' => 'Votre appareil a bien été réceptionné.'],
+                                'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'color' => '#f59e0b', 'label' => 'En Diagnostic', 'desc' => 'Nos techniciens analysent la panne.'],
+                                'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'color' => '#ea580c', 'label' => 'Attente Devis', 'desc' => 'Un devis est prêt pour validation.'],
+                                'EN_REPARATION' => ['icon' => 'fa-wrench', 'color' => '#2563eb', 'label' => 'En Réparation', 'desc' => 'L\'intervention technique est en cours.'],
+                                'REPARE' => ['icon' => 'fa-check-double', 'color' => '#10b981', 'label' => 'Réparé !', 'desc' => 'Votre appareil est prêt pour le retrait.'],
+                                'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'color' => '#059669', 'label' => 'Remis / Livré', 'desc' => 'Merci de votre confiance !'],
+                                'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'color' => '#ef4444', 'label' => 'Attente Pièces', 'desc' => 'Nous attendons les pièces détachées.'],
+                                'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'color' => '#b91c1c', 'label' => 'Irréparable', 'desc' => 'Malheureusement, l\'appareil n\'est pas réparable.'],
+                            ];
+                            $conf = $statusConfig[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'color' => '#64748b', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
+                        @endphp
+                        
+                        <div class="mb-4 position-relative">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 80px; height: 80px; background-color: {{ $conf['color'] }}15;">
+                                <i class="fas {{ $conf['icon'] }} fs-2" style="color: {{ $conf['color'] }};"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="small text-muted text-uppercase fw-bold mb-1">Statut actuel</div>
+                        <h2 class="fw-bold mb-2" style="color: {{ $conf['color'] }};">{{ $conf['label'] }}</h2>
+                        <p class="text-muted mb-0">{{ $conf['desc'] }}</p>
+                    </div>
+
+                    {{-- Rappel connexion --}}
+                    <div class="card border-0 shadow-sm p-4 text-center bg-soft-primary" style="border-radius: 24px;">
+                        <p class="text-primary small mb-3 fw-bold">Vous voulez voir plus de détails ?</p>
+                        <p class="text-muted small mb-3">Connectez-vous pour voir vos documents PDF, devis détaillés et factures.</p>
+                        <a href="{{ route('login') }}" class="btn btn-primary w-100 rounded-pill fw-bold">Espace Client</a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-
-    {{-- Infos appareil (masquer données sensibles) --}}
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-white border-0 fw-bold pt-4 pb-0 px-4">
-            <i class="fas fa-mobile-alt me-2 text-primary"></i> Appareil
-        </div>
-        <div class="card-body px-4 pb-4">
-            <div class="row g-3">
-                <div class="col-6 col-md-4">
-                    <div class="info-label">IMEI</div>
-                    <div class="info-val">{{ substr($dossier->imei, 0, 6) }}*****{{ substr($dossier->imei, -2) }}</div>
-                </div>
-                <div class="col-6 col-md-4">
-                    <div class="info-label">Panne déclarée</div>
-                    <div class="info-val">{{ Str::limit($dossier->panne_declaree, 50) }}</div>
-                </div>
-                <div class="col-6 col-md-4">
-                    <div class="info-label">Dernière mise à jour</div>
-                    <div class="info-val">{{ $dossier->updated_at->format('d/m/Y H:i') }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Frise chronologique --}}
-    @if($dossier->suivi && $dossier->suivi->count())
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-white border-0 fw-bold pt-4 pb-0 px-4">
-            <i class="fas fa-history me-2 text-primary"></i> Historique de traitement
-        </div>
-        <div class="card-body px-4 pb-4">
-            <div class="timeline mt-2">
-                @foreach($dossier->suivi as $s)
-                <div class="timeline-item">
-                    <div class="timeline-dot {{ $loop->last ? '' : 'done' }}"></div>
-                    <div class="small">
-                        <span class="text-muted">{{ \Carbon\Carbon::parse($s->created_at)->format('d/m/Y à H:i') }}</span>
-                        <span class="ms-2 fw-semibold">{{ $s->commentaire }}</span>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-    @endif
-
-    {{-- Message bas de page --}}
-    <div class="text-center text-muted small">
-        <i class="fas fa-lock me-1"></i>
-        Les informations personnelles et financières ne sont pas affichées dans ce suivi public.
-        <br>Connectez-vous à votre <a href="{{ route('login') }}">espace client</a> pour plus de détails.
-    </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

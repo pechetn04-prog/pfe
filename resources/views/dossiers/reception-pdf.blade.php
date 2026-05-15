@@ -59,13 +59,19 @@
     <table class="table header-table">
         <tr>
             <td class="logo">
-                MAISON TEL<br>
+                @if($company && $company->logo)
+                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 50px;"><br>
+                @endif
+                {{ $company->nom_societe ?? 'MAISON TEL' }}<br>
                 <span style="font-size: 10px; font-weight: normal; color: #64748b;">SERVICE APRÈS-VENTE</span>
             </td>
             <td class="doc-info">
                 <h1>BON DE RÉCEPTION</h1>
                 <div class="ref">#{{ $dossier->num_dossier }}</div>
                 <div style="margin-top: 5px;">Date : {{ $dossier->date_reception->format('d/m/Y H:i') }}</div>
+                @if($company && $company->numero_fiscal)
+                    <div style="font-size: 8px; color: #64748b; margin-top: 5px;">MF/RC : {{ $company->numero_fiscal }}</div>
+                @endif
             </td>
         </tr>
     </table>

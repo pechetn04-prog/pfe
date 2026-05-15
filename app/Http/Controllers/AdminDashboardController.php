@@ -25,16 +25,10 @@ class AdminDashboardController extends Controller
             'attente_pieces' => Dossier::where('statut', 'ATTENTE_PIECE')->count(),
             'cloture' => Dossier::whereIn('statut', ['LIVRE', 'CLOTURE'])->count(),
             'users' => User::count(),
+            'demandes_rejet_count' => \App\Models\DemandeRejet::where('statut', 'EN_ATTENTE')->count(),
+            'demandes_rejet_recent' => \App\Models\DemandeRejet::with(['dossier', 'user'])->where('statut', 'EN_ATTENTE')->latest()->take(3)->get(),
         ];
 
-        // Statistiques pour les graphiques
-        $stats['labels_7_days'] = [];
-        $stats['data_7_days'] = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i);
-            $stats['labels_7_days'][] = $date->format('d/m');
-            $stats['data_7_days'][] = Dossier::whereDate('created_at', $date)->count();
-        }
 
         $stats['status_distribution'] = [
             'Nouveaux' => $stats['recu'],
@@ -77,8 +71,9 @@ class AdminDashboardController extends Controller
             ->get();
 
         $recentDossiers = Dossier::with(['client', 'appareil'])->latest()->take(10)->get();
+        $techniciens = User::where('role', 'Technicien')->where('actif', true)->get();
 
-        return view('dashboard.admin', compact('stats', 'dossiersDiagnostique', 'dossiersReparation', 'dossiersAttentePieces', 'stockAlerts', 'recentDossiers'));
+        return view('dashboard.admin', compact('stats', 'dossiersDiagnostique', 'dossiersReparation', 'dossiersAttentePieces', 'stockAlerts', 'recentDossiers', 'techniciens'));
     }
 
     public function statistiques(Request $request)

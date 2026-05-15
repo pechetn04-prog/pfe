@@ -40,10 +40,12 @@ class FactureCreatedNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
+            'title' => 'Nouvelle Facture',
+            'message' => 'Nouvelle facture générée : ' . $this->facture->numero,
             'facture_id' => $this->facture->id,
             'dossier_id' => $this->facture->dossier_id,
             'numero' => $this->facture->numero,
-            'message' => 'Nouvelle facture générée : ' . $this->facture->numero,
+            'url' => route('factures.show', $this->facture->id),
         ];
     }
 }

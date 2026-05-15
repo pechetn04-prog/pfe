@@ -10,22 +10,78 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-0 text-gray-800">Gestion de Stock & Pièces</h1>
-            <small class="text-muted">Inventaire des pièces détachées et accessoires</small>
+            <h1 class="h3 mb-0 text-gray-800" style="font-weight: 800;">Gestion de Stock & Pièces</h1>
+            <small class="text-muted fw-bold">Inventaire des pièces détachées et accessoires</small>
         </div>
         @if(auth()->user()->role !== 'Technicien')
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#addPieceModal">
+            <button type="button" class="btn btn-success shadow-sm rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#addPieceModal">
                 <i class="fas fa-plus-circle me-1"></i> Ajouter Pièce
             </button>
-            <a href="{{ route('stock.mouvements') }}" class="btn btn-outline-primary shadow-sm">
+            <a href="{{ route('stock.mouvements') }}" class="btn btn-outline-primary shadow-sm rounded-pill px-3 fw-bold">
                 <i class="fas fa-history me-1"></i> Historique
             </a>
-            <a href="{{ route('stock.mouvements.create') }}" class="btn btn-primary shadow-sm">
+            <a href="{{ route('stock.mouvements.create') }}" class="btn btn-primary shadow-sm rounded-pill px-3 fw-bold">
                 <i class="fas fa-exchange-alt me-1"></i> Mouvement
             </a>
         </div>
         @endif
+    </div>
+
+    {{-- Cartes de Statistiques Stock --}}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3 text-primary">
+                        <i class="fas fa-cubes fa-lg"></i>
+                    </div>
+                    <div>
+                        <div class="h4 fw-bold mb-0">{{ $stats['total_items'] }}</div>
+                        <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.6rem;">Articles Total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100 border-start border-4 border-danger" style="border-radius: 15px;">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-danger bg-opacity-10 p-3 rounded-3 me-3 text-danger">
+                        <i class="fas fa-exclamation-circle fa-lg"></i>
+                    </div>
+                    <div>
+                        <div class="h4 fw-bold mb-0 text-danger">{{ $stats['out_of_stock'] }}</div>
+                        <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.6rem;">En Rupture</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100 border-start border-4 border-warning" style="border-radius: 15px;">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-warning bg-opacity-10 p-3 rounded-3 me-3 text-warning">
+                        <i class="fas fa-bell fa-lg"></i>
+                    </div>
+                    <div>
+                        <div class="h4 fw-bold mb-0 text-warning">{{ $stats['alerts_count'] }}</div>
+                        <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.6rem;">Alertes Seuil</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-3 me-3 text-success">
+                        <i class="fas fa-dollar-sign fa-lg"></i>
+                    </div>
+                    <div>
+                        <div class="h4 fw-bold mb-0 text-success">{{ number_format($stats['total_value'], 3, ',', ' ') }}</div>
+                        <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.6rem;">Valeur ({{ $parametre->devise ?? 'DT' }})</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     {{-- Modal Ajouter Pièce --}}
@@ -122,7 +178,6 @@
                         <th class="text-center">Stock</th>
                         <th class="text-end">Prix Unitaire</th>
                         @if(auth()->user()->role !== 'Technicien')
-                        <th class="text-center">Actif</th>
                         <th class="text-end pe-4">Actions</th>
                         @endif
                     </tr>
@@ -151,27 +206,23 @@
                             {{ number_format($piece->prix_unitaire, 2, ',', ' ') }} <span class="small text-muted fw-normal">{{ $parametre->devise ?? 'TND' }}</span>
                         </td>
                         @if(auth()->user()->role !== 'Technicien')
-                        <td class="text-center">
-                            <form action="{{ route('stock.toggle', $piece->id) }}" method="POST">
-                                @csrf @method('PATCH')
-                                <div class="form-check form-switch d-inline-block">
-                                    <input class="form-check-input cursor-pointer" type="checkbox" 
-                                        onchange="this.form.submit()" {{ $piece->actif ? 'checked' : '' }}
-                                        style="width: 2.2em; height: 1.1em;">
-                                </div>
-                            </form>
-                        </td>
                         <td class="text-end pe-4">
-                            <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('stock.edit', $piece->id) }}" class="text-primary" title="Modifier">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('stock.destroy', $piece->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette pièce ?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-link p-0 text-danger border-0" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                            <div class="d-flex justify-content-end align-items-center gap-3">
+                                <form action="{{ route('stock.toggle', $piece->id) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <div class="form-check form-switch p-0 m-0 d-flex align-items-center">
+                                        <label class="form-check-label small fw-bold me-2 {{ $piece->actif ? 'text-success' : 'text-muted' }}" for="switch{{ $piece->id }}">
+                                            {{ $piece->actif ? 'ACTIF' : 'INACTIF' }}
+                                        </label>
+                                        <input class="form-check-input cursor-pointer" type="checkbox" id="switch{{ $piece->id }}"
+                                            onchange="this.form.submit()" {{ $piece->actif ? 'checked' : '' }}
+                                            style="width: 2.2em; height: 1.1em; margin-top: 0;">
+                                    </div>
                                 </form>
+
+                                <a href="{{ route('stock.edit', $piece->id) }}" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Modifier" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-edit text-primary"></i>
+                                </a>
                             </div>
                         </td>
                         @endif

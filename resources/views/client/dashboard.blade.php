@@ -1,77 +1,132 @@
 @extends('layouts.app')
 
-@section('title', 'Mes Dossiers — Espace Client')
+@section('title', 'Mon Espace SAV — Maison Tel')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid px-4 py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 fw-bold mb-0">Bonjour, {{ $user->name }}</h1>
-            <small class="text-muted">Suivez l'état de vos réparations en temps réel</small>
-        </div>
+    {{-- En-tête --}}
+    <div class="mb-4">
+        <h1 class="h3 fw-bold mb-0 text-dark">Espace Client</h1>
+        <p class="text-muted small">Bienvenue sur votre portail de suivi SAV, {{ $user->name }}</p>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    @forelse($dossiers as $dossier)
-    <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px; border-left: 4px solid #2563eb !important;">
-        <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-md-3">
-                    <div class="fw-bold text-primary">#{{ $dossier->num_dossier }}</div>
-                    <small class="text-muted">{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</small>
-                </div>
-                <div class="col-md-4">
-                    <div class="small text-muted mb-1">Panne déclarée</div>
-                    <div class="fw-medium">{{ Str::limit($dossier->panne_declaree, 60) }}</div>
-                </div>
-                <div class="col-md-3 text-center">
-                    @php
-                        $badges = [
-                            'AFFECTE'          => ['bg-secondary',  'Affecté'],
-                            'EN_DIAGNOSTIC'    => ['bg-info text-dark', 'En diagnostic'],
-                            'EN_ATTENTE_DEVIS' => ['bg-warning text-dark', 'Devis à valider'],
-                            'EN_REPARATION'    => ['bg-primary', 'En réparation'],
-                            'REPARE'           => ['bg-success', 'Réparé'],
-                            'FACTURE'          => ['bg-success', 'Facturé'],
-                            'LIVRE'            => ['bg-success', 'Livré ✓'],
-                            'CLOTURE'          => ['bg-dark', 'Clôturé'],
-                            'IRREPARABLE'      => ['bg-danger', 'Irréparable'],
-                            'DEVIS_REFUSE'     => ['bg-danger', 'Devis refusé'],
-                        ];
-                        $badge = $badges[$dossier->statut] ?? ['bg-secondary', $dossier->statut];
-                    @endphp
-                    <span class="badge {{ $badge[0] }} rounded-pill px-3 py-2">{{ $badge[1] }}</span>
-                </div>
-                <div class="col-md-2 text-end">
-                    <a href="{{ route('client.ticket', $dossier->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                        Détails →
-                    </a>
+    {{-- Résumé en Cartes --}}
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: linear-gradient(135deg, #1e69ff 0%, #0047d5 100%); color: white;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="h3 fw-bold mb-0">{{ $totalDossiers }}</div>
+                            <div class="small opacity-75 fw-bold text-uppercase">Total Dossiers</div>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                            <i class="fas fa-folder-open fs-4"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            {{-- Alerte devis en attente --}}
-            @if($dossier->statut === 'EN_ATTENTE_DEVIS' && $dossier->devis && $dossier->devis->statut === 'EN_ATTENTE')
-            <div class="alert alert-warning mt-3 mb-0 py-2 d-flex align-items-center justify-content-between">
-                <span><i class="fas fa-file-invoice me-2"></i> Un devis est en attente de votre validation.</span>
-                <a href="{{ route('client.ticket', $dossier->id) }}" class="btn btn-sm btn-warning">Voir le devis</a>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: #ffffff;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="h3 fw-bold mb-0 text-dark">{{ $dossiersEnCours }}</div>
+                            <div class="small text-muted fw-bold text-uppercase">En cours de traitement</div>
+                        </div>
+                        <div class="bg-soft-warning rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="fas fa-tools text-warning fs-4"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            @endif
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: #ffffff;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="h3 fw-bold mb-0 text-success">{{ $dossiersPrets }}</div>
+                            <div class="small text-muted fw-bold text-uppercase">Prêts pour retrait</div>
+                        </div>
+                        <div class="bg-soft-success rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="fas fa-check-circle text-success fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    @empty
-    <div class="card border-0 shadow-sm text-center py-5">
-        <div class="text-muted">
-            <i class="fas fa-folder-open fa-3x mb-3 d-block"></i>
-            Aucun dossier SAV trouvé pour votre compte.
+
+    {{-- Historique complet --}}
+    <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+        <div class="card-header bg-white border-0 py-4 px-4">
+            <h5 class="fw-bold mb-0 text-dark">Historique de vos dossiers</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr class="small text-muted text-uppercase fw-bold">
+                        <th class="ps-4">Référence</th>
+                        <th>Appareil</th>
+                        <th>Date</th>
+                        <th class="text-center">Statut</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($dossiers as $d)
+                    <tr>
+                        <td class="ps-4">
+                            <a href="{{ route('client.ticket', $d->id) }}" class="fw-bold text-primary text-decoration-none">
+                                #{{ $d->num_dossier }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">{{ $d->appareil->modele ?? '—' }}</div>
+                            <div class="small text-muted text-truncate" style="max-width: 250px;">{{ $d->panne_declaree }}</div>
+                        </td>
+                        <td class="text-muted small">{{ \Carbon\Carbon::parse($d->date_reception)->format('d/m/Y') }}</td>
+                        <td class="text-center">
+                            @php
+                                $badgeColor = [
+                                    'REPARE' => 'success', 'LIVRE' => 'success', 'CLOTURE' => 'dark',
+                                    'IRREPARABLE' => 'danger', 'DEVIS_REFUSE' => 'danger',
+                                    'EN_REPARATION' => 'primary', 'EN_DIAGNOSTIC' => 'info',
+                                    'EN_ATTENTE_DEVIS' => 'warning'
+                                ][$d->statut] ?? 'secondary';
+                            @endphp
+                            <span class="badge bg-{{ $badgeColor }} rounded-pill px-3 py-2 small fw-bold">
+                                {{ str_replace('_', ' ', $d->statut) }}
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <a href="{{ route('client.ticket', $d->id) }}" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                                <i class="fas fa-eye me-1"></i> Voir
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="5" class="text-center py-5 text-muted">Aucun dossier trouvé.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-    @endforelse
 
 </div>
+
+<style>
+    .bg-soft-warning { background-color: #fff7ed; }
+    .bg-soft-success { background-color: #f0fdf4; }
+    .bg-soft-info { background-color: #f0f9ff; }
+    .animate-pulse { animation: pulse 2s infinite; }
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+    }
+</style>
 @endsection

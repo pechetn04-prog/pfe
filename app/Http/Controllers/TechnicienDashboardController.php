@@ -19,6 +19,7 @@ class TechnicienDashboardController extends Controller
             ->whereIn('statut', ['REPARE', 'IRREPARABLE', 'LIVRE'])
             ->whereMonth('updated_at', now()->month)
             ->count();
+        $attentePieces = Dossier::where('technicien_id', $user->id)->where('statut', 'ATTENTE_PIECE')->count();
             
         $dossiersEnCours = Dossier::where('technicien_id', $user->id)
             ->whereNotIn('statut', ['LIVRE', 'CLOTURE'])
@@ -39,7 +40,7 @@ class TechnicienDashboardController extends Controller
             ->get();
 
         return view('technicien.dashboard', compact(
-            'totalAssigne', 'aDiagnostiquer', 'enReparation', 'terminesMois', 'dossiersEnCours', 
+            'totalAssigne', 'aDiagnostiquer', 'enReparation', 'attentePieces', 'terminesMois', 'dossiersEnCours', 
             'dossiersDiagnostique', 'dossiersReparation'
         ));
     }

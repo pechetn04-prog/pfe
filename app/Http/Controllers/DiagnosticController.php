@@ -49,10 +49,10 @@ class DiagnosticController extends Controller
             ['dossier_id' => $dossier->id],
             [
                 'technicien_id' => Auth::id(),
-                'constat_technique' => $request->constat_technique,
+                'constat' => $request->constat_technique,
                 'recommandation' => $request->recommandation,
-                'is_reparable' => $request->has('is_reparable'),
-                'exclusion_garantie' => $request->has('exclusion_garantie'),
+                'motif_exclusion' => $request->has('exclusion_garantie') ? ($request->motif_exclusion ?? 'Usage non conforme') : null,
+                'exclusion_commentaire' => $request->exclusion_commentaire,
                 'date_diagnostic' => now(),
             ]
         );

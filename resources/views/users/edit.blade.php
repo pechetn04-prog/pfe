@@ -46,10 +46,19 @@
                 <div class="card bg-light border-0 mb-3" id="specialiteField" style="display:none; border-radius: 12px;">
                     <div class="card-body">
                         <label class="form-label fw-bold small text-uppercase mb-2 text-primary">Spécialités Techniques</label>
-                        @php $currentSpecs = explode(', ', $user->specialite ?? ''); @endphp
+                        @php 
+                            $currentSpecs = explode(', ', $user->specialite ?? ''); 
+                            $specialitesSAV = [
+                                'Écran & Affichage', 'Batterie & Alimentation', 
+                                'Connectique & Ports', 'Caméra',
+                                'Audio', 'Connectivité',
+                                'Logiciel & Système', 'Dommages Physiques',
+                                'Sécurité & Accès'
+                            ];
+                        @endphp
                         <div class="row">
-                            @foreach(['Écrans / LCD', 'Micro-soudure', 'Logiciel / Flash', 'Batteries', 'Connecteurs', 'iOS / Apple', 'Android / Samsung'] as $spec)
-                            <div class="col-md-4 mb-2">
+                            @foreach($specialitesSAV as $spec)
+                            <div class="col-md-6 mb-2">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="specialites[]" value="{{ $spec }}" id="spec_{{ $loop->index }}" {{ in_array($spec, $currentSpecs) ? 'checked' : '' }}>
                                     <label class="form-check-label small" for="spec_{{ $loop->index }}">{{ $spec }}</label>

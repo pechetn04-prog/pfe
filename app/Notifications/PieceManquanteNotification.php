@@ -21,11 +21,13 @@ class PieceManquanteNotification extends Notification
         return ['database'];
     }
 
-    public function toDatabase($notifiable)
+    public function toArray($notifiable)
     {
         return [
-            'message' => 'Dossier #'.$this->dossier->id.' en attente de pièce',
-            'dossier_id' => $this->dossier->id
+            'title' => 'Pièce Manquante',
+            'message' => 'Le dossier #' . $this->dossier->num_dossier . ' est en attente de pièce.',
+            'dossier_id' => $this->dossier->id,
+            'url' => route('dossiers.show', $this->dossier->id),
         ];
     }
 }

@@ -71,31 +71,34 @@ class DossierController extends Controller
             ]);
         }
 
-        // 3. Gérer le client (User role Client)
-        $client = null;
-        if ($request->client_email) {
-            $client = User::firstOrCreate(
-                ['email' => $request->client_email],
-                [
-                    'name' => $request->client_nom,
-                    'password' => Hash::make('sav12345'),
-                    'role' => 'Client',
-                    'telephone' => $request->client_telephone,
-                    'actif' => true
-                ]
-            );
+        // 3. Gérer le client (Recherche par email OU téléphone pour éviter les doublons)
+        $client = User::where('role', 'Client')
+            ->where(function($q) use ($request) {
+                if ($request->client_email) {
+                    $q->where('email', $request->client_email);
+                }
+                if ($request->client_telephone) {
+                    $q->orWhere('telephone', $request->client_telephone);
+                }
+            })->first();
+
+        if (!$client) {
+            $email = $request->client_email ?: 'client_' . str_replace('.', '', microtime(true)) . '@maisontel.dz';
+            
+            $client = User::create([
+                'name' => $request->client_nom,
+                'email' => $email,
+                'password' => Hash::make('sav12345'),
+                'role' => 'Client',
+                'telephone' => $request->client_telephone,
+                'actif' => true
+            ]);
         } else {
-            // Création d'un client sans email (pseudo-anonyme ou via tel)
-            $client = User::where('telephone', $request->client_telephone)->where('role', 'Client')->first();
-            if (!$client) {
-                $client = User::create([
-                    'name' => $request->client_nom,
-                    'email' => 'client_' . time() . '@maisontel.dz', // Email technique par défaut
-                    'password' => Hash::make('sav12345'),
-                    'role' => 'Client',
-                    'telephone' => $request->client_telephone,
-                    'actif' => true
-                ]);
+            // Optionnel : Mettre à jour l'email si le client n'en avait pas
+            if (!$client->email || str_contains($client->email, '@maisontel.dz')) {
+                if ($request->client_email) {
+                    $client->update(['email' => $request->client_email]);
+                }
             }
         }
 
@@ -107,8 +110,9 @@ class DossierController extends Controller
             $sousGarantie = now()->lessThanOrEqualTo($finGarantie);
         }
 
-        // 5. Création du dossier
-        $numDossier = 'D' . now()->format('Ymd') . '-' . str_pad(Dossier::count() + 1, 4, '0', STR_PAD_LEFT);
+        // 5. Création du dossier (Utilisation du max ID pour plus de sécurité)
+        $nextId = (Dossier::max('id') ?? 0) + 1;
+        $numDossier = 'D' . now()->format('Ymd') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
 
         $pannesSelectees = is_array($request->type_pannes) ? implode(', ', $request->type_pannes) : '';
         $panneComplete = $pannesSelectees ? '[' . $pannesSelectees . '] ' . $request->panne_declaree : $request->panne_declaree;
@@ -461,6 +465,49 @@ class DossierController extends Controller
         ]);
 
         return back()->with('warning', 'Dossier mis en attente pièce.');
+    }
+
+    /**
+     * Marquer la pièce comme reçue / Réapprovisionnée.
+     */
+    public function marquerPieceRecue(Dossier $dossier)
+    {
+        $ancienStatut = $dossier->statut;
+        $dossier->update(['statut' => 'EN_REPARATION']);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
+            'nouveau_statut' => 'EN_REPARATION',
+            'commentaire' => 'Pièce reçue. Le dossier est réapprovisionné et repart en réparation.',
+        ]);
+
+        // Notifier le technicien
+        if ($dossier->technicien) {
+            $dossier->technicien->notify(new \App\Notifications\PieceRecueNotification($dossier));
+        }
+
+        return back()->with('success', 'Dossier réapprovisionné, prêt pour la réparation.');
+    }
+
+    /**
+     * Marquer un dossier comme irréparable (Admin).
+     */
+    public function marquerIrreparable(Dossier $dossier)
+    {
+        $ancienStatut = $dossier->statut;
+        $dossier->update(['statut' => 'IRREPARABLE']);
+
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
+            'nouveau_statut' => 'IRREPARABLE',
+            'commentaire' => 'Dossier marqué comme irréparable par l\'administration.',
+        ]);
+
+        return back()->with('warning', 'Dossier marqué comme irréparable.');
     }
 
     // ─── PDFs ──────────────────────────────────────────────────────────────

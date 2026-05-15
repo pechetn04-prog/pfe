@@ -21,17 +21,17 @@ class DemandeRejetController extends Controller
      */
     public function index()
     {
-        $demandes = DemandeRejet::with(['ticket.client', 'user'])
+        $query = DemandeRejet::query();
+
+        $total    = $query->count();
+        $enAttente= (clone $query)->where('statut', 'EN_ATTENTE')->count();
+        $acceptees= (clone $query)->where('statut', 'APPROUVE')->count();
+        $refusees = (clone $query)->where('statut', 'REFUSE')->count();
+
+        $demandes = DemandeRejet::with(['dossier.client', 'user'])
+            ->orderByRaw("CASE WHEN statut = 'EN_ATTENTE' THEN 0 ELSE 1 END")
             ->latest()
-            ->get();
-
-        $total    = $demandes->count();
-        $enAttente= $demandes->where('statut', 'EN_ATTENTE')->count();
-        $acceptees= $demandes->where('statut', 'APPROUVE')->count();
-        $refusees = $demandes->where('statut', 'REFUSE')->count();
-
-        // Vue : uniquement les EN_ATTENTE pour affichage actif
-        $demandes = $demandes->where('statut', 'EN_ATTENTE')->values();
+            ->paginate(15);
 
         return view('admin.demandes_rejet.index', compact('demandes', 'total', 'enAttente', 'acceptees', 'refusees'));
     }
@@ -76,29 +76,36 @@ class DemandeRejetController extends Controller
      */
     public function approve(Request $request, DemandeRejet $demande)
     {
-        $dossier = $demande->ticket;
+        $dossier = $demande->dossier;
 
-        $demande->update([
-            'statut'             => 'APPROUVE',
-            'commentaire_admin'  => $request->commentaire_admin,
-        ]);
+        if (!$dossier) {
+            return back()->with('error', 'Le dossier associé à cette demande est introuvable.');
+        }
 
-        // Libérer le technicien du dossier
-        $ancienStatut = $dossier->statut;
-        $dossier->update([
-            'technicien_id' => null,
-            'statut'        => 'AFFECTE',
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $demande, $dossier) {
+            $demande->update([
+                'statut'             => 'APPROUVE',
+                'commentaire_admin'  => $request->commentaire_admin,
+            ]);
 
-        SuiviDossier::create([
-            'dossier_id'    => $dossier->id,
-            'user_id'       => Auth::id(),
-            'ancien_statut' => $ancienStatut,
-            'nouveau_statut'=> 'AFFECTE',
-            'commentaire'   => 'Demande de retrait approuvée. Dossier désaffecté pour réaffectation.',
-        ]);
+            $ancienStatut = $dossier->statut;
+            
+            // Libérer le technicien et remettre en RECU pour réaffectation
+            $dossier->update([
+                'technicien_id' => null,
+                'statut'        => 'RECU',
+            ]);
 
-        return back()->with('success', 'Demande approuvée. Le dossier est de nouveau disponible.');
+            SuiviDossier::create([
+                'dossier_id'    => $dossier->id,
+                'user_id'       => auth()->id(),
+                'ancien_statut' => $ancienStatut,
+                'nouveau_statut'=> 'RECU',
+                'commentaire'   => 'Retrait du technicien approuvé par l\'admin. Raison : ' . ($request->commentaire_admin ?? 'Non spécifiée'),
+            ]);
+        });
+
+        return redirect()->route('admin.demandes_rejet.index')->with('success', 'Demande approuvée. Le dossier est à nouveau disponible pour affectation.');
     }
 
     /**
@@ -113,6 +120,14 @@ class DemandeRejetController extends Controller
         $demande->update([
             'statut'            => 'REFUSE',
             'commentaire_admin' => $request->commentaire_admin,
+        ]);
+
+        \App\Models\SuiviDossier::create([
+            'dossier_id'    => $demande->dossier_id,
+            'user_id'       => auth()->id(),
+            'ancien_statut' => $demande->dossier->statut,
+            'nouveau_statut'=> $demande->dossier->statut, // Statut inchangé
+            'commentaire'   => 'Demande de retrait REFUSÉE par l\'admin. Raison : ' . $request->commentaire_admin,
         ]);
 
         return back()->with('success', 'Demande refusée. Le technicien a été notifié.');

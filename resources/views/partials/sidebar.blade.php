@@ -1,11 +1,11 @@
 @auth
-<div class="sidebar flex-column flex-shrink-0 p-0 text-white shadow-lg">
+<div class="sidebar flex-column flex-shrink-0 p-0 shadow-sm">
     <div class="p-4 mb-2">
-        <a href="/" class="d-flex align-items-center text-white text-decoration-none">
+        <a href="/" class="d-flex align-items-center text-decoration-none">
             <div class="bg-primary rounded-3 p-2 me-2 shadow-sm d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
-                <i class="fas fa-microchip fs-6"></i>
+                <i class="fas fa-microchip fs-6 text-white"></i>
             </div>
-            <span class="fs-5 fw-bold tracking-tight">Maison Tel</span>
+            <span class="fs-5 fw-bold tracking-tight text-white">Maison Tel</span>
         </a>
     </div>
 
@@ -62,13 +62,35 @@
                 <li class="nav-item mb-1"><a href="{{ route('technicien.tickets', ['statut' => 'REPARE']) }}" class="nav-link d-flex align-items-center {{ request('statut') === 'REPARE' ? 'active' : '' }}"><i class="fas fa-archive me-3"></i> Mes Archives (Terminés)</a></li>
                 <li class="nav-item mb-1"><a href="{{ route('technicien.stock') }}" class="nav-link d-flex align-items-center {{ request()->routeIs('technicien.stock') ? 'active' : '' }}"><i class="fas fa-microchip me-3"></i> État du Stock</a></li>
             </ul>
+        @elseif(auth()->user()->role === 'Client')
+            {{-- MENU CLIENT --}}
+            <small class="text-muted text-uppercase fw-bold mb-2 d-block ps-3" style="font-size: 0.6rem; letter-spacing: 0.5px; opacity: 0.5;">MON ESPACE CLIENT</small>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item mb-1">
+                    <a href="{{ route('client.dashboard') }}" class="nav-link d-flex align-items-center {{ request()->routeIs('client.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-ticket-alt me-3"></i> Dashboard
+                    </a>
+                </li>
+            </ul>
+        @endif
+        
+        @if(auth()->user()->role !== 'Client')
+        <div class="mt-auto border-top pt-3 mx-2">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item mb-1">
+                    <a href="{{ route('profile.edit') }}" class="nav-link d-flex align-items-center {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                        <i class="fas fa-user-circle me-3"></i> Mon Profil
+                    </a>
+                </li>
+            </ul>
+        </div>
         @endif
 
-        <div class="mt-4 pb-4">
+        <div class="mt-2 pb-4">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="nav-link logout-btn d-flex align-items-center border-0 bg-transparent w-100 fw-bold" style="cursor: pointer;">
-                    <i class="fas fa-sign-out-alt me-3"></i> Déconnexion
+                <button type="submit" class="nav-link logout-btn d-flex align-items-center border-0 bg-transparent w-100 fw-bold" style="cursor: pointer; color: #dc2626 !important;">
+                    <i class="fas fa-sign-out-alt me-3" style="color: #dc2626 !important;"></i> Déconnexion
                 </button>
             </form>
         </div>

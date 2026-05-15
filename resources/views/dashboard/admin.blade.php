@@ -16,10 +16,63 @@
             </a>
         </div>
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show"><i
-                    class="fas fa-check-circle me-2"></i>{{ session('success') }}<button type="button" class="btn-close"
-                    data-bs-dismiss="alert"></button></div>
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4">
+                <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @if($stats['demandes_rejet_count'] > 0)
+            <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="border-radius: 15px; background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%); border-left: 5px solid #f59e0b !important;">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <div class="position-relative">
+                                <div class="bg-warning bg-opacity-20 p-3 rounded-circle pulse-warning">
+                                    <i class="fas fa-exclamation-triangle text-warning fs-3"></i>
+                                </div>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm" style="font-size: 0.6rem;">{{ $stats['demandes_rejet_count'] }}</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-bold text-dark mb-1">Demandes de Retrait Prioritaires</h5>
+                            <p class="text-muted small mb-0">Plusieurs techniciens ont soumis des demandes de désistement pour des dossiers critiques.</p>
+                            <div class="d-flex flex-wrap gap-3 mt-3">
+                                @foreach($stats['demandes_rejet_recent'] as $rj)
+                                    <div class="bg-white p-2 px-3 rounded-3 shadow-sm border d-flex align-items-center" style="min-width: 200px;">
+                                        <div class="me-3 text-center">
+                                            <div class="fw-bold text-primary" style="font-size: 0.9rem;">#{{ $rj->dossier->num_dossier ?? '???' }}</div>
+                                            <div class="text-muted" style="font-size: 0.65rem;">{{ $rj->user->name ?? 'Tech' }}</div>
+                                        </div>
+                                        <div class="border-start ps-3">
+                                            <div class="text-dark fw-medium small text-truncate" style="max-width: 150px;">{{ $rj->raison }}</div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                @if($stats['demandes_rejet_count'] > 3)
+                                    <div class="bg-light px-3 py-2 rounded-pill small text-muted fw-bold">+ {{ $stats['demandes_rejet_count'] - 3 }} autres</div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{{ route('admin.demandes_rejet.index') }}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold shadow-sm transition-all hover-scale">
+                                <i class="fas fa-tasks me-2"></i> EXAMINER TOUT
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .pulse-warning { animation: pulse-orange 2s infinite; }
+                @keyframes pulse-orange {
+                    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+                    70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+                }
+                .hover-scale:hover { transform: scale(1.05); }
+            </style>
         @endif
 
         {{-- 8 KPIs principaux Style Premium --}}
@@ -44,7 +97,7 @@
                                 <i class="fas {{ $k['icon'] }}"></i>
                             </div>
                             <div class="kpi-content">
-                                <div class="kpi-value">{{ $k['val'] }}</div>
+                                <div class="kpi-value" style="font-weight: 800;">{{ $k['val'] }}</div>
                                 <div class="kpi-label">{{ $k['label'] }}</div>
                             </div>
                         </div>
@@ -95,12 +148,12 @@
                                     @endphp
                                     <tr>
                                         <td class="ps-4 py-3">
-                                            <div class="fw-bold text-dark">#{{ $d->num_dossier }}</div>
+                                            <div class="fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
                                             <div class="text-muted" style="font-size: 0.65rem;">
                                                 {{ $d->appareil->modele ?? '—' }}</div>
                                         </td>
                                         <td>
-                                            <div class="fw-bold text-dark">{{ $d->client->name ?? '—' }}</div>
+                                            <div class="fw-bolder text-dark" style="font-weight: 800;">{{ $d->client->name ?? '—' }}</div>
                                             <div class="text-muted" style="font-size: 0.65rem;">
                                                 {{ $d->client->telephone ?? '—' }}</div>
                                         </td>
@@ -128,11 +181,13 @@
                 </div>
             </div>
 
-            {{-- Dossiers en attente de pièces (Nouvelle section) --}}
-            @if($dossiersAttentePieces->count() > 0)
+            {{-- Colonne de droite : Alertes et Blocages --}}
             <div class="col-xl-4">
+                
+                {{-- Dossiers en attente de pièces --}}
+                @if($dossiersAttentePieces->count() > 0)
                 <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
-                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-white border-0 py-3">
                         <h6 class="fw-bold mb-0 text-dark">
                             <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-clock text-danger"></i></span>
                             En Attente Pièces
@@ -144,99 +199,68 @@
                             <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <div class="small fw-bold text-dark">#{{ $d->num_dossier }}</div>
-                                        <div class="text-muted" style="font-size: 0.65rem;">{{ $d->appareil->modele ?? '—' }}</div>
+                                        <div class="small fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
+                                        <div class="text-muted fw-bold" style="font-size: 0.65rem;">{{ $d->appareil->modele ?? '—' }}</div>
                                     </div>
                                     <div class="text-end">
-                                        <div class="small text-muted">{{ $d->updated_at->diffForHumans() }}</div>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1" style="font-size: 0.6rem;">BLOQUÉ</span>
+                                        <div class="small text-muted fw-bold" style="font-size: 0.6rem;">{{ $d->updated_at->diffForHumans() }}</div>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1" style="font-size: 0.6rem; font-weight: 800;">BLOQUÉ</span>
                                     </div>
                                 </div>
                             </a>
                             @endforeach
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0 text-center pb-3">
-                        <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_PIECE']) }}" class="btn btn-sm btn-link text-decoration-none fw-bold small">Voir tout</a>
+                    <div class="card-footer bg-white border-0 text-center pb-3 pt-2">
+                        <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_PIECE']) }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">
+                            Voir tout
+                        </a>
                     </div>
                 </div>
-            @endif
+                @endif
 
-            {{-- Alertes de Stock --}}
-            <div class="col-xl-4">
+                {{-- Alertes de Stock --}}
                 <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
                     <div class="card-header bg-white border-0 py-3">
                         <h6 class="fw-bold mb-0 text-dark">
-                            <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i
-                                    class="fas fa-exclamation-circle text-danger"></i></span>
+                            <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-exclamation-circle text-danger"></i></span>
                             Alertes Stock
                         </h6>
                     </div>
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
                             @forelse($stockAlerts as $alert)
-                                <div
-                                    class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom mx-2 px-2">
+                                <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom mx-2 px-2">
                                     <div>
-                                        <div class="small fw-bold text-dark">{{ $alert->nom }}</div>
-                                        <div class="text-muted" style="font-size: 0.65rem;">Réf: {{ $alert->reference }}</div>
+                                        <div class="small fw-bolder text-dark" style="font-weight: 800;">{{ $alert->nom }}</div>
+                                        <div class="text-muted fw-bold" style="font-size: 0.65rem;">Réf: {{ $alert->reference }}</div>
                                     </div>
                                     <div class="text-end">
-                                        <span
-                                            class="badge {{ $alert->quantite == 0 ? 'bg-danger' : 'bg-warning text-dark' }} rounded-pill">
+                                        <span class="badge {{ $alert->quantite == 0 ? 'bg-danger' : 'bg-warning text-dark' }} rounded-pill fw-bold" style="font-size: 0.65rem;">
                                             {{ $alert->quantite }} restant(s)
                                         </span>
-                                        <div class="text-muted" style="font-size: 0.65rem;">Seuil: {{ $alert->seuil_alerte }}
-                                        </div>
+                                        <div class="text-muted fw-bold" style="font-size: 0.6rem;">Seuil: {{ $alert->seuil_alerte }}</div>
                                     </div>
                                 </div>
                             @empty
                                 <div class="p-4 text-center">
                                     <i class="fas fa-check-circle text-success fa-2x mb-2 opacity-25"></i>
-                                    <div class="small text-muted">Aucune alerte de stock</div>
+                                    <div class="small text-muted fw-bold">Aucune alerte de stock</div>
                                 </div>
                             @endforelse
                         </div>
                     </div>
                     @if($stockAlerts->count() > 0)
-                        <div class="card-footer bg-white border-0 text-center pb-3">
-                            <a href="{{ route('stock.index') }}"
-                                class="btn btn-sm btn-light rounded-pill px-3 fw-bold small">Gérer le stock</a>
+                        <div class="card-footer bg-white border-0 text-center pb-3 pt-2">
+                            <a href="{{ route('stock.index') }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">Gérer le stock</a>
                         </div>
                     @endif
                 </div>
 
-                {{-- Raccourcis Admin --}}
-                <div class="card border-0 shadow-sm" style="border-radius: 15px;">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h6 class="fw-bold mb-0 text-dark">
-                            <span class="p-2 bg-warning bg-opacity-10 rounded-3 me-2"><i class="fas fa-bolt text-warning"></i></span>
-                            Actions Rapides
-                        </h6>
-                    </div>
-                    <div class="card-body pt-0">
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('users.index') }}" class="btn btn-outline-primary btn-sm rounded-pill text-start ps-3"><i class="fas fa-users me-2"></i> Utilisateurs</a>
-                            <a href="{{ route('admin.statistiques') }}" class="btn btn-outline-primary btn-sm rounded-pill text-start ps-3"><i class="fas fa-file-invoice-dollar me-2"></i> Statistiques financières</a>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
 
-        {{-- Graphiques d'activité --}}
-        <div class="row g-4 mb-4">
-            <div class="col-lg-12">
-                <div class="card border-0 shadow-sm" style="border-radius: 20px;">
-                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 fw-bold text-dark"><i class="fas fa-chart-line text-primary me-2"></i> Activité (7 derniers jours)</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="activityChart" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row g-4 mb-4">
             <div class="col-lg-6">
@@ -288,33 +312,6 @@ $(document).ready(function() {
         cutout: '70%'
     };
 
-    // 1. Graphique d'Activité (Ligne)
-    new Chart(document.getElementById('activityChart'), {
-        type: 'line',
-        data: {
-            labels: {!! json_encode($stats['labels_7_days']) !!},
-            datasets: [{
-                label: 'Nouveaux dossiers',
-                data: {!! json_encode($stats['data_7_days']) !!},
-                borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointRadius: 4,
-                pointBackgroundColor: '#2563eb'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { display: false } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
 
     // 2. Graphique des Statuts (Doughnut)
     new Chart(document.getElementById('statusChart'), {
@@ -348,4 +345,49 @@ $(document).ready(function() {
 });
 </script>
 @endpush
+    <style>
+        .kpi-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background: #fff;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        .kpi-icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .kpi-value {
+            font-size: 1.5rem;
+            color: #1a2332;
+        }
+        .kpi-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .bg-soft-primary { background: #eff6ff; color: #3b82f6; }
+        .bg-soft-danger { background: #fef2f2; color: #ef4444; }
+        .bg-soft-warning { background: #fffbeb; color: #f59e0b; }
+        .bg-soft-info { background: #f0f9ff; color: #06b6d4; }
+        .bg-soft-success { background: #f0fdf4; color: #10b981; }
+        .bg-soft-slate { background: #f8fafc; color: #475569; }
+        .bg-soft-purple { background: #faf5ff; color: #a855f7; }
+
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+</div>
 @endsection

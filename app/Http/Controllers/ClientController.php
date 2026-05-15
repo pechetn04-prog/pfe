@@ -53,9 +53,11 @@ class ClientController extends Controller
      */
     public function suiviPublic($id)
     {
-        $dossier = Dossier::with(['suivi' => function ($q) {
-            $q->orderBy('created_at', 'asc');
-        }])->findOrFail($id);
+        $dossier = Dossier::with([
+            'suivi' => function ($q) {
+                $q->orderBy('created_at', 'asc');
+            }
+        ])->findOrFail($id);
 
         return view('client.suivi-public', compact('dossier'));
     }
@@ -68,14 +70,17 @@ class ClientController extends Controller
     public function show($id)
     {
         $dossier = Dossier::with([
-            'suivi'   => fn($q) => $q->orderBy('created_at', 'asc'),
+            'suivi' => fn($q) => $q->orderBy('created_at', 'asc'),
             'devis',
             'facture',
         ])->findOrFail($id);
 
-        // Vérifier que le dossier appartient au client connecté
-        if (Auth::check() && $dossier->client_id !== Auth::id()) {
-            abort(403, 'Accès refusé à ce dossier.');
+        // Autoriser si l'utilisateur est le propriétaire OU s'il est Admin/Agent
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($dossier->client_id !== $user->id && !in_array($user->role, ['Admin', 'Agent'])) {
+                abort(403, 'Accès refusé à ce dossier.');
+            }
         }
 
         return view('client.ticket', compact('dossier'));
@@ -104,18 +109,18 @@ class ClientController extends Controller
         }
 
         $devis->update([
-            'statut'        => 'ACCEPTE',
+            'statut' => 'ACCEPTE',
             'date_decision' => now(),
         ]);
 
         $dossier->update(['statut' => 'EN_REPARATION']);
 
         SuiviDossier::create([
-            'dossier_id'    => $dossier->id,
-            'user_id'       => Auth::id(),
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
             'ancien_statut' => 'EN_ATTENTE_DEVIS',
-            'nouveau_statut'=> 'EN_REPARATION',
-            'commentaire'   => 'Devis accepté par le client. Réparation autorisée.',
+            'nouveau_statut' => 'EN_REPARATION',
+            'commentaire' => 'Devis accepté par le client. Réparation autorisée.',
         ]);
 
         return back()->with('success', 'Devis accepté. La réparation va commencer.');
@@ -141,18 +146,18 @@ class ClientController extends Controller
         }
 
         $devis->update([
-            'statut'        => 'REFUSE',
+            'statut' => 'REFUSE',
             'date_decision' => now(),
         ]);
 
         $dossier->update(['statut' => 'DEVIS_REFUSE']);
 
         SuiviDossier::create([
-            'dossier_id'    => $dossier->id,
-            'user_id'       => Auth::id(),
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
             'ancien_statut' => 'EN_ATTENTE_DEVIS',
-            'nouveau_statut'=> 'DEVIS_REFUSE',
-            'commentaire'   => 'Devis refusé par le client. Appareil en attente de restitution.',
+            'nouveau_statut' => 'DEVIS_REFUSE',
+            'commentaire' => 'Devis refusé par le client. Appareil en attente de restitution.',
         ]);
 
         return back()->with('success', 'Devis refusé. Nous vous contacterons pour la restitution.');
@@ -166,7 +171,7 @@ class ClientController extends Controller
     public function submitAvis(Request $request, $id)
     {
         $request->validate([
-            'note'        => 'required|integer|min:1|max:5',
+            'note' => 'required|integer|min:1|max:5',
             'commentaire' => 'nullable|string|max:500',
         ]);
 
@@ -179,9 +184,9 @@ class ClientController extends Controller
         Avis::updateOrCreate(
             ['dossier_id' => $dossier->id],
             [
-                'note'        => $request->note,
+                'note' => $request->note,
                 'commentaire' => $request->commentaire,
-                'client_id'   => Auth::id(),
+                'client_id' => Auth::id(),
             ]
         );
 

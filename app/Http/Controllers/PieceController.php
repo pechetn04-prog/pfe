@@ -24,11 +24,19 @@ class PieceController extends Controller
 
         $pieces = $query->latest()->get();
         
+        // Statistiques pour les cartes
+        $stats = [
+            'total_items' => Piece::where('actif', true)->count(),
+            'out_of_stock' => Piece::where('actif', true)->where('quantite', 0)->count(),
+            'alerts_count' => Piece::where('actif', true)->whereRaw('quantite <= seuil_alerte')->where('quantite', '>', 0)->count(),
+            'total_value' => Piece::where('actif', true)->get()->sum(function($p) { return $p->quantite * $p->prix_unitaire; }),
+        ];
+        
         // Liste unique des catégories pour le filtre
         $categories = Piece::distinct()->pluck('categorie')->filter();
         $parametre = \App\Models\ParametreSociete::first();
 
-        return view('stock.index', compact('pieces', 'categories', 'parametre'));
+        return view('stock.index', compact('pieces', 'categories', 'parametre', 'stats'));
     }
 
     public function create()
@@ -57,5 +65,12 @@ class PieceController extends Controller
     {
         $piece->delete();
         return redirect()->route('stock.index')->with('success', 'Pièce supprimée.');
+    }
+
+    public function toggleStatus(Piece $piece)
+    {
+        $piece->update(['actif' => !$piece->actif]);
+        $status = $piece->actif ? 'activée' : 'désactivée';
+        return back()->with('success', "Pièce {$status} avec succès.");
     }
 }

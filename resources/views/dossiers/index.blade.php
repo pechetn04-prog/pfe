@@ -133,9 +133,9 @@
                         $st = $sMap[$d->statut] ?? ['#f1f5f9', '#475569', $d->statut];
                     @endphp
                     <tr>
-                        <td class="ps-4 fw-bold">#{{ $d->num_dossier }}</td>
+<td class="ps-4 fw-bolder" style="font-weight: 800;">#{{ $d->num_dossier }}</td>
                         <td class="text-muted small">{{ $d->imei }}</td>
-                        <td class="text-primary fw-bold small">{{ $d->appareil->modele ?? '—' }}</td>
+                        <td class="text-primary fw-bolder small" style="font-weight: 800;">{{ $d->appareil->modele ?? '—' }}</td>
                         <td class="text-muted small">{{ $d->client->name ?? '—' }}</td>
                         <td class="small">{{ $d->date_reception ? $d->date_reception->format('d/m/Y') : '—' }}</td>
                         <td class="small fw-bold {{ $jours > 2 ? 'text-danger' : 'text-muted' }}">{{ $jours }}j</td>

@@ -38,7 +38,7 @@ Route::redirect('/', '/login');
 Route::get('/suivi', [ClientController::class, 'index'])->name('client.suivi');
 Route::match(['GET', 'POST'], '/client/search', [ClientController::class, 'search'])->name('client.search');
 Route::get('/client/suivi/{id}', [ClientController::class, 'suiviPublic'])->name('client.suivi.public');
-Route::get('/suivi/dossier/{id}', [ClientController::class, 'show'])->name('client.ticket');
+Route::get('/suivi/dossier/{id}', [ClientController::class, 'show'])->name('client.ticket.view');
 Route::post('/suivi/dossier/{id}/devis/accepter', [ClientController::class, 'accepterDevis'])->name('client.devis.accepter.public');
 Route::post('/suivi/dossier/{id}/devis/refuser', [ClientController::class, 'refuserDevis'])->name('client.devis.refuser.public');
 Route::post('/suivi/dossier/{id}/avis', [ClientController::class, 'submitAvis'])->name('client.avis.submit.public');
@@ -116,6 +116,8 @@ Route::middleware('auth')->group(function () {
 
         // Ventes
         Route::get('/admin/ventes-produits', [VenteController::class, 'index'])->name('ventes.index');
+        Route::get('/admin/ventes/create', [VenteController::class, 'create'])->name('ventes.create');
+        Route::post('/admin/ventes', [VenteController::class, 'store'])->name('ventes.store');
 
         // Gestion des Tarifs Main d'œuvre
         Route::get('/admin/tarifs-mo', [\App\Http\Controllers\TarifMoController::class, 'index'])->name('admin.tarifs_mo.index');
@@ -128,8 +130,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/dossiers/{dossier}/valider-remplacement', [DossierController::class, 'validateReplacement'])->name('dossiers.validerRemplacement');
         Route::post('/dossiers/{dossier}/refuser-remplacement', [DossierController::class, 'refuseReplacement'])->name('dossiers.refuserRemplacement');
 
-        // Pièce introuvable
+        // Pièce introuvable (Admin)
         Route::post('/dossiers/{dossier}/piece-introuvable', [DossierController::class, 'pieceIntrouvable'])->name('dossiers.pieceIntrouvable');
+        Route::post('/dossiers/{dossier}/marquer-irreparable', [DossierController::class, 'marquerIrreparable'])->name('dossiers.marquerIrreparable');
+        Route::post('/dossiers/{dossier}/marquer-piece-recue', [DossierController::class, 'marquerPieceRecue'])->name('dossiers.marquerPieceRecue');
 
         // Gestion des demandes de rejet de diagnostic
         Route::get('/admin/demandes-rejet', [DemandeRejetController::class, 'index'])->name('admin.demandes_rejet.index');
@@ -164,7 +168,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/dossiers/{dossier}/facture', [FactureController::class, 'store'])->name('facture.store');
 
         // Livraison et Clôture
-        Route::middleware('role:Agent')->group(function () {
+        Route::middleware('role:Agent,Admin')->group(function () {
             Route::post('/dossiers/{dossier}/livrer', [DossierController::class, 'livrer'])->name('dossiers.livrer');
             Route::post('/dossiers/{dossier}/cloturer', [DossierController::class, 'cloturer'])->name('dossiers.cloturer');
         });

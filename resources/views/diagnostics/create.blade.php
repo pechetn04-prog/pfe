@@ -9,9 +9,14 @@
                 <h1 class="h4 fw-bold mb-0">Expertise & Diagnostic Technique</h1>
                 <small class="text-muted">Dossier <strong class="text-primary">#{{ $dossier->num_dossier }}</strong></small>
             </div>
-            <a href="{{ route('technicien.tickets') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
-                <i class="fas fa-arrow-left me-2"></i> Annuler
-            </a>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#modalRetrait">
+                    <i class="fas fa-undo-alt me-1"></i> Demander Retrait
+                </button>
+                <a href="{{ route('technicien.tickets') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                    <i class="fas fa-arrow-left me-2"></i> Annuler
+                </a>
+            </div>
         </div>
 
         <form action="{{ route('diagnostics.store', $dossier->id) }}" method="POST">

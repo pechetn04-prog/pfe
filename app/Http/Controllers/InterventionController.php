@@ -10,7 +10,6 @@ use App\Models\TarifMo;
 use App\Models\Dossier;
 use App\Models\MouvementStock;
 use App\Models\User;
-use App\Notifications\StockInsuffisantNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,6 +42,8 @@ class InterventionController extends Controller
             'statut_final' => 'required|in:REPARE,IRREPARABLE,ATTENTE_PIECE',
             'photo_intervention' => 'nullable|image|max:2048',
         ]);
+        
+        $nouveauStatut = $request->statut_final;
 
         $photoPath = null;
         if ($request->hasFile('photo_intervention')) {
@@ -57,8 +58,8 @@ class InterventionController extends Controller
             'date_fin' => now(),
         ]);
 
-        // Gestion des pièces consommées
-        if ($request->has('pieces')) {
+        // Gestion des pièces consommées (Uniquement si on ne met pas en attente)
+        if ($nouveauStatut !== 'ATTENTE_PIECE' && $request->has('pieces')) {
             foreach ($request->pieces as $p) {
                 if (empty($p['id'])) continue;
                 
@@ -100,7 +101,6 @@ class InterventionController extends Controller
         }
 
         $ancienStatut = $dossier->statut;
-        $nouveauStatut = $request->statut_final;
 
         // Si déclaré irréparable pendant l'intervention
         if ($nouveauStatut === 'IRREPARABLE') {
@@ -122,6 +122,14 @@ class InterventionController extends Controller
             'nouveau_statut' => $nouveauStatut,
             'commentaire' => $nouveauStatut === 'REPARE' ? 'Réparation effectuée avec succès.' : ($nouveauStatut === 'ATTENTE_PIECE' ? 'Mis en attente de pièce.' : 'Appareil déclaré irréparable.'),
         ]);
+
+        // Notification si en attente de pièce
+        if ($nouveauStatut === 'ATTENTE_PIECE') {
+            $admins = User::where('role', 'Admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\PieceManquanteNotification($dossier));
+            }
+        }
 
         return redirect()->route('technicien.tickets')->with('success', 'Intervention enregistrée avec succès.');
     }

@@ -24,8 +24,8 @@
         </div>
     @endif
 
-    {{-- 4 KPIs principaux pour le Technicien --}}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
+    {{-- 5 KPIs principaux pour le Technicien --}}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-4">
         {{-- Card 1: Total Assigné --}}
         <div class="col">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
@@ -34,7 +34,7 @@
                         <i class="fas fa-briefcase text-primary"></i>
                     </div>
                     <div>
-                        <div class="h4 fw-bold mb-0 text-dark">{{ $totalAssigne }}</div>
+                        <div class="h4 fw-bolder mb-0 text-dark" style="font-weight: 800;">{{ $totalAssigne }}</div>
                         <div class="text-muted text-uppercase fw-bold" style="font-size: 0.55rem; letter-spacing: 0.8px;">TOTAL ASSIGNÉS</div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                         <i class="fas fa-search text-warning"></i>
                     </div>
                     <div>
-                        <div class="h4 fw-bold mb-0 text-dark">{{ $aDiagnostiquer }}</div>
+                        <div class="h4 fw-bolder mb-0 text-dark" style="font-weight: 800;">{{ $aDiagnostiquer }}</div>
                         <div class="text-muted text-uppercase fw-bold" style="font-size: 0.55rem; letter-spacing: 0.8px;">À DIAGNOSTIQUER</div>
                     </div>
                 </div>
@@ -64,14 +64,29 @@
                         <i class="fas fa-tools text-success"></i>
                     </div>
                     <div>
-                        <div class="h4 fw-bold mb-0 text-dark">{{ $enReparation }}</div>
+                        <div class="h4 fw-bolder mb-0 text-dark" style="font-weight: 800;">{{ $enReparation }}</div>
                         <div class="text-muted text-uppercase fw-bold" style="font-size: 0.55rem; letter-spacing: 0.8px;">EN RÉPARATION</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Card 4: Terminés (Mois) --}}
+        {{-- Card 4: Attente Pièces --}}
+        <div class="col">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="rounded-4 p-3 me-3 d-flex align-items-center justify-content-center" style="background: #fef2f2; width: 56px; height: 56px; flex-shrink: 0;">
+                        <i class="fas fa-hourglass-half text-danger"></i>
+                    </div>
+                    <div>
+                        <div class="h4 fw-bolder mb-0 text-dark" style="font-weight: 800;">{{ $attentePieces }}</div>
+                        <div class="text-muted text-uppercase fw-bold" style="font-size: 0.55rem; letter-spacing: 0.8px;">ATTENTE PIÈCES</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Card 5: Terminés (Mois) --}}
         <div class="col">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
                 <div class="card-body d-flex align-items-center p-3">
@@ -79,7 +94,7 @@
                         <i class="fas fa-check-double text-info"></i>
                     </div>
                     <div>
-                        <div class="h4 fw-bold mb-0 text-dark">{{ $terminesMois }}</div>
+                        <div class="h4 fw-bolder mb-0 text-dark" style="font-weight: 800;">{{ $terminesMois }}</div>
                         <div class="text-muted text-uppercase fw-bold" style="font-size: 0.55rem; letter-spacing: 0.8px;">TERMINÉS (MOIS)</div>
                     </div>
                 </div>
@@ -112,7 +127,7 @@
                                 @forelse($dossiersDiagnostique as $d)
                                 <tr>
                                     <td class="ps-4">
-                                        <div class="fw-bold text-dark">#{{ $d->num_dossier }}</div>
+                                        <div class="fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
                                         <div class="small text-muted">{{ $d->created_at ? $d->created_at->diffForHumans() : '—' }}</div>
                                     </td>
                                     <td>
@@ -157,7 +172,7 @@
                                 @forelse($dossiersReparation as $d)
                                 <tr>
                                     <td class="ps-4">
-                                        <div class="fw-bold text-dark">#{{ $d->num_dossier }}</div>
+                                        <div class="fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
                                         <div class="small text-muted">{{ $d->created_at ? $d->created_at->diffForHumans() : '—' }}</div>
                                     </td>
                                     <td>

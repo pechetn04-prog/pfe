@@ -176,10 +176,12 @@
                             <label class="form-label text-muted small fw-bold mb-2">
                                 <i class="fas fa-user-cog me-1"></i> TECHNICIEN ASSIGNÉ
                             </label>
-                            <select name="technicien_id" class="form-select bg-light border-0 rounded-3 small fw-bold py-2">
+                            <select name="technicien_id" id="technicien_id" class="form-select bg-light border-0 rounded-3 small fw-bold py-2">
                                 <option value="">-- Choisir un technicien --</option>
                                 @foreach($techniciens as $tech)
-                                    <option value="{{ $tech->id }}" {{ old('technicien_id') == $tech->id ? 'selected' : '' }}>
+                                    <option value="{{ $tech->id }}" 
+                                            data-specialite="{{ $tech->specialite ?? '' }}"
+                                            {{ old('technicien_id') == $tech->id ? 'selected' : '' }}>
                                         {{ $tech->name }}
                                     </option>
                                 @endforeach
@@ -314,7 +316,45 @@
                 $('#imei-status').empty();
                 $('#vente-info-display').empty().hide();
             }
-        });
+        // Filtrage des techniciens par spécialité
+        function filterTechnicians() {
+            let selectedPannes = [];
+            $('input[name="type_pannes[]"]:checked').each(function() {
+                selectedPannes.push($(this).val());
+            });
+
+            $('#technicien_id option').each(function() {
+                let option = $(this);
+                let techSpecialites = option.data('specialite') || '';
+                
+                if (option.val() === "") return; // Garder l'option par défaut
+
+                if (selectedPannes.length === 0) {
+                    option.show(); // Afficher tout si aucune panne n'est cochée
+                    return;
+                }
+
+                // Vérifier si le technicien a au moins une des spécialités correspondant aux pannes cochées
+                let hasMatch = false;
+                selectedPannes.forEach(function(panne) {
+                    if (techSpecialites.includes(panne)) {
+                        hasMatch = true;
+                    }
+                });
+
+                if (hasMatch) {
+                    option.show();
+                    option.css('color', '#2563eb'); // Colorer les suggérés en bleu
+                } else {
+                    option.hide();
+                    if (option.is(':selected')) {
+                        $('#technicien_id').val(""); // Déselectionner si masqué
+                    }
+                }
+            });
+        }
+
+        $('input[name="type_pannes[]"]').on('change', filterTechnicians);
     });
 </script>
 @endpush

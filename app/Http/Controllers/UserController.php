@@ -20,7 +20,10 @@ class UserController extends Controller
     {
         $query = User::query()->latest();
 
-        if ($request->filled('role')) {
+        // Si c'est un agent, on force le filtre sur les clients uniquement
+        if (auth()->user()->role === 'Agent') {
+            $query->where('role', 'Client');
+        } elseif ($request->filled('role')) {
             $query->where('role', $request->role);
         }
 
@@ -42,17 +45,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $allowedRoles = auth()->user()->role === 'Agent' ? 'Client' : 'Admin,Agent,Technicien,Client';
+
         $request->validate([
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email',
-            'role'      => 'required|in:Admin,Agent,Technicien,Client',
+            'role'      => 'required|in:' . $allowedRoles,
             'telephone' => 'nullable|string|max:20',
             'password'  => 'required|string|min:8|confirmed',
             'specialites' => 'nullable|array',
         ]);
 
+        $role = auth()->user()->role === 'Agent' ? 'Client' : $request->role;
+
         $specialite = null;
-        if ($request->role === 'Technicien' && $request->has('specialites')) {
+        if ($role === 'Technicien' && $request->has('specialites')) {
             $specialite = implode(', ', $request->specialites);
         }
 
@@ -60,7 +67,7 @@ class UserController extends Controller
             'name'       => $request->name,
             'email'      => $request->email,
             'password'   => Hash::make($request->password),
-            'role'       => $request->role,
+            'role'       => $role,
             'telephone'  => $request->telephone,
             'specialite' => $specialite,
             'actif'      => true,
@@ -75,6 +82,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // Un agent ne peut éditer que des clients
+        if (auth()->user()->role === 'Agent' && $user->role !== 'Client') {
+            abort(403, 'Vous n\'êtes autorisé à modifier que les comptes clients.');
+        }
+
         return view('users.edit', compact('user'));
     }
 
@@ -83,6 +95,11 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        // Un agent ne peut modifier que des clients
+        if (auth()->user()->role === 'Agent' && $user->role !== 'Client') {
+            abort(403);
+        }
+
         $data = $request->validated();
 
         if (!empty($data['password'])) {
@@ -91,10 +108,16 @@ class UserController extends Controller
             unset($data['password']);
         }
 
-        if ($request->role === 'Technicien' && $request->has('specialites')) {
-            $data['specialite'] = implode(', ', $request->specialites);
-        } else {
+        // Si c'est un agent, on force le rôle client pour éviter l'escalade
+        if (auth()->user()->role === 'Agent') {
+            $data['role'] = 'Client';
             $data['specialite'] = null;
+        } else {
+            if ($request->role === 'Technicien' && $request->has('specialites')) {
+                $data['specialite'] = implode(', ', $request->specialites);
+            } else {
+                $data['specialite'] = null;
+            }
         }
 
         $user->update($data);
@@ -108,6 +131,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Un agent ne peut supprimer que des clients
+        if (auth()->user()->role === 'Agent' && $user->role !== 'Client') {
+            abort(403);
+        }
+
         $user->delete();
 
         return redirect()->route('users.index')

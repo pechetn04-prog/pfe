@@ -23,9 +23,9 @@ class DemandeRejet extends Model
      * Relation vers le ticket.
      * Identifie le dossier concerné par la demande de rejet ou d'annulation.
      */
-    public function ticket()
+    public function dossier()
     {
-        return $this->belongsTo(Dossier::class);
+        return $this->belongsTo(Dossier::class, 'dossier_id');
     }
 
     /**
