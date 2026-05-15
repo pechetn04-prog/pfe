@@ -21,15 +21,51 @@ class DossierController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Dossier::with('client', 'technicien');
+        $query = Dossier::with(['client', 'technicien', 'appareil'])->latest();
 
+        // 1. Filtrer par statut (Exclure CLOTURE par défaut si aucun statut n'est choisi)
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
+        } else {
+            $query->where('statut', '!=', 'CLOTURE');
         }
 
-        $dossiers = $query->latest()->paginate(20);
+        // 2. Recherche globale
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('num_dossier', 'like', "%{$search}%")
+                  ->orWhere('imei', 'like', "%{$search}%")
+                  ->orWhereHas('client', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%")
+                         ->orWhere('telephone', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // 3. Filtre par Technicien
+        if ($request->filled('technicien_id')) {
+            $query->where('technicien_id', $request->technicien_id);
+        }
+
+        // 4. Filtre par Garantie
+        if ($request->filled('garantie')) {
+            $query->where('sous_garantie', $request->garantie);
+        }
+
+        // 5. Filtre par plage de dates (Réception)
+        if ($request->filled('from')) {
+            $query->whereDate('date_reception', '>=', $request->from);
+        }
+        if ($request->filled('to')) {
+            $query->whereDate('date_reception', '<=', $request->to);
+        }
+
+        $dossiers = $query->paginate(20);
         return view('dossiers.index', compact('dossiers'));
     }
+
+
 
     /**
      * Formulaire de création de dossier.
@@ -151,7 +187,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => null,
             'nouveau_statut' => $dossier->statut,
-            'commentaire' => 'Ouverture du dossier SAV.',
+            'commentaire' => 'Dossier de réparation créé et enregistré.',
         ]);
 
         // Notification au client par email
@@ -222,7 +258,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'AFFECTE',
-            'commentaire' => $request->commentaire ?? 'Technicien réaffecté.',
+            'commentaire' => $request->commentaire ?? 'Dossier réaffecté à un nouveau technicien.',
         ]);
 
         return back()->with('success', 'Technicien affecté avec succès.');
@@ -321,7 +357,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'EN_REPARATION',
-            'commentaire' => 'Réparation lancée.',
+            'commentaire' => 'Lancement de l\'intervention technique approuvé.',
         ]);
 
         return back()->with('success', 'Statut mis à jour : En Réparation.');
@@ -338,7 +374,7 @@ class DossierController extends Controller
         }
 
         // Sécurité supplémentaire pour les autres cas non clôturés
-        if (!in_array($dossier->statut, ['FACTURE', 'IRREPARABLE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE'])) {
+        if (!in_array($dossier->statut, ['FACTURE', 'IRREPARABLE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE', 'DEVIS_REFUSE'])) {
             return back()->with('error', 'Le dossier n\'est pas dans un état permettant la livraison.');
         }
 
@@ -353,7 +389,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'LIVRE',
-            'commentaire' => 'Appareil remis au client.',
+            'commentaire' => 'Appareil restitué au client. Livraison confirmée.',
         ]);
 
         return back()->with('success', 'Dossier marqué comme livré.');
@@ -379,7 +415,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => 'LIVRE',
             'nouveau_statut' => 'CLOTURE',
-            'commentaire' => 'Dossier clôturé définitivement.',
+            'commentaire' => 'Dossier archivé et clôturé.',
         ]);
 
         return back()->with('success', 'Dossier clôturé avec succès.');
@@ -430,7 +466,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'REMPLACEMENT_PRET',
-            'commentaire' => "Appareil de remplacement préparé — IMEI : {$request->imei_remplacement} / Modèle : {$modele}.",
+            'commentaire' => "Appareil de substitution préparé — Modèle : {$modele} / IMEI : {$request->imei_remplacement}.",
         ]);
 
         return redirect()->route('dossiers.show', $dossier->id)
@@ -457,7 +493,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => 'ATTENTE_VALIDATION_REMPLACEMENT',
             'nouveau_statut' => 'REMPLACEMENT_VALIDE',
-            'commentaire' => 'Demande de remplacement validée par l\'administration.',
+            'commentaire' => 'Remplacement de l\'appareil approuvé par l\'administration.',
         ]);
 
         // Notification aux agents SAV
@@ -491,7 +527,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => 'ATTENTE_VALIDATION_REMPLACEMENT',
             'nouveau_statut' => 'REMPLACEMENT_REFUSE',
-            'commentaire' => 'Remplacement REFUSÉ : ' . $request->raison,
+            'commentaire' => 'Remplacement refusé par l\'administration. Motif : ' . $request->raison,
         ]);
 
         // Notification aux agents SAV
@@ -520,7 +556,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'ATTENTE_PIECE',
-            'commentaire' => 'Pièce introuvable. Dossier en attente de réapprovisionnement.',
+            'commentaire' => 'Composant introuvable — dossier suspendu en attente de réapprovisionnement.',
         ]);
 
         return back()->with('warning', 'Dossier mis en attente pièce.');
@@ -539,7 +575,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'EN_REPARATION',
-            'commentaire' => 'Pièce reçue. Le dossier est réapprovisionné et repart en réparation.',
+            'commentaire' => 'Pièce réceptionnée. Reprise de l\'intervention en cours.',
         ]);
 
         // Notifier le technicien
@@ -563,7 +599,7 @@ class DossierController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'IRREPARABLE',
-            'commentaire' => 'Dossier marqué comme irréparable par l\'administration.',
+            'commentaire' => 'Classé irréparable par la direction technique.',
         ]);
 
         return back()->with('warning', 'Dossier marqué comme irréparable.');
@@ -624,7 +660,7 @@ class DossierController extends Controller
                 'user_id' => Auth::id(),
                 'ancien_statut' => 'AFFECTE',
                 'nouveau_statut' => 'EN_DIAGNOSTIC',
-                'commentaire' => 'Le technicien a commencé le diagnostic.',
+                'commentaire' => 'Expertise technique en cours d\'enregistrement.',
             ]);
         }
 

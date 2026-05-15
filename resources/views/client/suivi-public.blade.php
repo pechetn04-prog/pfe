@@ -7,26 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Outfit', sans-serif; background: #f8fafc; color: #1e293b; }
-        .bg-soft-primary { background-color: #eff6ff; }
-        .bg-soft-success { background-color: #ecfdf5; }
-        .bg-soft-danger { background-color: #fef2f2; }
-        .btn-white { background-color: white !important; color: #2563eb !important; border: 1px solid #e2e8f0; }
-        
-        /* Timeline Styling */
-        .custom-timeline { position: relative; padding-left: 30px; }
-        .custom-timeline::before { content: ''; position: absolute; left: 6px; top: 0; height: 100%; width: 2px; background: #e2e8f0; }
-        .timeline-item { position: relative; }
-        .timeline-marker { 
-            position: absolute; left: -30px; top: 5px; width: 14px; height: 14px; 
-            border-radius: 50%; background: white; border: 3px solid #2563eb; z-index: 1;
-        }
-        .timeline-item:first-child .timeline-marker { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-        
-        .transition-all { transition: all 0.2s ease; }
-        .transition-all:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/public_suivi.css') }}">
+
 </head>
 <body>
 
@@ -108,6 +90,22 @@
                                         {{ $dossier->panne_declaree }}
                                     </div>
                                 </div>
+                                @if($dossier->imei_remplacement)
+                                <div class="col-12 mt-2 pt-3 border-top">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-soft-success text-success p-2 rounded-3 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </div>
+                                        <div>
+                                            <label class="small text-muted fw-bold text-uppercase mb-0 d-block" style="font-size: 0.65rem;">Nouvel Appareil (Échange à neuf)</label>
+                                            <div class="fw-bold text-success" style="font-size: 1rem;">
+                                                {{ $dossier->modele_remplacement }} 
+                                                <span class="ms-2 text-muted fw-normal" style="font-size: 0.8rem;">IMEI : {{ substr($dossier->imei_remplacement, 0, 6) }}*****</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -153,6 +151,10 @@
                                 'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'color' => '#059669', 'label' => 'Remis / Livré', 'desc' => 'Merci de votre confiance !'],
                                 'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'color' => '#ef4444', 'label' => 'Attente Pièces', 'desc' => 'Nous attendons les pièces détachées.'],
                                 'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'color' => '#b91c1c', 'label' => 'Irréparable', 'desc' => 'Malheureusement, l\'appareil n\'est pas réparable.'],
+                                'ATTENTE_VALIDATION_REMPLACEMENT' => ['icon' => 'fa-shield-alt', 'color' => '#1e69ff', 'label' => 'Attente Validation', 'desc' => 'L\'échange est en attente de validation administrative.'],
+                                'REMPLACEMENT_VALIDE' => ['icon' => 'fa-check-circle', 'color' => '#10b981', 'label' => 'Échange Validé', 'desc' => 'L\'échange a été validé. Nous préparons votre nouvel appareil.'],
+                                'REMPLACEMENT_PRET' => ['icon' => 'fa-box-open', 'color' => '#10b981', 'label' => 'Échange Prêt', 'desc' => 'Votre nouvel appareil est prêt pour le retrait.'],
+                                'REMPLACEMENT_REFUSE' => ['icon' => 'fa-times-circle', 'color' => '#ef4444', 'label' => 'Échange Refusé', 'desc' => 'L\'échange a été refusé. Votre appareil initial est disponible pour retrait.'],
                             ];
                             $conf = $statusConfig[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'color' => '#64748b', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
                         @endphp

@@ -101,7 +101,7 @@ class DemandeRejetController extends Controller
                 'user_id'       => auth()->id(),
                 'ancien_statut' => $ancienStatut,
                 'nouveau_statut'=> 'RECU',
-                'commentaire'   => 'Retrait du technicien approuvé par l\'admin. Raison : ' . ($request->commentaire_admin ?? 'Non spécifiée'),
+                'commentaire'   => 'Désaffectation du technicien approuvée. Motif : ' . ($request->commentaire_admin ?? 'Non spécifiée'),
             ]);
         });
 
@@ -127,7 +127,7 @@ class DemandeRejetController extends Controller
             'user_id'       => auth()->id(),
             'ancien_statut' => $demande->dossier->statut,
             'nouveau_statut'=> $demande->dossier->statut, // Statut inchangé
-            'commentaire'   => 'Demande de retrait REFUSÉE par l\'admin. Raison : ' . $request->commentaire_admin,
+            'commentaire'   => 'Demande de désaffectation refusée. Motif : ' . $request->commentaire_admin,
         ]);
 
         return back()->with('success', 'Demande refusée. Le technicien a été notifié.');

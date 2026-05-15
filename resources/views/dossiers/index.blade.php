@@ -138,7 +138,10 @@
 <td class="ps-4 fw-bolder" style="font-weight: 800;">#{{ $d->num_dossier }}</td>
                         <td class="text-muted small">{{ $d->imei }}</td>
                         <td class="text-primary fw-bolder small" style="font-weight: 800;">{{ $d->appareil->modele ?? '—' }}</td>
-                        <td class="text-muted small">{{ $d->client->name ?? '—' }}</td>
+                        <td>
+                            <div class="fw-bold text-dark small">{{ $d->client->name ?? '—' }}</div>
+                            <div class="text-muted small" style="font-size: 0.7rem;">{{ $d->client->telephone ?? '' }}</div>
+                        </td>
                         <td class="small">{{ $d->date_reception ? $d->date_reception->format('d/m/Y') : '—' }}</td>
                         <td class="small fw-bold {{ $jours > 2 ? 'text-danger' : 'text-muted' }}">{{ $jours }}j</td>
                         <td>
@@ -154,21 +157,12 @@
                         </td>
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end gap-1">
-                                @if(in_array(auth()->user()->role, ['Admin', 'Agent']) && $d->statut === 'EN_ATTENTE_DEVIS' && !$d->devis)
-                                    <a href="{{ route('devis.create', $d->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-2" title="Établir le devis">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </a>
-                                @endif
-                                @if(in_array(auth()->user()->role, ['Admin', 'Agent']) && $d->statut === 'REPARE' && !$d->facture)
-                                    <a href="{{ route('factures.create', $d->id) }}" class="btn btn-outline-success btn-sm rounded-pill px-2" title="Générer la facture">
-                                        <i class="fas fa-file-invoice"></i>
-                                    </a>
-                                @endif
                                 <a href="{{ route('dossiers.show', $d->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
                                     <i class="fas fa-eye me-1"></i> Voir
                                 </a>
                             </div>
                         </td>
+
                     </tr>
                     @empty
                     <tr><td colspan="10" class="text-center py-5 text-muted">Aucun ticket trouvé.</td></tr>

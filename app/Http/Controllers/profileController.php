@@ -13,8 +13,7 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        $user = Auth::user();
-        return view('profile.edit', compact('user'));
+        return view('auth.profile');
     }
 
     /**
@@ -26,12 +25,15 @@ class ProfileController extends Controller
 
         $request->validate([
             'name'      => 'required|string|max:255',
+            'email'     => 'required|email|max:255|unique:users,email,' . $user->id,
             'telephone' => 'nullable|string|max:50',
-            'password'  => 'nullable|string|min:8|confirmed',
+            'password'  => 'nullable|string|min:6|confirmed',
+
         ]);
 
         $data = [
             'name'      => $request->name,
+            'email'     => $request->email,
             'telephone' => $request->telephone,
         ];
 
@@ -41,6 +43,7 @@ class ProfileController extends Controller
 
         $user->update($data);
 
-        return back()->with('success', 'Profil mis à jour avec succès.');
+        return back()->with('success', 'Votre profil a été mis à jour avec succès.');
     }
+
 }

@@ -120,7 +120,7 @@ class InterventionController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => $nouveauStatut,
-            'commentaire' => $nouveauStatut === 'REPARE' ? 'Réparation effectuée avec succès.' : ($nouveauStatut === 'ATTENTE_PIECE' ? 'Mis en attente de pièce.' : 'Appareil déclaré irréparable.'),
+            'commentaire' => $nouveauStatut === 'REPARE' ? 'Intervention terminée. Appareil réparé et prêt.' : ($nouveauStatut === 'ATTENTE_PIECE' ? 'Pièce(s) requise(s) non disponible(s) — dossier suspendu.' : 'Verdict technique : appareil non réparable.'),
         ]);
 
         // Notification si en attente de pièce

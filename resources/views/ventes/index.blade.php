@@ -54,7 +54,10 @@
                     <tr>
                         <td class="ps-4 fw-bolder text-primary" style="font-weight: 800; font-family: 'Outfit', sans-serif;">{{ $vente->imei }}</td>
                         <td>
-                            <span class="badge rounded-pill bg-light text-dark border px-2 py-1 fw-bold" style="font-size: 0.65rem;">{{ $vente->type ?? 'MATÉRIEL' }}</span>
+                            @php
+                                $badgeColor = $vente->type === 'REMPLACEMENT' ? 'bg-soft-info text-info border-info' : 'bg-light text-dark';
+                            @endphp
+                            <span class="badge rounded-pill {{ $badgeColor }} border px-2 py-1 fw-bold" style="font-size: 0.65rem;">{{ $vente->type ?? 'MATÉRIEL' }}</span>
                         </td>
                         <td>
                             <div class="fw-bolder text-dark" style="font-weight: 800;">{{ $vente->modele }}</div>

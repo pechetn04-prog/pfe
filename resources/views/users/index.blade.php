@@ -55,10 +55,9 @@
                         <th class="ps-4">Nom</th>
                         <th>Email</th>
                         <th>Rôle</th>
-                        <th class="text-center">Actif</th>
                         <th>Téléphone</th>
                         <th>Adresse</th>
-                        <th class="text-end pe-4">Actions</th>
+                        <th class="text-end pe-4">Statut & Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,27 +66,36 @@
                         <td class="ps-4 fw-bold">{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td><span class="badge bg-secondary rounded-pill px-3">{{ $user->role }}</span></td>
-                        <td class="text-center">
-                            <div class="form-check form-switch d-inline-block">
-                                <input class="form-check-input" type="checkbox" role="switch" {{ $user->actif ? 'checked' : '' }} 
-                                    onchange="toggleUserStatus({{ $user->id }})">
-                            </div>
-                        </td>
                         <td>{{ $user->telephone ?? '-' }}</td>
                         <td>{{ $user->adresse ?? '-' }}</td>
                         <td class="text-end pe-4">
-                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Modifier</a>
+                            <div class="d-flex align-items-center justify-content-end gap-3">
+                                <div class="form-check form-switch mb-0" title="{{ $user->actif ? 'Désactiver le compte' : 'Activer le compte' }}">
+                                    <input class="form-check-input cursor-pointer" type="checkbox" role="switch" {{ $user->actif ? 'checked' : '' }} 
+                                        onchange="toggleUserStatus({{ $user->id }})">
+                                </div>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm">
+                                    <i class="fas fa-edit me-1"></i> Modifier
+                                </a>
+                            </div>
                         </td>
+
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
         @if($users->hasPages())
-        <div class="p-3 bg-white border-top">
-            {{ $users->links() }}
+        <div class="p-3 bg-white border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <div class="small text-muted fw-bold">
+                Affichage de <span class="text-primary">{{ $users->firstItem() }}</span> à <span class="text-primary">{{ $users->lastItem() }}</span> sur <span class="text-primary">{{ $users->total() }}</span> utilisateurs
+            </div>
+            <div class="pagination-sm">
+                {{ $users->links() }}
+            </div>
         </div>
         @endif
+
     </div>
 </div>
 

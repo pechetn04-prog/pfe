@@ -26,7 +26,7 @@ class DevisController extends Controller
         $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo');
         $pieces = Piece::where('actif', true)->orderBy('nom')->get();
         $tarifsMo = TarifMo::where('actif', true)->orderBy('type_intervention')->get();
-        
+
         return view('devis.create', compact('dossier', 'pieces', 'tarifsMo'));
     }
 
@@ -46,21 +46,22 @@ class DevisController extends Controller
         }
 
         $totalTtc = (float) $request->total_ttc;
-        
+
         $devis = Devis::create([
-            'dossier_id'   => $dossier->id,
-            'numero'       => 'DEV-' . now()->format('Ymd') . '-' . str_pad(Devis::count() + 1, 4, '0', STR_PAD_LEFT),
-            'montant_total'=> $totalTtc,
-            'frais_mod'    => (float) $request->frais_mod ?? 0,
-            'remise'       => (float) $request->remise ?? 0,
-            'statut'       => 'EN_ATTENTE',
-            'date_creation'=> now(),
+            'dossier_id' => $dossier->id,
+            'numero' => 'DEV-' . now()->format('Ymd') . '-' . str_pad(Devis::count() + 1, 4, '0', STR_PAD_LEFT),
+            'montant_total' => $totalTtc,
+            'frais_mod' => (float) $request->frais_mod ?? 0,
+            'remise' => (float) $request->remise ?? 0,
+            'statut' => 'EN_ATTENTE',
+            'date_creation' => now(),
         ]);
 
         // 1. Sauvegarde des pièces (SNAPSHOT du prix au moment du devis)
         if ($request->has('pieces')) {
             foreach ($request->pieces as $p) {
-                if (empty($p['id'])) continue;
+                if (empty($p['id']))
+                    continue;
                 $devis->pieces()->attach($p['id'], [
                     'quantite' => $p['quantite'] ?? 1,
                     'prix_unitaire' => $p['prix_unitaire'] ?? 0
@@ -71,7 +72,8 @@ class DevisController extends Controller
         // 2. Sauvegarde de la main d'œuvre
         if ($request->has('labors')) {
             foreach ($request->labors as $l) {
-                if (empty($l['id'])) continue;
+                if (empty($l['id']))
+                    continue;
                 $devis->tarifsMo()->attach($l['id'], [
                     'montant' => $l['montant'] ?? 0
                 ]);
@@ -81,11 +83,11 @@ class DevisController extends Controller
         $dossier->update(['statut' => 'EN_ATTENTE_DEVIS']);
 
         SuiviDossier::create([
-            'dossier_id'    => $dossier->id,
-            'user_id'       => auth()->id(),
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
             'ancien_statut' => 'EN_DIAGNOSTIC',
-            'nouveau_statut'=> 'EN_ATTENTE_DEVIS',
-            'commentaire'   => 'Devis généré et envoyé au client.',
+            'nouveau_statut' => 'EN_ATTENTE_DEVIS',
+            'commentaire' => 'Devis établi et transmis au client pour validation.',
         ]);
 
         // UC05 — Notification client
@@ -123,18 +125,18 @@ class DevisController extends Controller
         $dossier = $devis->dossier;
 
         $devis->update([
-            'statut'        => 'ACCEPTE',
+            'statut' => 'ACCEPTE',
             'date_decision' => now(),
         ]);
 
         $dossier->update(['statut' => 'EN_REPARATION']);
 
         SuiviDossier::create([
-            'dossier_id'    => $dossier->id,
-            'user_id'       => auth()->id(),
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
             'ancien_statut' => 'EN_ATTENTE_DEVIS',
-            'nouveau_statut'=> 'EN_REPARATION',
-            'commentaire'   => 'Devis accepté (validation manuelle agent SAV). Réparation autorisée.',
+            'nouveau_statut' => 'EN_REPARATION',
+            'commentaire' => 'Devis validé par l\'agent SAV. Autorisation de réparation accordée.',
         ]);
 
         return back()->with('success', 'Devis accepté. Dossier passé en réparation.');
@@ -152,21 +154,25 @@ class DevisController extends Controller
         $dossier = $devis->dossier;
 
         $devis->update([
-            'statut'        => 'REFUSE',
+            'statut' => 'REFUSE',
             'date_decision' => now(),
         ]);
 
-        $dossier->update(['statut' => 'DEVIS_REFUSE']);
-
-        SuiviDossier::create([
-            'dossier_id'    => $dossier->id,
-            'user_id'       => auth()->id(),
-            'ancien_statut' => 'EN_ATTENTE_DEVIS',
-            'nouveau_statut'=> 'DEVIS_REFUSE',
-            'commentaire'   => 'Devis refusé. Appareil en attente de restitution.',
+        $dossier->update([
+            'statut' => 'DEVIS_REFUSE',
+            'commentaire_refus' => $request->commentaire_refus
         ]);
 
-        return back()->with('success', 'Devis refusé. Dossier en attente de restitution.');
+        SuiviDossier::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'ancien_statut' => 'EN_ATTENTE_DEVIS',
+            'nouveau_statut' => 'DEVIS_REFUSE',
+            'commentaire' => 'Devis refusé par l\'agent SAV. Motif : ' . $request->commentaire_refus,
+        ]);
+
+        return redirect()->route('dossiers.show', $dossier->id)
+            ->with('success', 'Devis refusé. Dossier en attente de restitution.');
     }
 
     /**

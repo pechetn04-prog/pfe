@@ -22,14 +22,18 @@ class AgentDashboardController extends Controller
             'attente_pieces' => Dossier::where('statut', 'ATTENTE_PIECE')->count(),
             'prets' => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE'])->count(),
             'prets_aujourdhui' => Dossier::whereIn('statut', ['REPARE', 'FACTURE'])->whereDate('date_reparation', now())->count(),
+            'facture' => Dossier::where('statut', 'FACTURE')->count(),
+            'cloture' => Dossier::where('statut', 'CLOTURE')->count(),
         ];
+
 
         $pct = [];
         foreach ($stats as $key => $value) {
             $pct[$key] = $total > 0 ? round(($value / $total) * 100, 1) : 0;
         }
 
-        $recentDossiers = Dossier::with(['client', 'appareil', 'technicien'])->latest()->take(10)->get();
+        $recentDossiers = Dossier::with(['client', 'appareil', 'technicien'])->latest()->take(7)->get();
+
 
         return view('dashboard.agent', compact('user', 'stats', 'pct', 'recentDossiers'));
     }

@@ -3,13 +3,18 @@
 @section('title', 'Modifier — ' . $user->name)
 
 @section('content')
-<div class="container-fluid" style="max-width: 700px;">
-    <div class="d-flex align-items-center mb-4">
-        <a href="{{ route('users.index') }}" class="btn btn-outline-secondary btn-sm me-3">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-        <h1 class="h4 fw-bold mb-0">Modifier — {{ $user->name }}</h1>
+<div class="container-fluid" style="max-width: 900px;">
+
+    <div class="mb-4">
+        <div class="d-flex align-items-center mb-1">
+            <a href="{{ route('users.index') }}" class="text-decoration-none text-muted small fw-bold text-uppercase">
+                <i class="fas fa-users me-1"></i> Utilisateurs
+            </a>
+        </div>
+        <h1 class="h3 fw-bold mb-0">Modifier le profil</h1>
+        <small class="text-muted">Mise à jour des informations de <strong>{{ $user->name }}</strong></small>
     </div>
+
 
     @if($errors->any())
     <div class="alert alert-danger">
@@ -17,33 +22,40 @@
     </div>
     @endif
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
             <form action="{{ route('users.update', $user->id) }}" method="POST">
                 @csrf @method('PUT')
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nom complet</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Nom complet</label>
+                        <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required placeholder="Ex: Jean Dupont">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Adresse Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required placeholder="email@exemple.com">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Rôle utilisateur</label>
+                        <select name="role" class="form-select" id="roleSelect" onchange="toggleSpecialite(this.value)">
+                            <option value="Admin"     {{ $user->role == 'Admin'      ? 'selected' : '' }}>Administrateur</option>
+                            <option value="Agent"     {{ $user->role == 'Agent'      ? 'selected' : '' }}>Agent SAV</option>
+                            <option value="Technicien"{{ $user->role == 'Technicien' ? 'selected' : '' }}>Technicien</option>
+                            <option value="Client"    {{ $user->role == 'Client'     ? 'selected' : '' }}>Client</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Téléphone</label>
+                        <input type="text" name="telephone" class="form-control" value="{{ old('telephone', $user->telephone) }}" placeholder="Ex: 05 55 55 55 55">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Rôle</label>
-                    <select name="role" class="form-select" id="roleSelect" onchange="toggleSpecialite(this.value)">
-                        <option value="Admin"     {{ $user->role == 'Admin'      ? 'selected' : '' }}>Administrateur</option>
-                        <option value="Agent"     {{ $user->role == 'Agent'      ? 'selected' : '' }}>Agent SAV</option>
-                        <option value="Technicien"{{ $user->role == 'Technicien' ? 'selected' : '' }}>Technicien</option>
-                        <option value="Client"    {{ $user->role == 'Client'     ? 'selected' : '' }}>Client</option>
-                    </select>
-                </div>
+
                 {{-- Spécialités Technicien --}}
-                <div class="card bg-light border-0 mb-3" id="specialiteField" style="display:none; border-radius: 12px;">
+                <div class="card bg-light border-0 mb-4" id="specialiteField" style="display:none; border-radius: 12px;">
                     <div class="card-body">
                         <label class="form-label fw-bold small text-uppercase mb-2 text-primary">Spécialités Techniques</label>
                         @php 
@@ -68,24 +80,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Téléphone</label>
-                    <input type="text" name="telephone" class="form-control" value="{{ old('telephone', $user->telephone) }}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nouveau mot de passe <span class="text-muted small">(laisser vide pour ne pas changer)</span></label>
-                    <input type="password" name="password" class="form-control" autocomplete="new-password">
-                </div>
+
                 <div class="mb-4">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="actif" id="actifSwitch" value="1"
-                            {{ $user->actif ? 'checked' : '' }}>
-                        <label class="form-check-label" for="actifSwitch">Compte actif</label>
+                    <label class="form-label fw-bold text-muted small text-uppercase">Sécurité</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                        <input type="password" name="password" class="form-control border-start-0" placeholder="Laisser vide pour ne pas changer le mot de passe" autocomplete="new-password">
                     </div>
                 </div>
+
+                <hr class="my-4 opacity-25">
+
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary px-4">Enregistrer</button>
-                    <a href="{{ route('users.index') }}" class="btn btn-outline-secondary px-4">Annuler</a>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow-sm">
+                        <i class="fas fa-save me-2"></i> Enregistrer les modifications
+                    </button>
+                    <a href="{{ route('users.index') }}" class="btn btn-light px-4 rounded-pill">Annuler</a>
                 </div>
             </form>
         </div>
@@ -99,3 +109,5 @@ function toggleSpecialite(role) {
 toggleSpecialite('{{ $user->role }}');
 </script>
 @endsection
+
+

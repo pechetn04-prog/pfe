@@ -11,21 +11,38 @@
         </div>
     </div>
 
-    {{-- Filtres par statut --}}
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body py-2">
-            <form method="GET" class="d-flex gap-2 align-items-center flex-wrap">
-                <select name="statut" class="form-select form-select-sm" style="max-width: 220px;">
-                    <option value="">Tous les statuts</option>
-                    @foreach($statuts as $val => $label)
-                    <option value="{{ $val }}" {{ request('statut') == $val ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                <button type="submit" class="btn btn-sm btn-primary px-4">Filtrer</button>
-                <a href="{{ route('technicien.tickets') }}" class="btn btn-sm btn-outline-secondary">Réinitialiser</a>
+    {{-- Section Filtres (Premium Style) --}}
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-body p-3">
+            <form method="GET" class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0 text-muted">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control border-start-0" placeholder="N° Dossier, IMEI ou Client..." value="{{ request('search') }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select name="statut" class="form-select form-select-sm">
+                        <option value="">Tous les statuts</option>
+                        @foreach($statuts as $val => $label)
+                        <option value="{{ $val }}" {{ request('statut') == $val ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-5 d-flex gap-2 justify-content-md-end">
+                    <button type="submit" class="btn btn-sm btn-primary px-4 rounded-pill">
+                        <i class="fas fa-filter me-1"></i> Filtrer
+                    </button>
+                    <a href="{{ route('technicien.tickets') }}" class="btn btn-sm btn-light px-4 rounded-pill">
+                        <i class="fas fa-undo me-1"></i> Réinitialiser
+                    </a>
+                </div>
             </form>
         </div>
     </div>
+
 
     <div class="card border-0 shadow-sm overflow-hidden">
         <div class="table-responsive">
@@ -44,7 +61,10 @@
                     @forelse($dossiers as $dossier)
                     <tr>
                         <td class="ps-4 fw-bold text-primary">#{{ $dossier->num_dossier }}</td>
-                        <td>{{ $dossier->client->name ?? '—' }}</td>
+                        <td>
+                            <div class="fw-bold text-dark small">{{ $dossier->client->name ?? '—' }}</div>
+                            <div class="text-muted small" style="font-size: 0.7rem;">{{ $dossier->client->telephone ?? '' }}</div>
+                        </td>
                         <td>{{ Str::limit($dossier->panne_declaree, 50) }}</td>
                         <td>
                             @php
@@ -63,33 +83,35 @@
                             </span>
                         </td>
                         <td>{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</td>
-                        <td class="text-end pe-4 d-flex justify-content-end gap-2">
-                            @if($dossier->diagnostic)
-                                <a href="{{ route('diagnostics.show', $dossier->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold" title="Consulter le diagnostic">
-                                    <i class="fas fa-eye me-1"></i> Diag
-                                </a>
-                            @endif
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-2">
+                                {{-- Boutons de consultation rapide avec nom --}}
+                                @if($dossier->diagnostic)
+                                    <a href="{{ route('diagnostics.show', $dossier->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold shadow-sm" title="Consulter le diagnostic">
+                                        <i class="fas fa-file-alt me-1"></i> Diag
+                                    </a>
+                                @endif
 
-                            @if($dossier->intervention)
-                                <a href="{{ route('interventions.show', $dossier->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold" title="Consulter l'intervention">
-                                    <i class="fas fa-wrench me-1"></i> Interv
-                                </a>
-                            @endif
+                                @if($dossier->intervention)
+                                    <a href="{{ route('interventions.show', $dossier->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold shadow-sm" title="Consulter l'intervention">
+                                        <i class="fas fa-check-double me-1"></i> Interv
+                                    </a>
+                                @endif
 
-                            @if(in_array($dossier->statut, ['AFFECTE', 'EN_DIAGNOSTIC']))
-                                <a href="{{ route('diagnostics.create', $dossier->id) }}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold">
-                                    <i class="fas fa-microscope me-1"></i> Diagnostic
-                                </a>
-                            @elseif($dossier->statut === 'EN_REPARATION')
-                                <a href="{{ route('interventions.create', $dossier->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold">
-                                    <i class="fas fa-tools me-1"></i> Intervention
-                                </a>
-                            @else
-                                <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">
-                                    <i class="fas fa-eye me-1"></i> Voir
-                                </a>
-                            @endif
+
+                                {{-- Boutons d'action contextuels --}}
+                                @if(in_array($dossier->statut, ['AFFECTE', 'EN_DIAGNOSTIC']))
+                                    <a href="{{ route('diagnostics.create', $dossier->id) }}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold shadow-sm">
+                                        <i class="fas fa-microscope me-1"></i> Diagnostiquer
+                                    </a>
+                                @elseif($dossier->statut === 'EN_REPARATION')
+                                    <a href="{{ route('interventions.create', $dossier->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm">
+                                        <i class="fas fa-tools me-1"></i> Réparer
+                                    </a>
+                                @endif
+                            </div>
                         </td>
+
                     </tr>
                     @empty
                     <tr>

@@ -620,3 +620,29 @@ font-size: 0.8rem;
     70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
     100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
 }
+
+/* ============================================================
+ * 16. LAYOUT & SIDEBAR (MOVED FROM app.blade.php)
+ * ============================================================ */
+:root { --primary-blue: #2563eb; }
+
+body { font-family: 'Outfit', sans-serif !important; background-color: #f1f5f9; color: #1e293b; }
+
+/* Styles de la sidebar (Thème sombre pour tous) */
+.sidebar { width: 260px; min-height: 100vh; background-color: #1a2234; flex-shrink: 0; transition: all 0.3s; }
+.sidebar .nav-link { color: #cbd5e1 !important; font-weight: 500; transition: all 0.2s; }
+.sidebar .nav-link i { color: #64748b; transition: all 0.2s; }
+.sidebar .nav-link:hover { background-color: #242e42; color: #ffffff !important; }
+.sidebar .nav-link:hover i { color: #ffffff; }
+.sidebar .nav-link.active { background-color: #2563eb !important; color: #ffffff !important; }
+.sidebar .nav-link.active i { color: #ffffff !important; }
+.sidebar .text-muted { color: #64748b !important; }
+.sidebar .logout-btn { color: #fb7185 !important; }
+.sidebar .logout-btn i { color: #fb7185 !important; }
+
+.header { background: white; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 900; }
+.main-content { flex-grow: 1; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; }
+.content-area { padding: 1.5rem; flex-grow: 1; }
+.search-bar { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.5rem 1rem; width: 400px; }
+.hover-opacity:hover { opacity: 0.8; }
+.transition-all { transition: all 0.2s; }

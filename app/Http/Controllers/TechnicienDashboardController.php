@@ -55,12 +55,27 @@ class TechnicienDashboardController extends Controller
     public function tickets(Request $request)
     {
         $query = Dossier::where('technicien_id', Auth::id())
+            ->whereNotIn('statut', ['CLOTURE', 'LIVRE']) // Exclure les dossiers terminés
             ->with(['client', 'appareil'])
             ->latest();
 
-        if ($request->has('statut')) {
+
+        if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('num_dossier', 'like', "%{$search}%")
+                  ->orWhere('imei', 'like', "%{$search}%")
+                  ->orWhereHas('client', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%")
+                         ->orWhere('telephone', 'like', "%{$search}%");
+                  });
+            });
+        }
+
 
         $dossiers = $query->paginate(20);
         

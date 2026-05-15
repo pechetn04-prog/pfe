@@ -131,3 +131,22 @@ body {
 }
 
 .btn-back:hover { color: var(--primary-color); }
+
+/* --- OVERRIDES & ADDITIONAL STYLES (MOVED FROM suivi-public.blade.php) --- */
+body { font-family: 'Outfit', sans-serif !important; }
+.bg-soft-primary { background-color: #eff6ff; }
+.bg-soft-success { background-color: #ecfdf5; }
+.bg-soft-danger { background-color: #fef2f2; }
+.btn-white { background-color: white !important; color: #2563eb !important; border: 1px solid #e2e8f0; }
+
+.custom-timeline { position: relative; padding-left: 30px; }
+.custom-timeline::before { content: ''; position: absolute; left: 6px; top: 0; height: 100%; width: 2px; background: #e2e8f0; }
+.timeline-marker { 
+    position: absolute; left: -30px; top: 5px; width: 14px; height: 14px; 
+    border-radius: 50%; background: white; border: 3px solid #2563eb; z-index: 1;
+}
+.timeline-item:first-child .timeline-marker { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+.transition-all { transition: all 0.2s ease !important; }
+.transition-all:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+

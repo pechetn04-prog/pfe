@@ -5,60 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Système SAV') - Maison Tel</title>
     
-    <!-- Fonts -->
+    <!-- Polices (Google Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Styles -->
+    <!-- Bibliothèques de styles externes (Bootstrap, FontAwesome) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Design Système Premium du SAV (Fichiers CSS Centralisés) -->
     <link rel="stylesheet" href="{{ asset('css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
+
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard-cards.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style-premium.css') }}">
     @stack('styles')
     
-    <style>
-        :root { --primary-blue: #2563eb; }
-        body { font-family: 'Outfit', sans-serif; background-color: #f1f5f9; color: #1e293b; }
-        /* Styles de la sidebar (Thème sombre pour tous) */
-        .sidebar { width: 260px; min-height: 100vh; background-color: #1a2234; flex-shrink: 0; transition: all 0.3s; }
-        .sidebar .nav-link { color: #cbd5e1 !important; font-weight: 500; transition: all 0.2s; }
-        .sidebar .nav-link i { color: #64748b; transition: all 0.2s; }
-        .sidebar .nav-link:hover { background-color: #242e42; color: #ffffff !important; }
-        .sidebar .nav-link:hover i { color: #ffffff; }
-        .sidebar .nav-link.active { background-color: #2563eb !important; color: #ffffff !important; }
-        .sidebar .nav-link.active i { color: #ffffff !important; }
-        .sidebar .text-muted { color: #64748b !important; }
-        .sidebar .logout-btn { color: #fb7185 !important; }
-        .sidebar .logout-btn i { color: #fb7185 !important; }
 
-        .header { background: white; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 900; }
-        .main-content { flex-grow: 1; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; }
-        .content-area { padding: 1.5rem; flex-grow: 1; }
-        .search-bar { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.5rem 1rem; width: 400px; }
-        .hover-opacity:hover { opacity: 0.8; }
-        .transition-all { transition: all 0.2s; }
-    </style>
 </head>
 <body>
     <div class="d-flex">
+        <!-- Barre Latérale (Sidebar) - Incluse depuis un partiel pour plus de clarté -->
         @include('partials.sidebar')
+
         
+        <!-- Zone Principale de l'application -->
         <div class="main-content">
+
             @auth
+            <!-- Barre de navigation supérieure (Topbar) -->
             <header class="header d-flex justify-content-between align-items-center shadow-sm">
-                <div class="text-muted small">Bonjour, <span class="fw-bold text-dark">{{ auth()->user()->name }}</span></div>
+
+                <div></div> {{-- Espaceur pour maintenir l'alignement --}}
+
                 
+                <!-- Barre de recherche globale (Dossiers, Clients, IMEI) -->
                 <form action="{{ route('dossiers.index') }}" method="GET" class="search-bar d-none d-md-flex align-items-center">
                     <i class="fas fa-search text-muted me-2"></i>
                     <input type="text" name="search" class="form-control border-0 bg-transparent p-0 small" placeholder="Rechercher un dossier, IMEI, client..." value="{{ request('search') }}">
                 </form>
 
+
                 <div class="d-flex align-items-center gap-3">
-                    {{-- Notifications --}}
+                    <!-- Système de Notifications (Temps Réel / DB) -->
                     <div class="dropdown">
+
                         <button class="btn p-0 border-0 bg-transparent position-relative" type="button" data-bs-toggle="dropdown">
                             <i class="far fa-bell fs-5 text-muted"></i>
                             @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp
@@ -97,8 +89,9 @@
                         </ul>
                     </div>
 
-                    {{-- User Profile Dropdown --}}
+                    <!-- Menu Profil Utilisateur & Déconnexion -->
                     <div class="dropdown">
+
                         <a href="#" class="d-flex align-items-center gap-2 ps-3 border-start text-decoration-none transition-all hover-opacity" data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="text-end d-none d-sm-block">
                                 <div class="fw-bold small text-dark lh-1">{{ auth()->user()->name }}</div>
@@ -138,7 +131,9 @@
             </header>
             @endauth
             
+            <!-- Zone de contenu dynamique -->
             <div class="content-area">
+
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4">
                         <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
@@ -161,6 +156,9 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        /**
+         * Logique JavaScript pour la gestion des notifications (Fetch API)
+         */
         function markRead(id, url) {
             fetch(`/notifications/${id}/read`, {
                 method: 'POST',
@@ -188,6 +186,7 @@
                 location.reload();
             });
         }
+
     </script>
     @stack('scripts')
 </body>

@@ -30,7 +30,7 @@ class DiagnosticController extends Controller
                 'user_id' => Auth::id(),
                 'ancien_statut' => 'AFFECTE',
                 'nouveau_statut' => 'EN_DIAGNOSTIC',
-                'commentaire' => 'Ouverture du formulaire de diagnostic par le technicien.',
+                'commentaire' => 'Démarrage du diagnostic technique.',
             ]);
         }
 
@@ -126,7 +126,7 @@ class DiagnosticController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => 'EN_DIAGNOSTIC',
             'nouveau_statut' => $nouveauStatut,
-            'commentaire' => $exclusionGarantie ? 'Diagnostic terminé avec EXCLUSION de garantie.' : 'Diagnostic terminé.',
+            'commentaire' => $exclusionGarantie ? 'Rapport de diagnostic finalisé — garantie non applicable (exclusion retenue).' : 'Rapport de diagnostic finalisé et soumis.',
         ]);
 
         return redirect()->route('technicien.dashboard')->with('success', 'Diagnostic enregistré. Statut actuel : ' . $nouveauStatut);

@@ -113,7 +113,7 @@ class FactureController extends Controller
             'user_id' => auth()->id(),
             'ancien_statut' => $ancienStatut,
             'nouveau_statut' => 'FACTURE',
-            'commentaire' => 'Facture générée.',
+            'commentaire' => 'Facture de réparation générée et enregistrée.',
         ]);
 
         // Notification au client

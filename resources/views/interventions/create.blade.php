@@ -2,6 +2,11 @@
 
 @section('title', 'Rapport d\'Intervention Technique')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/intervention_create.css') }}">
+@endpush
+
+
 @section('content')
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -242,14 +247,7 @@
     </form>
 </div>
 
-<style>
-    .status-selector { background-color: var(--btn-bg) !important; border: 2px solid transparent !important; transition: all 0.2s; }
-    .status-selector .icon-circle { width: 35px; height: 35px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; color: var(--btn-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .status-selector .title { color: var(--btn-color); }
-    .btn-check:checked + .status-selector { border-color: var(--btn-color) !important; transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-    .card-select:hover { background-color: #e2e8f0 !important; }
-    .upload-area:hover { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
-</style>
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {

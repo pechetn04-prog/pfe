@@ -120,7 +120,7 @@ class ClientController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => 'EN_ATTENTE_DEVIS',
             'nouveau_statut' => 'EN_REPARATION',
-            'commentaire' => 'Devis accepté par le client. Réparation autorisée.',
+            'commentaire' => 'Client a accepté le devis. Réparation autorisée.',
         ]);
 
         return back()->with('success', 'Devis accepté. La réparation va commencer.');
@@ -157,7 +157,7 @@ class ClientController extends Controller
             'user_id' => Auth::id(),
             'ancien_statut' => 'EN_ATTENTE_DEVIS',
             'nouveau_statut' => 'DEVIS_REFUSE',
-            'commentaire' => 'Devis refusé par le client. Appareil en attente de restitution.',
+            'commentaire' => 'Client a refusé le devis. Appareil disponible pour restitution.',
         ]);
 
         return back()->with('success', 'Devis refusé. Nous vous contacterons pour la restitution.');
