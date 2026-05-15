@@ -21,9 +21,9 @@
             <a href="{{ route('stock.mouvements') }}" class="btn btn-outline-primary shadow-sm rounded-pill px-3 fw-bold">
                 <i class="fas fa-history me-1"></i> Historique
             </a>
-            <a href="{{ route('stock.mouvements.create') }}" class="btn btn-primary shadow-sm rounded-pill px-3 fw-bold">
+            <button type="button" class="btn btn-primary shadow-sm rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#mouvementModal">
                 <i class="fas fa-exchange-alt me-1"></i> Mouvement
-            </a>
+            </button>
         </div>
         @endif
     </div>
@@ -117,7 +117,7 @@
                                 <label class="form-label fw-bold small text-uppercase">Prix Unitaire (TTC) <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <input type="number" step="0.01" name="prix_unitaire" class="form-control" value="0" required>
-                                    <span class="input-group-text">DA</span>
+                                    <span class="input-group-text">{{ $parametre->devise ?? 'DT' }}</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -243,6 +243,12 @@
                 </tbody>
             </table>
         </div>
+        @if($pieces->hasPages())
+        <div class="p-3 bg-white border-top">
+            {{ $pieces->links() }}
+        </div>
+        @endif
     </div>
+    @include('stock.partials.mouvement-modal')
 </div>
 @endsection

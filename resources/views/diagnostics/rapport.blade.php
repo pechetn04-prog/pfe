@@ -140,7 +140,6 @@
                                 <th>Désignation</th>
                                 <th>Qté</th>
                                 <th>Prix unitaire TTC</th>
-                                <th>Stock actuel</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,12 +149,6 @@
                                 <td class="fw-semibold">{{ $piece->nom }}</td>
                                 <td>{{ $piece->pivot->quantite ?? 1 }}</td>
                                 <td>{{ number_format($piece->prix_vente ?? 0, 3, ',', ' ') }} {{ $company->devise ?? 'TND' }}</td>
-                                <td>
-                                    @php $stock = $piece->quantite_stock ?? 0; @endphp
-                                    <span class="badge {{ $stock > 0 ? 'bg-success' : 'bg-danger' }} rounded-pill">
-                                        {{ $stock > 0 ? $stock . ' en stock' : 'Rupture' }}
-                                    </span>
-                                </td>
                             </tr>
                             @endforeach
                         </tbody>

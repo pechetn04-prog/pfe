@@ -139,7 +139,16 @@
 
         <div style="margin-top: 50px;">
             <p style="font-size: 11px; color: #555;">Arrêté la présente facture à la somme de : <br>
-            <strong>{{ \Illuminate\Support\Str::upper((new NumberFormatter("fr", NumberFormatter::SPELLOUT))->format($facture->montant_total)) }} {{ $company->devise ?? 'DINARS' }}</strong></p>
+            @php
+                $spellout = $facture->montant_total;
+                if (class_exists('NumberFormatter')) {
+                    $formatter = new \NumberFormatter("fr", \NumberFormatter::SPELLOUT);
+                    $spellout = $formatter->format($facture->montant_total);
+                } else {
+                    $spellout = number_format($facture->montant_total, 3, ',', ' ');
+                }
+            @endphp
+            <strong>{{ \Illuminate\Support\Str::upper($spellout) }} {{ $company->devise ?? 'DINARS' }}</strong></p>
         </div>
 
         <div class="footer">

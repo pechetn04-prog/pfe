@@ -151,8 +151,13 @@ Route::middleware('auth')->group(function () {
 
         // Gestion des dossiers (Réception)
         Route::get('/dossiers', [DossierController::class, 'index'])->name('dossiers.index');
-        Route::get('/dossiers/create', [DossierController::class, 'create'])->name('dossiers.create');
-        Route::post('/dossiers', [DossierController::class, 'store'])->name('dossiers.store');
+
+        // Création réservée à l'Agent (DOIT être avant /{dossier} pour éviter le conflit)
+        Route::middleware('role:Agent')->group(function () {
+            Route::get('/dossiers/create', [DossierController::class, 'create'])->name('dossiers.create');
+            Route::post('/dossiers', [DossierController::class, 'store'])->name('dossiers.store');
+        });
+
         Route::get('/dossiers/{dossier}', [DossierController::class, 'show'])->name('dossiers.show');
 
 
@@ -164,7 +169,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/devis/{devis}/accepter', [DevisController::class, 'accepterDevis'])->name('devis.accepter');
         Route::post('/devis/{devis}/refuser', [DevisController::class, 'refuser'])->name('devis.refuser');
 
-        Route::get('/dossiers/{dossier}/facture/create', [FactureController::class, 'create'])->name('facture.create');
+        Route::get('/dossiers/{dossier}/facture/create', [FactureController::class, 'create'])->name('factures.create');
         Route::post('/dossiers/{dossier}/facture', [FactureController::class, 'store'])->name('facture.store');
 
         // Livraison et Clôture

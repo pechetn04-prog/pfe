@@ -18,12 +18,17 @@
         </a>
     </div>
 
-    {{-- Filtres --}}
-    <div class="card shadow mb-4 border-0">
-        <div class="card-body">
-            <form action="{{ route('users.index') }}" method="GET" class="row g-3">
+    <div class="card shadow-sm mb-4 border-0" style="border-radius: 15px;">
+        <div class="card-body p-3">
+            <form action="{{ route('users.index') }}" method="GET" class="row g-2 align-items-center">
+                <div class="col-md-5">
+                    <div class="input-group input-group-merge">
+                        <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" name="search" class="form-control bg-light border-0" placeholder="Rechercher par nom, email ou téléphone..." value="{{ request('search') }}">
+                    </div>
+                </div>
                 <div class="col-md-3">
-                    <select name="role" class="form-select">
+                    <select name="role" class="form-select bg-light border-0">
                         <option value="">Tous les rôles</option>
                         <option value="Admin" {{ request('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
                         <option value="Agent" {{ request('role') == 'Agent' ? 'selected' : '' }}>Agent</option>
@@ -32,10 +37,10 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+                    <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold shadow-sm">FILTRER</button>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route('users.index') }}" class="btn btn-outline-secondary w-100">Réinitialiser</a>
+                    <a href="{{ route('users.index') }}" class="btn btn-light w-100 rounded-3">RÉINITIALISER</a>
                 </div>
             </form>
         </div>
@@ -78,6 +83,11 @@
                 </tbody>
             </table>
         </div>
+        @if($users->hasPages())
+        <div class="p-3 bg-white border-top">
+            {{ $users->links() }}
+        </div>
+        @endif
     </div>
 </div>
 

@@ -84,7 +84,7 @@ class DemandeRejetController extends Controller
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $demande, $dossier) {
             $demande->update([
-                'statut'             => 'APPROUVE',
+                'statut'             => 'ACCEPTE',
                 'commentaire_admin'  => $request->commentaire_admin,
             ]);
 

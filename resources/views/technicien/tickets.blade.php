@@ -63,7 +63,19 @@
                             </span>
                         </td>
                         <td>{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</td>
-                        <td class="text-end pe-4">
+                        <td class="text-end pe-4 d-flex justify-content-end gap-2">
+                            @if($dossier->diagnostic)
+                                <a href="{{ route('diagnostics.show', $dossier->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold" title="Consulter le diagnostic">
+                                    <i class="fas fa-eye me-1"></i> Diag
+                                </a>
+                            @endif
+
+                            @if($dossier->intervention)
+                                <a href="{{ route('interventions.show', $dossier->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold" title="Consulter l'intervention">
+                                    <i class="fas fa-wrench me-1"></i> Interv
+                                </a>
+                            @endif
+
                             @if(in_array($dossier->statut, ['AFFECTE', 'EN_DIAGNOSTIC']))
                                 <a href="{{ route('diagnostics.create', $dossier->id) }}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold">
                                     <i class="fas fa-microscope me-1"></i> Diagnostic
@@ -73,7 +85,7 @@
                                     <i class="fas fa-tools me-1"></i> Intervention
                                 </a>
                             @else
-                                <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">
                                     <i class="fas fa-eye me-1"></i> Voir
                                 </a>
                             @endif

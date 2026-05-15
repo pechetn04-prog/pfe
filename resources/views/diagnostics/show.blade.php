@@ -6,7 +6,12 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Rapport de Diagnostic</h1>
-        <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-secondary">Retour au dossier</a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('dossiers.diagnostic.pdf', $dossier->id) }}" target="_blank" class="btn btn-outline-danger shadow-sm">
+                <i class="fas fa-file-pdf me-1"></i> Imprimer
+            </a>
+            <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-secondary">Retour au dossier</a>
+        </div>
     </div>
 
     <div class="row">
@@ -54,6 +59,15 @@
                             {{ $dossier->diagnostic->recommandation ?? 'Aucune recommandation particulière.' }}
                         </div>
                     </div>
+
+                    @if($dossier->diagnostic->photo_panne)
+                    <div class="mb-0">
+                        <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Pièce Jointe / Photo</label>
+                        <div class="rounded-3 overflow-hidden border" style="max-width: 400px;">
+                            <img src="{{ asset('storage/' . $dossier->diagnostic->photo_panne) }}" alt="Photo Diagnostic" class="img-fluid">
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

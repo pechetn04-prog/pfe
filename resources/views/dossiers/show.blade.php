@@ -16,8 +16,8 @@
         </nav>
     </div>
     
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 fw-bold mb-0" style="color: #1a2332; letter-spacing: -0.5px;">Gestion détaillée du dossier</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h5 fw-bold mb-0" style="color: #1a2332; letter-spacing: -0.5px;">Gestion détaillée du dossier</h1>
         <div class="d-flex align-items-center gap-2">
             {{-- Actions Technicien --}}
             @if(auth()->user()->role === 'Technicien' && $dossier->technicien_id == auth()->id())
@@ -45,36 +45,6 @@
                 @endif
             @endif
 
-            {{-- Actions Admin : Validation Remplacement --}}
-            @if(auth()->user()->role === 'Admin' && $dossier->statut === 'ATTENTE_VALIDATION_REMPLACEMENT')
-                <form action="{{ route('dossiers.validerRemplacement', $dossier->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-sm rounded-pill px-3 fw-bold shadow-sm text-white" onclick="return confirm('Valider ce remplacement ?')">
-                        <i class="fas fa-check me-1"></i> Valider Remplacement
-                    </button>
-                </form>
-                <form action="{{ route('dossiers.refuserRemplacement', $dossier->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold shadow-sm">
-                        <i class="fas fa-times me-1"></i> Refuser
-                    </button>
-                </form>
-            @endif
-
-            {{-- Actions Admin : Pièce introuvable --}}
-            @if(auth()->user()->role === 'Admin' && $dossier->statut === 'ATTENTE_PIECE')
-                <button type="button" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#modalImpossibleReappro">
-                    <i class="fas fa-ban me-1"></i> Impossible Réappro
-                </button>
-            @endif
-
-            {{-- Actions Agent/Admin : Préparer Remplacement --}}
-            @if(in_array(auth()->user()->role, ['Agent', 'Admin']) && $dossier->statut === 'REMPLACEMENT_VALIDE')
-                <a href="{{ route('dossiers.preparerRemplacement', $dossier->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-sm text-white">
-                    <i class="fas fa-exchange-alt me-1"></i> Préparer Remplacement
-                </a>
-            @endif
-
             <a href="{{ route('dossiers.reception.pdf', $dossier->id) }}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark border shadow-sm">
                 <i class="fas fa-file-invoice me-1"></i> Bon
             </a>
@@ -85,17 +55,16 @@
     </div>
 
     {{-- Info Card --}}
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
-        <div class="card-body p-4 d-flex align-items-center">
-            <div class="bg-primary bg-opacity-10 p-3 rounded-4 me-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                <div class="bg-primary rounded-3 p-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 50px; height: 50px;">
-                    <i class="fas fa-folder-open fa-lg text-white"></i>
+    <div class="card border-0 shadow-sm mb-3" style="border-radius: 15px;">
+        <div class="card-body p-3 d-flex align-items-center">
+            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                <div class="bg-primary rounded-2 p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 35px; height: 35px;">
+                    <i class="fas fa-folder-open fa-sm text-white"></i>
                 </div>
             </div>
             <div class="flex-grow-1">
-                <div class="small text-muted text-uppercase fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 0.8px; opacity: 0.6;">RÉFÉRENCE DOSSIER</div>
-                <h2 class="mb-1 fw-bold" style="color: #1a2332; letter-spacing: -1px;">#{{ $dossier->num_dossier }}</h2>
-                <div class="text-muted opacity-25" style="letter-spacing: -2px; font-size: 0.8rem;">||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</div>
+                <div class="small text-muted text-uppercase fw-bold mb-1" style="font-size: 0.6rem; letter-spacing: 0.8px; opacity: 0.6;">RÉFÉRENCE DOSSIER</div>
+                <h4 class="mb-0 fw-bold" style="color: #1a2332; letter-spacing: -0.5px;">#{{ $dossier->num_dossier }}</h4>
             </div>
             <div class="text-end">
                 <div class="small text-muted text-uppercase fw-bold mb-2" style="font-size: 0.6rem; letter-spacing: 0.8px; opacity: 0.6;">STATUT ACTUEL</div>
@@ -132,55 +101,123 @@
             case 'ATTENTE_PIECE':
                 $action = ['icon' => 'fa-hourglass-half', 'color' => '#d97706', 'title' => 'En attente de pièces', 'desc' => 'Le dossier est bloqué en attendant la réception des composants nécessaires.'];
                 break;
+            case 'IRREPARABLE':
+                $action = ['icon' => 'fa-times-circle', 'color' => '#ef4444', 'title' => 'Appareil Irréparable', 'desc' => 'Le diagnostic a conclu que l\'appareil ne peut pas être réparé. Prêt pour retour au client.'];
+                break;
+            case 'LIVRE':
+                $action = ['icon' => 'fa-truck', 'color' => '#6366f1', 'title' => 'Appareil Livré', 'desc' => 'L\'appareil a été remis au client. Vous pouvez clôturer le dossier définitivement.'];
+                break;
+            case 'CLOTURE':
+                $action = ['icon' => 'fa-lock', 'color' => '#64748b', 'title' => 'Dossier Clôturé', 'desc' => 'Ce dossier est terminé et archivé. Aucune modification n\'est plus possible.'];
+                break;
+            case 'ATTENTE_VALIDATION_REMPLACEMENT':
+                $action = ['icon' => 'fa-exchange-alt', 'color' => '#1e69ff', 'title' => 'Validation de Remplacement', 'desc' => 'L\'appareil est irréparable mais sous garantie. Veuillez valider ou refuser le remplacement.'];
+                break;
+            case 'REMPLACEMENT_VALIDE':
+                $action = ['icon' => 'fa-check-circle', 'color' => '#10b981', 'title' => 'Remplacement Validé', 'desc' => 'L\'administration a validé le remplacement. En attente de préparation de l\'appareil neuf par un agent.'];
+                break;
+            case 'REMPLACEMENT_REFUSE':
+                $action = ['icon' => 'fa-times-circle', 'color' => '#ef4444', 'title' => 'Remplacement Refusé', 'desc' => 'Le remplacement a été refusé. Prêt pour restitution au client.'];
+                break;
         }
     @endphp
-    <div class="card border-0 text-white mb-4 shadow-sm" style="background-color: {{ $action['color'] }}; border-radius: 12px;">
-        <div class="card-body p-4 d-flex align-items-center justify-content-between">
+    <div class="card border-0 text-white mb-3 shadow-sm" style="background-color: {{ $action['color'] }}; border-radius: 10px;">
+        <div class="card-body p-3 d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
                 <div class="bg-white bg-opacity-20 p-2 rounded-2 me-3">
-                    <i class="fas {{ $action['icon'] }} text-white"></i>
+                    <i class="fas {{ $action['icon'] }} text-white small"></i>
                 </div>
                 <div>
-                    <h6 class="mb-1 fw-bold">{{ $action['title'] }}</h6>
-                    <p class="mb-0 small opacity-75">{{ $action['desc'] }}</p>
+                    <h6 class="mb-0 fw-bold small">{{ $action['title'] }}</h6>
+                    <p class="mb-0" style="font-size: 0.75rem; opacity: 0.8;">{{ $action['desc'] }}</p>
                 </div>
             </div>
             
-            @if($dossier->statut === 'ATTENTE_PIECE' && auth()->user()->role === 'Admin')
+            @if(in_array(auth()->user()->role, ['Admin', 'Agent']))
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#modalImpossibleReappro">
-                    <i class="fas fa-ban me-1"></i> Impossible de réapprovisionner
-                </button>
+                @if($dossier->statut === 'ATTENTE_PIECE' && auth()->user()->role === 'Admin')
+                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#modalImpossibleReappro">
+                        <i class="fas fa-ban me-1"></i> Impossible de réapprovisionner
+                    </button>
+                @endif
+
+                @if($dossier->statut === 'ATTENTE_VALIDATION_REMPLACEMENT' && auth()->user()->role === 'Admin')
+                    <form action="{{ route('dossiers.validerRemplacement', $dossier->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 fw-bold shadow-sm" onclick="return confirm('Confirmer le remplacement ?')">
+                            <i class="fas fa-check me-1"></i> VALIDER LE REMPLACEMENT
+                        </button>
+                    </form>
+                    <button type="button" class="btn btn-outline-light btn-sm rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#refusRemplacementModal">
+                        <i class="fas fa-times me-1"></i> REFUSER
+                    </button>
+                @endif
+
+                @if($dossier->statut === 'REMPLACEMENT_VALIDE' && auth()->user()->role === 'Agent')
+                    <button type="button" class="btn btn-light text-success btn-sm rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#preparerRemplacementModal">
+                        <i class="fas fa-box-open me-1"></i> PRÉPARER L'APPAREIL NEUF
+                    </button>
+                @endif
+
+                @if(in_array($dossier->statut, ['FACTURE', 'IRREPARABLE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE']))
+                    <form action="{{ route('dossiers.livrer', $dossier->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-light text-primary btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                            <i class="fas fa-truck me-1"></i> MARQUER COMME LIVRÉ
+                        </button>
+                    </form>
+                @endif
+
+                @if($dossier->statut === 'LIVRE')
+                    <form action="{{ route('dossiers.cloturer', $dossier->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-light text-success btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                            <i class="fas fa-lock me-1"></i> CLÔTURER LE DOSSIER
+                        </button>
+                    </form>
+                @endif
+
+                @if($dossier->statut === 'EN_ATTENTE_DEVIS' && !$dossier->devis)
+                    <a href="{{ route('devis.create', $dossier->id) }}" class="btn btn-light text-danger btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="fas fa-file-invoice-dollar me-1"></i> ÉTABLIR LE DEVIS MAINTENANT
+                    </a>
+                @endif
+
+                @if($dossier->statut === 'REPARE' && !$dossier->facture)
+                    <a href="{{ route('factures.create', $dossier->id) }}" class="btn btn-light text-success btn-sm rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="fas fa-file-invoice me-1"></i> GÉNÉRER LA FACTURE MAINTENANT
+                    </a>
+                @endif
             </div>
             @endif
         </div>
     </div>
 
     {{-- Tabs --}}
-    <ul class="nav nav-tabs border-0 mb-4 gap-4" id="dossierTabs" role="tablist">
+    <ul class="nav nav-tabs border-0 mb-3 gap-3" id="dossierTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active p-0 pb-2 border-0 bg-transparent fw-bold d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" style="color: #1e69ff; border-bottom: 3px solid #1e69ff !important; border-radius: 0;">
-                <i class="fas fa-info-circle me-2"></i> Détails
+            <button class="nav-link active p-0 pb-1 border-0 bg-transparent fw-bold d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" style="color: #1e69ff; border-bottom: 2px solid #1e69ff !important; border-radius: 0; font-size: 0.8rem;">
+                <i class="fas fa-info-circle me-1"></i> Détails
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link p-0 pb-2 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#atelier" type="button" role="tab">
-                <i class="fas fa-tools me-2"></i> Atelier
+            <button class="nav-link p-0 pb-1 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#atelier" type="button" role="tab" style="font-size: 0.8rem;">
+                <i class="fas fa-tools me-1"></i> Atelier
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link p-0 pb-2 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#finances" type="button" role="tab">
-                <i class="fas fa-wallet me-2"></i> Finances
+            <button class="nav-link p-0 pb-1 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#finances" type="button" role="tab" style="font-size: 0.8rem;">
+                <i class="fas fa-wallet me-1"></i> Finances
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link p-0 pb-2 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#communication" type="button" role="tab">
-                <i class="fas fa-comments me-2"></i> Communication
+            <button class="nav-link p-0 pb-1 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#communication" type="button" role="tab" style="font-size: 0.8rem;">
+                <i class="fas fa-comments me-1"></i> Communication
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link p-0 pb-2 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#historique" type="button" role="tab">
-                <i class="fas fa-history me-2"></i> Historique
+            <button class="nav-link p-0 pb-1 border-0 bg-transparent fw-bold text-muted d-flex align-items-center" data-bs-toggle="tab" data-bs-target="#historique" type="button" role="tab" style="font-size: 0.8rem;">
+                <i class="fas fa-history me-1"></i> Historique
             </button>
         </li>
     </ul>
@@ -188,12 +225,12 @@
     <div class="tab-content">
         {{-- ONGLET DÉTAILS --}}
         <div class="tab-pane fade show active" id="details">
-            <div class="row g-4">
+            <div class="row g-3">
                 <div class="col-lg-5">
-                    <div class="card shadow-sm border-0 h-100" style="border-radius: 20px; background-color: #ffffff;">
-                        <div class="card-body p-4">
-                            <h6 class="fw-bold mb-4 d-flex align-items-center" style="color: #1a2332;">
-                                <i class="fas fa-id-card me-2" style="color: #1e69ff;"></i> Information client et appareil
+                    <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background-color: #ffffff;">
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center" style="color: #1a2332; font-size: 0.85rem;">
+                                <i class="fas fa-id-card me-2 text-primary"></i> Information client et appareil
                             </h6>
                             <div class="row g-3">
                                 <div class="col-12">
@@ -232,16 +269,34 @@
                                         <div class="fw-bold" style="font-size: 1rem; color: #1e69ff;">{{ $dossier->imei }}</div>
                                     </div>
                                 </div>
+
+                                @if($dossier->imei_remplacement)
+                                    <div class="col-12 mt-2">
+                                        <div class="p-3 rounded-3" style="background-color: #f0fdf4; border: 1px solid #bcf0da;">
+                                            <label class="small text-success text-uppercase fw-bold mb-1 d-block" style="font-size: 0.65rem; letter-spacing: 0.5px;">APPAREIL DE REMPLACEMENT</label>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="small text-muted" style="font-size: 0.7rem;">Modèle</div>
+                                                    <div class="fw-bold" style="color: #065f46; font-size: 0.9rem;">{{ $dossier->modele_remplacement }}</div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="small text-muted" style="font-size: 0.7rem;">Nouvel IMEI</div>
+                                                    <div class="fw-bold" style="color: #10b981; font-size: 0.9rem;">{{ $dossier->imei_remplacement }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="card shadow-sm border-0 h-100" style="border-radius: 20px; background-color: #ffffff;">
-                        <div class="card-body p-4">
-                            <h6 class="fw-bold mb-4 d-flex align-items-center" style="color: #1a2332;">
-                                <i class="fas fa-clipboard-list me-2" style="color: #1e69ff;"></i> Panne et Accessoires
+                    <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background-color: #ffffff;">
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center" style="color: #1a2332; font-size: 0.85rem;">
+                                <i class="fas fa-clipboard-list me-2 text-primary"></i> Panne et Accessoires
                             </h6>
                             
                             <div class="mb-4">
@@ -270,23 +325,23 @@
                 </div>
 
                 <div class="col-lg-3">
-                    <div class="card shadow-sm border-0 mb-4 overflow-hidden" style="border-radius: 20px; background-color: #ffffff;">
-                        <div class="p-3 d-flex align-items-center justify-content-between" style="background-color: #1a2332; color: white;">
-                            <span class="fw-bold small d-flex align-items-center">
-                                <i class="fas fa-user-friends me-2"></i> Affectation
+                    <div class="card shadow-sm border-0 mb-4 overflow-hidden" style="border-radius: 15px; background-color: #ffffff;">
+                        <div class="p-2 px-3 d-flex align-items-center justify-content-between" style="background-color: #1a2332; color: white;">
+                            <span class="fw-bold" style="font-size: 0.75rem;">
+                                <i class="fas fa-user-friends me-1"></i> Affectation
                             </span>
                         </div>
-                        <div class="card-body text-center py-5">
+                        <div class="card-body text-center py-4">
                             @php
                                 $initials = $dossier->technicien ? strtoupper(substr($dossier->technicien->name, 0, 2)) : '??';
                             @endphp
-                            <div class="rounded-circle text-white d-inline-flex align-items-center justify-content-center mb-3 shadow-sm fw-bold" style="width: 70px; height: 70px; font-size: 1.5rem; background-color: #1e69ff;">
+                            <div class="rounded-circle text-white d-inline-flex align-items-center justify-content-center mb-2 shadow-sm fw-bold" style="width: 50px; height: 50px; font-size: 1.1rem; background-color: #1e69ff;">
                                 {{ $initials }}
                             </div>
-                            <h6 class="fw-bold mb-1" style="color: #1a2332;">{{ $dossier->technicien->name ?? 'Non assigné' }}</h6>
-                            <p class="small text-muted mb-4">Technicien en charge</p>
+                            <h6 class="fw-bold mb-0" style="color: #1a2332; font-size: 0.9rem;">{{ $dossier->technicien->name ?? 'Non assigné' }}</h6>
+                            <p class="small text-muted mb-3" style="font-size: 0.7rem;">Technicien en charge</p>
                             
-                            @if(in_array(auth()->user()->role, ['Agent', 'Admin']))
+                            @if(auth()->user()->role === 'Admin')
                             <form action="{{ route('dossiers.assign', $dossier->id) }}" method="POST">
                                 @csrf
                                 <select name="technicien_id" class="form-select form-select-sm mb-3 rounded-pill border-0 bg-light text-center" style="font-size: 0.75rem;">
@@ -305,11 +360,11 @@
 
         {{-- ONGLET ATELIER --}}
         <div class="tab-pane fade" id="atelier">
-            <div class="row g-4">
+            <div class="row g-3">
                 <div class="col-lg-6">
-                    <div class="card shadow-sm border-0 mb-4 h-100" style="border-radius: 20px;">
-                        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="fw-bold text-primary mb-0"><i class="fas fa-microscope me-2"></i> Diagnostic Technique</h6>
+                    <div class="card shadow-sm border-0 mb-3 h-100" style="border-radius: 15px;">
+                        <div class="card-header bg-white border-0 py-2 px-3 d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold text-primary mb-0" style="font-size: 0.85rem;"><i class="fas fa-microscope me-1"></i> Diagnostic Technique</h6>
                             @if($dossier->diagnostic)
                                 <a href="{{ route('dossiers.diagnostic.pdf', $dossier->id) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold">
                                     <i class="fas fa-print me-1"></i> Imprimer
@@ -327,15 +382,15 @@
                                     <div class="p-3 bg-light rounded-3">{{ $dossier->diagnostic->recommandation }}</div>
                                 </div>
                             @else
-                                <div class="text-center py-5 text-muted small"><i class="fas fa-spinner fa-spin fa-2x mb-2 opacity-25"></i><p>En attente de diagnostic</p></div>
+                                <div class="text-center py-5 text-muted small"><i class="fas fa-clock fa-2x mb-2 opacity-25"></i><p>En attente de diagnostic</p></div>
                             @endif
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card shadow-sm border-0 mb-4 h-100" style="border-radius: 20px;">
-                        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="fw-bold text-success mb-0"><i class="fas fa-wrench me-2"></i> Intervention réalisée</h6>
+                    <div class="card shadow-sm border-0 mb-3 h-100" style="border-radius: 15px;">
+                        <div class="card-header bg-white border-0 py-2 px-3 d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold text-success mb-0" style="font-size: 0.85rem;"><i class="fas fa-wrench me-1"></i> Intervention réalisée</h6>
                             @if($dossier->intervention)
                                 <a href="{{ route('dossiers.intervention.pdf', $dossier->id) }}" target="_blank" class="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold">
                                     <i class="fas fa-print me-1"></i> Imprimer
@@ -359,17 +414,50 @@
 
         {{-- ONGLET FINANCES --}}
         <div class="tab-pane fade" id="finances">
-            <div class="row g-4">
+            <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
-                        <div class="card-body p-4">
-                            <h6 class="fw-bold text-primary mb-3">Devis Estimatif</h6>
+                    <div class="card shadow-sm border-0 mb-3" style="border-radius: 15px;">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold text-primary mb-0" style="font-size: 0.85rem;">Devis Estimatif</h6>
+                                @if($dossier->devis)
+                                    <a href="{{ route('devis.pdf', $dossier->devis->id) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" style="font-size: 0.75rem;">
+                                        <i class="fas fa-file-pdf me-1"></i> PDF
+                                    </a>
+                                @endif
+                            </div>
                             @if($dossier->devis)
                                 <div class="p-3 bg-light rounded-4 mb-3 d-flex justify-content-between align-items-center">
-                                    <div><div class="small text-muted">Total TTC</div><div class="h4 fw-bold mb-0">{{ number_format($dossier->devis->montant_ttc, 3, '.', ' ') }} DT</div></div>
+                                    <div><div class="small text-muted">Total TTC</div><div class="h4 fw-bold mb-0">{{ number_format($dossier->devis->montant_total, 3, '.', ' ') }} DT</div></div>
                                     <span class="badge rounded-pill px-3 bg-{{ $dossier->devis->statut == 'ACCEPTE' ? 'success' : 'warning' }}">{{ $dossier->devis->statut }}</span>
                                 </div>
-                                <a href="{{ route('devis.pdf', $dossier->devis->id) }}" target="_blank" class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold">Télécharger le PDF</a>
+
+                                @if($dossier->devis->statut === 'EN_ATTENTE' && in_array(auth()->user()->role, ['Admin', 'Agent']))
+                                    <div class="d-flex gap-2 mt-3">
+                                        <form action="{{ route('devis.accepter', $dossier->devis->id) }}" method="POST" class="flex-grow-1">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success btn-sm w-100 rounded-pill fw-bold" onclick="return confirm('Confirmer l\'acceptation du devis ?')">
+                                                <i class="fas fa-check me-1"></i> ACCEPTER
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('devis.refuser', $dossier->devis->id) }}" method="POST" class="flex-grow-1">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill fw-bold" onclick="return confirm('Confirmer le refus du devis ?')">
+                                                <i class="fas fa-times me-1"></i> REFUSER
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <small class="text-muted italic" style="font-size: 0.7rem;">Enregistrez la décision du client après contact.</small>
+                                    </div>
+                                @endif
+                            @elseif(in_array(auth()->user()->role, ['Admin', 'Agent']) && $dossier->statut === 'EN_ATTENTE_DEVIS')
+                                <div class="text-center py-4">
+                                    <p class="text-muted small mb-3">Prêt pour établissement du devis.</p>
+                                    <a href="{{ route('devis.create', $dossier->id) }}" class="btn btn-primary rounded-pill px-4 fw-bold">
+                                        <i class="fas fa-plus me-1"></i> Établir le Devis
+                                    </a>
+                                </div>
                             @else
                                 <div class="text-center py-4 text-muted small">Aucun devis généré pour ce dossier.</div>
                             @endif
@@ -379,13 +467,26 @@
                 <div class="col-md-6">
                     <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
                         <div class="card-body p-4">
-                            <h6 class="fw-bold text-success mb-3">Facturation</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold text-success mb-0">Facturation</h6>
+                                @if($dossier->facture)
+                                    <a href="{{ route('factures.pdf', $dossier->facture->id) }}" target="_blank" class="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold" style="font-size: 0.75rem;">
+                                        <i class="fas fa-file-pdf me-1"></i> PDF
+                                    </a>
+                                @endif
+                            </div>
                             @if($dossier->facture)
                                 <div class="p-3 bg-light rounded-4 mb-3 d-flex justify-content-between align-items-center">
                                     <div><div class="small text-muted">Montant Net TTC</div><div class="h4 fw-bold mb-0">{{ number_format($dossier->facture->montant_total, 3, '.', ' ') }} DT</div></div>
                                     <span class="badge rounded-pill px-3 bg-success">PAYÉ / FACTURÉ</span>
                                 </div>
-                                <a href="{{ route('factures.pdf', $dossier->facture->id) }}" target="_blank" class="btn btn-outline-success w-100 rounded-pill btn-sm fw-bold">Télécharger la facture PDF</a>
+                            @elseif(in_array(auth()->user()->role, ['Admin', 'Agent']) && $dossier->statut === 'REPARE')
+                                <div class="text-center py-4">
+                                    <p class="text-muted small mb-3">Réparation terminée. Vous pouvez facturer le client.</p>
+                                    <a href="{{ route('factures.create', $dossier->id) }}" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">
+                                        <i class="fas fa-file-invoice me-1"></i> Générer la Facture
+                                    </a>
+                                </div>
                             @else
                                 <div class="text-center py-4 text-muted small">Aucune facture disponible.</div>
                             @endif
@@ -397,21 +498,78 @@
 
         {{-- ONGLET COMMUNICATION --}}
         <div class="tab-pane fade" id="communication">
-            <div class="card shadow-sm border-0" style="border-radius: 20px;">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold text-primary mb-4"><i class="fas fa-comments me-2"></i> Messages interne / Client</h6>
-                    <div class="chat-box mb-4" style="max-height: 400px; overflow-y: auto;">
-                        @forelse($dossier->messages as $msg)
-                            <div class="mb-3 {{ $msg->user_id == auth()->id() ? 'text-end' : '' }}">
-                                <div class="d-inline-block p-3 rounded-4 {{ $msg->user_id == auth()->id() ? 'bg-primary text-white shadow-sm' : 'bg-light text-dark shadow-sm' }}" style="max-width: 80%;">
-                                    <div class="small fw-bold opacity-75 mb-1">{{ $msg->user->name }}</div>
-                                    <div class="small">{{ $msg->message }}</div>
-                                    <div class="text-end mt-1" style="font-size: 0.6rem; opacity: 0.5;">{{ $msg->created_at ? $msg->created_at->format('H:i') : '' }}</div>
-                                </div>
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold text-primary mb-3" style="font-size: 0.85rem;"><i class="fas fa-comments me-2"></i> Flux de communication</h6>
+                            
+                            <div id="section-messages" class="chat-box mb-3 p-2 bg-light rounded-3" style="height: 300px; overflow-y: auto; border: 1px solid #edf2f7;">
+                                @forelse($dossier->messages->sortBy('created_at') as $msg)
+                                    @php
+                                        $isInternal = str_starts_with($msg->message, '[INT] ');
+                                        $cleanMessage = $isInternal ? substr($msg->message, 6) : $msg->message;
+                                        $isMe = $msg->user_id == auth()->id();
+                                    @endphp
+                                    <div class="mb-3 d-flex {{ $isMe ? 'justify-content-end' : 'justify-content-start' }}">
+                                        <div class="message-bubble p-3 rounded-4 shadow-sm {{ $isInternal ? 'bg-warning bg-opacity-10 border border-warning border-opacity-25' : ($isMe ? 'bg-primary text-white' : 'bg-white text-dark') }}" style="max-width: 80%; min-width: 150px;">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-bold" style="font-size: 0.75rem;">
+                                                    {{ $msg->user->name }}
+                                                    @if($isInternal)
+                                                        <span class="badge bg-warning text-dark ms-2" style="font-size: 0.55rem;"><i class="fas fa-lock me-1"></i> INTERNE</span>
+                                                    @endif
+                                                </span>
+                                                <span class="opacity-50 ms-3" style="font-size: 0.6rem;">{{ $msg->created_at ? $msg->created_at->format('d/m H:i') : '' }}</span>
+                                            </div>
+                                            <div style="font-size: 0.85rem; line-height: 1.4;">{{ $cleanMessage }}</div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="text-center py-5 text-muted small">
+                                        <i class="fas fa-comments fa-3x mb-3 opacity-25"></i>
+                                        <p>Aucun message pour le moment.</p>
+                                    </div>
+                                @endforelse
                             </div>
-                        @empty
-                            <div class="text-center py-5 text-muted small"><p>Aucun message échangé.</p></div>
-                        @endforelse
+
+                            {{-- Formulaire d'envoi --}}
+                            <form action="{{ route('dossiers.messages.store', $dossier->id) }}#section-messages" method="POST">
+                                @csrf
+                                <div class="bg-white border rounded-4 p-3 shadow-sm">
+                                    <textarea name="message" class="form-control border-0 bg-transparent mb-2" rows="3" placeholder="Tapez votre message ici..." required style="box-shadow: none; resize: none;"></textarea>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex gap-3">
+                                            @if(auth()->user()->role !== 'Client')
+                                                <div class="form-check form-check-inline m-0">
+                                                    <input class="form-check-input" type="radio" name="type" id="typePublic" value="public" checked>
+                                                    <label class="form-check-label small fw-bold text-muted" for="typePublic">Communication Client</label>
+                                                </div>
+                                                <div class="form-check form-check-inline m-0">
+                                                    <input class="form-check-input" type="radio" name="type" id="typeInternal" value="internal">
+                                                    <label class="form-check-label small fw-bold text-warning" for="typeInternal">Note Interne <i class="fas fa-lock small"></i></label>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">
+                                            Envoyer <i class="fas fa-paper-plane ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 bg-light">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-dark mb-3">Guide de communication</h6>
+                            <ul class="small text-muted ps-3 mb-0">
+                                <li class="mb-2"><strong>Communication Client</strong> : Visible par le client sur son interface de suivi. Utilisez ce mode pour les demandes d'informations ou mises à jour.</li>
+                                <li><strong>Note Interne</strong> : Visible uniquement par l'équipe administrative et les techniciens. Utilisez ce mode pour les détails techniques ou observations d'atelier.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -515,4 +673,85 @@
         </div>
     </div>
 </div>
+{{-- Modal Refus Remplacement (Admin) --}}
+<div class="modal fade" id="refusRemplacementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger">Refus de remplacement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('dossiers.refuserRemplacement', $dossier->id) }}" method="POST">
+                @csrf
+                <div class="modal-body p-4">
+                    <p class="text-muted small">Veuillez obligatoirement justifier le refus de remplacement pour ce dossier sous garantie.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase" style="color: #64748b;">Motif du refus</label>
+                        <textarea name="raison" class="form-control bg-light border-0" rows="3" placeholder="Ex: Mauvaise utilisation non détectée, trace de choc interne..." required style="border-radius: 10px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">CONFIRMER LE REFUS</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{-- Modal Préparer Remplacement (Agent) --}}
+<div class="modal fade" id="preparerRemplacementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-success"><i class="fas fa-box-open me-2"></i> Nouvel Appareil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('dossiers.storeRemplacement', $dossier->id) }}" method="POST">
+                @csrf
+                <div class="modal-body p-4">
+                    <p class="text-muted small">Saisissez les informations de l'unité de remplacement remise au client.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase" style="color: #64748b;">Nouvel IMEI <span class="text-danger">*</span></label>
+                        <input type="text" name="imei_remplacement" class="form-control bg-light border-0" placeholder="Ex: 356938035643809" required style="border-radius: 10px;">
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label fw-bold small text-uppercase" style="color: #64748b;">Modèle (si différent)</label>
+                        <input type="text" name="modele_remplacement" class="form-control bg-light border-0" placeholder="Ex: {{ $dossier->appareil->modele }}" value="{{ $dossier->appareil->modele }}" style="border-radius: 10px;">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold">ENREGISTRER LE REMPLACEMENT</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+// Activer l'onglet selon le paramètre ?tab= dans l'URL
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab) {
+        const tabBtn = document.querySelector('[data-bs-target="#' + tab + '"]');
+        if (tabBtn) {
+            tabBtn.click();
+            // Scroll vers la zone de messages si on revient de l'envoi
+            if (tab === 'communication') {
+                setTimeout(() => {
+                    const msgBox = document.getElementById('section-messages');
+                    if (msgBox) {
+                        msgBox.scrollTop = msgBox.scrollHeight;
+                    }
+                }, 300);
+            }
+        }
+    }
+});
+</script>
+@endpush

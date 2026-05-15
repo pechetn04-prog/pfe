@@ -134,9 +134,14 @@ class InterventionController extends Controller
         return redirect()->route('technicien.tickets')->with('success', 'Intervention enregistrée avec succès.');
     }
 
-    public function show(Intervention $intervention)
+    public function show(Dossier $dossier)
     {
-        return view('interventions.show', compact('intervention'));
+        $intervention = $dossier->intervention;
+        if (!$intervention) {
+            return redirect()->route('dossiers.show', $dossier->id)->with('error', 'Aucune intervention trouvée.');
+        }
+        $intervention->load('pieces', 'technicien', 'dossier.client', 'dossier.appareil');
+        return view('interventions.show', compact('intervention', 'dossier'));
     }
 
     public function pdf(Intervention $intervention)

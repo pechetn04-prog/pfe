@@ -27,47 +27,51 @@
                                 <div class="bg-soft-primary p-2 rounded-3 me-3">
                                     <i class="fas fa-microchip text-primary"></i>
                                 </div>
-                                <h6 class="fw-bold mb-0">1. Pièces détachées (Suggérées par le technicien)</h6>
+                                <h6 class="fw-bold mb-0">1. Pièces détachées</h6>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-hover align-middle" id="piecesTable">
                                         <thead class="bg-light">
                                             <tr class="small text-muted text-uppercase">
-                                                <th style="width: 40%;">Désignation</th>
-                                                <th style="width: 20%;">P.U (DA)</th>
+                                                <th style="width: 35%;">Désignation</th>
+                                                <th style="width: 20%;">P.U (DT)</th>
                                                 <th style="width: 15%;">Qté</th>
-                                                <th style="width: 25%;" class="text-end">Total</th>
+                                                <th style="width: 20%;">Total</th>
+                                                <th style="width: 10%;" class="text-end">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($dossier->diagnostic->pieces as $index => $piece)
-                                            <tr>
+                                            <tr class="piece-row">
                                                 <td>
-                                                    <input type="hidden" name="pieces[{{ $index }}][id]" value="{{ $piece->id }}">
-                                                    <div class="fw-bold text-dark">{{ $piece->nom }}</div>
-                                                    <small class="text-muted">{{ $piece->reference }}</small>
+                                                    <select name="pieces[{{ $index }}][id]" class="form-select form-select-sm border-0 bg-light rounded-pill piece-select" required>
+                                                        @foreach($pieces as $p)
+                                                            <option value="{{ $p->id }}" {{ $piece->id == $p->id ? 'selected' : '' }} data-price="{{ $p->prix_unitaire }}">{{ $p->nom }} ({{ $p->reference }})</option>
+                                                        @endforeach
+                                                    </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" step="0.01" name="pieces[{{ $index }}][prix_unitaire]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 price-input" value="{{ $piece->prix_unitaire }}" data-index="{{ $index }}">
+                                                    <input type="number" step="0.001" name="pieces[{{ $index }}][prix_unitaire]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 price-input text-center" value="{{ $piece->pivot->prix_unitaire ?? $piece->prix_unitaire }}" required>
                                                 </td>
                                                 <td>
-                                                    <input type="number" name="pieces[{{ $index }}][quantite]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 qty-input" value="{{ $piece->pivot->quantite ?? 1 }}" data-index="{{ $index }}">
+                                                    <input type="number" name="pieces[{{ $index }}][quantite]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 qty-input text-center" value="{{ $piece->pivot->quantite ?? 1 }}" required>
                                                 </td>
-                                                <td class="text-end fw-bold text-primary">
-                                                    <span class="line-total" id="total-piece-{{ $index }}">{{ number_format(($piece->prix_unitaire * ($piece->pivot->quantite ?? 1)), 2, '.', '') }}</span> DA
+                                                <td class="fw-bold text-primary line-total">0.000</td>
+                                                <td class="text-end">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
                                                 </td>
                                             </tr>
                                             @endforeach
-                                            @if($dossier->diagnostic->pieces->isEmpty())
-                                            <tr><td colspan="4" class="text-center py-4 text-muted small">Aucune pièce suggérée.</td></tr>
-                                            @endif
                                         </tbody>
                                     </table>
                                 </div>
+                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill fw-bold" id="addPieceBtn">
+                                    <i class="fas fa-plus me-1"></i> Ajouter une pièce
+                                </button>
                             </div>
                         </div>
-
+ 
                         {{-- Section 2 : Prestations --}}
                         <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
@@ -81,28 +85,35 @@
                                     <table class="table table-hover align-middle" id="laborsTable">
                                         <thead class="bg-light">
                                             <tr class="small text-muted text-uppercase">
-                                                <th style="width: 60%;">Type d'intervention</th>
-                                                <th style="width: 40%;" class="text-end">Montant (DA)</th>
+                                                <th style="width: 50%;">Type d'intervention</th>
+                                                <th style="width: 30%;" class="text-center">Montant (DT)</th>
+                                                <th style="width: 20%;" class="text-end">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($dossier->diagnostic->tarifsMo as $index => $tarif)
-                                            <tr>
+                                            <tr class="labor-row">
                                                 <td>
-                                                    <input type="hidden" name="labors[{{ $index }}][id]" value="{{ $tarif->id }}">
-                                                    <div class="fw-bold text-dark">{{ $tarif->type_intervention }}</div>
+                                                    <select name="labors[{{ $index }}][id]" class="form-select form-select-sm border-0 bg-light rounded-pill labor-select" required>
+                                                        @foreach($tarifsMo as $t)
+                                                            <option value="{{ $t->id }}" {{ $tarif->id == $t->id ? 'selected' : '' }} data-price="{{ $t->montant }}">{{ $t->type_intervention }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" step="0.001" name="labors[{{ $index }}][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="{{ $tarif->pivot->montant ?? $tarif->montant }}" required>
                                                 </td>
                                                 <td class="text-end">
-                                                    <input type="number" step="0.01" name="labors[{{ $index }}][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-end labor-input" value="{{ $tarif->montant }}" style="width: 150px; display: inline-block;">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
                                                 </td>
                                             </tr>
                                             @endforeach
-                                            @if($dossier->diagnostic->tarifsMo->isEmpty())
-                                            <tr><td colspan="2" class="text-center py-4 text-muted small">Aucune prestation sélectionnée.</td></tr>
-                                            @endif
                                         </tbody>
                                     </table>
                                 </div>
+                                <button type="button" class="btn btn-outline-info btn-sm rounded-pill fw-bold" id="addLaborBtn">
+                                    <i class="fas fa-plus me-1"></i> Ajouter une prestation
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -120,11 +131,6 @@
                                 <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-light">
                                     <span class="text-muted">Total Main d'œuvre</span>
                                     <span class="fw-bold" id="grand-total-labors">0.000 DT</span>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="small fw-bold text-muted text-uppercase mb-1">Remise Globale (%)</label>
-                                    <input type="number" name="remise" id="remiseInput" class="form-control border-0 bg-light rounded-pill px-3" value="0" min="0" max="100">
                                 </div>
 
                                 <div class="bg-primary bg-opacity-10 p-3 rounded-4 mb-4">
@@ -154,77 +160,130 @@
     </div>
 </div>
 
+{{-- Templates JS --}}
+<template id="pieceRowTemplate">
+    <tr class="piece-row">
+        <td>
+            <select name="pieces[INDEX][id]" class="form-select form-select-sm border-0 bg-light rounded-pill piece-select" required>
+                <option value="">-- Choisir --</option>
+                @foreach($pieces as $p)
+                    <option value="{{ $p->id }}" data-price="{{ $p->prix_unitaire }}">{{ $p->nom }} ({{ $p->reference }})</option>
+                @endforeach
+            </select>
+        </td>
+        <td>
+            <input type="number" step="0.001" name="pieces[INDEX][prix_unitaire]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 price-input text-center" value="0.000" required>
+        </td>
+        <td>
+            <input type="number" name="pieces[INDEX][quantite]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 qty-input text-center" value="1" required>
+        </td>
+        <td class="fw-bold text-primary line-total">0.000</td>
+        <td class="text-end">
+            <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
+        </td>
+    </tr>
+</template>
+
+<template id="laborRowTemplate">
+    <tr class="labor-row">
+        <td>
+            <select name="labors[INDEX][id]" class="form-select form-select-sm border-0 bg-light rounded-pill labor-select" required>
+                <option value="">-- Choisir --</option>
+                @foreach($tarifsMo as $t)
+                    <option value="{{ $t->id }}" data-price="{{ $t->montant }}">{{ $t->type_intervention }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td>
+            <input type="number" step="0.001" name="labors[INDEX][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="0.000" required>
+        </td>
+        <td class="text-end">
+            <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
+        </td>
+    </tr>
+</template>
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const remiseInput = document.getElementById('remiseInput');
     const finalTotalDisplay = document.getElementById('finalTotalDisplay');
     const finalTotalInput = document.getElementById('finalTotalInput');
     const grandTotalPiecesDisplay = document.getElementById('grand-total-pieces');
     const grandTotalLaborsDisplay = document.getElementById('grand-total-labors');
-
-    function parseVal(val) {
-        if (!val) return 0;
-        // Remplacer virgule par point pour le calcul
-        let cleanVal = val.toString().replace(',', '.');
-        let parsed = parseFloat(cleanVal);
-        return isNaN(parsed) ? 0 : parsed;
-    }
+    
+    let pieceIndex = {{ $dossier->diagnostic->pieces->count() }};
+    let laborIndex = {{ $dossier->diagnostic->tarifsMo->count() }};
 
     function calculate() {
         let totalPieces = 0;
         let totalLabors = 0;
 
-        // Calcul pièces
-        const pieceRows = document.querySelectorAll('#piecesTable tbody tr');
-        pieceRows.forEach(row => {
-            const priceInput = row.querySelector('.price-input');
-            const qtyInput = row.querySelector('.qty-input');
-            
-            if (priceInput && qtyInput) {
-                const price = parseVal(priceInput.value);
-                const qty = parseVal(qtyInput.value);
-                const lineTotal = price * qty;
-                
-                const totalSpan = row.querySelector('.line-total');
-                if (totalSpan) {
-                    totalSpan.textContent = lineTotal.toLocaleString('fr-FR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-                }
-                totalPieces += lineTotal;
-            }
+        document.querySelectorAll('.piece-row').forEach(row => {
+            const price = parseFloat(row.querySelector('.price-input').value) || 0;
+            const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+            const lineTotal = price * qty;
+            row.querySelector('.line-total').textContent = lineTotal.toFixed(3);
+            totalPieces += lineTotal;
         });
 
-        // Calcul MO
-        const laborInputs = document.querySelectorAll('.labor-input');
-        laborInputs.forEach(input => {
-            totalLabors += parseVal(input.value);
+        document.querySelectorAll('.labor-input').forEach(input => {
+            totalLabors += parseFloat(input.value) || 0;
         });
 
-        const subtotal = totalPieces + totalLabors;
-        const remisePct = parseVal(remiseInput.value);
-        const montantRemise = subtotal * (remisePct / 100);
-        const finalTotal = subtotal - montantRemise;
+        const total = totalPieces + totalLabors;
 
-        // Affichage
-        grandTotalPiecesDisplay.textContent = totalPieces.toLocaleString('fr-FR', { minimumFractionDigits: 3 }) + ' DT';
-        grandTotalLaborsDisplay.textContent = totalLabors.toLocaleString('fr-FR', { minimumFractionDigits: 3 }) + ' DT';
-        finalTotalDisplay.textContent = finalTotal.toLocaleString('fr-FR', { minimumFractionDigits: 3 });
-        
-        // Valeur pour le formulaire (doit être avec un point)
-        finalTotalInput.value = finalTotal.toFixed(3);
+        grandTotalPiecesDisplay.textContent = totalPieces.toFixed(3) + ' DT';
+        grandTotalLaborsDisplay.textContent = totalLabors.toFixed(3) + ' DT';
+        finalTotalDisplay.textContent = total.toFixed(3);
+        finalTotalInput.value = total.toFixed(3);
     }
 
-    // Ecouter tous les changements
-    document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('price-input') || 
-            e.target.classList.contains('qty-input') || 
-            e.target.classList.contains('labor-input') || 
-            e.target.id === 'remiseInput') {
+    // Ajouter une pièce
+    document.getElementById('addPieceBtn').addEventListener('click', function() {
+        const template = document.getElementById('pieceRowTemplate').innerHTML;
+        const html = template.replace(/INDEX/g, pieceIndex++);
+        document.querySelector('#piecesTable tbody').insertAdjacentHTML('beforeend', html);
+        calculate();
+    });
+
+    // Ajouter une prestation
+    document.getElementById('addLaborBtn').addEventListener('click', function() {
+        const template = document.getElementById('laborRowTemplate').innerHTML;
+        const html = template.replace(/INDEX/g, laborIndex++);
+        document.querySelector('#laborsTable tbody').insertAdjacentHTML('beforeend', html);
+        calculate();
+    });
+
+    // Supprimer une ligne
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-row')) {
+            e.target.closest('tr').remove();
             calculate();
         }
     });
 
-    calculate(); // Appel initial
+    // Changement de sélection (auto-prix)
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('piece-select')) {
+            const price = e.target.options[e.target.selectedIndex].dataset.price || 0;
+            e.target.closest('tr').querySelector('.price-input').value = price;
+            calculate();
+        }
+        if (e.target.classList.contains('labor-select')) {
+            const price = e.target.options[e.target.selectedIndex].dataset.price || 0;
+            e.target.closest('tr').querySelector('.labor-input').value = price;
+            calculate();
+        }
+    });
+
+    // Changement de prix/quantité
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('price-input') || e.target.classList.contains('qty-input') || e.target.classList.contains('labor-input')) {
+            calculate();
+        }
+    });
+
+    calculate();
 });
 </script>
 @endpush

@@ -97,17 +97,43 @@
                         </ul>
                     </div>
 
-                    {{-- User Profile --}}
-                    <a href="{{ route('profile.edit') }}" class="d-flex align-items-center gap-2 ps-3 border-start text-decoration-none transition-all hover-opacity">
-                        <div class="text-end d-none d-sm-block">
-                            <div class="fw-bold small text-dark lh-1">{{ auth()->user()->name }}</div>
-                            <small class="text-muted" style="font-size:0.7rem;">{{ auth()->user()->role }}</small>
-                        </div>
-                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm"
-                            style="width:38px; height:38px; font-size:0.8rem;">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                        </div>
-                    </a>
+                    {{-- User Profile Dropdown --}}
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center gap-2 ps-3 border-start text-decoration-none transition-all hover-opacity" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="text-end d-none d-sm-block">
+                                <div class="fw-bold small text-dark lh-1">{{ auth()->user()->name }}</div>
+                                <small class="text-muted" style="font-size:0.7rem;">{{ auth()->user()->role }}</small>
+                            </div>
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm"
+                                style="width:38px; height:38px; font-size:0.8rem;">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 py-2" style="border-radius: 12px; min-width: 200px;">
+                            <li>
+                                <div class="px-3 py-2 border-bottom mb-1">
+                                    <div class="fw-bold text-dark small text-truncate" style="max-width: 170px;">{{ auth()->user()->name }}</div>
+                                    <div class="text-muted small" style="font-size: 0.65rem;">{{ auth()->user()->email }}</div>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ route('profile.edit') }}">
+                                    <i class="fas fa-user-circle me-2 text-muted"></i> 
+                                    <span class="small fw-bold">Mon Profil</span>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider opacity-50"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item d-flex align-items-center py-2 text-danger border-0 bg-transparent w-100 text-start">
+                                        <i class="fas fa-sign-out-alt me-2"></i> 
+                                        <span class="small fw-bold">Déconnexion</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </header>
             @endauth

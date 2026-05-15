@@ -31,7 +31,7 @@
                         <option value="">-- Choisir une pièce --</option>
                         @foreach($pieces as $p)
                             <option value="{{ $p->id }}" {{ (request('piece_id') == $p->id || old('piece_id') == $p->id) ? 'selected' : '' }}>
-                                [{{ $p->reference }}] {{ $p->nom }} (Stock actuel : {{ $p->quantite_stock ?? $p->stock_actuel }})
+                                [{{ $p->reference }}] {{ $p->nom }} (Stock actuel : {{ $p->quantite }})
                             </option>
                         @endforeach
                     </select>

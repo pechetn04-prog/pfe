@@ -4,11 +4,11 @@ namespace App\Notifications;
 
 use App\Models\Facture;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+// ShouldQueue retiré : envoi synchrone
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class FactureCreatedNotification extends Notification implements ShouldQueue
+class FactureCreatedNotification extends Notification
 {
     use Queueable;
 

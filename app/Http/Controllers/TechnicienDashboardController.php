@@ -39,9 +39,16 @@ class TechnicienDashboardController extends Controller
             ->take(5)
             ->get();
 
+        $dossiersTermines = Dossier::where('technicien_id', $user->id)
+            ->whereIn('statut', ['REPARE', 'IRREPARABLE', 'LIVRE', 'CLOTURE', 'FACTURE'])
+            ->with(['client', 'appareil'])
+            ->latest('updated_at')
+            ->take(10)
+            ->get();
+
         return view('technicien.dashboard', compact(
             'totalAssigne', 'aDiagnostiquer', 'enReparation', 'attentePieces', 'terminesMois', 'dossiersEnCours', 
-            'dossiersDiagnostique', 'dossiersReparation'
+            'dossiersDiagnostique', 'dossiersReparation', 'dossiersTermines'
         ));
     }
 

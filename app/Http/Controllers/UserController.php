@@ -20,6 +20,16 @@ class UserController extends Controller
     {
         $query = User::query()->latest();
 
+        // Filtre par texte (nom, email, téléphone)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('telephone', 'like', "%{$search}%");
+            });
+        }
+
         // Si c'est un agent, on force le filtre sur les clients uniquement
         if (auth()->user()->role === 'Agent') {
             $query->where('role', 'Client');
@@ -27,7 +37,7 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
-        $users = $query->paginate(20);
+        $users = $query->paginate(20)->withQueryString();
 
         return view('users.index', compact('users'));
     }

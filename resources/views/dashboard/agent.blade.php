@@ -63,7 +63,8 @@
                     <tr class="small text-muted text-uppercase">
                         <th class="ps-4">N° Dossier</th>
                         <th>Client</th>
-                        <th>Technicien</th>
+                        <th>Appareil</th>
+                        <th class="text-center">Garantie</th>
                         <th>Statut</th>
                         <th class="text-end pe-4">Action</th>
                     </tr>
@@ -71,19 +72,37 @@
                 <tbody>
                     @forelse($recentDossiers as $d)
                     @php
-                        $statClasses = ['AFFECTE'=>'bg-secondary','EN_DIAGNOSTIC'=>'bg-info text-dark','EN_REPARATION'=>'bg-primary','EN_ATTENTE_DEVIS'=>'bg-warning text-dark','REPARE'=>'bg-success','FACTURE'=>'bg-success','LIVRE'=>'bg-success','CLOTURE'=>'bg-dark','IRREPARABLE'=>'bg-danger','DEVIS_REFUSE'=>'bg-danger'];
+                        $statClasses = ['RECU'=>'bg-secondary','AFFECTE'=>'bg-secondary','EN_DIAGNOSTIC'=>'bg-info text-dark','EN_REPARATION'=>'bg-primary','EN_ATTENTE_DEVIS'=>'bg-warning text-dark','REPARE'=>'bg-success','FACTURE'=>'bg-success','LIVRE'=>'bg-success','CLOTURE'=>'bg-dark','IRREPARABLE'=>'bg-danger','DEVIS_REFUSE'=>'bg-danger'];
+                        $statLabels = ['RECU'=>'Reçu','AFFECTE'=>'Affecté','EN_DIAGNOSTIC'=>'Diagnostic','EN_REPARATION'=>'En réparation','EN_ATTENTE_DEVIS'=>'Attente devis','REPARE'=>'Réparé','FACTURE'=>'Facturé','LIVRE'=>'Livré','CLOTURE'=>'Clôturé','IRREPARABLE'=>'Irréparable','DEVIS_REFUSE'=>'Devis refusé'];
                     @endphp
                     <tr>
                         <td class="ps-4 fw-bold text-primary">#{{ $d->num_dossier }}</td>
-                        <td>{{ $d->client->name ?? '—' }}</td>
-                        <td>{{ $d->technicien->name ?? '<span class="text-muted">Non assigné</span>' }}</td>
-                        <td><span class="badge {{ $statClasses[$d->statut] ?? 'bg-secondary' }} rounded-pill px-3">{{ $d->statut }}</span></td>
+                        <td>
+                            <div class="fw-bold text-dark small">{{ $d->client->name ?? '—' }}</div>
+                            <div class="text-muted" style="font-size:0.7rem;">{{ $d->client->telephone ?? '' }}</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold small">{{ $d->appareil->modele ?? '—' }}</div>
+                            <div class="text-muted" style="font-size:0.7rem;">{{ $d->imei ?? '' }}</div>
+                        </td>
+                        <td class="text-center">
+                            @if($d->sous_garantie)
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1" style="font-size:0.6rem;">
+                                    <i class="fas fa-shield-alt me-1"></i> GARANTIE
+                                </span>
+                            @else
+                                <span class="badge bg-light text-muted border rounded-pill px-2 py-1" style="font-size:0.6rem;">
+                                    Hors garantie
+                                </span>
+                            @endif
+                        </td>
+                        <td><span class="badge {{ $statClasses[$d->statut] ?? 'bg-secondary' }} rounded-pill px-3" style="font-size:0.65rem;">{{ $statLabels[$d->statut] ?? $d->statut }}</span></td>
                         <td class="text-end pe-4">
                             <a href="{{ route('dossiers.show', $d->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Voir</a>
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="5" class="text-center py-4 text-muted">Aucun dossier récent.</td></tr>
+                    <tr><td colspan="6" class="text-center py-4 text-muted">Aucun dossier récent.</td></tr>
                     @endforelse
                 </tbody>
             </table>

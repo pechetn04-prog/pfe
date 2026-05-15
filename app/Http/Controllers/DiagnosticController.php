@@ -45,12 +45,18 @@ class DiagnosticController extends Controller
      */
     public function store(Request $request, Dossier $dossier)
     {
+        $photoPath = null;
+        if ($request->hasFile('photo_panne')) {
+            $photoPath = $request->file('photo_panne')->store('diagnostics', 'public');
+        }
+
         $diagnostic = Diagnostic::updateOrCreate(
             ['dossier_id' => $dossier->id],
             [
                 'technicien_id' => Auth::id(),
                 'constat' => $request->constat_technique,
                 'recommandation' => $request->recommandation,
+                'photo_panne' => $photoPath ?? $dossier->diagnostic->photo_panne ?? null,
                 'motif_exclusion' => $request->has('exclusion_garantie') ? ($request->motif_exclusion ?? 'Usage non conforme') : null,
                 'exclusion_commentaire' => $request->exclusion_commentaire,
                 'date_diagnostic' => now(),
@@ -88,7 +94,7 @@ class DiagnosticController extends Controller
         }
 
         // UC04 - Point 7 : Logique de décision finale
-        $isReparable = $request->has('is_reparable');
+        $isReparable = $request->is_reparable == '1';
         $exclusionGarantie = $request->has('exclusion_garantie');
         $isGarantieValide = $dossier->sous_garantie && !$exclusionGarantie;
         

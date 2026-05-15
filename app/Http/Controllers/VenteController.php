@@ -33,18 +33,18 @@ class VenteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'imei'               => 'required|string|unique:ventes,imei',
-            'modele'             => 'required|string|max:255',
-            'client_nom'         => 'required|string|max:255',
-            'client_email'       => 'nullable|email',
-            'date_vente'         => 'required|date',
-            'duree_garantie_mois'=> 'required|integer|min:0',
+            'imei'                 => 'required|string|unique:ventes,imei',
+            'modele'               => 'required|string|max:255',
+            'client_nom'           => 'required|string|max:255',
+            'client_email'         => 'nullable|email',
+            'date_vente'           => 'required|date',
+            'duree_garantie_mois'  => 'required|integer|min:0',
+            'type'                 => 'nullable|string',
+            'reference_produit'    => 'nullable|string',
+            'numero_facture_vente' => 'nullable|string',
         ]);
 
-        Vente::create($request->only([
-            'imei', 'modele', 'reference_produit', 'client_nom',
-            'client_email', 'date_vente', 'duree_garantie_mois',
-        ]));
+        Vente::create($request->all());
 
         return redirect()->route('ventes.index')
             ->with('success', 'Vente enregistrée avec succès.');

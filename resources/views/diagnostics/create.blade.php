@@ -2,282 +2,467 @@
 
 @section('title', 'Expertise & Diagnostic Technique')
 
+@push('styles')
+    <style>
+        .status-selector {
+            background-color: var(--btn-bg) !important;
+            border: 2px solid transparent !important;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .status-selector .icon-circle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--btn-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-selector .title {
+            color: var(--btn-color);
+        }
+
+        .btn-check:checked+.status-selector {
+            border-color: var(--btn-color) !important;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+@endpush
+
 @section('content')
-    <div class="container-fluid px-4 py-3">
+    <div class="container-fluid px-4 py-4">
+        {{-- Header --}}
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="h4 fw-bold mb-0">Expertise & Diagnostic Technique</h1>
-                <small class="text-muted">Dossier <strong class="text-primary">#{{ $dossier->num_dossier }}</strong></small>
+                <h1 class="h3 fw-bold mb-0 text-gray-800">Expertise & Diagnostic Technique</h1>
+                <p class="text-muted mb-0">Dossier <strong class="text-primary">#{{ $dossier->num_dossier }}</strong> —
+                    Phase d'expertise</p>
             </div>
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#modalRetrait">
+                <button type="button" class="btn btn-outline-danger rounded-pill px-4 fw-bold" data-bs-toggle="modal"
+                    data-bs-target="#modalRetrait">
                     <i class="fas fa-undo-alt me-1"></i> Demander Retrait
                 </button>
-                <a href="{{ route('technicien.tickets') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
-                    <i class="fas fa-arrow-left me-2"></i> Annuler
+                <a href="{{ route('technicien.tickets') }}" class="btn btn-secondary rounded-pill px-4">
+                    <i class="fas fa-times me-2"></i> Annuler
                 </a>
             </div>
         </div>
 
-        <form action="{{ route('diagnostics.store', $dossier->id) }}" method="POST">
+        <form action="{{ route('diagnostics.store', $dossier->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row g-4">
-
-                {{-- ═══ COLONNE GAUCHE : Infos dossier ═══ --}}
+                {{-- SIDEBAR: Infos Dossier --}}
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-sm sticky-top" style="border-radius:16px; top:1.5rem;">
                         <div class="card-header bg-white border-0 py-3">
                             <h6 class="m-0 fw-bold d-flex align-items-center gap-2">
-                                <span class="p-2 bg-primary bg-opacity-10 text-primary rounded-3"
-                                    style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;">
-                                    <i class="fas fa-folder-open small"></i>
-                                </span>
-                                DOSSIER CLIENT
+                                <i class="fas fa-info-circle text-primary"></i> RÉSUMÉ DU DOSSIER
                             </h6>
                         </div>
-                        <div class="card-body d-flex flex-column gap-3">
-                            <div class="p-3 bg-light rounded-3">
-                                <div class="text-muted" style="font-size:.65rem; font-weight:700; letter-spacing:.5px;">
-                                    APPAREIL</div>
-                                <div class="fw-bold">{{ $dossier->appareil->modele ?? '—' }}</div>
-                                <div class="small text-muted font-monospace">IMEI: {{ $dossier->imei }}</div>
+                        <div class="card-body p-4 pt-0">
+                            <div class="mb-4">
+                                <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Appareil &
+                                    Identification</label>
+                                <div class="p-3 bg-light rounded-3 border-start border-4 border-primary">
+                                    <div class="fw-bold h5 mb-1">{{ $dossier->appareil->modele ?? 'Modèle Inconnu' }}</div>
+                                    <div class="small text-muted font-monospace">IMEI: {{ $dossier->imei }}</div>
+                                    <div class="mt-2">
+                                        <span
+                                            class="badge rounded-pill {{ $dossier->sous_garantie ? 'bg-success' : 'bg-secondary' }}">
+                                            {{ $dossier->sous_garantie ? '✓ SOUS GARANTIE' : 'HORS GARANTIE' }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="p-3 bg-light rounded-3">
-                                <div class="text-muted mb-1"
-                                    style="font-size:.65rem; font-weight:700; letter-spacing:.5px;">PANNE DÉCLARÉE</div>
-                                <div class="small fst-italic">"{{ $dossier->panne_declaree }}"</div>
+
+                            <div class="mb-4">
+                                <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Panne Déclarée par le
+                                    Client</label>
+                                <div class="p-3 bg-light rounded-3 border">
+                                    <p class="mb-0 fst-italic text-dark">"{{ $dossier->panne_declaree }}"</p>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">Reçu le
-                                    <strong>{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</strong></small>
-                                <span
-                                    class="badge rounded-pill {{ $dossier->sous_garantie ? 'bg-success' : 'bg-secondary' }}">
-                                    {{ $dossier->sous_garantie ? '✓ SOUS GARANTIE' : 'HORS GARANTIE' }}
-                                </span>
+
+                            <div class="mb-0">
+                                <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Informations de
+                                    Réception</label>
+                                <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded-2 small">
+                                    <span class="text-muted">Reçu le :</span>
+                                    <span
+                                        class="fw-bold">{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</span>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {{-- PIÈCE JOINTE --}}
+                    <div class="card border-0 shadow-sm mt-4" style="border-radius:16px;">
+                        <div class="card-header bg-white border-0 py-3 text-center">
+                            <h6 class="m-0 fw-bold text-muted small text-uppercase">
+                                <i class="fas fa-camera text-primary me-2"></i>PIÈCE JOINTE
+                            </h6>
+                        </div>
+                        <div class="card-body p-4 pt-0 text-center">
+                            <div class="upload-area border border-2 border-dashed rounded-4 p-4 bg-light mb-2 cursor-pointer position-relative" style="transition: all 0.3s;">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                <div class="small fw-bold text-dark" id="file-label">Choisir une photo</div>
+                                <input type="file" name="photo_panne" id="photo_panne" class="position-absolute w-100 h-100 top-0 start-0 opacity-0" style="cursor: pointer;" accept="image/*">
+                            </div>
+                            <small class="text-muted small" style="font-size: 0.65rem;">Photo du constat technique ou justificatif</small>
                         </div>
                     </div>
                 </div>
 
-                {{-- ═══ COLONNE DROITE : Formulaire ═══ --}}
-                <div class="col-lg-8 d-flex flex-column gap-4">
-
-                    {{-- ─ Constat & Recommandation ─ --}}
-                    <div class="card border-0 shadow-sm" style="border-radius:16px;">
-                        <div class="card-body p-4 d-flex flex-column gap-4">
-                            <div>
-                                <label class="form-label fw-bold small text-uppercase text-muted">
-                                    <i class="fas fa-microscope me-2 text-primary"></i>Constat Technique
-                                </label>
-                                <textarea name="constat_technique" class="form-control bg-light border-0 rounded-3" rows="4"
-                                    placeholder="Panne constatée après expertise technique..." required></textarea>
+                {{-- MAIN FORM --}}
+                <div class="col-lg-8">
+                    <div class="d-flex flex-column gap-4">
+                        {{-- 1. Constat & Recommandation --}}
+                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                            <div class="card-header bg-white border-0 py-3">
+                                <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
+                                    <i class="fas fa-stethoscope me-2"></i>1. ANALYSE TECHNIQUE
+                                </h6>
                             </div>
-                            <div>
-                                <label class="form-label fw-bold small text-uppercase text-muted">
-                                    <i class="fas fa-wrench me-2 text-primary"></i>Recommandation
-                                </label>
-                                <textarea name="recommandation" class="form-control bg-light border-0 rounded-3" rows="3"
-                                    placeholder="Travaux à réaliser..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- ─ Pièces & Prestations côte à côte ─ --}}
-                    <div class="row g-4">
-
-                    {{-- ─ Pièces & Prestations côte à côte ─ --}}
-                    <div class="row g-4">
-                        {{-- ── PIÈCES ── --}}
-                        <div class="col-md-6">
-                            <div class="card border-0 shadow-sm h-100" style="border-radius:16px;">
-                                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-                                    <h6 class="m-0 fw-bold"><i class="fas fa-boxes me-2 text-warning"></i>PIÈCES DÉTACHÉES</h6>
-                                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold" id="add-piece-row">
-                                        <i class="fas fa-plus me-1"></i> Ajouter
-                                    </button>
+                            <div class="card-body p-4">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold small text-uppercase text-muted">Constat Technique
+                                        <span class="text-danger">*</span></label>
+                                    <textarea name="constat_technique" class="form-control bg-light border-0 rounded-3 p-3"
+                                        rows="4"
+                                        placeholder="Décrivez précisément les défauts constatés après expertise technique..."
+                                        required></textarea>
                                 </div>
-                                <div class="card-body p-3">
-                                    <div class="table-responsive">
-                                        <table class="table table-borderless align-middle mb-0" id="pieces-table">
-                                            <thead class="small text-muted text-uppercase bg-light" style="font-size: 0.6rem;">
-                                                <tr>
-                                                    <th>Désignation</th>
-                                                    <th class="text-center">Qté</th>
-                                                    <th class="text-center">Stock</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <select name="pieces[0][id]" class="form-select form-select-sm border-0 bg-light rounded-3 piece-select shadow-none">
-                                                            <option value="">Choisir...</option>
-                                                            @foreach($pieces as $p)
-                                                                <option value="{{ $p->id }}" data-stock="{{ $p->quantite }}">{{ $p->nom }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
-                                                    <td><input type="number" name="pieces[0][quantite]" class="form-control form-control-sm border-0 bg-light text-center rounded-3 shadow-none" value="1" min="1" style="width: 50px;"></td>
-                                                    <td class="text-center small fw-bold stock-display">—</td>
-                                                    <td class="text-end"><button type="button" class="btn btn-link text-danger btn-sm p-0 remove-row"><i class="fas fa-times"></i></button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div class="mb-0">
+                                    <label class="form-label fw-bold small text-uppercase text-muted">Recommandations &
+                                        Solutions</label>
+                                    <textarea name="recommandation" class="form-control bg-light border-0 rounded-3 p-3"
+                                        rows="3"
+                                        placeholder="Quels sont les travaux nécessaires pour la remise en état ?"></textarea>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- ── PRESTATIONS ── --}}
-                        <div class="col-md-6">
-                            <div class="card border-0 shadow-sm h-100" style="border-radius:16px;">
-                                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-                                    <h6 class="m-0 fw-bold"><i class="fas fa-user-cog me-2 text-info"></i>PRESTATIONS M.O.</h6>
-                                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold" id="add-presta-row">
-                                        <i class="fas fa-plus me-1"></i> Ajouter
-                                    </button>
-                                </div>
-                                <div class="card-body p-3">
-                                    <div class="table-responsive">
-                                        <table class="table table-borderless align-middle mb-0" id="presta-table">
-                                            <thead class="small text-muted text-uppercase bg-light" style="font-size: 0.6rem;">
-                                                <tr>
-                                                    <th>Prestation</th>
-                                                    <th class="text-end">Prix</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <select name="labors[]" class="form-select form-select-sm border-0 bg-light rounded-3 presta-select shadow-none">
-                                                            <option value="">Choisir...</option>
-                                                            @foreach($tarifsMo as $t)
-                                                                <option value="{{ $t->id }}" data-price="{{ $t->montant }}">{{ $t->type_intervention }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
-                                                    <td class="text-end small fw-bold text-primary price-display">—</td>
-                                                    <td class="text-end"><button type="button" class="btn btn-link text-danger btn-sm p-0 remove-row"><i class="fas fa-times"></i></button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                        {{-- 2. Pièces Détachées --}}
+                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                            <div
+                                class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
+                                    <i class="fas fa-microchip me-2"></i>2. PIÈCES DÉTACHÉES NÉCESSAIRES
+                                </h6>
+                                <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm"
+                                    id="add-piece-row">
+                                    <i class="fas fa-plus me-1"></i> Ajouter une ligne
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-borderless align-middle mb-0" id="pieces-table">
+                                        <thead class="small text-muted text-uppercase bg-light"
+                                            style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                                            <tr>
+                                                <th class="ps-4">RÉFÉRENCE / DÉSIGNATION</th>
+                                                <th class="text-center" style="width: 120px;">QUANTITÉ</th>
+                                                <th class="text-center" style="width: 100px;">STOCK</th>
+                                                <th class="text-end pe-4" style="width: 50px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="border-top border-light">
+                                            <tr class="piece-row">
+                                                <td class="ps-4">
+                                                    <select name="pieces[0][id]"
+                                                        class="form-select border-0 bg-light rounded-3 piece-select">
+                                                        <option value="">Choisir une pièce...</option>
+                                                        @foreach($pieces as $p)
+                                                            <option value="{{ $p->id }}" data-stock="{{ $p->quantite }}">
+                                                                {{ $p->nom }} (Ref: {{ $p->reference }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="pieces[0][quantite]"
+                                                        class="form-control border-0 bg-light text-center rounded-3 fw-bold"
+                                                        value="1" min="1">
+                                                </td>
+                                                <td class="text-center fw-bold text-muted stock-display">—</td>
+                                                <td class="text-end pe-4">
+                                                    <button type="button"
+                                                        class="btn btn-light btn-sm rounded-circle shadow-sm remove-row"
+                                                        style="width: 32px; height: 32px;">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    </div>
 
-                    {{-- ─ Décision technique ─ --}}
-                    <div class="card border-0 shadow-sm" style="border-radius:16px;">
-                        <div class="card-body p-4">
-                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-                                <div>
-                                    <label class="small fw-bold text-uppercase text-muted mb-2 d-block">Décision
-                                        Technique</label>
-                                    <div class="btn-group" role="group">
-                                        <input type="radio" class="btn-check" name="is_reparable" id="rep_oui" value="1"
-                                            checked>
-                                        <label class="btn btn-outline-success px-4 fw-bold" for="rep_oui">
-                                            <i class="fas fa-check-circle me-2"></i>RÉPARABLE
-                                        </label>
-                                        <input type="radio" class="btn-check" name="is_reparable" id="rep_non" value="0">
-                                        <label class="btn btn-outline-danger px-4 fw-bold" for="rep_non">
-                                            <i class="fas fa-times-circle me-2"></i>IRRÉPARABLE
-                                        </label>
-                                    </div>
+                        {{-- 3. Main d'œuvre --}}
+                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                            <div
+                                class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
+                                    <i class="fas fa-user-cog me-2"></i>3. PRESTATIONS TECHNIQUES
+                                </h6>
+                                <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm"
+                                    id="add-presta-row">
+                                    <i class="fas fa-plus me-1"></i> Ajouter une ligne
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-borderless align-middle mb-0" id="presta-table">
+                                        <thead class="small text-muted text-uppercase bg-light"
+                                            style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                                            <tr>
+                                                <th class="ps-4">DÉSIGNATION PRESTATION</th>
+                                                <th class="text-center" style="width: 180px;">MONTANT (DT)</th>
+                                                <th class="text-end pe-4" style="width: 50px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="border-top border-light">
+                                            <tr class="presta-row">
+                                                <td class="ps-4">
+                                                    <select name="labors[]"
+                                                        class="form-select border-0 bg-light rounded-3 presta-select">
+                                                        <option value="">Choisir une prestation...</option>
+                                                        @foreach($tarifsMo as $t)
+                                                            <option value="{{ $t->id }}" data-price="{{ $t->montant }}">
+                                                                {{ $t->type_intervention }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="text-center fw-bold text-primary price-display h6 mb-0">—</td>
+                                                <td class="text-end pe-4">
+                                                    <button type="button"
+                                                        class="btn btn-light btn-sm rounded-circle shadow-sm remove-row"
+                                                        style="width: 32px; height: 32px;">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+                            </div>
+                        </div>
 
-                                @if($dossier->sous_garantie)
-                                    <div class="border border-danger border-opacity-25 rounded-3 p-3 bg-danger bg-opacity-10">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="exclusion_garantie"
-                                                id="exclure">
-                                            <label class="form-check-label text-danger fw-bold small" for="exclure">
-                                                EXCLURE DE LA GARANTIE
-                                            </label>
+                        {{-- 4. Décision & Validation --}}
+                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                            <div class="card-body p-4">
+                                <label class="small fw-bold text-uppercase text-muted mb-3 d-block">Est ce que on peut
+                                    reparer appareil?</label>
+                                <div class="row align-items-center g-4">
+                                    <div class="col-md-7">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <input type="radio" class="btn-check" name="is_reparable" id="rep_oui"
+                                                    value="1" checked>
+                                                <label
+                                                    class="btn btn-light border-0 w-100 p-3 text-start rounded-4 status-selector"
+                                                    for="rep_oui" style="--btn-color: #10b981; --btn-bg: #f0fdf4;">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="icon-circle me-3"><i class="fas fa-check"></i></div>
+                                                        <div>
+                                                            <div class="fw-bold small title text-uppercase">Oui</div>
+                                                            <div class="text-muted" style="font-size: 0.65rem;"></div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="radio" class="btn-check" name="is_reparable" id="rep_non"
+                                                    value="0">
+                                                <label
+                                                    class="btn btn-light border-0 w-100 p-3 text-start rounded-4 status-selector"
+                                                    for="rep_non" style="--btn-color: #ef4444; --btn-bg: #fef2f2;">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="icon-circle me-3"><i class="fas fa-times"></i></div>
+                                                        <div>
+                                                            <div class="fw-bold small title text-uppercase">Non</div>
+                                                            <div class="text-muted" style="font-size: 0.65rem;"></div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div class="small text-muted mt-1">Panne due à une mauvaise utilisation.</div>
                                     </div>
-                                @endif
+                                    @if($dossier->sous_garantie)
+                                        <div class="col-md-5">
+                                            <div
+                                                class="bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded-3 p-3 h-100 d-flex flex-column">
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" name="exclusion_garantie"
+                                                        id="exclure">
+                                                    <label class="form-check-label text-danger fw-bold" for="exclure">
+                                                        EXCLUSION DE GARANTIE
+                                                    </label>
+                                                </div>
+                                                <div id="exclusion-details" style="display: none;">
+                                                    <select name="motif_exclusion" class="form-select form-select-sm bg-white border-danger border-opacity-25 mb-2" style="font-size: 0.75rem;">
+                                                        <option value="Usage non conforme">Usage non conforme</option>
+                                                        <option value="Choc / Casse">Choc / Casse</option>
+                                                        <option value="Oxydation / Humidité">Oxydation / Humidité</option>
+                                                        <option value="Tentative de réparation tierce">Tentative de réparation tierce</option>
+                                                        <option value="Autre">Autre</option>
+                                                    </select>
+                                                    <textarea name="exclusion_commentaire" class="form-control form-control-sm border-danger border-opacity-25" rows="2" placeholder="Précisez le motif de l'exclusion..." style="font-size: 0.75rem;"></textarea>
+                                                </div>
+                                                <small class="text-muted d-block mt-auto" id="exclusion-hint">Usage non conforme (Choc,
+                                                    Humidité...)</small>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light border-0 p-4 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow">
+                                    <i class="fas fa-save me-2"></i> ENREGISTRER LE DIAGNOSTIC TECHNIQUE
+                                </button>
                             </div>
                         </div>
-                        <div class="card-footer bg-white border-0 text-end py-3 px-4">
-                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm">
-                                <i class="fas fa-save me-2"></i> ENREGISTRER LE DIAGNOSTIC
-                            </button>
-                        </div>
                     </div>
-
                 </div>
             </div>
         </form>
     </div>
 
-    @push('scripts')
-        <script>
-            $(document).ready(function () {
-                let pieceIndex = 1;
-
-                function bindRowEvents(row) {
-                    // Mise à jour stock
-                    $(row).find('.piece-select').on('change', function() {
-                        const stock = $(this).find(':selected').data('stock') || '—';
-                        $(row).find('.stock-display').text(stock);
-                    });
-
-                    // Mise à jour prix prestation
-                    $(row).find('.presta-select').on('change', function() {
-                        const price = parseFloat($(this).find(':selected').data('price') || 0);
-                        $(row).find('.price-display').text(price.toLocaleString('fr-FR', { minimumFractionDigits: 3 }) + ' DT');
-                    });
-
-                    // Suppression
-                    $(row).find('.remove-row').on('click', function() {
-                        if ($(row).closest('tbody').find('tr').length > 1) {
-                            $(row).remove();
-                        } else {
-                            $(row).find('select').val('');
-                            $(row).find('.stock-display').text('—');
-                            $(row).find('.price-display').text('—');
-                        }
-                    });
-                }
-
-                // Bind initial rows
-                $('#pieces-table tbody tr, #presta-table tbody tr').each(function() {
-                    bindRowEvents(this);
-                });
-
-                // Ajouter pièce
-                $('#add-piece-row').on('click', function() {
-                    const tbody = $('#pieces-table tbody');
-                    const firstRow = tbody.find('tr:first');
-                    const newRow = firstRow.clone();
-                    
-                    newRow.find('select').attr('name', `pieces[${pieceIndex}][id]`).val('');
-                    newRow.find('input[type="number"]').attr('name', `pieces[${pieceIndex}][quantite]`).val(1);
-                    newRow.find('.stock-display').text('—');
-                    
-                    tbody.appendChild(newRow[0]); // jQuery compatible
-                    bindRowEvents(newRow[0]);
-                    pieceIndex++;
-                });
-
-                // Ajouter prestation
-                $('#add-presta-row').on('click', function() {
-                    const tbody = $('#presta-table tbody');
-                    const firstRow = tbody.find('tr:first');
-                    const newRow = firstRow.clone();
-                    
-                    newRow.find('select').val('');
-                    newRow.find('.price-display').text('—');
-                    
-                    tbody.appendChild(newRow[0]);
-                    bindRowEvents(newRow[0]);
-                });
-            });
-        </script>
-    @endpush
+    {{-- MODAL : Retrait du dossier --}}
+    <div class="modal fade" id="modalRetrait" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger">Motif du retrait</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('dossiers.rejeter', $dossier->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <p class="text-muted small mb-4">Veuillez expliquer pourquoi vous souhaitez vous retirer de ce
+                            dossier ou rejeter le diagnostic.</p>
+                        <div class="mb-0">
+                            <label class="form-label small fw-bold">Raison du retrait <span
+                                    class="text-danger">*</span></label>
+                            <textarea name="raison" class="form-control bg-light border-0 rounded-3" rows="4"
+                                placeholder="Ex: Compétence technique non adaptée, pièces indisponibles, etc..." required
+                                minlength="10"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                            data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">CONFIRMER LE RETRAIT</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function () {
+            let pieceIndex = 1;
+
+            function bindRowEvents(row) {
+                // Mise à jour de l'affichage du stock
+                $(row).find('.piece-select').on('change', function () {
+                    const stock = $(this).find(':selected').data('stock');
+                    const stockDisplay = $(row).find('.stock-display');
+                    if (stock !== undefined) {
+                        stockDisplay.text(stock).removeClass('text-muted').addClass(stock > 0 ? 'text-success' : 'text-danger');
+                    } else {
+                        stockDisplay.text('—').addClass('text-muted').removeClass('text-success text-danger');
+                    }
+                });
+
+                // Mise à jour de l'affichage du montant de la prestation
+                $(row).find('.presta-select').on('change', function () {
+                    const price = parseFloat($(this).find(':selected').data('price') || 0);
+                    const priceDisplay = $(row).find('.price-display');
+                    if (price > 0) {
+                        priceDisplay.text(price.toLocaleString('fr-FR', { minimumFractionDigits: 3 }) + ' DT');
+                    } else {
+                        priceDisplay.text('—');
+                    }
+                });
+
+                // Suppression d'une ligne
+                $(row).find('.remove-row').on('click', function () {
+                    const tbody = $(this).closest('tbody');
+                    if (tbody.find('tr').length > 1) {
+                        $(row).remove();
+                    } else {
+                        $(row).find('select').val('');
+                        $(row).find('input').val(1);
+                        $(row).find('.stock-display, .price-display').text('—').addClass('text-muted').removeClass('text-success text-danger');
+                    }
+                });
+            }
+
+            // Initialisation des lignes existantes
+            $('.piece-row, .presta-row').each(function () {
+                bindRowEvents(this);
+            });
+
+            // Ajouter une nouvelle ligne de pièce
+            $('#add-piece-row').on('click', function () {
+                const tbody = $('#pieces-table tbody');
+                const firstRow = tbody.find('tr:first');
+                const newRow = firstRow.clone();
+
+                newRow.find('select').attr('name', `pieces[${pieceIndex}][id]`).val('');
+                newRow.find('input[type="number"]').attr('name', `pieces[${pieceIndex}][quantite]`).val(1);
+                newRow.find('.stock-display').text('—').addClass('text-muted').removeClass('text-success text-danger');
+
+                tbody.append(newRow);
+                bindRowEvents(newRow);
+                pieceIndex++;
+            });
+
+            // Ajouter une nouvelle ligne de prestation
+            $('#add-presta-row').on('click', function () {
+                const tbody = $('#presta-table tbody');
+                const firstRow = tbody.find('tr:first');
+                const newRow = firstRow.clone();
+
+                newRow.find('select').val('');
+                newRow.find('.price-display').text('—');
+
+                tbody.append(newRow);
+                bindRowEvents(newRow);
+            });
+
+            // Affichage du nom du fichier sélectionné
+            $('#photo_panne').on('change', function() {
+                const fileName = $(this).val().split('\\').pop();
+                if (fileName) {
+                    $('#file-label').text(fileName).addClass('text-primary');
+                } else {
+                    $('#file-label').text('Choisir une photo').removeClass('text-primary');
+                }
+            });
+
+            // Toggle Exclusion de garantie details
+            $('#exclure').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#exclusion-details').slideDown();
+                    $('#exclusion-hint').hide();
+                } else {
+                    $('#exclusion-details').slideUp();
+                    $('#exclusion-hint').show();
+                }
+            });
+        });
+    </script>
+@endpush

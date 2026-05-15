@@ -22,7 +22,7 @@ class PieceController extends Controller
             $query->where('categorie', $request->categorie);
         }
 
-        $pieces = $query->latest()->get();
+        $pieces = $query->latest()->paginate(15)->withQueryString();
         
         // Statistiques pour les cartes
         $stats = [
@@ -41,7 +41,8 @@ class PieceController extends Controller
 
     public function create()
     {
-        return view('stock.create');
+        $parametre = \App\Models\ParametreSociete::first();
+        return view('stock.create', compact('parametre'));
     }
 
     public function store(Request $request)
@@ -52,7 +53,8 @@ class PieceController extends Controller
 
     public function edit(Piece $piece)
     {
-        return view('stock.edit', compact('piece'));
+        $parametre = \App\Models\ParametreSociete::first();
+        return view('stock.edit', compact('piece', 'parametre'));
     }
 
     public function update(Request $request, Piece $piece)

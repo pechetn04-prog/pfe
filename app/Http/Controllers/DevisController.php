@@ -24,7 +24,10 @@ class DevisController extends Controller
         }
 
         $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo');
-        return view('devis.create', compact('dossier'));
+        $pieces = Piece::where('actif', true)->orderBy('nom')->get();
+        $tarifsMo = TarifMo::where('actif', true)->orderBy('type_intervention')->get();
+        
+        return view('devis.create', compact('dossier', 'pieces', 'tarifsMo'));
     }
 
     /**

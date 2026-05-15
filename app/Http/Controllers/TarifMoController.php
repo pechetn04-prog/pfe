@@ -7,10 +7,14 @@ use Illuminate\Http\Request;
 
 class TarifMoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tarifs = TarifMo::all();
-        return view('admin.tarifs_mo.index', compact('tarifs'));
+        $search = $request->input('search');
+        $tarifs = TarifMo::when($search, function ($query, $search) {
+            return $query->where('type_intervention', 'like', "%{$search}%");
+        })->get();
+        
+        return view('admin.tarifs_mo.index', compact('tarifs', 'search'));
     }
 
     public function store(Request $request)

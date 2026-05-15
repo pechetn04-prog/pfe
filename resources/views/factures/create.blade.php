@@ -1,229 +1,255 @@
 @extends('layouts.app')
 
-@section('title', 'Établir la Facture')
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
-@endpush
+@section('title', 'Établir la Facture - Dossier #' . $dossier->num_dossier)
 
 @section('content')
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800">Établir la Facture Finale</h1>
-            <small class="text-muted">DOSSIER #{{ $dossier->num_dossier }} — {{ $dossier->client->name ?? 'Client' }}</small>
-        </div>
-        <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-arrow-left me-1"></i> Annuler
-        </a>
-    </div>
-
-    <form action="{{ route('facture.store', $dossier->id) }}" method="POST">
-        @csrf
-        <div class="row">
-            <div class="col-lg-8">
-                {{-- Détails des Pièces Consommées --}}
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3 bg-white border-0">
-                        <h6 class="m-0 font-weight-bold text-primary text-uppercase small">
-                            <i class="fas fa-microchip me-2"></i> 1. Pièces Consommées (Intervention)
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle">
-                                <thead class="small text-muted text-uppercase">
-                                    <tr>
-                                        <th>Désignation</th>
-                                        <th class="text-center">Qté</th>
-                                        <th class="text-end">Prix Unit. TTC</th>
-                                        <th class="text-end">Total TTC</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php $totalPieces = 0; @endphp
-                                    @forelse($dossier->intervention->pieces as $piece)
-                                        @php 
-                                            $qty = $piece->pivot->quantite ?? 1;
-                                            $pu = $piece->pivot->prix_unitaire ?? $piece->prix_vente;
-                                            $totalLigne = $qty * $pu;
-                                            $totalPieces += $totalLigne;
-                                        @endphp
-                                        <tr>
-                                            <td>{{ $piece->nom }}</td>
-                                            <td class="text-center">{{ $qty }}</td>
-                                            <td class="text-end">{{ number_format($pu, 3, ',', ' ') }} DT</td>
-                                            <td class="text-end fw-bold">{{ number_format($totalLigne, 3, ',', ' ') }} DT</td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center py-3 text-muted fst-italic">
-                                                Aucune pièce consommée lors de l'intervention.
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                                @if($totalPieces > 0)
-                                <tfoot class="border-top-0">
-                                    <tr class="table-light">
-                                        <td colspan="3" class="text-end fw-bold">Sous-total Pièces :</td>
-                                        <td class="text-end fw-bold text-primary">{{ number_format($totalPieces, 3, ',', ' ') }} DT</td>
-                                    </tr>
-                                </tfoot>
-                                @endif
-                            </table>
-                        </div>
-                    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h1 class="h3 fw-bold mb-0 text-dark">Établir la Facture Finale</h1>
+                    <p class="text-muted mb-0">Dossier #{{ $dossier->num_dossier }} — Client: {{ $dossier->client->name ?? '—' }}</p>
                 </div>
+                <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-light rounded-pill px-4 shadow-sm">
+                    <i class="fas fa-arrow-left me-2"></i> Annuler
+                </a>
+            </div>
 
-                {{-- Main d'Œuvre et Prestations --}}
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3 bg-white border-0 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary text-uppercase small">
-                            <i class="fas fa-user-cog me-2"></i> 2. Main d'Œuvre & Prestations
-                        </h6>
-                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="addLaborRow()">
-                            <i class="fas fa-plus me-1"></i> Ajouter
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle" id="labor-table">
-                                <thead class="small text-muted text-uppercase">
-                                    <tr>
-                                        <th>Prestation</th>
-                                        <th style="width: 150px;" class="text-end">Montant TTC (DT)</th>
-                                        <th style="width: 50px;"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php $totalMO = 0; @endphp
-                                    {{-- Pré-remplir avec les prestations suggérées par le diagnostic si elles existent --}}
-                                    @if(isset($dossier->intervention->tarifsMo))
-                                        @foreach($dossier->intervention->tarifsMo as $mo)
-                                            @php $totalMO += $mo->pivot->montant ?? $mo->montant; @endphp
-                                            <tr>
-                                                <td>
-                                                    <select name="labors[0][id]" class="form-select form-select-sm labor-select" onchange="updateLaborPrice(this)">
-                                                        <option value="">-- Sélectionner --</option>
-                                                        @foreach($tarifsMo as $t)
-                                                            <option value="{{ $t->id }}" data-price="{{ $t->montant }}" {{ $t->id == $mo->id ? 'selected' : '' }}>
-                                                                {{ $t->type_intervention }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" step="0.001" name="labors[0][montant]" class="form-control form-control-sm text-end labor-price" value="{{ $mo->pivot->montant ?? $mo->montant }}" onchange="calculateGlobalTotal()">
-                                                </td>
-                                                <td class="text-end">
-                                                    <button type="button" class="btn btn-link text-danger p-0" onclick="removeRow(this)">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </td>
+            <form action="{{ route('facture.store', $dossier->id) }}" method="POST" id="factureForm">
+                @csrf
+                
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        {{-- Section 1 : Pièces Consommées (Intervention) --}}
+                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                            <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
+                                <div class="bg-soft-primary p-2 rounded-3 me-3" style="background-color: rgba(30, 105, 255, 0.1);">
+                                    <i class="fas fa-microchip text-primary"></i>
+                                </div>
+                                <h6 class="fw-bold mb-0">1. Pièces consommées (Atelier)</h6>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="bg-light">
+                                            <tr class="small text-muted text-uppercase">
+                                                <th style="width: 40%;">Désignation</th>
+                                                <th class="text-center" style="width: 15%;">Qté</th>
+                                                <th class="text-end" style="width: 20%;">P.U TTC</th>
+                                                <th class="text-end pe-3" style="width: 25%;">Total TTC</th>
                                             </tr>
-                                        @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+                                            @php $totalPieces = 0; @endphp
+                                            @forelse($dossier->intervention->pieces as $piece)
+                                                @php 
+                                                    $qty = $piece->pivot->quantite ?? 1;
+                                                    $pu = $piece->pivot->prix_unitaire ?? $piece->prix_vente;
+                                                    $totalLigne = $qty * $pu;
+                                                    $totalPieces += $totalLigne;
+                                                @endphp
+                                                <tr>
+                                                    <td class="fw-bold text-dark">{{ $piece->nom }}</td>
+                                                    <td class="text-center fw-bold">{{ $qty }}</td>
+                                                    <td class="text-end text-muted">{{ number_format($pu, 3, '.', ' ') }} DT</td>
+                                                    <td class="text-end fw-bold text-primary pe-3">{{ number_format($totalLigne, 3, '.', ' ') }} DT</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center py-4 text-muted fst-italic">
+                                                        <i class="fas fa-info-circle me-1 opacity-50"></i> Aucune pièce consommée lors de l'intervention.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Section 2 : Prestations --}}
+                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                            <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-soft-info p-2 rounded-3 me-3" style="background-color: rgba(13, 202, 240, 0.1);">
+                                        <i class="fas fa-hand-holding-heart text-info"></i>
+                                    </div>
+                                    <h6 class="fw-bold mb-0">2. Prestations & Main d'œuvre</h6>
+                                </div>
+                                <button type="button" class="btn btn-outline-info btn-sm rounded-pill fw-bold" id="addLaborBtn">
+                                    <i class="fas fa-plus me-1"></i> Ajouter
+                                </button>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle" id="laborsTable">
+                                        <thead class="bg-light">
+                                            <tr class="small text-muted text-uppercase">
+                                                <th style="width: 60%;">Type d'intervention</th>
+                                                <th style="width: 30%;" class="text-center">Montant TTC (DT)</th>
+                                                <th style="width: 10%;" class="text-end pe-3">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php $totalMO = 0; @endphp
+                                            {{-- Pré-remplir avec les prestations suggérées par l'intervention --}}
+                                            @if($dossier->intervention && $dossier->intervention->tarifsMo)
+                                                @foreach($dossier->intervention->tarifsMo as $index => $mo)
+                                                    @php $totalMO += $mo->pivot->montant ?? $mo->montant; @endphp
+                                                    <tr class="labor-row">
+                                                        <td>
+                                                            <select name="labors[{{ $index }}][id]" class="form-select form-select-sm border-0 bg-light rounded-pill px-3 labor-select" required>
+                                                                <option value="">-- Sélectionner --</option>
+                                                                @foreach($tarifsMo as $t)
+                                                                    <option value="{{ $t->id }}" data-price="{{ $t->montant }}" {{ $t->id == $mo->id ? 'selected' : '' }}>
+                                                                        {{ $t->type_intervention }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.001" name="labors[{{ $index }}][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="{{ $mo->pivot->montant ?? $mo->montant }}" required>
+                                                        </td>
+                                                        <td class="text-end pe-3">
+                                                            <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        {{-- Récapitulatif Financier --}}
+                        <div class="card border-0 shadow-sm sticky-top" style="border-radius: 15px; top: 20px;">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold text-dark mb-4">Récapitulatif de la Facture</h6>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small fw-bold">TOTAL PIÈCES</span>
+                                    <span class="fw-bold" id="grand-total-pieces" data-value="{{ $totalPieces }}">{{ number_format($totalPieces, 3, '.', ' ') }} DT</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-light">
+                                    <span class="text-muted small fw-bold">TOTAL MAIN D'ŒUVRE</span>
+                                    <span class="fw-bold" id="grand-total-labors">{{ number_format($totalMO, 3, '.', ' ') }} DT</span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-muted text-uppercase mb-2">Remise Exceptionnelle (%)</label>
+                                    <div class="input-group input-group-lg bg-light rounded-pill overflow-hidden border-0">
+                                        <input type="number" name="remise" id="remise-input" class="form-control bg-transparent border-0 text-center fw-bold h4 mb-0" value="0" min="0" max="100">
+                                        <span class="input-group-text bg-transparent border-0 fw-bold">%</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-success bg-opacity-10 p-3 rounded-4 mb-4" style="background-color: rgba(25, 135, 84, 0.1);">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-success">TOTAL NET TTC</span>
+                                        <div class="text-end">
+                                            <div class="h3 fw-bold text-success mb-0" id="total-final">0.000</div>
+                                            <small class="text-success opacity-75">Dinar Tunisien (DT)</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100 rounded-pill py-3 fw-bold shadow-sm mb-3">
+                                    <i class="fas fa-check-double me-2"></i> GÉNÉRER LA FACTURE
+                                </button>
+                                
+                                <p class="text-muted small text-center mb-0" style="font-size: 0.7rem;">
+                                    <i class="fas fa-shield-alt me-1"></i> Cette action clôturera l'aspect financier du dossier.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {{-- RÉCAPITULATIF FINANCIER --}}
-            <div class="col-lg-4">
-                <div class="card shadow border-0" style="border-radius: 15px; background: #f8fafc;">
-                    <div class="card-header bg-primary text-white py-3" style="border-radius: 15px 15px 0 0;">
-                        <h6 class="m-0 font-weight-bold text-center text-uppercase small">Récapitulatif de la Facture</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Total Pièces :</span>
-                            <span class="fw-bold" id="summary-pieces" data-value="{{ $totalPieces }}">{{ number_format($totalPieces, 3, ',', ' ') }} DT</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Total Main d'Œuvre :</span>
-                            <span class="fw-bold" id="summary-mo">{{ number_format($totalMO, 3, ',', ' ') }} DT</span>
-                        </div>
-                        <hr>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Remise (%)</label>
-                            <input type="number" name="remise" id="remise-input" class="form-control form-control-lg text-center fw-bold" value="0" min="0" max="100" onchange="calculateGlobalTotal()">
-                        </div>
-                        <div class="bg-white p-3 rounded-3 border mb-4">
-                            <div class="text-center small text-muted text-uppercase mb-1">TOTAL NET À PAYER (TTC)</div>
-                            <div class="text-center h2 fw-bold text-primary mb-0" id="total-final">0,000 DT</div>
-                        </div>
-
-                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm py-3">
-                            <i class="fas fa-file-invoice me-2"></i> GÉNÉRER LA FACTURE
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
+
+{{-- Template JS pour nouvelles lignes de prestation --}}
+<template id="laborRowTemplate">
+    <tr class="labor-row">
+        <td>
+            <select name="labors[INDEX][id]" class="form-select form-select-sm border-0 bg-light rounded-pill px-3 labor-select" required>
+                <option value="">-- Sélectionner --</option>
+                @foreach($tarifsMo as $t)
+                    <option value="{{ $t->id }}" data-price="{{ $t->montant }}">{{ $t->type_intervention }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td>
+            <input type="number" step="0.001" name="labors[INDEX][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="0.000" required>
+        </td>
+        <td class="text-end pe-3">
+            <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
+        </td>
+    </tr>
+</template>
 
 @push('scripts')
 <script>
-    let laborIndex = {{ isset($dossier->intervention->tarifsMo) ? $dossier->intervention->tarifsMo->count() : 1 }};
-
-    function addLaborRow() {
-        const tbody = document.querySelector('#labor-table tbody');
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <select name="labors[${laborIndex}][id]" class="form-select form-select-sm labor-select" onchange="updateLaborPrice(this)">
-                    <option value="">-- Sélectionner --</option>
-                    @foreach($tarifsMo as $t)
-                        <option value="{{ $t->id }}" data-price="{{ $t->montant }}">{{ $t->type_intervention }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td>
-                <input type="number" step="0.001" name="labors[${laborIndex}][montant]" class="form-control form-control-sm text-end labor-price" value="0" onchange="calculateGlobalTotal()">
-            </td>
-            <td class="text-end">
-                <button type="button" class="btn btn-link text-danger p-0" onclick="removeRow(this)">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
-        tbody.appendChild(row);
-        laborIndex++;
-    }
-
-    function removeRow(btn) {
-        btn.closest('tr').remove();
-        calculateGlobalTotal();
-    }
-
-    function updateLaborPrice(select) {
-        const price = select.options[select.selectedIndex].getAttribute('data-price') || 0;
-        select.closest('tr').querySelector('.labor-price').value = price;
-        calculateGlobalTotal();
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    let laborIndex = {{ $dossier->intervention && $dossier->intervention->tarifsMo ? $dossier->intervention->tarifsMo->count() : 1 }};
 
     function calculateGlobalTotal() {
-        const totalPieces = parseFloat(document.getElementById('summary-pieces').getAttribute('data-value')) || 0;
+        const totalPieces = parseFloat(document.getElementById('grand-total-pieces').getAttribute('data-value')) || 0;
         let totalMO = 0;
-        document.querySelectorAll('.labor-price').forEach(input => {
+        
+        document.querySelectorAll('.labor-input').forEach(input => {
             totalMO += parseFloat(input.value) || 0;
         });
 
-        document.getElementById('summary-mo').textContent = totalMO.toLocaleString('fr-FR', {minimumFractionDigits: 3, maximumFractionDigits: 3}) + ' DT';
+        document.getElementById('grand-total-labors').textContent = totalMO.toFixed(3) + ' DT';
         
         const totalBrut = totalPieces + totalMO;
         const remise = parseFloat(document.getElementById('remise-input').value) || 0;
         const totalFinal = totalBrut * (1 - remise / 100);
 
-        document.getElementById('total-final').textContent = totalFinal.toLocaleString('fr-FR', {minimumFractionDigits: 3, maximumFractionDigits: 3}) + ' DT';
+        document.getElementById('total-final').textContent = totalFinal.toFixed(3);
     }
 
-    // Initial calculation
-    document.addEventListener('DOMContentLoaded', calculateGlobalTotal);
+    // Ajouter une prestation
+    document.getElementById('addLaborBtn').addEventListener('click', function() {
+        const template = document.getElementById('laborRowTemplate').innerHTML;
+        const html = template.replace(/INDEX/g, laborIndex++);
+        document.querySelector('#laborsTable tbody').insertAdjacentHTML('beforeend', html);
+        calculateGlobalTotal();
+    });
+
+    // Supprimer une ligne
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-row')) {
+            e.target.closest('tr').remove();
+            calculateGlobalTotal();
+        }
+    });
+
+    // Changement de sélection (auto-prix)
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('labor-select')) {
+            const price = e.target.options[e.target.selectedIndex].dataset.price || 0;
+            e.target.closest('tr').querySelector('.labor-input').value = price;
+            calculateGlobalTotal();
+        }
+    });
+
+    // Changement de montant ou remise
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('labor-input') || e.target.id === 'remise-input') {
+            calculateGlobalTotal();
+        }
+    });
+
+    // Calcul initial
+    calculateGlobalTotal();
+});
 </script>
 @endpush
 @endsection

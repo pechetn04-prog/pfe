@@ -18,7 +18,7 @@ class MouvementStockController extends Controller
      */
     public function index(Request $request)
     {
-        $query = MouvementStock::with(['piece', 'user', 'dossier'])
+        $query = MouvementStock::with(['piece', 'user', 'reference.dossier'])
             ->latest();
 
         if ($request->filled('piece_id')) {
@@ -29,7 +29,7 @@ class MouvementStockController extends Controller
         }
 
         $mouvements = $query->paginate(25);
-        $pieces     = Piece::orderBy('nom')->get(['id', 'nom', 'reference']);
+        $pieces = Piece::orderBy('nom')->get(['id', 'nom', 'reference']);
 
         return view('stock.mouvements', compact('mouvements', 'pieces'));
     }
@@ -49,10 +49,10 @@ class MouvementStockController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'piece_id'  => 'required|exists:pieces,id',
-            'quantite'  => 'required|integer|min:1',
-            'type'      => 'required|in:ENTREE,SORTIE,AJUSTEMENT',
-            'motif'     => 'nullable|string|max:255',
+            'piece_id' => 'required|exists:pieces,id',
+            'quantite' => 'required|integer|min:1',
+            'type' => 'required|in:ENTREE,SORTIE,AJUSTEMENT',
+            'motif' => 'nullable|string|max:255',
         ]);
 
         $piece = Piece::findOrFail($request->piece_id);
@@ -67,11 +67,11 @@ class MouvementStockController extends Controller
         }
 
         MouvementStock::create([
-            'piece_id'  => $piece->id,
-            'user_id'   => Auth::id(),
-            'type'      => $request->type,
-            'quantite'  => $request->quantite,
-            'motif'     => $request->motif ?? 'Mouvement manuel',
+            'piece_id' => $piece->id,
+            'user_id' => Auth::id(),
+            'type' => $request->type,
+            'quantite' => $request->quantite,
+            'motif' => $request->motif ?? 'Mouvement manuel',
         ]);
 
         return redirect()->route('stock.mouvements')

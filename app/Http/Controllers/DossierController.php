@@ -36,7 +36,13 @@ class DossierController extends Controller
      */
     public function create()
     {
-        $techniciens = User::where('role', 'Technicien')->where('actif', true)->get();
+        $techniciens = User::where('role', 'Technicien')
+            ->where('actif', true)
+            ->withCount(['dossiers as dossiers_en_cours' => function($q) {
+                $q->whereNotIn('statut', ['LIVRE', 'CLOTURE']);
+            }])
+            ->get();
+            
         return view('dossiers.create', compact('techniciens'));
     }
 
@@ -84,15 +90,20 @@ class DossierController extends Controller
 
         if (!$client) {
             $email = $request->client_email ?: 'client_' . str_replace('.', '', microtime(true)) . '@maisontel.dz';
+            // Mot de passe par défaut = numéro de téléphone (sinon sav12345)
+            $defaultPassword = $request->client_telephone ?: 'sav12345';
             
             $client = User::create([
-                'name' => $request->client_nom,
-                'email' => $email,
-                'password' => Hash::make('sav12345'),
-                'role' => 'Client',
+                'name'      => $request->client_nom,
+                'email'     => $email,
+                'password'  => Hash::make($defaultPassword),
+                'role'      => 'Client',
                 'telephone' => $request->client_telephone,
-                'actif' => true
+                'actif'     => true
             ]);
+            
+            // Stocker le mot de passe en clair pour le passer à la notification
+            $client->_plainPassword = $defaultPassword;
         } else {
             // Optionnel : Mettre à jour l'email si le client n'en avait pas
             if (!$client->email || str_contains($client->email, '@maisontel.dz')) {
@@ -143,7 +154,7 @@ class DossierController extends Controller
 
         // Notification au client par email
         if ($client && $client->email && !str_contains($client->email, '@maisontel.dz')) {
-            $client->notify(new \App\Notifications\TicketCreatedNotification($dossier));
+            $client->notify(new \App\Notifications\TicketCreatedNotification($dossier, $client->_plainPassword ?? null));
         }
 
         return redirect()->route('dossiers.show', $dossier->id)
@@ -319,9 +330,14 @@ class DossierController extends Controller
      */
     public function livrer(Dossier $dossier)
     {
-        // UC09 : Bloquer si hors garantie et non facturé
-        if (!$dossier->sous_garantie && !in_array($dossier->statut, ['FACTURE', 'IRREPARABLE', 'REMPLACEMENT_PRET'])) {
-            return back()->with('error', 'Veuillez générer la facture avant de livrer.');
+        // UC09 : Bloquer si l'appareil est réparé mais pas encore facturé (le passage par l'état FACTURE est obligatoire)
+        if ($dossier->statut === 'REPARE') {
+            return back()->with('error', 'Veuillez générer la facture avant de livrer l\'appareil.');
+        }
+
+        // Sécurité supplémentaire pour les autres cas non clôturés
+        if (!in_array($dossier->statut, ['FACTURE', 'IRREPARABLE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE'])) {
+            return back()->with('error', 'Le dossier n\'est pas dans un état permettant la livraison.');
         }
 
         $ancienStatut = $dossier->statut;
@@ -386,22 +402,37 @@ class DossierController extends Controller
         ]);
 
         $ancienStatut = $dossier->statut;
+        $modele = $request->modele_remplacement ?: $dossier->appareil->modele;
+
+        // Enregistrer le nouvel appareil dans la table ventes avec type REMPLACEMENT
+        Vente::create([
+            'type'                 => 'REMPLACEMENT',
+            'imei'                 => $request->imei_remplacement,
+            'modele'               => $modele,
+            'client_nom'           => $dossier->client->name,
+            'date_vente'           => now()->toDateString(),
+            'duree_garantie_mois'  => 12,
+            'reference_produit'    => $dossier->appareil->reference_produit ?? null,
+            'numero_facture_vente' => 'SAV-REMP-' . $dossier->num_dossier,
+        ]);
+
+        // Mettre à jour le dossier
         $dossier->update([
-            'statut' => 'REMPLACEMENT_PRET',
-            'imei_remplacement' => $request->imei_remplacement,
-            'modele_remplacement' => $request->modele_remplacement,
+            'statut'              => 'REMPLACEMENT_PRET',
+            'imei_remplacement'   => $request->imei_remplacement,
+            'modele_remplacement' => $modele,
         ]);
 
         SuiviDossier::create([
-            'dossier_id' => $dossier->id,
-            'user_id' => Auth::id(),
+            'dossier_id'    => $dossier->id,
+            'user_id'       => Auth::id(),
             'ancien_statut' => $ancienStatut,
-            'nouveau_statut' => 'REMPLACEMENT_PRET',
-            'commentaire' => 'Appareil de remplacement préparé.',
+            'nouveau_statut'=> 'REMPLACEMENT_PRET',
+            'commentaire'   => "Appareil de remplacement préparé — IMEI : {$request->imei_remplacement} / Modèle : {$modele}.",
         ]);
 
         return redirect()->route('dossiers.show', $dossier->id)
-            ->with('success', 'Remplacement enregistré.');
+            ->with('success', "Remplacement enregistré. Appareil {$modele} (IMEI : {$request->imei_remplacement}) prêt pour livraison.");
     }
 
     /**
@@ -413,7 +444,7 @@ class DossierController extends Controller
     }
 
     /**
-     * Valider la demande de remplacement (Admin).
+     * Valider la demande de remplacement (Admin) - UC12
      */
     public function validateReplacement(Dossier $dossier)
     {
@@ -427,25 +458,51 @@ class DossierController extends Controller
             'commentaire' => 'Demande de remplacement validée par l\'administration.',
         ]);
 
-        return back()->with('success', 'Remplacement validé. Vous pouvez maintenant préparer l\'appareil de remplacement.');
+        // Notification aux agents SAV
+        $agents = User::where('role', 'Agent')->where('actif', true)->get();
+        foreach ($agents as $agent) {
+            $agent->notify(new \App\Notifications\GenericNotification(
+                "Remplacement validé (#{$dossier->num_dossier})",
+                "L'administration a validé le remplacement. Veuillez préparer un appareil neuf.",
+                route('dossiers.show', $dossier->id)
+            ));
+        }
+
+        return back()->with('success', 'Remplacement validé. L\'agent SAV a été notifié pour préparer l\'appareil.');
     }
 
     /**
-     * Refuser la demande de remplacement (Admin).
+     * Refuser la demande de remplacement (Admin) - UC12
      */
-    public function refuseReplacement(Dossier $dossier)
+    public function refuseReplacement(Request $request, Dossier $dossier)
     {
-        $dossier->update(['statut' => 'IRREPARABLE']);
+        $request->validate([
+            'raison' => 'required|string|min:5'
+        ], [
+            'raison.required' => 'Le motif du refus est obligatoire.'
+        ]);
+
+        $dossier->update(['statut' => 'REMPLACEMENT_REFUSE']);
 
         SuiviDossier::create([
             'dossier_id' => $dossier->id,
             'user_id' => Auth::id(),
             'ancien_statut' => 'ATTENTE_VALIDATION_REMPLACEMENT',
-            'nouveau_statut' => 'IRREPARABLE',
-            'commentaire' => 'Demande de remplacement refusée. Dossier marqué comme irréparable.',
+            'nouveau_statut' => 'REMPLACEMENT_REFUSE',
+            'commentaire' => 'Remplacement REFUSÉ : ' . $request->raison,
         ]);
 
-        return back()->with('warning', 'Remplacement refusé.');
+        // Notification aux agents SAV
+        $agents = User::where('role', 'Agent')->where('actif', true)->get();
+        foreach ($agents as $agent) {
+            $agent->notify(new \App\Notifications\GenericNotification(
+                "Remplacement refusé (#{$dossier->num_dossier})",
+                "L'administration a refusé le remplacement. Motif : {$request->raison}. Veuillez informer le client.",
+                route('dossiers.show', $dossier->id)
+            ));
+        }
+
+        return back()->with('warning', 'Remplacement refusé. Le dossier est passé en statut Remplacement Refusé.');
     }
 
     /**

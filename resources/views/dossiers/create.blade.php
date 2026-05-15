@@ -182,7 +182,7 @@
                                     <option value="{{ $tech->id }}" 
                                             data-specialite="{{ $tech->specialite ?? '' }}"
                                             {{ old('technicien_id') == $tech->id ? 'selected' : '' }}>
-                                        {{ $tech->name }}
+                                        {{ $tech->name }} ({{ $tech->dossiers_en_cours }} en cours)
                                     </option>
                                 @endforeach
                             </select>
@@ -233,6 +233,9 @@
                             if (response.device.client_email) $('#client_email').val(response.device.client_email);
                             if (response.device.client_telephone) $('#client_telephone').val(response.device.client_telephone);
 
+                            // Verrouiller les champs si trouvé
+                            $('#modele, #reference').attr('readonly', true).addClass('bg-light');
+                            
                             if (response.vente) {
                                 let gColor = response.vente.sous_garantie ? 'success' : 'danger';
                                 let gText = response.vente.sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE';
@@ -288,6 +291,10 @@
                             }
                         } else {
                             $('#imei-status').html('<span class="text-danger small fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> ' + response.message + '</span>');
+                            
+                            // Déverrouiller si non trouvé
+                            $('#modele, #reference').attr('readonly', false).removeClass('bg-light');
+
                             let html = `
                                 <div class="alert alert-secondary bg-white border-secondary border-2 mt-3 p-0 overflow-hidden shadow-sm" style="border-radius: 12px;">
                                     <div class="bg-secondary bg-opacity-10 px-3 py-2 border-bottom border-secondary border-opacity-25">
@@ -313,9 +320,17 @@
                 imeiTimeout = setTimeout(checkImei, 500);
             } else {
                 $('#modele, #reference, #client_nom, #client_telephone, #client_email').val('');
+                $('#modele, #reference').attr('readonly', false).removeClass('bg-light');
                 $('#imei-status').empty();
                 $('#vente-info-display').empty().hide();
             }
+        });
+
+        // Trigger auto-check if IMEI is already in input (e.g. from redirect)
+        if ($('#imei').val().length >= 5) {
+            checkImei();
+        }
+
         // Filtrage des techniciens par spécialité
         function filterTechnicians() {
             let selectedPannes = [];
@@ -330,25 +345,25 @@
                 if (option.val() === "") return; // Garder l'option par défaut
 
                 if (selectedPannes.length === 0) {
-                    option.show(); // Afficher tout si aucune panne n'est cochée
+                    option.prop('disabled', false).show(); 
+                    option.css('display', '');
                     return;
                 }
 
-                // Vérifier si le technicien a au moins une des spécialités correspondant aux pannes cochées
-                let hasMatch = false;
+                let matchesAll = true;
                 selectedPannes.forEach(function(panne) {
-                    if (techSpecialites.includes(panne)) {
-                        hasMatch = true;
+                    if (!techSpecialites.toLowerCase().includes(panne.toLowerCase())) {
+                        matchesAll = false;
                     }
                 });
 
-                if (hasMatch) {
-                    option.show();
-                    option.css('color', '#2563eb'); // Colorer les suggérés en bleu
+                if (matchesAll) {
+                    option.prop('disabled', false).show().css('display', '');
+                    option.css('color', '#2563eb'); 
                 } else {
-                    option.hide();
+                    option.prop('disabled', true).hide().css('display', 'none');
                     if (option.is(':selected')) {
-                        $('#technicien_id').val(""); // Déselectionner si masqué
+                        $('#technicien_id').val(""); 
                     }
                 }
             });

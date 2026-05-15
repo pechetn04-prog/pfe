@@ -16,14 +16,19 @@ class DossierMessageController extends Controller
     {
         $request->validate([
             'message' => 'required|string|max:1000',
+            'type'    => 'nullable|string|in:public,internal',
         ]);
+
+        $prefix = ($request->type === 'internal') ? '[INT] ' : '';
 
         DossierMessage::create([
             'dossier_id' => $dossier->id,
             'user_id'    => Auth::id(),
-            'message'    => $request->message,
+            'message'    => $prefix . $request->message,
         ]);
 
-        return back()->with('success', 'Message enregistré.');
+        return redirect()
+            ->to(route('dossiers.show', $dossier->id) . '?tab=communication')
+            ->with('success', 'Message envoyé avec succès.');
     }
 }

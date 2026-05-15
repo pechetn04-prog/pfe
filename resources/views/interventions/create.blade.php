@@ -398,6 +398,22 @@ document.addEventListener('DOMContentLoaded', function() {
         form.dataset.confirmed = "true";
         form.submit();
     });
+
+    // Affichage du nom du fichier sélectionné
+    const photoInput = document.querySelector('input[name="photo_intervention"]');
+    if (photoInput) {
+        photoInput.addEventListener('change', function() {
+            const fileName = this.value.split('\\').pop();
+            const label = this.parentElement.querySelector('.small.fw-bold');
+            if (fileName) {
+                label.textContent = fileName;
+                label.classList.add('text-primary');
+            } else {
+                label.textContent = 'Choisir un fichier';
+                label.classList.remove('text-primary');
+            }
+        });
+    }
 });
 </script>
 @endpush

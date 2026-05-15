@@ -11,17 +11,10 @@
                 <h1 class="h3 fw-bold mb-0">Tableau de Bord</h1>
                 <small class="text-muted">Vue d'ensemble du service SAV — {{ now()->format('d/m/Y') }}</small>
             </div>
-            <a href="{{ route('dossiers.create') }}" class="btn btn-primary px-4 shadow-sm">
-                <i class="fas fa-plus me-2"></i> Nouveau Dossier
-            </a>
+           
         </div>
 
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4">
-                <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+
 
         @if($stats['demandes_rejet_count'] > 0)
             <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="border-radius: 15px; background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%); border-left: 5px solid #f59e0b !important;">

@@ -10,9 +10,11 @@
         <div>
             <h1 class="h3 fw-bold mb-0">Liste des tickets SAV</h1>
         </div>
+        @if(auth()->user()->role === 'Agent')
         <a href="{{ route('dossiers.create') }}" class="btn btn-primary px-4 shadow-sm fw-bold">
             <i class="fas fa-plus me-2"></i> Nouveau ticket
         </a>
+        @endif
     </div>
 
     {{-- KPIs --}}
@@ -151,9 +153,21 @@
                             <span class="badge rounded-pill px-3 py-1" style="background: {{ $st[0] }}; color: {{ $st[1] }}; font-size: 0.65rem;">{{ $st[2] }}</span>
                         </td>
                         <td class="text-end pe-4">
-                            <a href="{{ route('dossiers.show', $d->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
-                                <i class="fas fa-eye me-1"></i> Voir
-                            </a>
+                            <div class="d-flex justify-content-end gap-1">
+                                @if(in_array(auth()->user()->role, ['Admin', 'Agent']) && $d->statut === 'EN_ATTENTE_DEVIS' && !$d->devis)
+                                    <a href="{{ route('devis.create', $d->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-2" title="Établir le devis">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                    </a>
+                                @endif
+                                @if(in_array(auth()->user()->role, ['Admin', 'Agent']) && $d->statut === 'REPARE' && !$d->facture)
+                                    <a href="{{ route('factures.create', $d->id) }}" class="btn btn-outline-success btn-sm rounded-pill px-2" title="Générer la facture">
+                                        <i class="fas fa-file-invoice"></i>
+                                    </a>
+                                @endif
+                                <a href="{{ route('dossiers.show', $d->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+                                    <i class="fas fa-eye me-1"></i> Voir
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     @empty

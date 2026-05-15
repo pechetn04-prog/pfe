@@ -25,6 +25,7 @@ class AdminDashboardController extends Controller
             'attente_pieces' => Dossier::where('statut', 'ATTENTE_PIECE')->count(),
             'cloture' => Dossier::whereIn('statut', ['LIVRE', 'CLOTURE'])->count(),
             'users' => User::count(),
+            'attente_validation_remplacement' => Dossier::where('statut', 'ATTENTE_VALIDATION_REMPLACEMENT')->count(),
             'demandes_rejet_count' => \App\Models\DemandeRejet::where('statut', 'EN_ATTENTE')->count(),
             'demandes_rejet_recent' => \App\Models\DemandeRejet::with(['dossier', 'user'])->where('statut', 'EN_ATTENTE')->latest()->take(3)->get(),
         ];
@@ -32,8 +33,8 @@ class AdminDashboardController extends Controller
 
         $stats['status_distribution'] = [
             'Nouveaux' => $stats['recu'],
-            'En Cours' => Dossier::whereIn('statut', ['AFFECTE', 'EN_DIAGNOSTIC', 'EN_REPARATION', 'ATTENTE_PIECE'])->count(),
-            'Terminés' => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'LIVRE', 'CLOTURE'])->count(),
+            'En Cours' => Dossier::whereIn('statut', ['AFFECTE', 'EN_DIAGNOSTIC', 'EN_REPARATION', 'ATTENTE_PIECE', 'ATTENTE_VALIDATION_REMPLACEMENT'])->count(),
+            'Terminés' => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'LIVRE', 'CLOTURE', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE'])->count(),
         ];
 
         $stats['warranty_distribution'] = [
@@ -70,7 +71,7 @@ class AdminDashboardController extends Controller
             ->take(6)
             ->get();
 
-        $recentDossiers = Dossier::with(['client', 'appareil'])->latest()->take(10)->get();
+        $recentDossiers = Dossier::with(['client', 'appareil'])->latest()->take(5)->get();
         $techniciens = User::where('role', 'Technicien')->where('actif', true)->get();
 
         return view('dashboard.admin', compact('stats', 'dossiersDiagnostique', 'dossiersReparation', 'dossiersAttentePieces', 'stockAlerts', 'recentDossiers', 'techniciens'));
@@ -93,17 +94,17 @@ class AdminDashboardController extends Controller
         $devisAcceptes = Devis::whereBetween('devis.created_at', [$dateDebut, $dateFin])->where('statut', 'ACCEPTE')->count();
         $tauxAcceptation = $totalDevis > 0 ? round(($devisAcceptes / $totalDevis) * 100, 1) : 0;
 
-        // Analyse des retards (Donut Chart)
+        // Analyse des retards (Donut Chart) basé sur created_at pour plus de fiabilité
         $now = now();
         $retards = [
             '24-48h' => (clone $query)->whereNotIn('statut', ['CLOTURE', 'LIVRE'])
-                ->where('date_reception', '<=', $now->copy()->subHours(24))
-                ->where('date_reception', '>', $now->copy()->subHours(48))->count(),
+                ->where('created_at', '<=', $now->copy()->subHours(24))
+                ->where('created_at', '>', $now->copy()->subHours(48))->count(),
             '48-72h' => (clone $query)->whereNotIn('statut', ['CLOTURE', 'LIVRE'])
-                ->where('date_reception', '<=', $now->copy()->subHours(48))
-                ->where('date_reception', '>', $now->copy()->subHours(72))->count(),
+                ->where('created_at', '<=', $now->copy()->subHours(48))
+                ->where('created_at', '>', $now->copy()->subHours(72))->count(),
             '>72h' => (clone $query)->whereNotIn('statut', ['CLOTURE', 'LIVRE'])
-                ->where('date_reception', '<=', $now->copy()->subHours(72))->count(),
+                ->where('created_at', '<=', $now->copy()->subHours(72))->count(),
         ];
 
         $totalRetard = array_sum($retards);

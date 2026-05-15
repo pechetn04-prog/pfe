@@ -92,9 +92,6 @@
                                 <th>Client</th>
                                 <th>Motif / Raison</th>
                                 <th class="text-center">Date</th>
-                                <th class="text-end pe-4">Actions</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             @foreach($enAttenteList as $demande)
                                 <tr>
@@ -134,68 +131,71 @@
                                                 <i class="fas fa-times me-1"></i> REFUSER
                                             </button>
                                         </div>
-
-                                        {{-- Modal Approuver --}}
-                                        <div class="modal fade text-start" id="modalApprouver{{ $demande->id }}" tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-                                                    <div class="modal-header border-0 pb-0 pt-4 px-4">
-                                                        <h5 class="modal-title fw-bold text-success d-flex align-items-center">
-                                                            <i class="fas fa-check-circle me-2"></i> Approuver le retrait
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <form action="{{ route('admin.demandes_rejet.approve', $demande->id) }}" method="POST">
-                                                        @csrf
-                                                        <div class="modal-body p-4">
-                                                            <p class="text-muted small">En approuvant, le dossier sera <strong>désaffecté</strong> du technicien et reviendra en statut <strong>"AFFECTÉ"</strong>.</p>
-                                                            <div class="mb-0">
-                                                                <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Commentaire pour le technicien</label>
-                                                                <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" placeholder="Ex: Retrait accepté..."></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer border-0 pb-4 px-4">
-                                                            <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
-                                                            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow">CONFIRMER</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {{-- Modal Refuser --}}
-                                        <div class="modal fade text-start" id="modalRefuser{{ $demande->id }}" tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-                                                    <div class="modal-header border-0 pb-0 pt-4 px-4">
-                                                        <h5 class="modal-title fw-bold text-danger d-flex align-items-center">
-                                                            <i class="fas fa-times-circle me-2"></i> Refuser le retrait
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <form action="{{ route('admin.demandes_rejet.reject', $demande->id) }}" method="POST">
-                                                        @csrf
-                                                        <div class="modal-body p-4">
-                                                            <p class="text-muted small">Veuillez justifier votre refus.</p>
-                                                            <div class="mb-0">
-                                                                <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Motif du refus (Requis)</label>
-                                                                <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" required placeholder="Ex: Expertise requise indispensable..."></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer border-0 pb-4 px-4">
-                                                            <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
-                                                            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow">CONFIRMER LE REFUS</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
+
+                {{-- Modaux (En dehors de la table pour éviter les bugs d'affichage) --}}
+                @foreach($enAttenteList as $demande)
+                    {{-- Modal Approuver --}}
+                    <div class="modal fade text-start" id="modalApprouver{{ $demande->id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                                    <h5 class="modal-title fw-bold text-success d-flex align-items-center">
+                                        <i class="fas fa-check-circle me-2"></i> Approuver le retrait
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ route('admin.demandes_rejet.approve', $demande->id) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-body p-4">
+                                        <p class="text-muted small">En approuvant, le dossier sera <strong>désaffecté</strong> du technicien et reviendra en statut <strong>"RECU"</strong>.</p>
+                                        <div class="mb-0">
+                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Commentaire pour le technicien</label>
+                                            <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" placeholder="Ex: Retrait accepté..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer border-0 pb-4 px-4">
+                                        <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow" onclick="this.innerHTML='Traitement...'; this.disabled=true; this.form.submit();">CONFIRMER</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Modal Refuser --}}
+                    <div class="modal fade text-start" id="modalRefuser{{ $demande->id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                                    <h5 class="modal-title fw-bold text-danger d-flex align-items-center">
+                                        <i class="fas fa-times-circle me-2"></i> Refuser le retrait
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ route('admin.demandes_rejet.reject', $demande->id) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-body p-4">
+                                        <p class="text-muted small">Veuillez justifier votre refus.</p>
+                                        <div class="mb-0">
+                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Motif du refus (Requis)</label>
+                                            <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" required placeholder="Ex: Expertise requise indispensable..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer border-0 pb-4 px-4">
+                                        <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow" onclick="this.innerHTML='Traitement...'; this.disabled=true; this.form.submit();">CONFIRMER LE REFUS</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach      </div>
             @endif
         </div>
     </div>

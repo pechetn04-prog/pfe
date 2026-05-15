@@ -43,7 +43,6 @@
                         <th>Date Vente</th>
                         <th>Garantie</th>
                         <th>Fin Garantie</th>
-                        <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white">
@@ -68,21 +67,13 @@
                         </td>
                         <td class="small fw-bold">{{ \Carbon\Carbon::parse($vente->date_vente)->format('d/m/Y') }}</td>
                         <td class="small fw-bold">{{ $vente->duree_garantie_mois }} mois</td>
-                        <td>
-                            <span class="badge {{ $sousGarantie ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger' }} px-3 rounded-pill fw-bold border" style="font-size: 0.7rem;">
-                                <i class="fas {{ $sousGarantie ? 'fa-check' : 'fa-times' }} me-1"></i>
-                                {{ $finGarantie->format('d/m/Y') }}
-                            </span>
-                        </td>
-                        <td class="text-end pe-4">
-                            <a href="{{ route('dossiers.create', ['imei' => $vente->imei]) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bolder" style="font-weight: 800; font-size: 0.75rem;">
-                                <i class="fas fa-plus-circle me-1"></i> Ticket
-                            </a>
+                        <td class="small fw-bold">
+                            {{ $finGarantie->format('d/m/Y') }}
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="text-center py-5 text-muted fw-bold italic">Aucune vente enregistrée.</td>
+                        <td colspan="8" class="text-center py-5 text-muted fw-bold italic">Aucune vente enregistrée.</td>
                     </tr>
                     @endforelse
                 </tbody>

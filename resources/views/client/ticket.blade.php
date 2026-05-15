@@ -114,6 +114,46 @@
                         </div>
                     </div>
 
+                    {{-- Carte Communication / Messages --}}
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 24px; background: white;">
+                        <div class="card-header bg-white border-0 py-4 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0 text-dark">Communication SAV</h5>
+                            <i class="fas fa-comments text-primary fs-4"></i>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <div class="chat-box mb-4 p-3 bg-light rounded-4" style="max-height: 300px; overflow-y: auto;">
+                                @php
+                                    $publicMessages = $dossier->messages->filter(function($m) {
+                                        return !str_starts_with($m->message, '[INT] ');
+                                    })->sortBy('created_at');
+                                @endphp
+
+                                @forelse($publicMessages as $msg)
+                                    @php $isMe = $msg->user_id == auth()->id(); @endphp
+                                    <div class="mb-3 d-flex {{ $isMe ? 'justify-content-end' : 'justify-content-start' }}">
+                                        <div class="p-3 rounded-4 {{ $isMe ? 'bg-primary text-white shadow-sm' : 'bg-white text-dark shadow-sm border' }}" style="max-width: 85%;">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-bold small me-3">{{ $msg->user->name }}</span>
+                                                <span class="opacity-50" style="font-size: 0.6rem;">{{ $msg->created_at->format('H:i') }}</span>
+                                            </div>
+                                            <div style="font-size: 0.85rem;">{{ $msg->message }}</div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="text-center py-4 text-muted small">Aucun message échangé.</div>
+                                @endforelse
+                            </div>
+
+                            <form action="{{ route('dossiers.messages.store', $dossier->id) }}" method="POST">
+                                @csrf
+                                <div class="input-group bg-light rounded-pill p-1 shadow-sm">
+                                    <input type="text" name="message" class="form-control border-0 bg-transparent px-3" placeholder="Votre message au SAV..." required style="box-shadow: none;">
+                                    <button class="btn btn-primary rounded-pill px-4 fw-bold" type="submit">Envoyer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     {{-- Journal de Suivi (Timeline stylée) --}}
                     <div class="card border-0 shadow-sm" style="border-radius: 24px; background: white;">
                         <div class="card-header bg-white border-0 py-4 px-4">
