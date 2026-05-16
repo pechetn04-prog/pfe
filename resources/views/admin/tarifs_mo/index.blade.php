@@ -29,10 +29,10 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-secondary w-100 rounded-3 fw-bold shadow-sm">FILTRER</button>
+                    <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold shadow-sm">FILTRER</button>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route('admin.tarifs_mo.index') }}" class="btn btn-light w-100 rounded-3">TOUT AFFICHER</a>
+                    <a href="{{ route('admin.tarifs_mo.index') }}" class="btn btn-light border-0 w-100 rounded-3 fw-bold" style="background: #f1f5f9; color: #64748b;">RAZ</a>
                 </div>
             </form>
         </div>
@@ -67,20 +67,10 @@
                         </td>
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end align-items-center gap-3">
-                                <form action="{{ route('admin.tarifs_mo.toggle', $tarif->id) }}" method="POST">
-                                    @csrf @method('PATCH')
-                                    <div class="form-check form-switch p-0 m-0 d-flex align-items-center">
-                                        <label class="form-check-label small fw-bold me-2 {{ $tarif->actif ? 'text-success' : 'text-muted' }}" for="switch{{ $tarif->id }}">
-                                            {{ $tarif->actif ? 'ACTIF' : 'INACTIF' }}
-                                        </label>
-                                        <input class="form-check-input cursor-pointer" type="checkbox" id="switch{{ $tarif->id }}"
-                                            onchange="this.form.submit()" {{ $tarif->actif ? 'checked' : '' }}
-                                            style="width: 2.2em; height: 1.1em; margin-top: 0;">
-                                    </div>
-                                </form>
 
-                                <button class="btn btn-sm btn-light rounded-circle shadow-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $tarif->id }}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-edit text-primary"></i>
+
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#editModal{{ $tarif->id }}">
+                                    <i class="fas fa-edit me-1"></i> Modifier
                                 </button>
                             </div>
 

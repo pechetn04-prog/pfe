@@ -1,16 +1,110 @@
-/* Styles pour la liste des utilisateurs */
+/**
+ * SAV Premium - Gestion des Utilisateurs
+ */
 
-.form-switch .form-check-input:checked {
-    background-color: #28a745;
-    border-color: #28a745;
+.users-title {
+    color: #1a2332;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
-.form-check-input {
-    cursor: pointer;
+.users-card {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
-.table thead th {
-    font-weight: 600;
+.table-users thead th {
+    background-color: #fcfdfe;
+    color: #64748b;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.table-users tbody td {
+    padding: 0.65rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
     font-size: 0.85rem;
-    color: #6c757d;
+}
+
+.user-name {
+    font-weight: 700;
+    color: #1e293b;
+    font-family: 'Outfit', sans-serif;
+}
+
+.user-email {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.role-badge {
+    font-weight: 700;
+    font-size: 0.65rem;
+    padding: 0.35em 1em;
+    border-radius: 50px;
+    letter-spacing: 0.3px;
+}
+
+.role-admin { background: #fee2e2; color: #b91c1c; }
+.role-agent { background: #e0f2fe; color: #0369a1; }
+.role-technicien { background: #fef9c3; color: #854d0e; }
+.role-client { background: #f1f5f9; color: #475569; }
+
+.status-switch {
+    width: 3.5rem !important;
+    height: 1.75rem !important;
+}
+
+.status-switch:checked {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+.btn-action-edit {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #2563eb;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.btn-action-edit:hover {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.filter-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+}
+
+.filter-select, .filter-input {
+    background: #f8fafc !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 18px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+}
+
+.filter-select:focus, .filter-input:focus {
+    background: white !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
 }

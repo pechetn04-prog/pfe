@@ -116,8 +116,6 @@ Route::middleware('auth')->group(function () {
 
         // Ventes
         Route::get('/admin/ventes-produits', [VenteController::class, 'index'])->name('ventes.index');
-        Route::get('/admin/ventes/create', [VenteController::class, 'create'])->name('ventes.create');
-        Route::post('/admin/ventes', [VenteController::class, 'store'])->name('ventes.store');
 
         // Gestion des Tarifs Main d'œuvre
         Route::get('/admin/tarifs-mo', [\App\Http\Controllers\TarifMoController::class, 'index'])->name('admin.tarifs_mo.index');

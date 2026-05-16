@@ -85,8 +85,10 @@ class TechnicienDashboardController extends Controller
             'EN_ATTENTE_DEVIS' => 'Attente Devis',
             'EN_REPARATION'  => 'En Réparation',
             'ATTENTE_PIECE'  => 'En attente pièces',
-            'REPARE'         => 'Terminés',
+            'REPARE'         => 'Réparé',
             'IRREPARABLE'    => 'Irréparable',
+            'LIVRE'          => 'Restitué',
+            'CLOTURE'        => 'Clôturé',
         ];
 
         return view('technicien.tickets', compact('dossiers', 'statuts'));

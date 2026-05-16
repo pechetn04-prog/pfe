@@ -3,115 +3,108 @@
 @section('title', 'Historique des Mouvements Stock')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/stock.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/stock_mouvements.css') }}">
 @endpush
 
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="h3 mb-0 text-gray-800">Mouvements de Stock</h1>
-                <small class="text-muted">Traçabilité complète des entrées et sorties</small>
+                <h1 class="h3 mouvements-title mb-0">Mouvements de Stock</h1>
+                <small class="text-muted fw-bold">Traçabilité complète des flux d'inventaire</small>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ route('stock.index') }}" class="btn btn-outline-secondary shadow-sm">
-                    <i class="fas fa-boxes me-1"></i> Retour Inventaire
+                <a href="{{ route('stock.index') }}" class="btn btn-light border shadow-sm">
+                    <i class="fas fa-boxes me-1"></i> Inventaire
                 </a>
-                <button type="button" class="btn btn-primary shadow-sm fw-bold rounded-pill px-3" data-bs-toggle="modal"
-                    data-bs-target="#mouvementModal">
-                    <i class="fas fa-plus me-1"></i> Nouveau Mouvement
-                </button>
+                <a href="{{ route('stock.mouvements.create') }}" class="btn btn-primary shadow-sm fw-bold">
+                    <i class="fas fa-plus me-1"></i> Nouveau Flux
+                </a>
             </div>
         </div>
 
         {{-- Filtres --}}
-        <div class="card shadow mb-4 border-0" style="border-radius: 12px;">
-            <div class="card-body py-3">
-                <form action="{{ route('stock.mouvements') }}" method="GET" class="row g-2 align-items-end">
-                    <div class="col-md-3">
-                        <label class="small text-muted fw-bold text-uppercase">Filtrer par Pièce</label>
-                        <select name="piece_id" class="form-select">
-                            <option value="">Toutes les pièces</option>
-                            @foreach($pieces as $p)
-                                <option value="{{ $p->id }}" {{ request('piece_id') == $p->id ? 'selected' : '' }}>
-                                    [{{ $p->reference }}] {{ $p->nom }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="small text-muted fw-bold text-uppercase">Type</label>
-                        <select name="type" class="form-select">
-                            <option value="">Tous</option>
-                            <option value="ENTREE" {{ request('type') == 'ENTREE' ? 'selected' : '' }}>Entrée</option>
-                            <option value="SORTIE" {{ request('type') == 'SORTIE' ? 'selected' : '' }}>Sortie</option>
-                            <option value="AJUSTEMENT" {{ request('type') == 'AJUSTEMENT' ? 'selected' : '' }}>Ajustement
+        <div class="filter-mouv shadow-sm">
+            <form action="{{ route('stock.mouvements') }}" method="GET" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="small text-muted fw-bold text-uppercase mb-2">Filtrer par Pièce</label>
+                    <select name="piece_id" class="form-select">
+                        <option value="">Toutes les pièces détachées</option>
+                        @foreach($pieces as $p)
+                            <option value="{{ $p->id }}" {{ request('piece_id') == $p->id ? 'selected' : '' }}>
+                                {{ $p->nom }} ({{ $p->reference }})
                             </option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter"></i></button>
-                    </div>
-                </form>
-            </div>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="small text-muted fw-bold text-uppercase mb-2">Type de Flux</label>
+                    <select name="type" class="form-select">
+                        <option value="">Tous les types</option>
+                        <option value="entree" {{ request('type') == 'entree' ? 'selected' : '' }}>Entrée en stock</option>
+                        <option value="sortie" {{ request('type') == 'sortie' ? 'selected' : '' }}>Sortie de stock</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1 shadow-sm">FILTRER LES FLUX</button>
+                    <a href="{{ route('stock.mouvements') }}" class="btn btn-light border-0 fw-bold" style="background: #f1f5f9; color: #64748b;">
+                        <i class="fas fa-undo me-2"></i> RAZ
+                    </a>
+                </div>
+            </form>
         </div>
 
         {{-- Tableau --}}
-        <div class="card shadow border-0 overflow-hidden" style="border-radius: 15px;">
+        <div class="card mouvements-card overflow-hidden">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-muted small text-uppercase fw-bold">
+                <table class="table table-hover align-middle mb-0 table-mouvements">
+                    <thead>
                         <tr>
-                            <th class="ps-4">Date & Heure</th>
-                            <th>Pièce</th>
+                            <th class="ps-4">Horodatage</th>
+                            <th>Désignation Pièce</th>
                             <th class="text-center">Type</th>
                             <th class="text-center">Quantité</th>
-                            <th>Motif / Origine</th>
-                            <th>Opérateur</th>
+                            <th>Motif / Dossier</th>
+                            <th class="pe-4">Opérateur</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($mouvements as $m)
                             <tr>
-                                <td class="ps-4 small">
-                                    <div class="fw-bold text-dark">{{ \Carbon\Carbon::parse($m->created_at)->format('d/m/Y') }}
-                                    </div>
-                                    <div class="text-muted" style="font-size: 0.7rem;">
-                                        {{ \Carbon\Carbon::parse($m->created_at)->format('H:i') }}</div>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">{{ \Carbon\Carbon::parse($m->created_at)->format('d/m/Y') }}</div>
+                                    <div class="text-muted small">{{ \Carbon\Carbon::parse($m->created_at)->format('H:i') }}</div>
                                 </td>
                                 <td>
-                                    <div class="fw-bold">{{ $m->piece->nom ?? 'Pièce inconnue' }}</div>
-                                    <small class="text-muted font-monospace">{{ $m->piece->reference ?? '' }}</small>
+                                    <div class="fw-bold text-dark">{{ $m->piece->nom ?? '—' }}</div>
+                                    <span class="piece-ref">{{ $m->piece->reference ?? '—' }}</span>
                                 </td>
                                 <td class="text-center">
-                                    @php
-                                        $colors = ['ENTREE' => 'success', 'SORTIE' => 'danger', 'AJUSTEMENT' => 'warning'];
-                                        $c = $colors[$m->type] ?? 'secondary';
-                                    @endphp
-                                    <span class="badge bg-{{ $c }} rounded-pill px-3"
-                                        style="font-size: 0.7rem;">{{ $m->type }}</span>
+                                    <span class="mouv-type-badge badge-{{ $m->type }}">
+                                        {{ $m->type }}
+                                    </span>
                                 </td>
-                                <td
-                                    class="text-center fw-bold fs-5 {{ $m->type == 'SORTIE' ? 'text-danger' : 'text-success' }}">
-                                    {{ $m->type == 'SORTIE' ? '-' : '+' }}{{ $m->quantite }}
+                                <td class="text-center qty-text {{ $m->type == 'sortie' ? 'qty-minus' : 'qty-plus' }}">
+                                    {{ $m->type == 'sortie' ? '-' : '+' }}{{ $m->quantite }}
                                 </td>
                                 <td>
-                                    <div class="small">{{ $m->motif }}</div>
+                                    <div class="small text-muted mb-1">{{ $m->motif }}</div>
                                     @if($m->reference_type === 'App\Models\Intervention' && $m->reference)
                                         <a href="{{ route('dossiers.show', $m->reference->dossier_id) }}"
-                                            class="badge bg-light text-primary border text-decoration-none">
-                                            Dossier #{{ $m->reference->dossier->num_dossier ?? '???' }}
+                                            class="badge bg-soft-info text-decoration-none py-2 px-3">
+                                            <i class="fas fa-folder-open me-1"></i> Dossier #{{ $m->reference->dossier->num_dossier ?? '???' }}
                                         </a>
                                     @endif
                                 </td>
-                                <td>
-                                    <div class="small fw-bold">{{ $m->user->name ?? 'Système' }}</div>
+                                <td class="pe-4">
+                                    <div class="op-name">{{ $m->user->name ?? 'Système' }}</div>
+                                    <div class="small text-muted">{{ $m->user->role ?? '' }}</div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
-                                    Aucun mouvement enregistré.
+                                <td colspan="6" class="text-center py-5 text-muted fw-bold">
+                                    <i class="fas fa-history me-2"></i> Aucun mouvement enregistré.
                                 </td>
                             </tr>
                         @endforelse
@@ -119,7 +112,7 @@
                 </table>
             </div>
             @if($mouvements->hasPages())
-                <div class="card-footer bg-white py-3">
+                <div class="p-4 bg-white border-top">
                     {{ $mouvements->links() }}
                 </div>
             @endif

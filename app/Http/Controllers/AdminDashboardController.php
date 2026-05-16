@@ -94,9 +94,11 @@ class AdminDashboardController extends Controller
         $devisAcceptes = Devis::whereBetween('devis.created_at', [$dateDebut, $dateFin])->where('statut', 'ACCEPTE')->count();
         $tauxAcceptation = $totalDevis > 0 ? round(($devisAcceptes / $totalDevis) * 100, 1) : 0;
 
-        // Analyse des retards (Donut Chart) basé sur created_at pour plus de fiabilité
+        // Analyse des retards (Donut Chart)
         $now = now();
         $retards = [
+            '0-24h' => (clone $query)->whereNotIn('statut', ['CLOTURE', 'LIVRE'])
+                ->where('created_at', '>', $now->copy()->subHours(24))->count(),
             '24-48h' => (clone $query)->whereNotIn('statut', ['CLOTURE', 'LIVRE'])
                 ->where('created_at', '<=', $now->copy()->subHours(24))
                 ->where('created_at', '>', $now->copy()->subHours(48))->count(),
@@ -107,7 +109,8 @@ class AdminDashboardController extends Controller
                 ->where('created_at', '<=', $now->copy()->subHours(72))->count(),
         ];
 
-        $totalRetard = array_sum($retards);
+        $totalOuvert = array_sum($retards);
+        $totalRetard = $retards['24-48h'] + $retards['48-72h'] + $retards['>72h'];
         $tauxRetard = $totalDossiers > 0 ? round(($totalRetard / $totalDossiers) * 100, 1) : 0;
 
         // Données pour les graphiques : Dossiers par Tech
@@ -118,7 +121,7 @@ class AdminDashboardController extends Controller
                 }
             ])->get();
 
-        // Top 10 Pannes Fréquentes
+        // Top 10 Pannes Fréquentes (Basé sur la déclaration initiale)
         $topPannes = (clone $query)->select('panne_declaree', DB::raw('count(*) as total'))
             ->whereNotNull('panne_declaree')
             ->groupBy('panne_declaree')
@@ -126,11 +129,9 @@ class AdminDashboardController extends Controller
             ->take(10)
             ->get();
 
-        // Consommation Pièces (Top 5)
+        // Consommation Pièces (Top 5) - Requête simplifiée et robuste
         $topPieces = DB::table('ligne_pieces')
             ->join('pieces', 'pieces.id', '=', 'ligne_pieces.piece_id')
-            ->join('interventions', 'interventions.id', '=', 'ligne_pieces.source_id')
-            ->where('ligne_pieces.source_type', 'App\Models\Intervention')
             ->whereBetween('ligne_pieces.created_at', [$dateDebut, $dateFin])
             ->select('pieces.nom', DB::raw('SUM(ligne_pieces.quantite) as total_qty'))
             ->groupBy('pieces.id', 'pieces.nom')

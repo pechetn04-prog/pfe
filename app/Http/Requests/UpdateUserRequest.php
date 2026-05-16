@@ -7,11 +7,17 @@ use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
+    /**
+     * Seuls les Admins et Agents peuvent modifier des utilisateurs.
+     */
     public function authorize(): bool
     {
-        return true;
+        return in_array(auth()->user()->role, ['Admin', 'Agent']);
     }
 
+    /**
+     * Règles de validation.
+     */
     public function rules(): array
     {
         $user = $this->route('user');
@@ -19,13 +25,27 @@ class UpdateUserRequest extends FormRequest
 
         return [
             'name'       => ['required', 'string', 'max:255'],
-            'email'      => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
-            'password'   => ['nullable', 'string', 'min:8'],
+            'email'      => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
+            'password'   => ['nullable', 'string', 'min:8', 'confirmed'],
             'role'       => ['required', 'in:Admin,Agent,Technicien,Client'],
             'telephone'  => ['nullable', 'string', 'max:50'],
-            'specialite' => ['nullable', 'string', 'max:255'],
             'specialites'=> ['nullable', 'array'],
             'actif'      => ['nullable', 'boolean'],
+        ];
+    }
+
+    /**
+     * Messages d'erreur personnalisés.
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required'      => 'Le nom est obligatoire.',
+            'email.required'     => 'L\'adresse e-mail est obligatoire.',
+            'email.unique'       => 'Cette adresse e-mail est déjà utilisée.',
+            'role.required'      => 'Le rôle est obligatoire.',
+            'password.min'       => 'Le mot de passe doit contenir au moins 8 caractères.',
+            'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
         ];
     }
 }

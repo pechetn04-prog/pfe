@@ -29,6 +29,7 @@
     </div>
 
     {{-- Cartes de Statistiques Stock --}}
+    @if(auth()->user()->role !== 'Technicien')
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
         <div class="col">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
@@ -83,6 +84,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     {{-- Modal Ajouter Pièce --}}
     <div class="modal fade" id="addPieceModal" tabindex="-1" aria-hidden="true">
@@ -208,14 +210,10 @@
                         @if(auth()->user()->role !== 'Technicien')
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end align-items-center gap-3">
-                                <form action="{{ route('stock.toggle', $piece->id) }}" method="POST">
-                                    @csrf @method('PATCH')
-                                    <input class="form-check-input cursor-pointer" type="checkbox" id="switch{{ $piece->id }}"
-                                        onchange="this.form.submit()" {{ $piece->actif ? 'checked' : '' }}
-                                        style="width: 2.2em; height: 1.1em; margin-top: 0; cursor: pointer;">
-                                </form>
-                                <a href="{{ route('stock.edit', $piece->id) }}" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Modifier" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-edit text-primary"></i>
+
+
+                                <a href="{{ route('stock.edit', $piece->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" title="Modifier">
+                                    <i class="fas fa-edit me-1"></i> Modifier
                                 </a>
                             </div>
                         </td>

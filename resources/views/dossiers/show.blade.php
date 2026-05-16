@@ -37,23 +37,6 @@
             </div>
         </div>
 
-        {{-- Recommendation Banner (Only one, without white part) --}}
-        @php
-            $action = ['color' => '#1e69ff', 'title' => 'Informations', 'desc' => 'Dossier en cours de traitement.'];
-            switch($dossier->statut) {
-                case 'RECU': $action = ['color' => '#1e69ff', 'title' => 'Affectation requise', 'desc' => 'Veuillez assigner un technicien.']; break;
-                case 'AFFECTE': $action = ['color' => '#f59e0b', 'title' => 'Diagnostic prêt', 'desc' => 'L\'expertise peut commencer.']; break;
-                case 'EN_DIAGNOSTIC': $action = ['color' => '#3b82f6', 'title' => 'Expertise en cours', 'desc' => 'Le diagnostic est en cours.']; break;
-                case 'EN_ATTENTE_DEVIS': $action = ['color' => '#ef4444', 'title' => 'Devis à établir', 'desc' => 'Veuillez créer le devis.']; break;
-                case 'EN_REPARATION': $action = ['color' => '#10b981', 'title' => 'Réparation en cours', 'desc' => 'L\'appareil est en atelier.']; break;
-                case 'REPARE': $action = ['color' => '#059669', 'title' => 'Prêt pour facturation', 'desc' => 'La réparation est terminée.']; break;
-                case 'ATTENTE_PIECE': $action = ['color' => '#d97706', 'title' => 'En attente de pièces', 'desc' => 'Le dossier est bloqué.']; break;
-                case 'IRREPARABLE': $action = ['color' => '#ef4444', 'title' => 'Appareil Irréparable', 'desc' => 'Retour au client recommandé.']; break;
-                case 'LIVRE': $action = ['color' => '#6366f1', 'title' => 'Appareil Livré', 'desc' => 'Prêt pour clôture.']; break;
-                case 'CLOTURE': $action = ['color' => '#64748b', 'title' => 'Dossier Clôturé', 'desc' => 'Dossier archivé.']; break;
-                case 'DEVIS_REFUSE': $action = ['color' => '#64748b', 'title' => 'Devis Refusé', 'desc' => 'Prêt pour restitution.']; break;
-            }
-        @endphp
 
         {{-- Info Card --}}
         <div class="card border-0 shadow-sm mb-3" style="border-radius: 15px;">
@@ -84,59 +67,64 @@
 
         {{-- Recommendation Banner --}}
         @php
-            $action = ['icon' => 'fa-info-circle', 'color' => '#1e69ff', 'title' => 'Informations', 'desc' => 'Dossier en cours de traitement.'];
+            $action = ['icon' => 'fa-list-check', 'color' => '#1e69ff', 'title' => 'Action suivante recommandée', 'desc' => 'Suivez l\'avancement du dossier via les onglets ci-dessous.'];
 
             switch ($dossier->statut) {
                 case 'RECU':
-                    $action = ['icon' => 'fa-user-check', 'color' => '#1e69ff', 'title' => 'Affectation requise', 'desc' => 'Veuillez assigner un technicien pour débuter le diagnostic.'];
+                    $action['desc'] = 'Affectation d\'un technicien requise.';
                     break;
                 case 'AFFECTE':
-                    $action = ['icon' => 'fa-play-circle', 'color' => '#f59e0b', 'title' => 'Diagnostic prêt', 'desc' => 'Le technicien peut maintenant commencer l\'expertise technique.'];
+                    $action['desc'] = 'Le diagnostic est prêt à être effectué.';
                     break;
                 case 'EN_DIAGNOSTIC':
-                    $action = ['icon' => 'fa-microscope', 'color' => '#3b82f6', 'title' => 'Expertise en cours', 'desc' => 'Le diagnostic est en cours de saisie par le technicien.'];
+                    $action['desc'] = 'L\'expertise technique est en cours.';
                     break;
                 case 'EN_ATTENTE_DEVIS':
-                    $action = ['icon' => 'fa-file-invoice-dollar', 'color' => '#ef4444', 'title' => 'Devis à établir', 'desc' => 'Le diagnostic est terminé. Veuillez créer le devis pour le client.'];
+                    $action['desc'] = 'Établissement du devis en attente.';
                     break;
                 case 'EN_REPARATION':
-                    $action = ['icon' => 'fa-tools', 'color' => '#10b981', 'title' => 'Réparation en cours', 'desc' => 'L\'appareil est actuellement en cours de réparation en atelier.'];
+                    $action['desc'] = 'Réparation en cours en atelier.';
                     break;
                 case 'REPARE':
-                    $action = ['icon' => 'fa-check-double', 'color' => '#059669', 'title' => 'Prêt pour facturation', 'desc' => 'La réparation est terminée. Vous pouvez générer la facture finale.'];
+                    $action['desc'] = 'Appareil réparé, prêt pour facturation.';
                     break;
                 case 'ATTENTE_PIECE':
-                    $action = ['icon' => 'fa-hourglass-half', 'color' => '#d97706', 'title' => 'En attente de pièces', 'desc' => 'Le dossier est bloqué en attendant la réception des composants nécessaires.'];
+                    $action['desc'] = 'Dossier en attente de pièces détachées.';
                     break;
                 case 'IRREPARABLE':
-                    $action = ['icon' => 'fa-times-circle', 'color' => '#ef4444', 'title' => 'Appareil Irréparable', 'desc' => 'Le diagnostic a conclu que l\'appareil ne peut pas être réparé. Prêt pour retour au client.'];
+                    $action['desc'] = 'Appareil déclaré irréparable.';
                     break;
                 case 'LIVRE':
-                    $action = ['icon' => 'fa-truck', 'color' => '#6366f1', 'title' => 'Appareil Livré', 'desc' => 'L\'appareil a été remis au client. Vous pouvez clôturer le dossier définitivement.'];
+                    $action['desc'] = 'Appareil restitué, prêt pour clôture.';
                     break;
                 case 'CLOTURE':
-                    $action = ['icon' => 'fa-lock', 'color' => '#64748b', 'title' => 'Dossier Clôturé', 'desc' => 'Ce dossier est terminé et archivé. Aucune modification n\'est plus possible.'];
+                    $action['desc'] = 'Dossier clôturé et archivé.';
                     break;
                 case 'ATTENTE_VALIDATION_REMPLACEMENT':
-                    $action = ['icon' => 'fa-exchange-alt', 'color' => '#1e69ff', 'title' => 'Validation de Remplacement', 'desc' => 'L\'appareil est irréparable mais sous garantie. Veuillez valider ou refuser le remplacement.'];
+                    $action['desc'] = 'Validation du remplacement requise.';
                     break;
                 case 'REMPLACEMENT_VALIDE':
-                    $action = ['icon' => 'fa-check-circle', 'color' => '#10b981', 'title' => 'Remplacement Validé', 'desc' => 'L\'administration a validé le remplacement. En attente de préparation de l\'appareil neuf par un agent.'];
+                    $action['desc'] = 'Remplacement validé, préparation en cours.';
                     break;
                 case 'REMPLACEMENT_REFUSE':
-                    $action = ['icon' => 'fa-times-circle', 'color' => '#ef4444', 'title' => 'Remplacement Refusé', 'desc' => 'Le remplacement a été refusé. Prêt pour restitution au client.'];
+                    $action['desc'] = 'Remplacement refusé, prêt pour restitution.';
                     break;
                 case 'DEVIS_REFUSE':
-                    $action = ['icon' => 'fa-times-circle', 'color' => '#64748b', 'title' => 'Devis Refusé', 'desc' => 'Le client a refusé le devis. Prêt pour restitution de l\'appareil.'];
+                    $action['desc'] = 'Devis refusé, prêt pour restitution.';
                     break;
             }
         @endphp
         <div class="card border-0 text-white mb-3 shadow-sm"
-            style="background-color: {{ $action['color'] }}; border-radius: 10px;">
+            style="background-color: {{ $action['color'] }}; border-radius: 12px;">
             <div class="card-body p-3 d-flex align-items-center justify-content-between">
-                <div>
-                    <h6 class="mb-0 fw-bold small">{{ $action['title'] }}</h6>
-                    <p class="mb-0" style="font-size: 0.75rem; opacity: 0.8;">{{ $action['desc'] }}</p>
+                <div class="d-flex align-items-center">
+                    <div class="me-3 fs-4">
+                        <i class="fas {{ $action['icon'] }}"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">{{ $action['title'] }}</h6>
+                        <p class="mb-0" style="font-size: 0.8rem; opacity: 0.9;">{{ $action['desc'] }}</p>
+                    </div>
                 </div>
 
                 @if(in_array(auth()->user()->role, ['Admin', 'Agent']))
@@ -179,8 +167,8 @@
                             <form action="{{ route('dossiers.livrer', $dossier->id) }}" method="POST" onsubmit="return confirm('Confirmer la remise de l\'appareil au client ?')">
                                 @csrf
                                 <button type="submit" class="btn btn-light text-primary btn-sm rounded-pill px-3 fw-bold shadow-sm text-uppercase">
-                                    <i class="fas {{ $dossier->statut == 'DEVIS_REFUSE' ? 'fa-undo' : 'fa-truck' }} me-1"></i>
-                                    {{ $dossier->statut == 'DEVIS_REFUSE' ? 'Restituer' : 'Livrer' }}
+                                    <i class="fas {{ $dossier->statut == 'DEVIS_REFUSE' ? 'fa-undo' : 'fa-hand-holding-heart' }} me-1"></i>
+                                    {{ $dossier->statut == 'DEVIS_REFUSE' ? 'Restituer' : 'Restituer Appareil' }}
                                 </button>
                             </form>
                         @endif
@@ -388,32 +376,14 @@
                                 </span>
                             </div>
                             <div class="card-body text-center py-4">
-                                @php
-                                    $initials = $dossier->technicien ? strtoupper(substr($dossier->technicien->name, 0, 2)) : '??';
-                                @endphp
-                                <div class="rounded-circle text-white d-inline-flex align-items-center justify-content-center mb-2 shadow-sm fw-bold"
-                                    style="width: 50px; height: 50px; font-size: 1.1rem; background-color: #1e69ff;">
-                                    {{ $initials }}
-                                </div>
-                                <h6 class="fw-bold mb-0" style="color: #1a2332; font-size: 0.9rem;">
-                                    {{ $dossier->technicien->name ?? 'Non assigné' }}</h6>
-                                <p class="small text-muted mb-3" style="font-size: 0.7rem;">Technicien en charge</p>
 
-                                @if(auth()->user()->role === 'Admin')
-                                    <form action="{{ route('dossiers.assign', $dossier->id) }}" method="POST">
-                                        @csrf
-                                        <select name="technicien_id"
-                                            class="form-select form-select-sm mb-3 rounded-pill border-0 bg-light text-center"
-                                            style="font-size: 0.75rem;">
-                                            @foreach($techniciens as $tech)
-                                                <option value="{{ $tech->id }}" {{ $dossier->technicien_id == $tech->id ? 'selected' : '' }}>{{ $tech->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="submit"
-                                            class="btn btn-primary btn-sm rounded-pill w-100 fw-bold shadow-sm">Modifier
-                                            l'assignation</button>
-                                    </form>
-                                @endif
+                                <h6 class="fw-bold mb-1" style="color: #1a2332; font-size: 0.95rem;">
+                                    {{ $dossier->technicien->name ?? 'Non assigné' }}
+                                </h6>
+                                <div class="text-primary fw-bold small mb-2">
+                                    <i class="fas fa-phone-alt me-1"></i> {{ $dossier->technicien->telephone ?? 'Aucun numéro' }}
+                                </div>
+                                <p class="small text-muted mb-0" style="font-size: 0.7rem;">Technicien en charge du dossier</p>
                             </div>
                         </div>
                     </div>

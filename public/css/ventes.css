@@ -1,0 +1,89 @@
+/**
+ * SAV Premium - Ventes & Registre
+ */
+
+.ventes-title {
+    letter-spacing: -0.5px;
+}
+
+.ventes-card {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.table-ventes thead th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table-ventes tbody td {
+    padding: 0.65rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.imei-cell {
+    font-weight: 800;
+    color: #2563eb;
+    font-family: 'Outfit', sans-serif;
+}
+
+.vente-type-badge {
+    padding: 0.5em 1em;
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.3px;
+}
+
+.bg-soft-info {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+.modele-text {
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+
+.client-name {
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.client-email {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.search-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.search-input-group {
+    background: #f8fafc;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.search-input-group .form-control {
+    background: transparent;
+    border: none;
+    padding: 12px;
+}
+
+.search-input-group .input-group-text {
+    background: transparent;
+    border: none;
+    padding-left: 20px;
+}

@@ -9,7 +9,7 @@
         .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         .table th, .table td { padding: 8px; text-align: left; vertical-align: top; }
         .header-table { border-bottom: 2px solid #2563eb; margin-bottom: 30px; }
-        .logo { font-size: 24px; font-weight: bold; color: #2563eb; }
+        .logo { font-size: 32px; font-weight: bold; color: #2563eb; }
         .doc-info { text-align: right; }
         .doc-info h1 { font-size: 18px; margin: 0; color: #000; }
         .doc-info .ref { font-size: 20px; font-weight: bold; color: #2563eb; }
@@ -60,10 +60,11 @@
         <tr>
             <td class="logo">
                 @if($company && $company->logo)
-                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 50px;"><br>
+                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 120px;">
+                @else
+                    {{ $company->nom_societe ?? 'MAISON TEL' }}<br>
+                    <span style="font-size: 10px; font-weight: normal; color: #64748b;">SERVICE APRÈS-VENTE</span>
                 @endif
-                {{ $company->nom_societe ?? 'MAISON TEL' }}<br>
-                <span style="font-size: 10px; font-weight: normal; color: #64748b;">SERVICE APRÈS-VENTE</span>
             </td>
             <td class="doc-info">
                 <h1>BON DE RÉCEPTION</h1>

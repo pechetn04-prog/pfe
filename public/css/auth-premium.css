@@ -1,100 +1,158 @@
-/* 
-    Système d'Authentification Premium - Version Centrée
-    Ce fichier gère l'apparence des pages de Connexion, Inscription et Récupération.
-*/
+/**
+ * SAV Premium - Authentication Design System
+ * Consolidates all authentication styles for a professional, high-end look.
+ */
 
-/* Conteneur principal qui centre le formulaire sur la page */
-.login-page {
+/* 1. Global Auth Layout */
+.auth-page {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f8fafc; /* Fond très clair pour faire ressortir la carte */
+    background: radial-gradient(circle at top left, #f8fafc, #eff6ff, #dbeafe);
+    background-size: 200% 200%;
+    animation: gradientBG 15s ease infinite;
     padding: 20px;
+    font-family: 'Outfit', 'Inter', sans-serif;
 }
 
-/* Carte principale (Card) contenant le formulaire */
-.login-wrapper {
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 2. Premium Auth Card */
+.auth-card {
     width: 100%;
-    max-width: 480px; /* Largeur optimale pour la lecture sur tous supports */
-    background: #ffffff;
-    border-radius: 28px; /* Bords très arrondis pour l'aspect premium */
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.05); /* Ombre portée douce */
-    border: 1px solid #e2e8f0;
+    max-width: 480px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 30px;
+    padding: 60px 45px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Espacement interne du formulaire */
-.login-card {
-    padding: 45px 40px;
-}
-
-/* En-tête de la carte (Titre et instructions) */
-.login-card-header {
-    margin-bottom: 30px;
+/* 3. Typography & Headers */
+.auth-header {
     text-align: center;
+    margin-bottom: 35px;
 }
 
-.login-card-header h2 {
+.auth-header h2 {
     font-weight: 800;
     color: #1e293b;
-    font-size: 1.75rem;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
 }
 
-/* Masquage des éléments spécifiques aux designs alternatifs (ex: bandeaux) */
-.login-brand {
-    display: none;
+.auth-header p {
+    color: #64748b;
+    font-size: 0.95rem;
 }
 
-/* Style des boutons Premium (Connexion / Inscription) */
-.btn-premium-blue, .login-btn {
-    background: #0d6efd;
+/* 4. Form Styling */
+.auth-form .form-label {
+    font-weight: 700;
+    color: #475569;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.auth-form .form-control {
+    height: 54px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    padding: 0 18px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: #fcfdfe;
+}
+
+.auth-form .form-control:focus {
+    border-color: #1e3a8a;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1);
+    outline: none;
+}
+
+/* 5. Action Buttons - Simplified */
+.btn-auth-submit {
+    background: #1e3a8a;
     color: white;
     border: none;
-    border-radius: 14px;
-    font-weight: 700;
+    border-radius: 8px;
+    height: 50px;
+    font-weight: 600;
     font-size: 1rem;
-    padding: 14px;
     width: 100%;
-    display: block;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: none;
+}
+
+.btn-auth-submit:hover {
+    background: #1e3a8a;
+    opacity: 0.9;
+}
+
+/* 6. Secondary Actions & Links */
+.auth-footer {
+    margin-top: 30px;
     text-align: center;
+    padding-top: 25px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.auth-link {
+    display: block;
+    color: #64748b;
     text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-top: 15px;
+    padding: 5px;
     cursor: pointer;
 }
 
-/* Effets d'interaction au survol du bouton */
-.btn-premium-blue:hover, .login-btn:hover {
-    background: #1d4ed8;
-    transform: translateY(-2px); /* Petit effet de soulèvement */
-    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
-    color: white;
-}
-
-/* Boîtes d'alertes (Erreurs de validation) */
-.alert-box { 
-    border-radius: 12px; 
-    padding: 14px 16px; 
-    margin-bottom: 18px; 
-    font-size: 14px; 
-}
-
-.alert-danger-box { 
-    background: #fef2f2; 
-    border: 1px solid #fecaca; 
-    color: #b91c1c; 
-}
-
-/* Liens secondaires (Mot de passe oublié, etc.) */
-.forgot-password-link {
-    font-size: 0.85rem;
+.auth-link:hover {
     color: #64748b;
     text-decoration: none;
-    transition: color 0.2s ease;
 }
 
-.forgot-password-link:hover {
-    color: #0d6efd;
-    text-decoration: underline;
+.btn-tracking-alt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px;
+    border-radius: 50px;
+    background: #f8fafc;
+    color: #1e3a8a;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+    transition: all 0.2s ease;
+}
+
+.btn-tracking-alt:hover {
+    background: #eff6ff;
+    border-color: #1e3a8a;
+}
+
+/* 7. Alerts */
+.alert-premium {
+    border-radius: 12px;
+    padding: 15px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -39,7 +40,14 @@ class UserController extends Controller
 
         $users = $query->paginate(20)->withQueryString();
 
-        return view('users.index', compact('users'));
+        $stats = [
+            'total' => User::count(),
+            'actifs' => User::where('actif', true)->count(),
+            'clients' => User::where('role', 'Client')->count(),
+            'staff' => User::whereIn('role', ['Admin', 'Agent', 'Technicien'])->count(),
+        ];
+
+        return view('users.index', compact('users', 'stats'));
     }
 
     /**
@@ -53,18 +61,8 @@ class UserController extends Controller
     /**
      * Enregistrer un nouvel utilisateur.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $allowedRoles = auth()->user()->role === 'Agent' ? 'Client' : 'Admin,Agent,Technicien,Client';
-
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'email'     => 'required|email|unique:users,email',
-            'role'      => 'required|in:' . $allowedRoles,
-            'telephone' => 'nullable|string|max:20',
-            'password'  => 'required|string|min:8|confirmed',
-            'specialites' => 'nullable|array',
-        ]);
 
         $role = auth()->user()->role === 'Agent' ? 'Client' : $request->role;
 

@@ -33,13 +33,15 @@ class DossierController extends Controller
         // 2. Recherche globale
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('num_dossier', 'like', "%{$search}%")
-                  ->orWhere('imei', 'like', "%{$search}%")
-                  ->orWhereHas('client', function($q2) use ($search) {
-                      $q2->where('name', 'like', "%{$search}%")
-                         ->orWhere('telephone', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('appareil', function ($q2) use ($search) {
+                        $q2->where('imei', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('client', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%")
+                            ->orWhere('telephone', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -179,7 +181,17 @@ class DossierController extends Controller
             'sous_garantie' => $sousGarantie,
             'panne_declaree' => $panneComplete,
             'etat_appareil' => $request->etat_appareil,
-            'accessoires_remis' => is_array($request->accessoires) ? implode(', ', $request->accessoires) : $request->accessoires,
+            'accessoires_remis' => (function () use ($request) {
+                $accs = is_array($request->accessoires) ? $request->accessoires : [];
+                if ($request->filled('accessoires_autre')) {
+                    // Supprimer "Autre..." de la liste pour le remplacer par la valeur précise
+                    if (($key = array_search('Autre...', $accs)) !== false) {
+                        unset($accs[$key]);
+                    }
+                    $accs[] = 'Autre: ' . $request->accessoires_autre;
+                }
+                return implode(', ', $accs);
+            })(),
         ]);
 
         SuiviDossier::create([
@@ -248,17 +260,22 @@ class DossierController extends Controller
         }
 
         $ancienStatut = $dossier->statut;
+
+        // Si le dossier est en attente (RECU) ou déjà affecté, on s'assure qu'il passe/reste en AFFECTE.
+        // Sinon (en diagnostic, en réparation, etc.), on garde le statut actuel pour ne pas casser le flux.
+        $nouveauStatut = in_array($ancienStatut, ['RECU', 'AFFECTE']) ? 'AFFECTE' : $ancienStatut;
+
         $dossier->update([
             'technicien_id' => $request->technicien_id,
-            'statut' => 'AFFECTE',
+            'statut' => $nouveauStatut,
         ]);
 
         SuiviDossier::create([
             'dossier_id' => $dossier->id,
             'user_id' => Auth::id(),
             'ancien_statut' => $ancienStatut,
-            'nouveau_statut' => 'AFFECTE',
-            'commentaire' => $request->commentaire ?? 'Dossier réaffecté à un nouveau technicien.',
+            'nouveau_statut' => $nouveauStatut,
+            'commentaire' => $request->commentaire ?? "Dossier réaffecté à {$dossier->technicien->name}. Statut conservé : {$nouveauStatut}.",
         ]);
 
         return back()->with('success', 'Technicien affecté avec succès.');
@@ -626,7 +643,7 @@ class DossierController extends Controller
     {
         $dossier->load('client', 'technicien', 'appareil', 'diagnostic.pieces', 'diagnostic.tarifsMo');
         $company = ParametreSociete::first();
-        $pdf = Pdf::loadView('dossiers.diagnostic-pdf', compact('dossier', 'company'))
+        $pdf = Pdf::loadView('diagnostics.diagnostic-pdf', compact('dossier', 'company'))
             ->setPaper('a4', 'portrait');
         return $pdf->stream("diagnostic-{$dossier->num_dossier}.pdf");
     }
@@ -638,7 +655,7 @@ class DossierController extends Controller
     {
         $dossier->load('client', 'technicien', 'appareil', 'intervention.pieces', 'intervention.tarifsMo');
         $company = ParametreSociete::first();
-        $pdf = Pdf::loadView('dossiers.intervention-pdf', compact('dossier', 'company'))
+        $pdf = Pdf::loadView('interventions.intervention-pdf', compact('dossier', 'company'))
             ->setPaper('a4', 'portrait');
         return $pdf->stream("intervention-{$dossier->num_dossier}.pdf");
     }
@@ -654,14 +671,6 @@ class DossierController extends Controller
 
         if ($dossier->statut === 'AFFECTE') {
             $dossier->update(['statut' => 'EN_DIAGNOSTIC']);
-
-            \App\Models\SuiviDossier::create([
-                'dossier_id' => $dossier->id,
-                'user_id' => Auth::id(),
-                'ancien_statut' => 'AFFECTE',
-                'nouveau_statut' => 'EN_DIAGNOSTIC',
-                'commentaire' => 'Expertise technique en cours d\'enregistrement.',
-            ]);
         }
 
         return redirect()->route('diagnostics.create', $dossier->id);

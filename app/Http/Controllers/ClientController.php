@@ -37,7 +37,12 @@ class ClientController extends Controller
         }
 
         $dossier = Dossier::where('num_dossier', $query)
-            ->orWhere('imei', $query)
+            ->orWhereHas('appareil', function($q) use ($query) {
+                $q->where('imei', $query);
+            })
+            ->orWhereHas('client', function($q) use ($query) {
+                $q->where('telephone', $query);
+            })
             ->first();
 
         if (!$dossier) {

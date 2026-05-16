@@ -236,7 +236,7 @@
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" id="mainSubmitBtn" class="btn btn-primary btn-lg shadow rounded-pill px-5 py-3 fw-bold">
+                            <button type="submit" id="mainSubmitBtn" class="btn btn-primary shadow rounded-pill px-4 py-2 fw-bold">
                                 <i class="fas fa-check-circle me-2"></i> VALIDER L'INTERVENTION
                             </button>
                         </div>

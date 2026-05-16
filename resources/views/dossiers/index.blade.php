@@ -122,15 +122,18 @@
                     @php
                         $jours = \Carbon\Carbon::parse($d->date_reception)->diffInDays(now());
                         $sMap = [
-                            'RECU' => ['#fef3c7', '#d97706', 'Ouvert'],
-                            'AFFECTE' => ['#e0e7ff', '#4f46e5', 'Affecté'],
-                            'EN_DIAGNOSTIC' => ['#fff7ed', '#ea580c', 'En diagnostic'],
-                            'EN_ATTENTE_DEVIS' => ['#f0f9ff', '#0284c7', 'En attente devis'],
-                            'EN_REPARATION' => ['#f0f9ff', '#0ea5e9', 'En réparation'],
-                            'REPARE' => ['#f0fdf4', '#16a34a', 'Réparé'],
-                            'FACTURE' => ['#eff6ff', '#2563eb', 'Facturé'],
-                            'LIVRE' => ['#f0fdf4', '#16a34a', 'Livré'],
-                            'CLOTURE' => ['#f1f5f9', '#475569', 'Clôturé'],
+                            'RECU'             => ['#f1f5f9', '#475569', 'RECU'],
+                            'AFFECTE'          => ['#3b82f6', '#ffffff', 'AFFECTE'],
+                            'EN_DIAGNOSTIC'    => ['#f59e0b', '#ffffff', 'DIAGNOSTIC'],
+                            'EN_ATTENTE_DEVIS' => ['#6366f1', '#ffffff', 'ATTENTE DEVIS'],
+                            'EN_REPARATION'    => ['#0ea5e9', '#ffffff', 'REPARATION'],
+                            'REPARE'           => ['#10b981', '#ffffff', 'REPARE'],
+                            'FACTURE'          => ['#1e40af', '#ffffff', 'FACTURE'],
+                            'LIVRE'            => ['#16a34a', '#ffffff', 'RESTITUÉ'],
+                            'CLOTURE'          => ['#1e293b', '#ffffff', 'CLOTURE'],
+                            'DEVIS_REFUSE'     => ['#64748b', '#ffffff', 'DEVIS REFUSE'],
+                            'IRREPARABLE'      => ['#dc2626', '#ffffff', 'IRREPARABLE'],
+                            'ANNULE'           => ['#94a3b8', '#ffffff', 'ANNULE'],
                         ];
                         $st = $sMap[$d->statut] ?? ['#f1f5f9', '#475569', $d->statut];
                     @endphp
@@ -153,7 +156,10 @@
                         </td>
                         <td class="small">{{ $d->technicien->name ?? 'Non assigné' }}</td>
                         <td>
-                            <span class="badge rounded-pill px-3 py-1" style="background: {{ $st[0] }}; color: {{ $st[1] }}; font-size: 0.65rem;">{{ $st[2] }}</span>
+                            <span class="badge rounded-pill px-3 py-1 fw-bold text-uppercase shadow-sm" 
+                                  style="background: {{ $st[0] }}; color: {{ $st[1] }}; font-size: 0.68rem; letter-spacing: 0.5px;">
+                                {{ $st[2] }}
+                            </span>
                         </td>
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end gap-1">

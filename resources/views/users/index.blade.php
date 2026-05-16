@@ -3,113 +3,187 @@
 @section('title', 'Liste des utilisateurs')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/users.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/users.css') }}">
 @endpush
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800">Liste des utilisateurs</h1>
-            <small class="text-muted">Gestion des comptes du système SAV</small>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 users-title mb-0">Gestion des Utilisateurs</h1>
+                <small class="text-muted fw-bold">Contrôle des accès et comptes système</small>
+            </div>
+            <a href="{{ route('users.create') }}" class="btn btn-primary px-4 shadow-sm fw-bold">
+                <i class="fas fa-plus me-2"></i> Créer un compte
+            </a>
         </div>
-        <a href="{{ route('users.create') }}" class="btn btn-primary px-4 shadow">
-            <i class="fas fa-plus me-2"></i> Créer un utilisateur
-        </a>
-    </div>
 
-    <div class="card shadow-sm mb-4 border-0" style="border-radius: 15px;">
-        <div class="card-body p-3">
-            <form action="{{ route('users.index') }}" method="GET" class="row g-2 align-items-center">
-                <div class="col-md-5">
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" name="search" class="form-control bg-light border-0" placeholder="Rechercher par nom, email ou téléphone..." value="{{ request('search') }}">
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
+                         style="width: 50px; height: 50px; background: #eff6ff;">
+                        <i class="fas fa-users text-primary fs-5"></i>
+                    </div>
+                    <div>
+                        <div class="h3 fw-bold mb-0">{{ $stats['total'] }}</div>
+                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Utilisateurs</div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <select name="role" class="form-select bg-light border-0">
-                        <option value="">Tous les rôles</option>
-                        <option value="Admin" {{ request('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="Agent" {{ request('role') == 'Agent' ? 'selected' : '' }}>Agent</option>
-                        <option value="Technicien" {{ request('role') == 'Technicien' ? 'selected' : '' }}>Technicien</option>
-                        <option value="Client" {{ request('role') == 'Client' ? 'selected' : '' }}>Client</option>
-                    </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
+                         style="width: 50px; height: 50px; background: #f0fdf4;">
+                        <i class="fas fa-user-check text-success fs-5"></i>
+                    </div>
+                    <div>
+                        <div class="h3 fw-bold mb-0 text-success">{{ $stats['actifs'] }}</div>
+                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Comptes Actifs</div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold shadow-sm">FILTRER</button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
+                         style="width: 50px; height: 50px; background: #fef2f2;">
+                        <i class="fas fa-user-tie text-danger fs-5"></i>
+                    </div>
+                    <div>
+                        <div class="h3 fw-bold mb-0 text-danger">{{ $stats['clients'] }}</div>
+                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Clients SAV</div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <a href="{{ route('users.index') }}" class="btn btn-light w-100 rounded-3">RÉINITIALISER</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
+                         style="width: 50px; height: 50px; background: #fff7ed;">
+                        <i class="fas fa-user-shield text-warning fs-5"></i>
+                    </div>
+                    <div>
+                        <div class="h3 fw-bold mb-0 text-warning">{{ $stats['staff'] }}</div>
+                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Équipe Système</div>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    {{-- Tableau --}}
-    <div class="card shadow border-0 overflow-hidden">
+    <div class="filter-container shadow-sm mb-4">
+        <form action="{{ route('users.index') }}" method="GET" class="row g-3 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0 pe-0"><i
+                            class="fas fa-search text-muted"></i></span>
+                    <input type="text" name="search" class="form-control filter-input border-0"
+                        placeholder="Nom, email ou téléphone..." value="{{ request('search') }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="role" class="form-select filter-select">
+                    <option value="">Tous les rôles</option>
+                    <option value="Admin" {{ request('role') == 'Admin' ? 'selected' : '' }}>Administrateur</option>
+                    <option value="Agent" {{ request('role') == 'Agent' ? 'selected' : '' }}>Agent SAV</option>
+                    <option value="Technicien" {{ request('role') == 'Technicien' ? 'selected' : '' }}>Technicien</option>
+                    <option value="Client" {{ request('role') == 'Client' ? 'selected' : '' }}>Client</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1 shadow-sm">
+                    <i class="fas fa-filter me-2"></i> FILTRER
+                </button>
+                <a href="{{ route('users.index') }}" class="btn btn-light border-0 fw-bold"
+                    style="background: #f1f5f9; color: #64748b;">
+                    <i class="fas fa-undo me-2"></i> RAZ
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">
         <div class="table-responsive">
             <table class="table table-hover mb-0 align-middle">
-                <thead class="bg-light">
-                    <tr>
-                        <th class="ps-4">Nom</th>
-                        <th>Email</th>
+                <thead>
+                    <tr class="bg-light">
+                        <th class="ps-4">Utilisateur</th>
                         <th>Rôle</th>
-                        <th>Téléphone</th>
-                        <th>Adresse</th>
-                        <th class="text-end pe-4">Statut & Actions</th>
+                        <th>Contact</th>
+                        <th>Localisation</th>
+                        <th class="text-end pe-4">État & Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($users as $user)
-                    <tr>
-                        <td class="ps-4 fw-bold">{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td><span class="badge bg-secondary rounded-pill px-3">{{ $user->role }}</span></td>
-                        <td>{{ $user->telephone ?? '-' }}</td>
-                        <td>{{ $user->adresse ?? '-' }}</td>
-                        <td class="text-end pe-4">
-                            <div class="d-flex align-items-center justify-content-end gap-3">
-                                <div class="form-check form-switch mb-0" title="{{ $user->actif ? 'Désactiver le compte' : 'Activer le compte' }}">
-                                    <input class="form-check-input cursor-pointer" type="checkbox" role="switch" {{ $user->actif ? 'checked' : '' }} 
-                                        onchange="toggleUserStatus({{ $user->id }})">
+                        <tr>
+                            <td class="ps-4">
+                                <div class="user-name fw-bold">{{ $user->name }}</div>
+                                <div class="user-email small text-muted">{{ $user->email }}</div>
+                            </td>
+                            <td>
+                                @php
+                                    $roleClass = 'role-' . strtolower($user->role);
+                                @endphp
+                                <span class="badge role-badge {{ $roleClass }}">{{ $user->role }}</span>
+                            </td>
+                            <td>
+                                <div class="small fw-bold text-dark">{{ $user->telephone ?? '—' }}</div>
+                            </td>
+                            <td>
+                                <div class="small text-muted text-truncate" style="max-width: 150px;">
+                                    {{ $user->adresse ?? '—' }}</div>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex align-items-center justify-content-end gap-3">
+                                    <div class="form-check form-switch mb-0"
+                                        title="{{ $user->actif ? 'Désactiver' : 'Activer' }}">
+                                        <input class="form-check-input status-switch cursor-pointer" type="checkbox"
+                                            role="switch" {{ $user->actif ? 'checked' : '' }}
+                                            onchange="toggleUserStatus({{ $user->id }})">
+                                    </div>
+                                    <a href="{{ route('users.edit', $user->id) }}"
+                                        class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" title="Modifier">
+                                        <i class="fas fa-edit me-1"></i> Modifier
+                                    </a>
                                 </div>
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm">
-                                    <i class="fas fa-edit me-1"></i> Modifier
-                                </a>
-                            </div>
-                        </td>
-
-                    </tr>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
         @if($users->hasPages())
-        <div class="p-3 bg-white border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-            <div class="small text-muted fw-bold">
-                Affichage de <span class="text-primary">{{ $users->firstItem() }}</span> à <span class="text-primary">{{ $users->lastItem() }}</span> sur <span class="text-primary">{{ $users->total() }}</span> utilisateurs
+            <div class="p-4 bg-white border-top d-flex justify-content-between align-items-center">
+                <div class="small text-muted fw-bold">
+                    Affichage de <span class="text-primary">{{ $users->firstItem() }}</span> à <span
+                        class="text-primary">{{ $users->lastItem() }}</span> sur {{ $users->total() }}
+                </div>
+                <div>
+                    {{ $users->links() }}
+                </div>
             </div>
-            <div class="pagination-sm">
-                {{ $users->links() }}
-            </div>
-        </div>
         @endif
-
     </div>
-</div>
+    </div>
 
-<script>
-function toggleUserStatus(userId) {
-    fetch(`/gestion-clients/${userId}/toggle-status`, {
-        method: 'PATCH',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json'
+    <script>
+        function toggleUserStatus(userId) {
+            fetch(`/gestion-clients/${userId}/toggle-status`, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (!response.ok) alert('Erreur lors du changement de statut');
+            });
         }
-    }).then(response => {
-        if(!response.ok) alert('Erreur lors du changement de statut');
-    });
-}
-</script>
+    </script>
 @endsection

@@ -3,9 +3,11 @@
 @section('title', 'Rapport de Diagnostic — #{{ $dossier->num_dossier }}')
 
 @section('content')
+<!-- Page de consultation du Rapport de Diagnostic (Vue HTML) -->
 <div class="container-fluid" style="max-width: 1000px;">
 
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <!-- En-tête : Titre et bouton de retour au dossier -->
         <div class="d-flex align-items-center gap-3">
             <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-outline-secondary btn-sm">
                 <i class="fas fa-arrow-left"></i>
@@ -15,6 +17,7 @@
                 <small class="text-muted">Dossier #{{ $dossier->num_dossier }} — {{ $dossier->client->name ?? '—' }}</small>
             </div>
         </div>
+        <!-- Actions : Génération PDF et saisie (si non fait) -->
         <div class="d-flex gap-2">
             <a href="{{ route('dossiers.diagnostic.pdf', $dossier->id) }}" target="_blank"
                class="btn btn-sm btn-outline-danger px-3">

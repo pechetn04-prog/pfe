@@ -144,9 +144,11 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-sm mb-3">
-                                    <i class="fas fa-file-invoice-dollar me-2"></i> GÉNÉRER LE DEVIS
-                                </button>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm mb-3">
+                                        <i class="fas fa-file-invoice-dollar me-2"></i> GÉNÉRER LE DEVIS
+                                    </button>
+                                </div>
                                 
                                 <p class="text-muted small text-center mb-0">
                                     <i class="fas fa-info-circle me-1"></i> Le client recevra une notification par email dès la validation.

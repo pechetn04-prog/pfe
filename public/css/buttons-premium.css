@@ -1,0 +1,140 @@
+/**
+ * SAV Premium - Unified Button System
+ * Centralizing all button aesthetics for the entire application.
+ */
+
+/* Base overrides for all buttons */
+.btn {
+    border-radius: 12px;
+    padding: 0.6rem 1.25rem;
+    font-weight: 700;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.2px;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* Rounded Pill Variant */
+.btn-pill {
+    border-radius: 50px;
+}
+
+/* Primary Premium (Indigo) */
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+    transform: translateY(-2px);
+}
+
+/* Dark / Secondary (Alternative Action) */
+.btn-dark {
+    background: #1e293b;
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15);
+}
+
+.btn-dark:hover {
+    background: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(30, 41, 59, 0.25);
+}
+
+/* Light / Ghost (Cancel or Back) */
+.btn-light {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    color: #475569;
+}
+
+.btn-light:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+/* Success Premium (Emerald) */
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+}
+
+/* Danger Premium (Rose/Red) */
+.btn-danger {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* Warning Premium (Amber/Orange) */
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Outline Variants */
+.btn-outline-primary {
+    border: 2px solid #6366f1;
+    color: #6366f1;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: #6366f1;
+    color: white;
+}
+
+/* Small Buttons (Compact UI) */
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+}
+
+/* Circular Buttons (Action Icons) */
+.btn-circle {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

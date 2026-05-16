@@ -81,7 +81,7 @@
                 <div class="card-body p-4 position-relative">
                     <div class="text-uppercase fw-bold mb-1" style="font-size: 0.65rem; opacity: 0.8; letter-spacing: 0.5px;">Tickets en Retard</div>
                     <div class="h2 fw-bold mb-0">{{ $tauxRetard }}%</div>
-                    <div class="small mt-2" style="opacity: 0.7;">{{ array_sum($retards) }} dossiers > 72h</div>
+                    <div class="small mt-2" style="opacity: 0.7;">{{ $retards['24-48h'] + $retards['48-72h'] + $retards['>72h'] }} dossiers en retard</div>
                     <i class="fas fa-exclamation-triangle position-absolute" style="right: -10px; bottom: -10px; font-size: 5rem; opacity: 0.1;"></i>
                 </div>
             </div>
@@ -231,10 +231,10 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(retardCtx, {
             type: 'doughnut',
             data: {
-                labels: ['24-48h', '48-72h', '>72h'],
+                labels: ['<24h', '24-48h', '48-72h', '>72h'],
                 datasets: [{
-                    data: [{{ $retards['24-48h'] }}, {{ $retards['48-72h'] }}, {{ $retards['>72h'] }}],
-                    backgroundColor: ['#f59e0b', '#f97316', '#ef4444'],
+                    data: [{{ $retards['0-24h'] }}, {{ $retards['24-48h'] }}, {{ $retards['48-72h'] }}, {{ $retards['>72h'] }}],
+                    backgroundColor: ['#10b981', '#f59e0b', '#f97316', '#ef4444'],
                     borderWidth: 0,
                     cutout: '70%'
                 }]

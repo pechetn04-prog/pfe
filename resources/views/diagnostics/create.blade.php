@@ -297,8 +297,8 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="card-footer bg-light border-0 p-4 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow">
+                            <div class="card-footer bg-light border-0 p-4 text-end">
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
                                     <i class="fas fa-save me-2"></i> ENREGISTRER LE DIAGNOSTIC TECHNIQUE
                                 </button>
                             </div>

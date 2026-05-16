@@ -51,10 +51,12 @@
                     <tr class="small text-muted text-uppercase">
                         <th class="ps-4">N° Dossier</th>
                         <th>Client</th>
-                        <th>Panne déclarée</th>
+                        <th>IMEI</th>
+                        <th>Garantie</th>
                         <th>Statut</th>
                         <th>Date réception</th>
-                        <th class="text-end pe-4">Action</th>
+                        <th class="text-center">Action</th>
+                        <th class="text-end pe-4">Historique</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,7 +67,16 @@
                             <div class="fw-bold text-dark small">{{ $dossier->client->name ?? '—' }}</div>
                             <div class="text-muted small" style="font-size: 0.7rem;">{{ $dossier->client->telephone ?? '' }}</div>
                         </td>
-                        <td>{{ Str::limit($dossier->panne_declaree, 50) }}</td>
+                        <td class="small fw-bold">{{ $dossier->imei }}</td>
+                        <td>
+                            @php
+                                $garantieColor = $dossier->sous_garantie ? 'success' : 'danger';
+                                $garantieText = $dossier->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE';
+                            @endphp
+                            <span class="badge bg-{{ $garantieColor }} bg-opacity-10 text-{{ $garantieColor }} rounded-pill" style="font-size: 0.6rem;">
+                                {{ $garantieText }}
+                            </span>
+                        </td>
                         <td>
                             @php
                                 $map = [
@@ -76,37 +87,42 @@
                                     'ATTENTE_PIECE'    => 'bg-dark',
                                     'REPARE'           => 'bg-success',
                                     'IRREPARABLE'      => 'bg-danger',
+                                    'CLOTURE'          => 'bg-dark',
+                                    'LIVRE'            => 'bg-success',
                                 ];
                             @endphp
                             <span class="badge {{ $map[$dossier->statut] ?? 'bg-secondary' }} rounded-pill px-3">
                                 {{ $statuts[$dossier->statut] ?? $dossier->statut }}
                             </span>
                         </td>
-                        <td>{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</td>
+                        <td class="small">{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</td>
+                        
+                        {{-- Colonne Action (Opérationnel) --}}
+                        <td class="text-center">
+                            @if(in_array($dossier->statut, ['AFFECTE', 'EN_DIAGNOSTIC']))
+                                <a href="{{ route('diagnostics.create', $dossier->id) }}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold shadow-sm">
+                                    <i class="fas fa-microscope me-1"></i> Diagnostiquer
+                                </a>
+                            @elseif($dossier->statut === 'EN_REPARATION')
+                                <a href="{{ route('interventions.create', $dossier->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm">
+                                    <i class="fas fa-tools me-1"></i> Réparer
+                                </a>
+                            @else
+                                <span class="text-muted small">Aucune action</span>
+                            @endif
+                        </td>
+
+                        {{-- Colonne Historique (Consultation) --}}
                         <td class="text-end pe-4">
-                            <div class="d-flex justify-content-end gap-2">
-                                {{-- Boutons de consultation rapide avec nom --}}
+                            <div class="d-flex flex-column align-items-end gap-1">
                                 @if($dossier->diagnostic)
-                                    <a href="{{ route('diagnostics.show', $dossier->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold shadow-sm" title="Consulter le diagnostic">
-                                        <i class="fas fa-file-alt me-1"></i> Diag
+                                    <a href="{{ route('diagnostics.show', $dossier->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-2 fw-bold w-100" style="font-size: 0.65rem; max-width: 70px;" title="Consulter le diagnostic">
+                                        <i class="fas fa-file-alt"></i> Diag
                                     </a>
                                 @endif
-
                                 @if($dossier->intervention)
-                                    <a href="{{ route('interventions.show', $dossier->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold shadow-sm" title="Consulter l'intervention">
-                                        <i class="fas fa-check-double me-1"></i> Interv
-                                    </a>
-                                @endif
-
-
-                                {{-- Boutons d'action contextuels --}}
-                                @if(in_array($dossier->statut, ['AFFECTE', 'EN_DIAGNOSTIC']))
-                                    <a href="{{ route('diagnostics.create', $dossier->id) }}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold shadow-sm">
-                                        <i class="fas fa-microscope me-1"></i> Diagnostiquer
-                                    </a>
-                                @elseif($dossier->statut === 'EN_REPARATION')
-                                    <a href="{{ route('interventions.create', $dossier->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm">
-                                        <i class="fas fa-tools me-1"></i> Réparer
+                                    <a href="{{ route('interventions.show', $dossier->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-2 fw-bold w-100" style="font-size: 0.65rem; max-width: 70px;" title="Consulter l'intervention">
+                                        <i class="fas fa-check-double"></i> Interv
                                     </a>
                                 @endif
                             </div>

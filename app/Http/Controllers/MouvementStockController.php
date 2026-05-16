@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MouvementStock;
 use App\Models\Piece;
+use App\Http\Requests\StoreMouvementStockRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,20 +47,14 @@ class MouvementStockController extends Controller
     /**
      * Enregistrer un mouvement manuel (réapprovisionnement).
      */
-    public function store(Request $request)
+    public function store(StoreMouvementStockRequest $request)
     {
-        $request->validate([
-            'piece_id' => 'required|exists:pieces,id',
-            'quantite' => 'required|integer|min:1',
-            'type' => 'required|in:ENTREE,SORTIE,AJUSTEMENT',
-            'motif' => 'nullable|string|max:255',
-        ]);
 
         $piece = Piece::findOrFail($request->piece_id);
 
-        if ($request->type === 'ENTREE' || $request->type === 'AJUSTEMENT') {
+        if ($request->type === 'entree') {
             $piece->increment('quantite', $request->quantite);
-        } elseif ($request->type === 'SORTIE') {
+        } elseif ($request->type === 'sortie') {
             if ($piece->quantite < $request->quantite) {
                 return back()->with('error', 'Stock insuffisant pour cette sortie.');
             }

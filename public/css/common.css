@@ -101,80 +101,10 @@ html {
 
 
 /* ============================================================
- * 4. BOUTONS COMMUNS (UNIFICATION GLOBALE)
+ * 4. BOUTONS COMMUNS (DÉPLACÉS VERS buttons-premium.css)
  * ============================================================ */
+/* Les styles des boutons sont désormais centralisés dans public/css/buttons-premium.css */
 
-/* Base pour tous les boutons */
-.btn {
-    font-weight: 600 !important;
-    border-radius: 12px !important; /* Arrondi moderne standard */
-    padding: 10px 20px;
-    transition: all 0.25s ease !important;
-    border: none !important;
-}
-
-/* Bouton Primaire (Style Premium par défaut) */
-.btn-primary, 
-.btn-primary-premium,
-.btn-create {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
-    color: white !important;
-    box-shadow: 0 8px 15px -3px rgba(37, 99, 235, 0.25) !important;
-}
-
-.btn-primary:hover, 
-.btn-primary-premium:hover,
-.btn-create:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 12px 20px -5px rgba(37, 99, 235, 0.35) !important;
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
-}
-
-/* Bouton Secondaire / Light */
-.btn-secondary, 
-.btn-light {
-    background: #f1f5f9 !important;
-    color: #475569 !important;
-    box-shadow: none !important;
-}
-
-.btn-secondary:hover, 
-.btn-light:hover {
-    background: #e2e8f0 !important;
-    transform: translateY(-1px);
-}
-
-/* Bouton Succès */
-.btn-success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-    color: white !important;
-    box-shadow: 0 8px 15px -3px rgba(16, 185, 129, 0.25) !important;
-}
-
-/* Bouton Danger */
-.btn-danger {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: white !important;
-}
-
-/* Style Pill (Arrondi complet) */
-.btn-pill,
-.rounded-pill {
-    border-radius: 9999px !important;
-}
-
-/* Boutons de type Link (pour les icônes de tableaux) */
-.btn-link {
-    text-decoration: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    padding: 8px !important;
-}
-
-.btn-link:hover {
-    transform: scale(1.15);
-    background: rgba(0,0,0,0.03) !important;
-}
 
 
 /* ============================================================
@@ -572,39 +502,54 @@ font-size: 0.8rem;
 }
 
 /* Success State (Réparé / Réparable) */
-.result-card.success .result-card-icon { background: #dcfce7; color: #16a34a; }
-.result-radio-check:checked + .result-card.success {
+.result-card.success .result-card-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.result-radio-check:checked+.result-card.success {
     border-color: #16a34a;
     background: #f0fdf4;
 }
-.result-radio-check:checked + .result-card.success .result-card-check {
+
+.result-radio-check:checked+.result-card.success .result-card-check {
     background: #16a34a;
     border-color: #16a34a;
 }
 
 /* Danger State (Non réparé / Irréparable) */
-.result-card.danger .result-card-icon { background: #fee2e2; color: #dc2626; }
-.result-radio-check:checked + .result-card.danger {
+.result-card.danger .result-card-icon {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.result-radio-check:checked+.result-card.danger {
     border-color: #dc2626;
     background: #fef2f2;
 }
-.result-radio-check:checked + .result-card.danger .result-card-check {
+
+.result-radio-check:checked+.result-card.danger .result-card-check {
     background: #dc2626;
     border-color: #dc2626;
 }
 
 /* Warning State (En attente pièce) */
-.result-card.warning .result-card-icon { background: #ffedd5; color: #f97316; }
-.result-radio-check:checked + .result-card.warning {
+.result-card.warning .result-card-icon {
+    background: #ffedd5;
+    color: #f97316;
+}
+
+.result-radio-check:checked+.result-card.warning {
     border-color: #f97316;
     background: #fff7ed;
 }
-.result-radio-check:checked + .result-card.warning .result-card-check {
+
+.result-radio-check:checked+.result-card.warning .result-card-check {
     background: #f97316;
     border-color: #f97316;
 }
 
-.result-radio-check:checked + .result-card .result-card-check::after {
+.result-radio-check:checked+.result-card .result-card-check::after {
     content: "\f00c";
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
@@ -616,33 +561,116 @@ font-size: 0.8rem;
 }
 
 @keyframes pulse-danger-border {
-    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+    }
 }
 
 /* ============================================================
  * 16. LAYOUT & SIDEBAR (MOVED FROM app.blade.php)
  * ============================================================ */
-:root { --primary-blue: #2563eb; }
+:root {
+    --primary-blue: #6366f1;
+}
 
-body { font-family: 'Outfit', sans-serif !important; background-color: #f1f5f9; color: #1e293b; }
+body {
+    font-family: 'Outfit', sans-serif !important;
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
 
 /* Styles de la sidebar (Thème sombre pour tous) */
-.sidebar { width: 260px; min-height: 100vh; background-color: #1a2234; flex-shrink: 0; transition: all 0.3s; }
-.sidebar .nav-link { color: #cbd5e1 !important; font-weight: 500; transition: all 0.2s; }
-.sidebar .nav-link i { color: #64748b; transition: all 0.2s; }
-.sidebar .nav-link:hover { background-color: #242e42; color: #ffffff !important; }
-.sidebar .nav-link:hover i { color: #ffffff; }
-.sidebar .nav-link.active { background-color: #2563eb !important; color: #ffffff !important; }
-.sidebar .nav-link.active i { color: #ffffff !important; }
-.sidebar .text-muted { color: #64748b !important; }
-.sidebar .logout-btn { color: #fb7185 !important; }
-.sidebar .logout-btn i { color: #fb7185 !important; }
+.sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background-color: #111827;
+    flex-shrink: 0;
+    transition: all 0.3s;
+}
 
-.header { background: white; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 900; }
-.main-content { flex-grow: 1; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; }
-.content-area { padding: 1.5rem; flex-grow: 1; }
-.search-bar { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.5rem 1rem; width: 400px; }
-.hover-opacity:hover { opacity: 0.8; }
-.transition-all { transition: all 0.2s; }
+.sidebar .nav-link {
+    color: #cbd5e1 !important;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link i {
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #242e42;
+    color: #ffffff !important;
+}
+
+.sidebar .nav-link:hover i {
+    color: #ffffff;
+}
+
+.sidebar .nav-link.active {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.sidebar .nav-link.active i {
+    color: #ffffff !important;
+}
+
+.sidebar .text-muted {
+    color: #64748b !important;
+}
+
+.sidebar .logout-btn {
+    color: #fb7185 !important;
+}
+
+.sidebar .logout-btn i {
+    color: #fb7185 !important;
+}
+
+.header {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.main-content {
+    flex-grow: 1;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-area {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+.search-bar {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    width: 400px;
+}
+
+.hover-opacity:hover {
+    opacity: 0.8;
+}
+
+.transition-all {
+    transition: all 0.2s;
+}

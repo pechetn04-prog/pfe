@@ -1,0 +1,82 @@
+/**
+ * SAV Premium - Mouvements de Stock
+ */
+
+.mouvements-title {
+    color: #1a2332;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.mouvements-card {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.table-mouvements thead th {
+    background-color: #fcfdfe;
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.table-mouvements tbody td {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.mouv-type-badge {
+    padding: 0.5em 1.25em;
+    font-weight: 700;
+    font-size: 0.75rem;
+    border-radius: 50px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.badge-entree { background: #dcfce7; color: #166534; }
+.badge-sortie { background: #fee2e2; color: #991b1b; }
+
+.qty-text {
+    font-weight: 800;
+    font-size: 1.1rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+.qty-plus { color: #10b981; }
+.qty-minus { color: #ef4444; }
+
+.piece-ref {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 0.75rem;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #475569;
+}
+
+.op-name {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.filter-mouv {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+}
+
+.filter-mouv .form-select {
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    padding: 10px 15px;
+    font-weight: 600;
+    color: #475569;
+}

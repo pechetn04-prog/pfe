@@ -1,0 +1,71 @@
+/**
+ * SAV Premium - Unified Alert System
+ */
+
+.alert-premium {
+    border: none;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.alert-premium::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 6px;
+}
+
+.alert-premium-success {
+    background-color: #f0fdf4;
+    color: #166534;
+}
+.alert-premium-success::before { background-color: #22c55e; }
+.alert-premium-success .btn-close { filter: invert(34%) sepia(87%) swatch(135deg) saturate(373%) hue-rotate(94deg) brightness(92%) contrast(89%); }
+
+.alert-premium-danger {
+    background-color: #fef2f2;
+    color: #991b1b;
+}
+.alert-premium-danger::before { background-color: #ef4444; }
+
+.alert-premium-warning {
+    background-color: #fffbeb;
+    color: #92400e;
+}
+.alert-premium-warning::before { background-color: #f59e0b; }
+
+.alert-premium-info {
+    background-color: #f0f9ff;
+    color: #075985;
+}
+.alert-premium-info::before { background-color: #0ea5e9; }
+
+.alert-premium .alert-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.alert-premium .alert-content {
+    flex-grow: 1;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.alert-premium .btn-close {
+    padding: 1.5rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.alert-premium .btn-close:hover {
+    opacity: 1;
+}

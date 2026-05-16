@@ -6,6 +6,7 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Rapport de Diagnostic</h1>
+        <!-- Actions : Impression PDF et retour -->
         <div class="d-flex gap-2">
             <a href="{{ route('dossiers.diagnostic.pdf', $dossier->id) }}" target="_blank" class="btn btn-outline-danger shadow-sm">
                 <i class="fas fa-file-pdf me-1"></i> Imprimer
@@ -17,6 +18,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card shadow border-0 mb-4" style="border-radius: 15px;">
+                <!-- Bloc : Informations Générales de l'expertise -->
                 <div class="card-header bg-primary text-white py-3" style="border-radius: 15px 15px 0 0;">
                     <h6 class="m-0 font-weight-bold">Informations Générales</h6>
                 </div>
@@ -30,6 +32,7 @@
                             <label class="small text-muted fw-bold text-uppercase">Date du Diagnostic</label>
                             <div class="fw-bold">{{ \Carbon\Carbon::parse($dossier->diagnostic->date_diagnostic)->format('d/m/Y H:i') }}</div>
                         </div>
+                        <!-- Statut de réparabilité -->
                         <div class="col-md-4">
                             <label class="small text-muted fw-bold text-uppercase">Décision</label>
                             <div>

@@ -11,7 +11,7 @@ class StoreMouvementStockRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->role === 'Admin';
+        return in_array(auth()->user()->role, ['Admin', 'Agent']);
     }
 
     /**
@@ -21,7 +21,7 @@ class StoreMouvementStockRequest extends FormRequest
     {
         return [
             'piece_id' => 'required|exists:pieces,id',
-            'type'     => 'required|in:entree,sortie,ajustement',
+            'type'     => 'required|in:entree,sortie',
             'quantite' => 'required|integer|min:1',
             'motif'    => 'nullable|string|max:255',
         ];

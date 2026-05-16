@@ -24,9 +24,11 @@ class TechnicienDossierController extends Controller
             ->with(['client'])
             ->latest('updated_at');
 
-        // Filtre par statut
+        // Filtre par statut : si non spécifié, on exclut les dossiers clôturés
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
+        } else {
+            $query->where('statut', '!=', 'CLOTURE');
         }
 
         $dossiers = $query->paginate(15);
@@ -34,10 +36,13 @@ class TechnicienDossierController extends Controller
         $statuts = [
             'AFFECTE'            => 'Affecté',
             'EN_DIAGNOSTIC'      => 'En diagnostic',
+            'EN_ATTENTE_DEVIS'   => 'Attente Devis',
             'EN_REPARATION'      => 'En réparation',
             'ATTENTE_PIECE'      => 'Attente pièce',
             'REPARE'             => 'Réparé',
             'IRREPARABLE'        => 'Irréparable',
+            'LIVRE'              => 'Restitué',
+            'CLOTURE'            => 'Clôturé',
         ];
 
         return view('technicien.tickets', compact('dossiers', 'statuts'));

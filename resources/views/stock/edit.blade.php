@@ -61,8 +61,8 @@
                         <input type="number" name="seuil_alerte" class="form-control form-control-lg border-0 bg-light rounded-pill px-4" value="{{ $piece->seuil_alerte }}" min="1" required style="font-size: 0.95rem;">
                     </div>
 
-                    <div class="col-12 mt-5">
-                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm transition-all hover-scale" style="padding: 12px;">
+                    <div class="col-12 mt-5 text-center">
+                        <button type="submit" class="btn btn-primary rounded-pill fw-bold shadow-sm transition-all hover-scale px-5 py-2">
                             <i class="fas fa-check-circle me-2"></i> METTRE À JOUR LA PIÈCE
                         </button>
                     </div>

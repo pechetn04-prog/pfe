@@ -147,7 +147,7 @@ class InterventionController extends Controller
     public function pdf(Intervention $intervention)
     {
         $intervention->load('dossier', 'pieces', 'technicien');
-        $pdf = Pdf::loadView('interventions.pdf', compact('intervention'));
+        $pdf = Pdf::loadView('interventions.intervention-pdf', compact('intervention'));
         return $pdf->stream("intervention-{$intervention->id}.pdf");
     }
 }

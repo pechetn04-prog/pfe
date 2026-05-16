@@ -27,9 +27,10 @@
         <div class="header">
             <div class="company-info">
                 @if($company && $company->logo)
-                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 50px; margin-bottom: 5px;"><br>
+                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 120px; margin-bottom: 5px;"><br>
+                @else
+                    <div class="company-name">{{ $company->nom_societe ?? 'Maison Tel' }}</div>
                 @endif
-                <div class="company-name">{{ $company->nom_societe ?? 'Maison Tel' }}</div>
                 <div>{{ $company->adresse ?? 'Adresse non configurée' }}</div>
                 <div>Tél : {{ $company->telephone ?? '—' }} | Email : {{ $company->email ?? '—' }}</div>
                 @if($company && $company->numero_fiscal)
