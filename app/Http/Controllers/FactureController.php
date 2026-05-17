@@ -126,8 +126,10 @@ class FactureController extends Controller
         ]);
 
         // Générer le PDF et le sauvegarder
+        $facture->load('pieces', 'tarifsMo', 'dossier.client', 'dossier.appareil');
         $company = \App\Models\ParametreSociete::first();
-        $pdf = Pdf::loadView('factures.pdf', compact('facture', 'company'));
+        $totals = $this->prepareFactureData($facture);
+        $pdf = Pdf::loadView('factures.pdf', array_merge(compact('facture', 'company'), $totals));
 
         $directory = storage_path('app/public/factures');
         if (!file_exists($directory)) {

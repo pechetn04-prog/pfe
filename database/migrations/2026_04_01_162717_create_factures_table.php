@@ -17,6 +17,7 @@ return new class extends Migration
         $table->foreignId('dossier_id')->constrained()->cascadeOnDelete();
 
         $table->decimal('montant_total', 10, 2);
+        $table->decimal('remise', 15, 3)->default(0);
 
         $table->date('date_facture');
         $table->string('numero')->unique();

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('actif')->default(true);
             $table->string('telephone')->nullable();
+            $table->string('specialite')->nullable();
 
             $table->rememberToken();
             $table->timestamps();

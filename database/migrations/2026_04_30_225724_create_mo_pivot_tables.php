@@ -28,19 +28,6 @@ return new class extends Migration
             $table->decimal('montant', 15, 3);
             $table->timestamps();
         });
-
-        // Ajout de la remise aux tables principales si elles n'existent pas déjà
-        if (!Schema::hasColumn('devis', 'remise')) {
-            Schema::table('devis', function (Blueprint $table) {
-                $table->decimal('remise', 15, 3)->default(0)->after('montant_total');
-            });
-        }
-
-        if (!Schema::hasColumn('factures', 'remise')) {
-            Schema::table('factures', function (Blueprint $table) {
-                $table->decimal('remise', 15, 3)->default(0)->after('montant_total');
-            });
-        }
     }
 
     /**
@@ -50,13 +37,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('devis_tarif_mo');
         Schema::dropIfExists('facture_tarif_mo');
-        
-        Schema::table('devis', function (Blueprint $table) {
-            $table->dropColumn('remise');
-        });
-
-        Schema::table('factures', function (Blueprint $table) {
-            $table->dropColumn('remise');
-        });
     }
 };

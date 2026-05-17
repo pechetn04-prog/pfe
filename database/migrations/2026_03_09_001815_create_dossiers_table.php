@@ -33,6 +33,8 @@ return new class extends Migration
             $table->text('panne_declaree')->nullable();
             $table->string('accessoires_remis')->nullable();
             $table->string('etat_appareil')->nullable();
+            $table->string('imei_remplacement')->nullable();
+            $table->string('modele_remplacement')->nullable();
 
             // Affectation
             $table->foreignId('technicien_id')->nullable()->constrained('users')->nullOnDelete();

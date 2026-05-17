@@ -91,3 +91,57 @@
     text-decoration: none;
     opacity: 0.8;
 }
+
+/* ============================================================
+ * SURCHARGES DE MISE EN PAGE DE LA SIDEBAR (ISSUES DE COMMON.CSS)
+ * ============================================================ */
+
+/* Style par défaut des liens de navigation dans la sidebar */
+.sidebar .nav-link {
+    color: #cbd5e1 !important;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+/* Style des icônes internes aux liens de la sidebar */
+.sidebar .nav-link i {
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+/* Effet de survol sur les liens de navigation (fond gris ardoise léger) */
+.sidebar .nav-link:hover {
+    background-color: #242e42;
+    color: #ffffff !important;
+}
+
+/* Effet de survol sur les icônes internes des liens */
+.sidebar .nav-link:hover i {
+    color: #ffffff;
+}
+
+/* Style des liens actifs de la sidebar (élément sélectionné en bleu premium) */
+.sidebar .nav-link.active {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+/* Couleur de l'icône dans l'élément actif */
+.sidebar .nav-link.active i {
+    color: #ffffff !important;
+}
+
+/* En-têtes textuels de rubriques (titres de groupes grisés) */
+.sidebar .text-muted {
+    color: #64748b !important;
+}
+
+/* Bouton de déconnexion avec sa couleur distinctive de mise en garde */
+.sidebar .logout-btn {
+    color: #fb7185 !important;
+}
+
+/* Couleur de l'icône de déconnexion */
+.sidebar .logout-btn i {
+    color: #fb7185 !important;
+}

@@ -303,9 +303,6 @@ html {
     color: #2563eb;
 }
 
-font-size: 0.8rem;
-}
-
 /* ============================================================
  * 11. OMBRES & EFFETS PREMIUM
  * ============================================================ */
@@ -575,7 +572,7 @@ font-size: 0.8rem;
 }
 
 /* ============================================================
- * 16. LAYOUT & SIDEBAR (MOVED FROM app.blade.php)
+ * 16. LAYOUT & CORE UTILITIES
  * ============================================================ */
 :root {
     --primary-blue: #6366f1;
@@ -585,56 +582,6 @@ body {
     font-family: 'Outfit', sans-serif !important;
     background-color: #f1f5f9;
     color: #1e293b;
-}
-
-/* Styles de la sidebar (Thème sombre pour tous) */
-.sidebar {
-    width: 260px;
-    min-height: 100vh;
-    background-color: #111827;
-    flex-shrink: 0;
-    transition: all 0.3s;
-}
-
-.sidebar .nav-link {
-    color: #cbd5e1 !important;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.sidebar .nav-link i {
-    color: #64748b;
-    transition: all 0.2s;
-}
-
-.sidebar .nav-link:hover {
-    background-color: #242e42;
-    color: #ffffff !important;
-}
-
-.sidebar .nav-link:hover i {
-    color: #ffffff;
-}
-
-.sidebar .nav-link.active {
-    background-color: #2563eb !important;
-    color: #ffffff !important;
-}
-
-.sidebar .nav-link.active i {
-    color: #ffffff !important;
-}
-
-.sidebar .text-muted {
-    color: #64748b !important;
-}
-
-.sidebar .logout-btn {
-    color: #fb7185 !important;
-}
-
-.sidebar .logout-btn i {
-    color: #fb7185 !important;
 }
 
 .header {
