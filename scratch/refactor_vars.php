@@ -1,10 +1,13 @@
 <?php
 
-function refactor($dir) {
+function refactor($dir)
+{
     $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
     foreach ($files as $file) {
-        if ($file->isDir()) continue;
-        if ($file->getExtension() !== 'php' && $file->getExtension() !== 'blade') continue;
+        if ($file->isDir())
+            continue;
+        if ($file->getExtension() !== 'php' && $file->getExtension() !== 'blade')
+            continue;
 
         $content = file_get_contents($file->getPathname());
         $original = $content;
@@ -13,7 +16,7 @@ function refactor($dir) {
         $content = str_replace('$recentTickets', '$recentDossiers', $content);
         $content = str_replace('$totalTickets', '$totalDossiers', $content);
         $content = str_replace('$assignedTickets', '$assignedDossiers', $assignedDossiers); // Attention erreur ici dans mon esprit, je vais corriger
-        
+
         // Correction de la ligne précédente
         $content = str_replace('$assignedTickets', '$assignedDossiers', $content);
         $content = str_replace('$ticketsEnDiagnostic', '$dossiersEnDiagnostic', $content);
@@ -21,7 +24,7 @@ function refactor($dir) {
         $content = str_replace('$ticketsClotures', '$dossiersClotures', $content);
         $content = str_replace('$ticketsEnAttentePieces', '$dossiersEnAttentePieces', $content);
         $content = str_replace('$ticketsEnAttenteDevis', '$dossiersEnAttenteDevis', $content);
-        
+
         // Compact strings
         $content = str_replace("'recentTickets'", "'recentDossiers'", $content);
         $content = str_replace("'totalTickets'", "'totalDossiers'", $content);
