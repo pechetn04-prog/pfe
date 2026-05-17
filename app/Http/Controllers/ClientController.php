@@ -22,7 +22,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return view('client.suivi-recherche');
+        return view('public.recherche');
     }
 
     /**
@@ -64,7 +64,7 @@ class ClientController extends Controller
             }
         ])->findOrFail($id);
 
-        return view('client.suivi-public', compact('dossier'));
+        return view('public.suivi', compact('dossier'));
     }
 
     // ─── UC10 : PORTAIL CLIENT AUTHENTIFIÉ ─────────────────────────────────

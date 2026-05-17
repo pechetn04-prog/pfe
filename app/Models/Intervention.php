@@ -14,6 +14,10 @@ class Intervention extends Model
         'photo_intervention',
     ];
 
+    protected $casts = [
+        'date_fin' => 'datetime',
+    ];
+
     /**
      * Relation vers le dossier associé.
      */

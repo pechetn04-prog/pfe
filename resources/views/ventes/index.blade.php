@@ -53,7 +53,7 @@
                 <tbody>
                     @forelse($ventes as $vente)
                     @php
-                        $finGarantie = \Carbon\Carbon::parse($vente->date_vente)->addMonths($vente->duree_garantie_mois);
+                        $finGarantie = $vente->date_vente->addMonths($vente->duree_garantie_mois);
                         $sousGarantie = now()->lessThanOrEqualTo($finGarantie);
                     @endphp
                     <tr>
@@ -73,7 +73,7 @@
                             <div class="client-name">{{ $vente->client_nom }}</div>
                             <div class="client-email">{{ $vente->client_email }}</div>
                         </td>
-                        <td class="small fw-bold text-muted">{{ \Carbon\Carbon::parse($vente->date_vente)->format('d/m/Y') }}</td>
+                        <td class="small fw-bold text-muted">{{ $vente->date_vente->format('d/m/Y') }}</td>
                         <td class="small fw-bold text-muted">{{ $vente->duree_garantie_mois }} mois</td>
                         <td class="small fw-bold text-muted">
                             {{ $finGarantie->format('d/m/Y') }}

@@ -280,107 +280,17 @@
     </div>
 </div>
 
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-$(document).ready(function() {
-    // Configuration commune pour les graphiques circulaires
-    const doughnutOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        let label = context.label || '';
-                        let value = context.raw || 0;
-                        let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                        let percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-                        return `${label}: ${value} (${percentage}%)`;
-                    }
-                }
-            }
-        },
-        cutout: '70%'
-    };
-
-
-    // 2. Graphique des Statuts (Doughnut)
-    new Chart(document.getElementById('statusChart'), {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode(array_keys($stats['status_distribution'])) !!},
-            datasets: [{
-                data: {!! json_encode(array_values($stats['status_distribution'])) !!},
-                backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
-                borderWidth: 0,
-                hoverOffset: 10
-            }]
-        },
-        options: doughnutOptions
-    });
-
-    // 3. Graphique des Garanties (Doughnut)
-    new Chart(document.getElementById('warrantyChart'), {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode(array_keys($stats['warranty_distribution'])) !!},
-            datasets: [{
-                data: {!! json_encode(array_values($stats['warranty_distribution'])) !!},
-                backgroundColor: ['#10b981', '#ef4444', '#6b7280'],
-                borderWidth: 0,
-                hoverOffset: 10
-            }]
-        },
-        options: doughnutOptions
-    });
-});
-</script>
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin_dashboard.css') }}">
 @endpush
-    <style>
-        .kpi-card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            overflow: hidden;
-            background: #fff;
-        }
-        .kpi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-        .kpi-icon-wrapper {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        .kpi-value {
-            font-size: 1.5rem;
-            color: #1a2332;
-        }
-        .kpi-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .bg-soft-primary { background: #eff6ff; color: #3b82f6; }
-        .bg-soft-danger { background: #fef2f2; color: #ef4444; }
-        .bg-soft-warning { background: #fffbeb; color: #f59e0b; }
-        .bg-soft-info { background: #f0f9ff; color: #06b6d4; }
-        .bg-soft-success { background: #f0fdf4; color: #10b981; }
-        .bg-soft-slate { background: #f8fafc; color: #475569; }
-        .bg-soft-purple { background: #faf5ff; color: #a855f7; }
 
-        .transition-all { transition: all 0.3s ease; }
-    </style>
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Passage des données statistiques au JS externe
+        window.dashboardStats = {!! json_encode($stats) !!};
+    </script>
+    <script src="{{ asset('js/admin_dashboard.js') }}"></script>
+@endpush
 </div>
 @endsection

@@ -102,12 +102,9 @@
     </div>
 </div>
 
-<script>
-function toggleSpecialite(role) {
-    document.getElementById('specialiteField').style.display = role === 'Technicien' ? 'block' : 'none';
-}
-toggleSpecialite('{{ $user->role }}');
-</script>
+@push('scripts')
+    <script src="{{ asset('js/users_form.js') }}"></script>
+@endpush
 @endsection
 
 

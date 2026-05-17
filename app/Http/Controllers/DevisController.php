@@ -7,6 +7,7 @@ use App\Models\Piece;
 use App\Models\TarifMo;
 use App\Models\Dossier;
 use App\Models\SuiviDossier;
+use App\Http\Requests\StoreDevisRequest;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -33,7 +34,7 @@ class DevisController extends Controller
     /**
      * UC05 — Enregistrer le devis et notifier le client.
      */
-    public function store(Request $request, Dossier $dossier)
+    public function store(StoreDevisRequest $request, Dossier $dossier)
     {
         // UC05 — Bloquer si devis déjà créé
         if ($dossier->devis) {

@@ -443,7 +443,7 @@ class DossierController extends Controller
      */
     public function preparerRemplacement(Dossier $dossier)
     {
-        return view('dossiers.preparer-remplacement', compact('dossier'));
+        return view('remplacements.preparer', compact('dossier'));
     }
 
     /**

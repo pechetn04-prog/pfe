@@ -31,7 +31,7 @@
                             <div class="col-md-4">
                                 <label class="small text-muted fw-bold text-uppercase">Date d'Intervention</label>
                                 <div class="fw-bold">
-                                    {{ \Carbon\Carbon::parse($intervention->date_intervention)->format('d/m/Y H:i') }}</div>
+                                    {{ $intervention->date_fin->format('d/m/Y H:i') }}</div>
                             </div>
                             <div class="col-md-4">
                                 <label class="small text-muted fw-bold text-uppercase">Statut Final</label>

@@ -27,6 +27,6 @@ class ClientDashboardController extends Controller
             ->latest('updated_at')
             ->get();
 
-        return view('client.dashboard', compact('user', 'dossiers', 'totalDossiers', 'dossiersEnCours', 'dossiersPrets'));
+        return view('dashboard.client', compact('user', 'dossiers', 'totalDossiers', 'dossiersEnCours', 'dossiersPrets'));
     }
 }

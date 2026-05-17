@@ -13,15 +13,57 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class FactureController extends Controller
 {
     /**
-     * Afficher la page de création de facture.
+     * UC08 - Afficher le formulaire de création de facture.
+     * Prépare les données financières de l'intervention (pièces, main d'œuvre) et vérifie 
+     * l'état de la garantie pour pré-remplir la facture. (Logique métier centralisée).
+     *
+     * @param Dossier $dossier Le dossier SAV concerné
+     * @return \Illuminate\View\View
      */
     public function create(Dossier $dossier)
     {
-        // Charger l'intervention et ses pièces/mains d'oeuvre
+        // 1. Chargement des relations nécessaires pour optimiser les requêtes (Eager Loading)
         $dossier->load('intervention.pieces', 'intervention.tarifsMo');
         $tarifsMo = TarifMo::where('actif', true)->orderBy('type_intervention')->get();
 
-        return view('factures.create', compact('dossier', 'tarifsMo'));
+        // 2. Calcul du coût total des pièces de rechange consommées lors de l'intervention
+        $totalPieces = 0;
+        if ($dossier->intervention && $dossier->intervention->pieces) {
+            foreach ($dossier->intervention->pieces as $piece) {
+                $qty = $piece->pivot->quantite ?? 1;
+                $pu = $piece->pivot->prix_unitaire ?? $piece->prix_vente;
+                $totalPieces += ($qty * $pu);
+            }
+        }
+
+        // 3. Calcul du coût total de la main d'œuvre (frais d'intervention technique)
+        $totalMO = 0;
+        if ($dossier->intervention && $dossier->intervention->tarifsMo) {
+            foreach ($dossier->intervention->tarifsMo as $mo) {
+                $totalMO += $mo->pivot->montant ?? $mo->montant;
+            }
+        }
+
+        // 4. Gestion automatique de la facturation sous garantie (Gratuité à 100%)
+        // Si l'appareil est sous garantie et que la garantie n'a pas été annulée (ex: oxydation), on applique 100% de remise.
+        $isGarantieValide = $dossier->sous_garantie && !$dossier->garantie_annulee;
+        $defaultRemise = $isGarantieValide ? 100 : 0;
+
+        // 5. Index initial pour le système d'ajout dynamique de lignes (JavaScript Front-end)
+        $initialLaborIndex = ($dossier->intervention && $dossier->intervention->tarifsMo)
+            ? max(1, $dossier->intervention->tarifsMo->count())
+            : 1;
+
+        // Transmission des variables calculées à la vue (Respect strict du design pattern MVC)
+        return view('factures.create', compact(
+            'dossier',
+            'tarifsMo',
+            'totalPieces',
+            'totalMO',
+            'isGarantieValide',
+            'defaultRemise',
+            'initialLaborIndex'
+        ));
     }
 
     /**

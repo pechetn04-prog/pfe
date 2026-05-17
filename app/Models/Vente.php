@@ -19,6 +19,10 @@ class Vente extends Model
         'numero_facture_vente',
     ];
 
+    protected $casts = [
+        'date_vente' => 'datetime',
+    ];
+
     /**
      * Vérifie si l'appareil est encore sous garantie.
      */

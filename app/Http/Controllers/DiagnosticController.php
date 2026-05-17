@@ -24,7 +24,7 @@ class DiagnosticController extends Controller
         // UC04 - Point 1 : L'ouverture du formulaire fait passer automatiquement le statut à 'En diagnostic'
         if ($dossier->statut === 'AFFECTE') {
             $dossier->update(['statut' => 'EN_DIAGNOSTIC']);
-            
+
             SuiviDossier::create([
                 'dossier_id' => $dossier->id,
                 'user_id' => Auth::id(),
@@ -70,7 +70,8 @@ class DiagnosticController extends Controller
         // Liaison des pièces et prestations
         if ($request->has('pieces')) {
             foreach ($request->pieces as $p) {
-                if (empty($p['id'])) continue;
+                if (empty($p['id']))
+                    continue;
                 $piece = Piece::find($p['id']);
                 if ($piece) {
                     $diagnostic->pieces()->attach($p['id'], [
@@ -97,7 +98,7 @@ class DiagnosticController extends Controller
         $isReparable = $request->is_reparable == '1';
         $exclusionGarantie = $request->has('exclusion_garantie');
         $isGarantieValide = $dossier->sous_garantie && !$exclusionGarantie;
-        
+
         $nouveauStatut = 'EN_DIAGNOSTIC'; // Par défaut
 
         if ($isReparable) {
@@ -116,7 +117,7 @@ class DiagnosticController extends Controller
 
         // Mise à jour du dossier avec exclusion si nécessaire
         $dossier->update([
-            'statut' => $nouveauStatut, 
+            'statut' => $nouveauStatut,
             'date_diagnostic' => now(),
             'garantie_annulee' => $exclusionGarantie ? true : $dossier->garantie_annulee
         ]);
@@ -128,6 +129,21 @@ class DiagnosticController extends Controller
             'nouveau_statut' => $nouveauStatut,
             'commentaire' => $exclusionGarantie ? 'Rapport de diagnostic finalisé — garantie non applicable (exclusion retenue).' : 'Rapport de diagnostic finalisé et soumis.',
         ]);
+
+        // Notification au client du résultat du diagnostic
+        if ($dossier->client) {
+            $dossier->client->notify(new \App\Notifications\SimpleNotification(
+                'Le diagnostic de votre appareil est terminé.',
+                $dossier
+            ));
+        }
+
+        // Notification à l'administration/agent pour la suite du traitement
+        $adminsAgents = \App\Models\User::whereIn('role', ['Admin', 'Agent'])->get();
+        \Illuminate\Support\Facades\Notification::send($adminsAgents, new \App\Notifications\SimpleNotification(
+            'Diagnostic terminé pour le dossier #' . $dossier->id . '. Action requise selon le nouveau statut : ' . $nouveauStatut,
+            $dossier
+        ));
 
         return redirect()->route('technicien.dashboard')->with('success', 'Diagnostic enregistré. Statut actuel : ' . $nouveauStatut);
     }

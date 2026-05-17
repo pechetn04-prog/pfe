@@ -70,10 +70,18 @@
                         <td class="small fw-bold">{{ $dossier->imei }}</td>
                         <td>
                             @php
-                                $garantieColor = $dossier->sous_garantie ? 'success' : 'danger';
-                                $garantieText = $dossier->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE';
+                                if ($dossier->garantie_annulee) {
+                                    $garantieColor = 'warning';
+                                    $garantieText = 'GARANTIE EXCLUE';
+                                } elseif ($dossier->sous_garantie) {
+                                    $garantieColor = 'success';
+                                    $garantieText = 'SOUS GARANTIE';
+                                } else {
+                                    $garantieColor = 'danger';
+                                    $garantieText = 'HORS GARANTIE';
+                                }
                             @endphp
-                            <span class="badge bg-{{ $garantieColor }} bg-opacity-10 text-{{ $garantieColor }} rounded-pill" style="font-size: 0.6rem;">
+                            <span class="badge bg-{{ $garantieColor }} bg-opacity-10 text-{{ $garantieColor }} border border-{{ $garantieColor }} border-opacity-25 rounded-pill" style="font-size: 0.6rem; font-weight: 800;">
                                 {{ $garantieText }}
                             </span>
                         </td>

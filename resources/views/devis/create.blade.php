@@ -52,10 +52,10 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" step="0.001" name="pieces[{{ $index }}][prix_unitaire]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 price-input text-center" value="{{ $piece->pivot->prix_unitaire ?? $piece->prix_unitaire }}" required>
+                                                    <input type="number" step="0.001" name="pieces[{{ $index }}][prix_unitaire]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 price-input text-center" value="{{ $piece->pivot->prix_unitaire ?? $piece->prix_unitaire }}" min="0" required>
                                                 </td>
                                                 <td>
-                                                    <input type="number" name="pieces[{{ $index }}][quantite]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 qty-input text-center" value="{{ $piece->pivot->quantite ?? 1 }}" required>
+                                                    <input type="number" name="pieces[{{ $index }}][quantite]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 qty-input text-center" value="{{ $piece->pivot->quantite ?? 1 }}" min="1" required>
                                                 </td>
                                                 <td class="fw-bold text-primary line-total">0.000</td>
                                                 <td class="text-end">
@@ -101,7 +101,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" step="0.001" name="labors[{{ $index }}][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="{{ $tarif->pivot->montant ?? $tarif->montant }}" required>
+                                                    <input type="number" step="0.001" name="labors[{{ $index }}][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="{{ $tarif->pivot->montant ?? $tarif->montant }}" min="0" required>
                                                 </td>
                                                 <td class="text-end">
                                                     <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
@@ -174,10 +174,10 @@
             </select>
         </td>
         <td>
-            <input type="number" step="0.001" name="pieces[INDEX][prix_unitaire]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 price-input text-center" value="0.000" required>
+            <input type="number" step="0.001" name="pieces[INDEX][prix_unitaire]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 price-input text-center" value="0.000" min="0" required>
         </td>
         <td>
-            <input type="number" name="pieces[INDEX][quantite]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 qty-input text-center" value="1" required>
+            <input type="number" name="pieces[INDEX][quantite]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 qty-input text-center" value="1" min="1" required>
         </td>
         <td class="fw-bold text-primary line-total">0.000</td>
         <td class="text-end">
@@ -197,7 +197,7 @@
             </select>
         </td>
         <td>
-            <input type="number" step="0.001" name="labors[INDEX][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="0.000" required>
+            <input type="number" step="0.001" name="labors[INDEX][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="0.000" min="0" required>
         </td>
         <td class="text-end">
             <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
@@ -206,87 +206,11 @@
 </template>
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const finalTotalDisplay = document.getElementById('finalTotalDisplay');
-    const finalTotalInput = document.getElementById('finalTotalInput');
-    const grandTotalPiecesDisplay = document.getElementById('grand-total-pieces');
-    const grandTotalLaborsDisplay = document.getElementById('grand-total-labors');
-    
-    let pieceIndex = {{ $dossier->diagnostic->pieces->count() }};
-    let laborIndex = {{ $dossier->diagnostic->tarifsMo->count() }};
-
-    function calculate() {
-        let totalPieces = 0;
-        let totalLabors = 0;
-
-        document.querySelectorAll('.piece-row').forEach(row => {
-            const price = parseFloat(row.querySelector('.price-input').value) || 0;
-            const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
-            const lineTotal = price * qty;
-            row.querySelector('.line-total').textContent = lineTotal.toFixed(3);
-            totalPieces += lineTotal;
-        });
-
-        document.querySelectorAll('.labor-input').forEach(input => {
-            totalLabors += parseFloat(input.value) || 0;
-        });
-
-        const total = totalPieces + totalLabors;
-
-        grandTotalPiecesDisplay.textContent = totalPieces.toFixed(3) + ' DT';
-        grandTotalLaborsDisplay.textContent = totalLabors.toFixed(3) + ' DT';
-        finalTotalDisplay.textContent = total.toFixed(3);
-        finalTotalInput.value = total.toFixed(3);
-    }
-
-    // Ajouter une pièce
-    document.getElementById('addPieceBtn').addEventListener('click', function() {
-        const template = document.getElementById('pieceRowTemplate').innerHTML;
-        const html = template.replace(/INDEX/g, pieceIndex++);
-        document.querySelector('#piecesTable tbody').insertAdjacentHTML('beforeend', html);
-        calculate();
-    });
-
-    // Ajouter une prestation
-    document.getElementById('addLaborBtn').addEventListener('click', function() {
-        const template = document.getElementById('laborRowTemplate').innerHTML;
-        const html = template.replace(/INDEX/g, laborIndex++);
-        document.querySelector('#laborsTable tbody').insertAdjacentHTML('beforeend', html);
-        calculate();
-    });
-
-    // Supprimer une ligne
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.remove-row')) {
-            e.target.closest('tr').remove();
-            calculate();
-        }
-    });
-
-    // Changement de sélection (auto-prix)
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('piece-select')) {
-            const price = e.target.options[e.target.selectedIndex].dataset.price || 0;
-            e.target.closest('tr').querySelector('.price-input').value = price;
-            calculate();
-        }
-        if (e.target.classList.contains('labor-select')) {
-            const price = e.target.options[e.target.selectedIndex].dataset.price || 0;
-            e.target.closest('tr').querySelector('.labor-input').value = price;
-            calculate();
-        }
-    });
-
-    // Changement de prix/quantité
-    document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('price-input') || e.target.classList.contains('qty-input') || e.target.classList.contains('labor-input')) {
-            calculate();
-        }
-    });
-
-    calculate();
-});
-</script>
+    <script>
+        // Passage des variables d'index au JS externe
+        window.initialPieceIndex = {{ $dossier->diagnostic->pieces->count() }};
+        window.initialLaborIndex = {{ $dossier->diagnostic->tarifsMo->count() }};
+    </script>
+    <script src="{{ asset('js/devis_create.js') }}"></script>
 @endpush
 @endsection

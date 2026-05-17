@@ -58,6 +58,7 @@ class DevisDisponibleNotification extends Notification
             'devis_id' => $this->devis->id,
             'montant' => $this->devis->montant_total,
             'message' => 'Le devis pour le dossier #' . $this->dossier->num_dossier . ' est disponible.',
+            'url' => route('client.ticket', $this->dossier->id),
         ];
     }
 }

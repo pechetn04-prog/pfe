@@ -41,13 +41,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php $totalPieces = 0; @endphp
                                             @forelse($dossier->intervention->pieces as $piece)
                                                 @php 
                                                     $qty = $piece->pivot->quantite ?? 1;
                                                     $pu = $piece->pivot->prix_unitaire ?? $piece->prix_vente;
                                                     $totalLigne = $qty * $pu;
-                                                    $totalPieces += $totalLigne;
                                                 @endphp
                                                 <tr>
                                                     <td class="fw-bold text-dark">{{ $piece->nom }}</td>
@@ -92,11 +90,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php $totalMO = 0; @endphp
                                             {{-- Pré-remplir avec les prestations suggérées par l'intervention --}}
                                             @if($dossier->intervention && $dossier->intervention->tarifsMo)
                                                 @foreach($dossier->intervention->tarifsMo as $index => $mo)
-                                                    @php $totalMO += $mo->pivot->montant ?? $mo->montant; @endphp
                                                     <tr class="labor-row">
                                                         <td>
                                                             <select name="labors[{{ $index }}][id]" class="form-select form-select-sm border-0 bg-light rounded-pill px-3 labor-select" required>
@@ -140,9 +136,14 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="form-label small fw-bold text-muted text-uppercase mb-2">Remise Exceptionnelle (%)</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label small fw-bold text-muted text-uppercase mb-0">Remise Exceptionnelle (%)</label>
+                                        @if($isGarantieValide)
+                                            <span class="badge bg-success rounded-pill" style="font-size: 0.65rem;"><i class="fas fa-shield-alt me-1"></i> Sous Garantie</span>
+                                        @endif
+                                    </div>
                                     <div class="input-group input-group-lg bg-light rounded-pill overflow-hidden border-0">
-                                        <input type="number" name="remise" id="remise-input" class="form-control bg-transparent border-0 text-center fw-bold h4 mb-0" value="0" min="0" max="100">
+                                        <input type="number" name="remise" id="remise-input" class="form-control bg-transparent border-0 text-center fw-bold h4 mb-0" value="{{ $defaultRemise }}" min="0" max="100" {{ $isGarantieValide ? 'readonly' : '' }}>
                                         <span class="input-group-text bg-transparent border-0 fw-bold">%</span>
                                     </div>
                                 </div>
@@ -194,62 +195,10 @@
 </template>
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let laborIndex = {{ $dossier->intervention && $dossier->intervention->tarifsMo ? $dossier->intervention->tarifsMo->count() : 1 }};
-
-    function calculateGlobalTotal() {
-        const totalPieces = parseFloat(document.getElementById('grand-total-pieces').getAttribute('data-value')) || 0;
-        let totalMO = 0;
-        
-        document.querySelectorAll('.labor-input').forEach(input => {
-            totalMO += parseFloat(input.value) || 0;
-        });
-
-        document.getElementById('grand-total-labors').textContent = totalMO.toFixed(3) + ' DT';
-        
-        const totalBrut = totalPieces + totalMO;
-        const remise = parseFloat(document.getElementById('remise-input').value) || 0;
-        const totalFinal = totalBrut * (1 - remise / 100);
-
-        document.getElementById('total-final').textContent = totalFinal.toFixed(3);
-    }
-
-    // Ajouter une prestation
-    document.getElementById('addLaborBtn').addEventListener('click', function() {
-        const template = document.getElementById('laborRowTemplate').innerHTML;
-        const html = template.replace(/INDEX/g, laborIndex++);
-        document.querySelector('#laborsTable tbody').insertAdjacentHTML('beforeend', html);
-        calculateGlobalTotal();
-    });
-
-    // Supprimer une ligne
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.remove-row')) {
-            e.target.closest('tr').remove();
-            calculateGlobalTotal();
-        }
-    });
-
-    // Changement de sélection (auto-prix)
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('labor-select')) {
-            const price = e.target.options[e.target.selectedIndex].dataset.price || 0;
-            e.target.closest('tr').querySelector('.labor-input').value = price;
-            calculateGlobalTotal();
-        }
-    });
-
-    // Changement de montant ou remise
-    document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('labor-input') || e.target.id === 'remise-input') {
-            calculateGlobalTotal();
-        }
-    });
-
-    // Calcul initial
-    calculateGlobalTotal();
-});
-</script>
+    <script>
+        // Passage de l'index initial au JS externe (préparé par le contrôleur)
+        window.initialLaborIndex = {{ $initialLaborIndex }};
+    </script>
+    <script src="{{ asset('js/facture_create.js') }}"></script>
 @endpush
 @endsection

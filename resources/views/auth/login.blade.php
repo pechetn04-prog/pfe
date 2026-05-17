@@ -18,12 +18,18 @@
             @csrf
             <div class="mb-3">
                 <label class="form-label">Adresse e-mail</label>
-                <input type="email" name="email" class="form-control" placeholder="nom@exemple.com" required autofocus>
+                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="nom@exemple.com" required autofocus>
+                @error('email')
+                    <div class="invalid-feedback d-block mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-4">
                 <label class="form-label">Mot de passe</label>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="••••••••" required>
+                @error('password')
+                    <div class="invalid-feedback d-block mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <button type="submit" class="btn-auth-submit">

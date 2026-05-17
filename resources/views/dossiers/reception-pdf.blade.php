@@ -39,6 +39,7 @@
         }
         .bg-success { background-color: #dcfce7; color: #166534; }
         .bg-danger { background-color: #fee2e2; color: #991b1b; }
+        .bg-warning { background-color: #fef3c7; color: #92400e; }
 
         .panne-box { 
             background: #fdfaf3; 
@@ -110,9 +111,13 @@
                     <tr>
                         <td class="label">Garantie</td>
                         <td>
-                            <span class="garantie-badge {{ $dossier->sous_garantie ? 'bg-success' : 'bg-danger' }}">
-                                {{ $dossier->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE' }}
-                            </span>
+                            @if($dossier->garantie_annulee)
+                                <span class="garantie-badge bg-warning">GARANTIE EXCLUE</span>
+                            @elseif($dossier->sous_garantie)
+                                <span class="garantie-badge bg-success">SOUS GARANTIE</span>
+                            @else
+                                <span class="garantie-badge bg-danger">HORS GARANTIE</span>
+                            @endif
                         </td>
                     </tr>
                 </table>

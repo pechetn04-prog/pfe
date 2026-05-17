@@ -156,38 +156,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        /**
-         * Logique JavaScript pour la gestion des notifications (Fetch API)
-         */
-        function markRead(id, url) {
-            fetch(`/notifications/${id}/read`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                }
-            }).then(() => {
-                if (url && url !== '#') {
-                    window.location.href = url;
-                } else {
-                    location.reload();
-                }
-            });
-        }
-
-        function markAllRead() {
-            fetch(`/notifications/read-all`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                }
-            }).then(() => {
-                location.reload();
-            });
-        }
-
+        // Passage du Token CSRF au JS externe
+        window.csrfToken = '{{ csrf_token() }}';
     </script>
+    <script src="{{ asset('js/notifications.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

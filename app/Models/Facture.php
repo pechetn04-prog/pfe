@@ -14,6 +14,10 @@ class Facture extends Model
         'numero',
     ];
 
+    protected $casts = [
+        'date_facture' => 'datetime',
+    ];
+
     /**
      * Relation vers le dossier associé.
      */

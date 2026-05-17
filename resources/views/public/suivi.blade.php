@@ -175,9 +175,13 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Garantie</span>
-                            <span class="info-value {{ $dossier->sous_garantie ? 'text-success' : 'text-danger' }}">
-                                {{ $dossier->sous_garantie ? 'Sous Garantie' : 'Hors Garantie' }}
-                            </span>
+                            @if($dossier->garantie_annulee)
+                                <span class="info-value text-warning">Garantie Exclue</span>
+                            @elseif($dossier->sous_garantie)
+                                <span class="info-value text-success">Sous Garantie</span>
+                            @else
+                                <span class="info-value text-danger">Hors Garantie</span>
+                            @endif
                         </div>
                         <div class="info-row">
                             <span class="info-label">Date Dépôt</span>

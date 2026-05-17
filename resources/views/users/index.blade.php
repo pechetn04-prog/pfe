@@ -173,17 +173,5 @@
     </div>
     </div>
 
-    <script>
-        function toggleUserStatus(userId) {
-            fetch(`/gestion-clients/${userId}/toggle-status`, {
-                method: 'PATCH',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (!response.ok) alert('Erreur lors du changement de statut');
-            });
-        }
-    </script>
+    <script src="{{ asset('js/users_index.js') }}"></script>
 @endsection

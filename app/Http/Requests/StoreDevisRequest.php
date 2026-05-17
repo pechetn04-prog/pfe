@@ -23,13 +23,15 @@ class StoreDevisRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'total_ttc' => ['required', 'numeric', 'min:0'],
             'pieces' => ['nullable', 'array'],
             'pieces.*.id' => ['nullable', 'exists:pieces,id'],
+            'pieces.*.prix_unitaire' => ['nullable', 'numeric', 'min:0'],
             'pieces.*.quantite' => ['nullable', 'integer', 'min:1'],
             
-            'labors' => ['required', 'array', 'min:1'], // Au moins une prestation est requise
-            'labors.*.id' => ['required', 'exists:tarif_mos,id'],
-            'labors.*.montant' => ['required', 'numeric', 'min:0'],
+            'labors' => ['nullable', 'array'],
+            'labors.*.id' => ['nullable', 'exists:tarif_mos,id'],
+            'labors.*.montant' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 

@@ -198,56 +198,14 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Chart Tech
-    const techCtx = document.getElementById('techChart');
-    if(techCtx) {
-        new Chart(techCtx, {
-            type: 'bar',
-            data: {
-                labels: {!! json_encode($dossiersParTech->pluck('name')) !!},
-                datasets: [{
-                    label: 'Dossiers',
-                    data: {!! json_encode($dossiersParTech->pluck('dossiers_count')) !!},
-                    backgroundColor: '#10b981',
-                    borderRadius: 8,
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { 
-                    y: { beginAtZero: true, grid: { display: false } }, 
-                    x: { grid: { display: false } } 
-                }
-            }
-        });
-    }
-
-    // Chart Retards
-    const retardCtx = document.getElementById('retardChart');
-    if(retardCtx) {
-        new Chart(retardCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['<24h', '24-48h', '48-72h', '>72h'],
-                datasets: [{
-                    data: [{{ $retards['0-24h'] }}, {{ $retards['24-48h'] }}, {{ $retards['48-72h'] }}, {{ $retards['>72h'] }}],
-                    backgroundColor: ['#10b981', '#f59e0b', '#f97316', '#ef4444'],
-                    borderWidth: 0,
-                    cutout: '70%'
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 10 } } }
-                }
-            }
-        });
-    }
-});
-</script>
+    <script>
+        // Passage des données Laravel au JS externe pour les graphiques
+        window.techChartData = {
+            labels: {!! json_encode($dossiersParTech->pluck('name')) !!},
+            values: {!! json_encode($dossiersParTech->pluck('dossiers_count')) !!}
+        };
+        window.retardChartData = [{{ $retards['0-24h'] }}, {{ $retards['24-48h'] }}, {{ $retards['48-72h'] }}, {{ $retards['>72h'] }}];
+    </script>
+    <script src="{{ asset('js/statistiques.js') }}"></script>
 @endpush
 @endsection

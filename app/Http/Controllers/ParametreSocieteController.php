@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ParametreSociete;
+use App\Http\Requests\UpdateParametreSocieteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,11 +15,11 @@ class ParametreSocieteController extends Controller
         return view('admin.parametres-societe.edit', compact('parametre'));
     }
 
-    public function update(Request $request)
+    public function update(UpdateParametreSocieteRequest $request)
     {
         $parametre = ParametreSociete::first() ?: new ParametreSociete();
         
-        $data = $request->except('logo');
+        $data = $request->validated();
 
         if ($request->hasFile('logo')) {
             // Supprimer l'ancien logo si nécessaire

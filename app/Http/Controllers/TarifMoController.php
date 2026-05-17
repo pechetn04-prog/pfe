@@ -14,7 +14,7 @@ class TarifMoController extends Controller
             return $query->where('type_intervention', 'like', "%{$search}%");
         })->get();
         
-        return view('admin.tarifs_mo.index', compact('tarifs', 'search'));
+        return view('admin.parametres.tarifs_mo.index', compact('tarifs', 'search'));
     }
 
     public function store(Request $request)

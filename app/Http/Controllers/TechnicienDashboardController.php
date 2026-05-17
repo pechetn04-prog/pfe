@@ -46,7 +46,7 @@ class TechnicienDashboardController extends Controller
             ->take(10)
             ->get();
 
-        return view('technicien.dashboard', compact(
+        return view('dashboard.technicien', compact(
             'totalAssigne', 'aDiagnostiquer', 'enReparation', 'attentePieces', 'terminesMois', 'dossiersEnCours', 
             'dossiersDiagnostique', 'dossiersReparation', 'dossiersTermines'
         ));

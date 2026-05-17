@@ -173,6 +173,19 @@
                             </form>
                         @endif
 
+                        {{-- Attente Pièce --}}
+                        @if($dossier->statut === 'ATTENTE_PIECE' && in_array(auth()->user()->role, ['Admin', 'Agent']))
+                            <form action="{{ route('dossiers.marquerPieceRecue', $dossier->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-light text-primary btn-sm rounded-pill px-3 fw-bold shadow-sm">
+                                    <i class="fas fa-box me-1"></i> Marquer pièce reçue
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-light text-danger btn-sm rounded-pill px-3 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalImpossibleReappro">
+                                <i class="fas fa-times-circle me-1"></i> Rupture définitive
+                            </button>
+                        @endif
+
                         {{-- Clôture --}}
                         @if($dossier->statut === 'LIVRE')
                             <form action="{{ route('dossiers.cloturer', $dossier->id) }}" method="POST" onsubmit="return confirm('Clôturer définitivement le dossier ?')">
@@ -293,6 +306,22 @@
                                                 IMEI / SÉRIE</label>
                                             <div class="fw-bold" style="font-size: 1rem; color: #1e69ff;">
                                                 {{ $dossier->imei }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="p-3 rounded-3"
+                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
+                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">STATUT GARANTIE</label>
+                                            <div class="mt-1">
+                                                @if($dossier->garantie_annulee)
+                                                    <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 fw-bold" style="font-size: 0.75rem;">GARANTIE EXCLUE</span>
+                                                @elseif($dossier->sous_garantie)
+                                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 fw-bold" style="font-size: 0.75rem;">SOUS GARANTIE</span>
+                                                @else
+                                                    <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 fw-bold" style="font-size: 0.75rem;">HORS GARANTIE</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
 
@@ -668,31 +697,35 @@
 
             {{-- ONGLET HISTORIQUE --}}
             <div class="tab-pane fade" id="historique">
-                <div class="card shadow-sm border-0" style="border-radius: 20px;">
-                    <div class="card-header bg-white py-3 border-0">
-                        <h6 class="m-0 fw-bold text-dark"><i class="far fa-clock text-primary me-2"></i> Journal des
-                            évènements</h6>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="timeline-v2">
-                            @foreach($dossier->suivi()->latest()->get() as $log)
-                                <div class="timeline-item mb-4 pb-2 position-relative ps-4 border-start border-light"
-                                    style="border-width: 2px !important;">
-                                    <div class="timeline-marker position-absolute bg-primary rounded-circle"
-                                        style="width: 10px; height: 10px; left: -6px; top: 5px;"></div>
-                                    <div class="timeline-content">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <h6 class="fw-bold text-primary mb-0" style="font-size: 0.8rem;">
-                                                {{ str_replace('_', ' ', $log->nouveau_statut) }}</h6>
-                                            <small class="text-muted"
-                                                style="font-size: 0.65rem;">{{ $log->created_at ? $log->created_at->format('d/m/Y H:i') : '' }}</small>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm border-0" style="border-radius: 20px;">
+                            <div class="card-header bg-white py-3 border-0">
+                                <h6 class="m-0 fw-bold text-dark"><i class="far fa-clock text-primary me-2"></i> Journal des
+                                    évènements</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="timeline-v2">
+                                    @foreach($dossier->suivi()->latest()->get() as $log)
+                                        <div class="timeline-item mb-4 pb-2 position-relative ps-4 border-start border-light"
+                                            style="border-width: 2px !important;">
+                                            <div class="timeline-marker position-absolute bg-primary rounded-circle"
+                                                style="width: 10px; height: 10px; left: -6px; top: 5px;"></div>
+                                            <div class="timeline-content">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <h6 class="fw-bold text-primary mb-0" style="font-size: 0.8rem;">
+                                                        {{ str_replace('_', ' ', $log->nouveau_statut) }}</h6>
+                                                    <small class="text-muted"
+                                                        style="font-size: 0.65rem;">{{ $log->created_at ? $log->created_at->format('d/m/Y H:i') : '' }}</small>
+                                                </div>
+                                                <div class="p-2 rounded bg-light mb-1 small text-dark">{{ $log->commentaire }}</div>
+                                                <div class="small text-muted" style="font-size: 0.65rem;"><i
+                                                        class="fas fa-user-circle me-1"></i> {{ $log->user->name ?? 'Système' }}</div>
+                                            </div>
                                         </div>
-                                        <div class="p-2 rounded bg-light mb-1 small text-dark">{{ $log->commentaire }}</div>
-                                        <div class="small text-muted" style="font-size: 0.65rem;"><i
-                                                class="fas fa-user-circle me-1"></i> {{ $log->user->name ?? 'Système' }}</div>
-                                    </div>
+                                    @endforeach
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -865,26 +898,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-        // Activer l'onglet selon le paramètre ?tab= dans l'URL
-        document.addEventListener('DOMContentLoaded', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const tab = urlParams.get('tab');
-            if (tab) {
-                const tabBtn = document.querySelector('[data-bs-target="#' + tab + '"]');
-                if (tabBtn) {
-                    tabBtn.click();
-                    // Scroll vers la zone de messages si on revient de l'envoi
-                    if (tab === 'communication') {
-                        setTimeout(() => {
-                            const msgBox = document.getElementById('section-messages');
-                            if (msgBox) {
-                                msgBox.scrollTop = msgBox.scrollHeight;
-                            }
-                        }, 300);
-                    }
-                }
-            }
-        });
-    </script>
+    <script src="{{ asset('js/dossier_show.js') }}"></script>
 @endpush
