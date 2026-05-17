@@ -2,6 +2,10 @@
 
 @section('title', 'Préparer le Remplacement — #' . $dossier->num_dossier)
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/replacement-premium.css') }}">
+@endpush
+
 @section('content')
 <div class="container-fluid px-4 py-4">
     {{-- Header --}}
@@ -101,13 +105,4 @@
     </div>
 </div>
 
-<style>
-    .form-control:focus {
-        background-color: #fff !important;
-        box-shadow: 0 0 0 4px rgba(30, 105, 255, 0.1) !important;
-        border: 1px solid #1e69ff !important;
-    }
-    .breadcrumb-item + .breadcrumb-item::before { content: "/"; color: #cbd5e1; }
-    .italic { font-style: italic; }
-</style>
 @endsection

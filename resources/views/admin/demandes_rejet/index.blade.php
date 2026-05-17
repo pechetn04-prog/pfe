@@ -2,6 +2,10 @@
 
 @section('title', 'Demandes de Retrait')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/reject-demands.css') }}">
+@endpush
+
 @section('content')
 <div class="container-fluid">
     <div class="mb-4">
@@ -266,24 +270,5 @@
     <div class="mt-4 d-flex justify-content-center">
         {{ $demandes->links() }}
     </div>
-    <style>
-        .table-hover tbody tr:hover {
-            background-color: rgba(59, 130, 246, 0.02) !important;
-            transform: scale(1.002);
-            transition: all 0.2s ease;
-        }
-        .card {
-            transition: all 0.3s ease;
-        }
-        .btn-success { background-color: #10b981; border: none; }
-        .btn-success:hover { background-color: #059669; transform: translateY(-2px); }
-        .btn-outline-danger:hover { transform: translateY(-2px); }
-        .italic { font-style: italic; }
-        
-        .badge {
-            letter-spacing: 0.5px;
-            font-weight: 700;
-        }
-    </style>
 </div>
 @endsection

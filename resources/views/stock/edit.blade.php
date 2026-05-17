@@ -2,6 +2,10 @@
 
 @section('title', 'Modifier la Pièce')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/stock.css') }}">
+@endpush
+
 @section('content')
 <div class="container py-4" style="max-width: 850px;">
     {{-- Header avec retour --}}
@@ -72,9 +76,4 @@
     </div>
 </div>
 
-<style>
-    .rounded-pill-start { border-top-left-radius: 50rem !important; border-bottom-left-radius: 50rem !important; }
-    .hover-scale:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(30, 105, 255, 0.2) !important; }
-    .form-control:focus, .form-select:focus { background-color: #ffffff !important; box-shadow: 0 0 0 4px rgba(30, 105, 255, 0.1) !important; }
-</style>
 @endsection

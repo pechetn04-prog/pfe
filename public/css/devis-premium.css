@@ -1,0 +1,92 @@
+/**
+ * SAV Premium - Devis Module Stylesheet
+ * Page-specific layout & financial aesthetics for establishing estimates.
+ */
+
+/* ============================================================
+ * 1. SECTION CARDS & ICONS
+ * ============================================================ */
+
+/* Conteneurs d'icônes à fond adouci thématique */
+.bg-soft-primary {
+    background-color: rgba(99, 102, 241, 0.1) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.bg-soft-info {
+    background-color: rgba(6, 182, 212, 0.1) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+/* ============================================================
+ * 2. TABLE ACTIONS & CUSTOM FORM INPUTS
+ * ============================================================ */
+
+/* Alignement et apparence des lignes d'articles */
+.piece-row td, .labor-row td {
+    padding: 0.75rem 0.5rem;
+}
+
+/* Personnalisation des entrées numériques et sélections */
+.piece-select, .labor-select {
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+}
+
+.price-input, .qty-input, .labor-input {
+    font-weight: 700;
+    color: #4f46e5;
+    background-color: #f8fafc !important;
+    border: 1.5px solid transparent !important;
+    transition: all 0.2s ease;
+}
+
+.price-input:focus, .qty-input:focus, .labor-input:focus {
+    border-color: #6366f1 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Texte mis en valeur pour les totaux de ligne */
+.line-total {
+    font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.2px;
+}
+
+/* Boutons de suppression de ligne */
+.remove-row {
+    transition: all 0.2s ease;
+    border-radius: 8px !important;
+}
+
+.remove-row:hover {
+    background-color: #fecdd3 !important;
+    color: #e11d48 !important;
+    transform: scale(1.05);
+}
+
+/* ============================================================
+ * 3. RECAPITULATIF FINANCIER STICKY CARD
+ * ============================================================ */
+
+/* Effet collant fluide lors du scroll de la page */
+.sticky-top {
+    z-index: 10;
+}
+
+/* Bloc d'affichage final du montant */
+#finalTotalDisplay {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    letter-spacing: -0.5px;
+}

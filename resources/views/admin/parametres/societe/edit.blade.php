@@ -106,12 +106,4 @@
     </form>
 </div>
 
-<style>
-    .form-control:focus, .form-select:focus {
-        background-color: #ffffff;
-        border-color: #2563eb;
-        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.1);
-    }
-    .bg-light-subtle { background-color: #f8fafc !important; }
-</style>
 @endsection

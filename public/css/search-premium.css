@@ -1,0 +1,52 @@
+/* ====================================================================
+ * COMPOSANT DE RECHERCHE UNIFIÉ ET DYNAMIQUE (SEARCH BAR)
+ * ====================================================================
+ * Ce fichier gère le style esthétique et l'interactivité de la barre
+ * de recherche globale située dans l'en-tête (Topbar) de l'application.
+ * 
+ * Effet Premium implémenté :
+ * - Au clic (focus-within), la barre s'élargit de manière très fluide
+ *   de 300px à 450px en utilisant une transition physique haut de gamme (cubic-bezier).
+ * - Le fond passe d'un gris bleuté à un blanc éclatant avec une ombre de lueur bleue.
+ * ==================================================================== */
+
+/* Conteneur principal de la recherche dans la Topbar */
+.search-bar {
+    background-color: #f8fafc !important; /* Fond gris bleuté très clair au repos */
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;       /* Bords arrondis style capsule */
+    padding: 0.5rem 1rem !important;
+    width: 300px !important;              /* Largeur par défaut */
+    /* Transition d'élargissement avec courbe physique naturelle */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* État actif au clic (Focus sur le champ texte interne) */
+.search-bar:focus-within {
+    width: 450px !important;              /* Élargissement fluide à 450px */
+    background-color: #ffffff !important; /* Passage au blanc pur */
+    border-color: #3b82f6 !important;     /* Bordure bleue primaire active */
+    /* Ombre de lueur bleue diffuse pour un effet de surélévation */
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.05), 0 4px 6px -2px rgba(59, 130, 246, 0.02) !important;
+}
+
+/* Style du champ de saisie de texte interne */
+.search-bar input {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    outline: none !important;            /* Supprime le contour bleu natif du navigateur */
+    border: none !important;             /* Supprime la bordure par défaut de l'input */
+    background: transparent !important;  /* Fond transparent pour adopter celui de la capsule parent */
+}
+
+/* Icône loupe de recherche FontAwesome */
+.search-bar i {
+    color: #64748b !important;
+    transition: color 0.3s ease !important;
+}
+
+/* Colore la loupe en bleu actif au focus */
+.search-bar:focus-within i {
+    color: #3b82f6 !important;
+}

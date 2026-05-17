@@ -2,6 +2,10 @@
 
 @section('title', 'Mon Espace SAV — Maison Tel')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-premium.css') }}">
+@endpush
+
 @section('content')
 <div class="container-fluid px-4 py-4">
 
@@ -110,15 +114,4 @@
 
 </div>
 
-<style>
-    .bg-soft-warning { background-color: #fff7ed; }
-    .bg-soft-success { background-color: #f0fdf4; }
-    .bg-soft-info { background-color: #f0f9ff; }
-    .animate-pulse { animation: pulse 2s infinite; }
-    @keyframes pulse {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
-        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
-    }
-</style>
 @endsection

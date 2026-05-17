@@ -72,11 +72,20 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label fw-bold text-muted small text-uppercase">Sécurité</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-lock text-muted"></i></span>
-                        <input type="password" name="password" class="form-control border-start-0" placeholder="Laisser vide pour ne pas changer le mot de passe" autocomplete="new-password">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Nouveau mot de passe</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                            <input type="password" name="password" class="form-control border-start-0" placeholder="Laisser vide pour ne pas changer" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Confirmer le nouveau mot de passe</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-check-circle text-muted"></i></span>
+                            <input type="password" name="password_confirmation" class="form-control border-start-0" placeholder="Répétez le mot de passe" autocomplete="new-password">
+                        </div>
                     </div>
                 </div>
 

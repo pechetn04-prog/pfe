@@ -1,32 +1,51 @@
-/**
- * SAV Premium - Unified Typography System
- * Standardizing fonts, sizes, and weights across the entire application.
- */
+/* ====================================================================
+ * SYSTEM TYPOGRAPHIQUE CENTRALISÉ ET UNIFIÉ (DESIGN SYSTEM)
+ * ====================================================================
+ * Ce fichier gère l'ensemble de la typographie de l'application SAV.
+ * Il standardise les polices de caractères, les tailles, les graisses
+ * et les espacements de lettres pour assurer une clarté de lecture.
+ * 
+ * Conception technique :
+ * - Chargement des polices Google Fonts "Outfit" (titrages élégants) 
+ *   et "Inter" (lecture de données denses) au sommet.
+ * - Application de l'anti-crénelage (font-smoothing) pour les écrans Mac/PC.
+ * - Sécurisation des icônes vectorielles FontAwesome avec exclusion :not().
+ * ==================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
+    /* Outfit est privilégiée pour son aspect moderne ; Inter sert de secours */
     --font-primary: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-size-base: 15px; /* Standard readable base size */
+    --font-size-base: 15px; /* Taille de base standard optimale pour la lecture de données */
     --line-height-base: 1.6;
+}
+
+/* === 1. Application globale de la police avec protection des icônes === */
+/* Exclut les balises <i> de FontAwesome pour éviter que la police système ne casse les glyphes */
+*:not(i):not(.fas):not(.far):not(.fab):not(.fa) {
+    font-family: var(--font-primary) !important;
 }
 
 body {
     font-family: var(--font-primary);
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);
-    color: #1e293b;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    color: #1e293b; /* Couleur de texte anthracite (moins agressive que le noir pur) */
+    -webkit-font-smoothing: antialiased; /* Anti-crénelage macOS */
+    -moz-osx-font-smoothing: grayscale;  /* Anti-crénelage Firefox/Linux */
 }
 
-/* Headings - Modern & Bold */
+/* === 2. Titres (Headings) - Style Moderne et Impactant === */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: var(--font-primary);
     font-weight: 700;
-    color: inherit; /* Allow inheritance (e.g. text-white) */
-    letter-spacing: -0.025em;
+    color: inherit;
+    letter-spacing: -0.025em; /* Rapproche légèrement les lettres pour un titrage condensé élégant */
     line-height: 1.2;
 }
 
+/* Échelle de tailles typographiques harmonieuse */
 h1, .h1 { font-size: 1.875rem; } /* 30px */
 h2, .h2 { font-size: 1.5rem; }    /* 24px */
 h3, .h3 { font-size: 1.25rem; }   /* 20px */
@@ -34,7 +53,7 @@ h4, .h4 { font-size: 1.125rem; }  /* 18px */
 h5, .h5 { font-size: 1rem; }      /* 16px */
 h6, .h6 { font-size: 0.875rem; }   /* 14px */
 
-/* Paragraphs & Text */
+/* Paragraphes */
 p {
     margin-bottom: 1rem;
 }
@@ -44,7 +63,12 @@ p {
     line-height: 1.5;
 }
 
-/* Table Compactness Global */
+.extra-small {
+    font-size: 0.75rem; /* 12px */
+}
+
+/* === 3. Optimisation Typographique des Tableaux de Données (Dossiers/Stock) === */
+/* Condense les en-têtes et lignes pour afficher plus d'informations sans scroll */
 .table:not(.table-statistiques) th {
     padding: 0.75rem 1rem !important;
     font-size: 0.7rem !important;
@@ -59,28 +83,28 @@ p {
     padding: 1.25rem !important;
 }
 
-.extra-small {
-    font-size: 0.75rem; /* 12px */
-}
-
-/* Weight Utilities */
+/* === 4. Classes utilitaires de graisses (Weight Utilities) === */
 .fw-medium { font-weight: 500 !important; }
 .fw-semibold { font-weight: 600 !important; }
 .fw-bold { font-weight: 700 !important; }
 .fw-extrabold { font-weight: 800 !important; }
+.fw-800 { font-weight: 800 !important; }
+.fw-black { font-weight: 900 !important; }
+.italic { font-style: italic !important; }
 
-/* Letter Spacing */
+/* === 5. Espacement de Lettres (Letter Spacing) === */
 .tracking-tight { letter-spacing: -0.025em; }
 .tracking-wide { letter-spacing: 0.05em; }
 .text-uppercase { letter-spacing: 0.05em; }
 
-/* Form Elements Consistency */
+/* === 6. Alignement des formulaires et étiquettes (Form Elements) === */
 input, select, textarea, button {
     font-family: var(--font-primary) !important;
 }
 
+/* Libellés de formulaires typés "badge" (petits, majuscules, grisés et semi-gras) */
 .form-label {
-    font-size: 0.8125rem; /* 13px approx */
+    font-size: 0.8125rem; /* 13px */
     font-weight: 600;
     color: #64748b;
     margin-bottom: 0.5rem;
@@ -92,8 +116,13 @@ input, select, textarea, button {
     font-size: 0.9375rem; /* 15px */
 }
 
-/* Badge Typography */
+/* Badges semi-gras de statut */
 .badge {
     font-weight: 700;
     letter-spacing: 0.025em;
+}
+
+/* Couleur de texte anthracite partagée */
+.text-slate-800 {
+    color: #1e293b !important;
 }

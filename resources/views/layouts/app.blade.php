@@ -16,6 +16,7 @@
     <!-- Design Système Premium du SAV (Fichiers CSS Centralisés) -->
     <link rel="stylesheet" href="{{ asset('css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/search-premium.css') }}">
     <link rel="stylesheet" href="{{ asset('css/typography-premium.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">

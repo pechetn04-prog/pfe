@@ -1,0 +1,30 @@
+/**
+ * SAV Premium - Replacement Module Stylesheet
+ * Page-specific layout & custom input focus aesthetics for device replacement.
+ */
+
+/* ============================================================
+ * 1. FORM CONTROL INTERACTIVE FOCUS
+ * ============================================================ */
+
+/* Transition fluide et effet de mise en valeur des champs lors de la saisie */
+.form-control:focus {
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(30, 105, 255, 0.1) !important;
+    border: 1.5px solid #1e69ff !important;
+}
+
+/* ============================================================
+ * 2. STRUCTURAL ALIGNMENTS & UTILITIES
+ * ============================================================ */
+
+/* Personnalisation du séparateur de fil d'ariane (breadcrumb) */
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "/" !important;
+    color: #cbd5e1 !important;
+}
+
+/* Typographie en italique pour les messages secondaires */
+.italic {
+    font-style: italic !important;
+}

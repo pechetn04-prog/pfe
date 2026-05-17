@@ -1,15 +1,24 @@
-/* Styles pour la gestion du stock */
+/**
+ * SAV Premium - Stock & Inventory Stylesheet
+ * Custom layouts, table styling, and interactive forms for managing spare parts.
+ */
 
+/* ============================================================
+ * 1. GENERAL INTERACTIVE CONTROLS
+ * ============================================================ */
+
+/* Switchs de formulaires de stock (Vert de réussite) */
 .form-switch .form-check-input:checked {
     background-color: #28a745;
     border-color: #28a745;
 }
 
+/* Curseur cliquable sur les badges d'inventaire */
 .cursor-pointer {
     cursor: pointer;
 }
 
-/* Style des badges circulaires pour le stock */
+/* Style des badges circulaires d'alertes de stock */
 .badge.rounded-circle {
     display: inline-flex;
     align-items: center;
@@ -17,9 +26,29 @@
     font-weight: 600;
 }
 
-/* Ajustements pour les filtres */
-.form-control.bg-light:focus,
-.form-select.bg-light:focus {
-    background-color: #fff !important;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+/* ============================================================
+ * 2. FORM ACTION BUTTONS & FIELDS (CREATION / EDIT)
+ * ============================================================ */
+
+/* Bordures semi-arrondies spécifiques pour les groupes d'entrées avec devise */
+.rounded-pill-start {
+    border-top-left-radius: 50rem !important;
+    border-bottom-left-radius: 50rem !important;
+}
+
+/* Boutons de soumission de formulaires à survol dynamique */
+.hover-scale {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Focus coloré des inputs et sélections (Effet bleu premium) */
+.form-control:focus, .form-select:focus {
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
+    border-color: #6366f1 !important;
 }

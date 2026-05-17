@@ -1,60 +1,73 @@
-/**
- * SAV Premium - Unified Button System
- * Centralizing all button aesthetics for the entire application.
- */
+/* ====================================================================
+ * SYSTÈME UNIFIÉ DE BOUTONS PREMIUM (BUTTON COMPONENT)
+ * ====================================================================
+ * Ce fichier gère l'ensemble de la charte graphique des boutons de l'application.
+ * Il standardise les formes, les gradients, les ombres de surélévation
+ * et les micro-animations réactives.
+ * 
+ * Conception technique :
+ * - Bords arrondis harmonieux (`12px`) ou capsule (`50px`).
+ * - Transitions physiques (`cubic-bezier`) réagissant au survol.
+ * - Effet de compression réaliste au clic (`transform: scale(0.97)`).
+ * - Gradients de couleurs modernes dégradés à 135 degrés.
+ * ==================================================================== */
 
-/* Base overrides for all buttons */
+/* Surcharge de la classe de base pour tous les boutons (.btn) */
 .btn {
-    border-radius: 12px;
-    padding: 0.6rem 1.25rem;
-    font-weight: 700;
+    border-radius: 12px;                      /* Arrondi moderne standard */
+    padding: 0.6rem 1.25rem;                  /* Zone de clic confortable */
+    font-weight: 700;                         /* Texte gras pour une lisibilité accrue */
     font-family: 'Outfit', 'Inter', sans-serif;
+    /* Transition physique haut de gamme (cubic-bezier) pour le survol */
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    display: inline-flex;
-    align-items: center;
+    display: inline-flex;                     /* Aligne les éléments internes en Flexbox */
+    align-items: center;                      /* Centrage vertical de l'icône et du texte */
     justify-content: center;
-    gap: 8px;
+    gap: 8px;                                 /* Espacement constant entre l'icône FontAwesome et le texte */
     letter-spacing: 0.2px;
 }
 
+/* Effet mécanique de clic (Compression physique réaliste) */
 .btn:active {
-    transform: scale(0.97);
+    transform: scale(0.97);                   /* Réduction de 3% lors du clic physique */
 }
 
-/* Rounded Pill Variant */
+/* Variante de bouton style capsule (Pill) */
 .btn-pill {
-    border-radius: 50px;
+    border-radius: 50px;                      /* Bords entièrement sphériques */
 }
 
-/* Primary Premium (Indigo) */
+/* --- A. COULEURS ET DÉGRADÉS PREMIUM (SÉMANTIQUE HAUT DE GAMME) --- */
+
+/* 1. Bouton Primaire (Primary Indigo) - Utilisé pour enregistrer ou valider */
 .btn-primary {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); /* Dégradé indigo moderne */
     border: none;
     color: white;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); /* Ombre de lueur indigo */
 }
 
 .btn-primary:hover {
     background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35); /* Intensification de l'ombre au survol */
+    transform: translateY(-2px);                     /* Soulèvement de l'élément */
 }
 
-/* Dark / Secondary (Alternative Action) */
+/* 2. Bouton Sombre / Secondaire (Alternative Action) - Pour actions annexes */
 .btn-dark {
-    background: #1e293b;
+    background: #1e293b;                              /* Gris ardoise foncé */
     border: none;
     color: white;
     box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15);
 }
 
 .btn-dark:hover {
-    background: #0f172a;
+    background: #0f172a;                              /* Noir ardoise */
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(30, 41, 59, 0.25);
 }
 
-/* Light / Ghost (Cancel or Back) */
+/* 3. Bouton Neutre / Clair (Light Ghost) - Pour annuler ou revenir en arrière */
 .btn-light {
     background: #f8fafc;
     border: 1.5px solid #e2e8f0;
@@ -67,9 +80,9 @@
     color: #1e293b;
 }
 
-/* Success Premium (Emerald) */
+/* 4. Bouton de Succès (Success Emerald) - Pour valider les paiements ou prêt */
 .btn-success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Dégradé vert émeraude */
     border: none;
     color: white;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
@@ -81,9 +94,9 @@
     box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
 }
 
-/* Danger Premium (Rose/Red) */
+/* 5. Bouton de Danger / Alerte (Danger Rose) - Pour suppressions ou rejets */
 .btn-danger {
-    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); /* Dégradé rouge-rose */
     border: none;
     color: white;
     box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25);
@@ -95,9 +108,9 @@
     box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
 }
 
-/* Warning Premium (Amber/Orange) */
+/* 6. Bouton d'Avertissement (Warning Amber) - Pour états intermédiaires */
 .btn-warning {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); /* Dégradé ambré */
     border: none;
     color: white;
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
@@ -109,7 +122,9 @@
     color: white;
 }
 
-/* Outline Variants */
+/* --- B. VARIANTES DE BORDURE ET FORMATS DE BOUTONS --- */
+
+/* Bouton à contour transparent (Outline) */
 .btn-outline-primary {
     border: 2px solid #6366f1;
     color: #6366f1;
@@ -121,19 +136,19 @@
     color: white;
 }
 
-/* Small Buttons (Compact UI) */
+/* Boutons compacts de petite taille (ex: actions dans un tableau) */
 .btn-sm {
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
-    border-radius: 8px;
+    border-radius: 8px;                       /* Coins légèrement moins prononcés pour le format mini */
 }
 
-/* Circular Buttons (Action Icons) */
+/* Bouton rond (Bouton d'icône d'action sans texte) */
 .btn-circle {
     width: 42px;
     height: 42px;
     padding: 0;
-    border-radius: 50%;
+    border-radius: 50%;                       /* Rond parfait */
     display: flex;
     align-items: center;
     justify-content: center;

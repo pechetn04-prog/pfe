@@ -1,65 +1,99 @@
-/**
- * SAV Premium - Unified Alert System
- */
+/* ====================================================================
+ * SYSTÈME D'ALERTES ET NOTIFICATIONS PREMIUM (ALERT COMPONENT)
+ * ====================================================================
+ * Ce fichier gère le style des alertes de confirmation, d'avertissement
+ * et d'erreur de l'application SAV.
+ * 
+ * Choix graphiques implémentés :
+ * - Bords arrondis capsule généreux (`16px`).
+ * - Flexbox aligné pour l'icône, le message et la croix de fermeture.
+ * - Bandeau de couleur décoratif gauche (`::before` en absolute) reflétant
+ *   la gravité de l'alerte.
+ * - Surcharge des boutons de fermeture natifs Bootstrap (filtres colorés).
+ * ==================================================================== */
 
+/* Conteneur principal d'une alerte premium */
 .alert-premium {
-    border: none;
-    border-radius: 16px;
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border: none;                             /* Supprime les bordures standard */
+    border-radius: 16px;                      /* Arrondi capsule moderne */
+    padding: 1.25rem 1.5rem;                  /* Marges internes confortables */
+    display: flex;                            /* Alignement horizontal des composants */
+    align-items: center;                      /* Centrage vertical des éléments */
+    gap: 12px;                                /* Espacement interne */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); /* Ombre douce de lévitation */
     margin-bottom: 2rem;
     position: relative;
-    overflow: hidden;
+    overflow: hidden;                         /* Masque les débordements de la barre latérale décorative */
 }
 
+/* Barre de couleur décorative collée sur le bord gauche de l'alerte */
 .alert-premium::before {
     content: '';
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
-    width: 6px;
+    width: 6px;                               /* Épaisseur du liseré de couleur */
 }
 
+/* --- A. VARIANTES SÉMANTIQUES (COULEURS ET EFFETS) --- */
+
+/* 1. Alerte de Réussite (Success) - Tons Verts */
 .alert-premium-success {
     background-color: #f0fdf4;
     color: #166534;
 }
-.alert-premium-success::before { background-color: #22c55e; }
-.alert-premium-success .btn-close { filter: invert(34%) sepia(87%) swatch(135deg) saturate(373%) hue-rotate(94deg) brightness(92%) contrast(89%); }
+.alert-premium-success::before { 
+    background-color: #22c55e; 
+}
+/* Filtre CSS pour colorer la croix de fermeture en vert foncé */
+.alert-premium-success .btn-close { 
+    filter: invert(34%) sepia(87%) swatch(135deg) saturate(373%) hue-rotate(94deg) brightness(92%) contrast(89%); 
+}
 
+/* 2. Alerte de Danger / Erreur (Danger) - Tons Rouges */
 .alert-premium-danger {
     background-color: #fef2f2;
     color: #991b1b;
 }
-.alert-premium-danger::before { background-color: #ef4444; }
+.alert-premium-danger::before { 
+    background-color: #ef4444; 
+}
 
+/* 3. Alerte de Mise en garde (Warning) - Tons Jaunes/Ambrés */
 .alert-premium-warning {
     background-color: #fffbeb;
     color: #92400e;
 }
-.alert-premium-warning::before { background-color: #f59e0b; }
+.alert-premium-warning::before { 
+    background-color: #f59e0b; 
+}
 
+/* 4. Alerte d'Information (Info) - Tons Bleus */
 .alert-premium-info {
     background-color: #f0f9ff;
     color: #075985;
 }
-.alert-premium-info::before { background-color: #0ea5e9; }
-
-.alert-premium .alert-icon {
-    font-size: 1.25rem;
-    flex-shrink: 0;
+.alert-premium-info::before { 
+    background-color: #0ea5e9; 
 }
 
+/* --- B. ÉLÉMENTS INTERNES --- */
+
+/* Icône illustrative (FontAwesome) à gauche du message */
+.alert-premium .alert-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;                           /* Empêche l'icône de rétrécir si le texte est long */
+}
+
+/* Corps du texte de l'alerte */
 .alert-premium .alert-content {
-    flex-grow: 1;
+    flex-grow: 1;                             /* Occupe tout le reste de la largeur disponible */
     font-weight: 600;
     font-size: 0.95rem;
 }
 
+/* Croix de fermeture (Bouton Close) */
 .alert-premium .btn-close {
     padding: 1.5rem;
     opacity: 0.5;
@@ -67,5 +101,34 @@
 }
 
 .alert-premium .btn-close:hover {
-    opacity: 1;
+    opacity: 1;                               /* Intensification au survol */
+}
+
+/* ============================================================
+ * COMPATIBILITÉ RÉTROGRADE / ANCIENNES ALERTES (RETRO ALERTS)
+ * ============================================================
+ * Conserve le style pour les anciennes classes d'alertes encore 
+ * référencées dans certaines validations de formulaires.
+ */
+.alert-error {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border: 1px solid #fecaca !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    margin-bottom: 16px !important;
+}
+
+.alert-error ul {
+    margin: 0 !important;
+    padding-left: 20px !important;
+}
+
+.alert-success {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    border: 1px solid #bbf7d0 !important;
+    padding: 14px 16px !important;
+    border-radius: 10px !important;
+    margin-bottom: 18px !important;
 }

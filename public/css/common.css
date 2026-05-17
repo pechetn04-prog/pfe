@@ -1,119 +1,91 @@
-/* ================================================================
- * common.css — Classes utilitaires partagées pour le SAV
- * ================================================================
- * Ce fichier regroupe TOUTES les classes réutilisées dans plusieurs
- * fichiers CSS ou vues Blade, afin d'éliminer les duplications.
- * Il est chargé globalement via layouts/app.blade.php.
- * ================================================================ */
+/* ====================================================================
+ * common.css — CLASSES UTILITAIRES PARTAGÉES POUR LE SYSTÈME SAV
+ * ====================================================================
+ * Ce fichier regroupe toutes les classes partagées pour éviter la
+ * duplication de code et assurer la cohérence visuelle sur tout le site.
+ * Il sert de socle utilitaire et de Design System secondaire.
+ * ==================================================================== */
 
 /* ============================================================
- * 1. TYPOGRAPHIE
+ * 1. ARRONDIS ET FORMES (ROUNDED CORNERS)
  * ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-/* Application ULTIME de la police globale (exclut les icônes FontAwesome) */
-*:not(i):not(.fas):not(.far):not(.fab):not(.fa) {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-}
-
-body,
-html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-
-.extra-small {
-    font-size: 0.75rem;
-}
-
-.italic {
-    font-style: italic;
-}
-
-.fw-800 {
-    font-weight: 800;
-}
-
-.fw-black {
-    font-weight: 900;
-}
-
-.text-slate-800 {
-    color: #1e293b;
-}
-
-
-/* ============================================================
- * 2. ARRONDIS & FORMES
- * ============================================================ */
+/* Arrondi large et moderne pour les boîtes de dialogue et les cartes */
 .rounded-4 {
-    border-radius: 1rem !important;
+    border-radius: 1rem !important; /* 16px */
 }
 
 
 /* ============================================================
- * 3. BACKGROUNDS SUBTILS (Compatibilité Bootstrap 5.2-)
- * ============================================================ */
+ * 2. PALETTE DE COULEURS ET BACKGROUNDS SUBTILS
+ * ============================================================
+ * Ces classes offrent des couleurs de fond adoucies (subtles) avec un
+ * texte contrasté pour un look premium, remplaçant les couleurs vives
+ * agressives. Très utiles pour les badges de statut et les alertes.
+ */
+
+/* Gris neutre doux - pour éléments secondaires ou en attente */
 .bg-secondary-subtle {
     background-color: #f1f5f9 !important;
     color: #475569 !important;
 }
 
+/* Bleu indigo doux - pour les étapes d'expertise initiale */
 .bg-primary-subtle {
     background-color: #eef2ff !important;
     color: #4f46e5 !important;
 }
 
+/* Jaune ambré doux - pour signaler une attention ou une attente de pièce */
 .bg-warning-subtle {
     background-color: #fffbeb !important;
     color: #b45309 !important;
 }
 
+/* Bleu ciel doux - pour les notifications ou informations de suivi */
 .bg-info-subtle {
     background-color: #f0f9ff !important;
     color: #0369a1 !important;
 }
 
+/* Vert émeraude doux - pour indiquer la réussite ou un appareil prêt */
 .bg-success-subtle {
     background-color: #f0fdf4 !important;
     color: #15803d !important;
 }
 
+/* Rouge pastel doux - pour les alertes critiques ou hors garantie */
 .bg-danger-subtle {
     background-color: #fef2f2 !important;
     color: #991b1b !important;
 }
 
+/* Fond ardoise clair - pour les conteneurs d'informations techniques */
 .bg-dark-subtle {
     background-color: #f8fafc !important;
     color: #334155 !important;
 }
 
+/* Fond blanc cassé discret - pour les sous-titres ou séparations */
 .bg-light-subtle {
     background-color: #f8fafc !important;
     color: #64748b !important;
 }
 
+/* Bordure inférieure très fine pour séparer les éléments de listes */
 .border-bottom-subtle {
     border-bottom: 1px solid #f1f5f9;
 }
 
 
 /* ============================================================
- * 4. BOUTONS COMMUNS (DÉPLACÉS VERS buttons-premium.css)
+ * 3. COMPOSANTS DE FORMULAIRES COMMUNS
  * ============================================================ */
-/* Les styles des boutons sont désormais centralisés dans public/css/buttons-premium.css */
-
-
-
-/* ============================================================
- * 5. FORMULAIRES COMMUNS
- * ============================================================ */
+/* Conteneur standard d'un champ avec sa marge basse */
 .form-group {
     margin-bottom: 18px;
 }
 
+/* Libellés de formulaires plus sombres et semi-gras */
 .form-group label {
     display: block;
     margin-bottom: 8px;
@@ -121,6 +93,7 @@ html {
     color: #334155;
 }
 
+/* Champs de saisie standard épurés */
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -132,9 +105,10 @@ html {
     font-size: 14px;
     outline: none;
     box-sizing: border-box;
-    transition: 0.2s ease;
+    transition: 0.2s ease; /* Transition de focus fluide */
 }
 
+/* Effet de mise au point (Focus) avec lueur bleue douce */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -142,6 +116,7 @@ html {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
+/* Alignement des boutons d'actions en bas de formulaire (ex: Annuler/Enregistrer) */
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -149,13 +124,15 @@ html {
     margin-top: 20px;
 }
 
-/* Premium inputs (users/create, register) */
+/* --- A. CHAMPS DE SAISIE PREMIUM AVEC ICÔNES INTÉGRÉES --- */
+/* Conteneur principal positionnant l'icône de façon absolue */
 .input-group-premium {
     position: relative;
     display: flex;
     align-items: center;
 }
 
+/* Icône grise de saisie positionnée sur la gauche de l'input */
 .input-group-premium .icon {
     position: absolute;
     left: 18px;
@@ -164,56 +141,32 @@ html {
     font-size: 0.9rem;
 }
 
+/* Input text et select premium avec décalage de texte à gauche pour ne pas chevaucher l'icône */
 .form-control-premium,
 .form-select-premium {
     width: 100%;
-    padding: 12px 18px 12px 48px;
+    padding: 12px 18px 12px 48px; /* 48px de padding gauche pour laisser place à l'icône */
     border: 1px solid #e2e8f0;
-    border-radius: 14px;
+    border-radius: 14px; /* Plus arrondi pour un look moderne */
     background: #f8fafc;
     font-size: 0.95rem;
     transition: all 0.2s ease;
     outline: none !important;
 }
 
+/* État actif au clic */
 .form-control-premium:focus,
 .form-select-premium:focus {
     border-color: #2563eb;
     background: #fff;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); /* Lueur bleue premium */
 }
 
 
 /* ============================================================
- * 6. ALERTES
+ * 4. LIGNES VIDES ET SECTIONS VIDES (TABLEAUX)
  * ============================================================ */
-.alert-error {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 16px;
-}
-
-.alert-error ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.alert-success {
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-    padding: 14px 16px;
-    border-radius: 10px;
-    margin-bottom: 18px;
-}
-
-
-/* ============================================================
- * 7. LIGNES VIDES (TABLEAUX)
- * ============================================================ */
+/* Ligne neutre indiquant qu'aucune donnée n'est présente dans le tableau */
 .empty-row {
     text-align: center;
     color: #64748b;
@@ -222,13 +175,15 @@ html {
 
 
 /* ============================================================
- * 8. TRANSITIONS & ANIMATIONS COMMUNES
+ * 5. TRANSITIONS ET MICRO-ANIMATIONS COMMUNES
  * ============================================================ */
+/* Raccourci de transition fluide universelle */
 .transition,
 .transition-all {
     transition: all 0.2s ease;
 }
 
+/* Légère lévitation de l'élément au survol */
 .transform-hover {
     transition: transform 0.2s ease;
 }
@@ -237,16 +192,20 @@ html {
     transform: translateY(-2px);
 }
 
+/* Bordures en pointillés pour les zones de glisser-déposer de fichiers */
 .border-dashed {
     border-style: dashed !important;
 }
 
 
 /* ============================================================
- * 9. IMPRESSION
- * ============================================================ */
+ * 6. FEUILLE DE STYLE POUR L'IMPRESSION (MEDIA PRINT)
+ * ============================================================
+ * Assure un rendu papier propre et professionnel pour les documents,
+ * en masquant les menus, barres de recherche et boutons interactifs.
+ */
 @media print {
-
+    /* Masque les éléments interactifs et structurels inutiles à l'impression */
     .btn,
     .sidebar,
     .app-sidebar,
@@ -255,15 +214,18 @@ html {
         display: none !important;
     }
 
+    /* Force le fond en blanc pur pour économiser l'encre */
     body {
         background: white !important;
     }
 
+    /* Supprime les ombres portées et crée des bordures fines noires */
     .card {
         box-shadow: none !important;
         border: 1px solid #ddd !important;
     }
 
+    /* Remplit la largeur de la page papier */
     .container,
     .container-fluid {
         width: 100% !important;
@@ -272,14 +234,17 @@ html {
     }
 }
 
+
 /* ============================================================
- * 10. PAGINATION STANDARDIZÉE
+ * 7. COMPOSANT DE PAGINATION STANDARDIZÉE
  * ============================================================ */
+/* Conteneur avec espacement entre les numéros de pages */
 .pagination {
     margin-bottom: 0;
     gap: 5px;
 }
 
+/* Bouton de lien de page individuel */
 .pagination .page-link {
     border-radius: 8px !important;
     padding: 6px 12px;
@@ -290,6 +255,7 @@ html {
     transition: all 0.2s ease;
 }
 
+/* Numéro de la page en cours de visite (Bleu et légèrement surélevé) */
 .pagination .page-item.active .page-link {
     background-color: #2563eb;
     border-color: #2563eb;
@@ -297,23 +263,28 @@ html {
     box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
 }
 
+/* Effet de survol sur un numéro de page */
 .pagination .page-link:hover {
     background-color: #f8fafc;
     border-color: #cbd5e1;
     color: #2563eb;
 }
 
+
 /* ============================================================
- * 11. OMBRES & EFFETS PREMIUM
+ * 8. OMBRES ET EFFETS DE VERRE PREMIUM (GLASSMORPHISM)
  * ============================================================ */
+/* Ombre très douce et diffuse (look haut de gamme) */
 .shadow-soft {
     box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Ombre plus prononcée pour détacher un élément au survol */
 .shadow-premium {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Effet de verre flouté givré blanc (Glassmorphism) */
 .glass-card {
     background: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(12px) !important;
@@ -321,6 +292,7 @@ html {
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
+/* Effet de verre flouté sombre */
 .glass-dark {
     background: rgba(15, 23, 42, 0.8) !important;
     backdrop-filter: blur(12px) !important;
@@ -331,31 +303,27 @@ html {
 
 
 /* ============================================================
- * 12. INTERACTIONS & ANIMATIONS
+ * 9. EFFETS D'INTERACTION ET ANIMATIONS CONTINUES
  * ============================================================ */
+/* Effet de soulèvement 3D avec courbe d'accélération fluide */
 .hover-lift {
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease !important;
 }
 
 .hover-lift:hover {
-    transform: translateY(-5px) !important;
+    transform: translateY(-5px) !important; /* Lévitation */
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
 }
 
+/* Halo bleu brillant au survol */
 .hover-glow:hover {
     box-shadow: 0 0 20px rgba(37, 99, 235, 0.3) !important;
 }
 
+/* Animation douce de pulsation (utilisée pour les états critiques en attente) */
 @keyframes pulse-soft {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.6;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
 }
 
 .animate-pulse-soft {
@@ -364,20 +332,23 @@ html {
 
 
 /* ============================================================
- * 13. HELPERS DE MISE EN PAGE & TEXTE
+ * 10. HELPERS DE MISE EN PAGE ET D'ALIGNEMENT
  * ============================================================ */
+/* Centrage absolu en Flexbox */
 .flex-center {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* Grille réactive s'adaptant à l'espace sans media queries (250px minimum par colonne) */
 .grid-auto-fit {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
 }
 
+/* Troncature de texte sur deux lignes maximum avec points de suspension */
 .text-truncate-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -385,6 +356,7 @@ html {
     overflow: hidden;
 }
 
+/* Floutage d'arrière-plan */
 .bg-blur {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -392,7 +364,7 @@ html {
 
 
 /* ============================================================
- * 14. BARRE DE DÉFILEMENT PERSONNALISÉE
+ * 11. CUSTOM SCROLLBAR (BARRE DE DÉFILEMENT UNIFIÉE)
  * ============================================================ */
 ::-webkit-scrollbar {
     width: 8px;
@@ -412,167 +384,9 @@ html {
     background: #94a3b8;
 }
 
-/* ============================================================
- * 15. RESULT SELECTION CARDS (PREMIUM LIGHT)
- * ============================================================ */
-.result-selection-grid {
-    margin-top: 15px;
-}
-
-.result-card-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-.result-radio-check {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.result-card {
-    display: flex;
-    align-items: center;
-    padding: 20px 24px;
-    background: var(--bg-card, #ffffff);
-    border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    margin-bottom: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-}
-
-.result-card:hover {
-    background: var(--bg-page, #f8fafc);
-    border-color: var(--primary-color, #2563eb);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-premium, 0 10px 15px -3px rgba(0, 0, 0, 0.05));
-}
-
-.result-card-icon {
-    font-size: 24px;
-    margin-right: 20px;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    flex-shrink: 0;
-    transition: all 0.3s ease;
-}
-
-.result-card-content {
-    flex-grow: 1;
-}
-
-.result-card-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main, #1e293b);
-    margin-bottom: 4px;
-    transition: color 0.3s ease;
-}
-
-.result-card-description {
-    font-size: 0.88rem;
-    color: var(--text-muted, #64748b);
-    line-height: 1.5;
-    transition: color 0.3s ease;
-}
-
-.result-card-check {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--border-color, #e2e8f0);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: white;
-    transition: all 0.3s ease;
-    margin-left: auto;
-    flex-shrink: 0;
-}
-
-/* Success State (Réparé / Réparable) */
-.result-card.success .result-card-icon {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.result-radio-check:checked+.result-card.success {
-    border-color: #16a34a;
-    background: #f0fdf4;
-}
-
-.result-radio-check:checked+.result-card.success .result-card-check {
-    background: #16a34a;
-    border-color: #16a34a;
-}
-
-/* Danger State (Non réparé / Irréparable) */
-.result-card.danger .result-card-icon {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.result-radio-check:checked+.result-card.danger {
-    border-color: #dc2626;
-    background: #fef2f2;
-}
-
-.result-radio-check:checked+.result-card.danger .result-card-check {
-    background: #dc2626;
-    border-color: #dc2626;
-}
-
-/* Warning State (En attente pièce) */
-.result-card.warning .result-card-icon {
-    background: #ffedd5;
-    color: #f97316;
-}
-
-.result-radio-check:checked+.result-card.warning {
-    border-color: #f97316;
-    background: #fff7ed;
-}
-
-.result-radio-check:checked+.result-card.warning .result-card-check {
-    background: #f97316;
-    border-color: #f97316;
-}
-
-.result-radio-check:checked+.result-card .result-card-check::after {
-    content: "\f00c";
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
-}
-
-/* Pulse Animation for Auto-selection (Stock Rupture) */
-.pulse-danger {
-    animation: pulse-danger-border 2s infinite;
-}
-
-@keyframes pulse-danger-border {
-    0% {
-        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
-    }
-}
 
 /* ============================================================
- * 16. LAYOUT & CORE UTILITIES
+ * 12. STRUCTURE DU CORPS ET CONTENEURS MAÎTRES (LAYOUT SKELETON)
  * ============================================================ */
 :root {
     --primary-blue: #6366f1;
@@ -580,10 +394,11 @@ html {
 
 body {
     font-family: 'Outfit', sans-serif !important;
-    background-color: #f1f5f9;
+    background-color: #f1f5f9; /* Gris bleuté très léger d'arrière-plan */
     color: #1e293b;
 }
 
+/* Barre de navigation supérieure (Top Header) fixe */
 .header {
     background: white;
     border-bottom: 1px solid #e2e8f0;
@@ -593,6 +408,7 @@ body {
     z-index: 900;
 }
 
+/* Zone principale accueillant les écrans de travail */
 .main-content {
     flex-grow: 1;
     min-height: 100vh;
@@ -601,19 +417,13 @@ body {
     flex-direction: column;
 }
 
+/* Aire de confort interne accueillant les tableaux et formulaires */
 .content-area {
     padding: 1.5rem;
     flex-grow: 1;
 }
 
-.search-bar {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 0.5rem 1rem;
-    width: 400px;
-}
-
+/* Opacité légèrement atténuée au survol (boutons simples) */
 .hover-opacity:hover {
     opacity: 0.8;
 }
@@ -622,6 +432,7 @@ body {
     transition: all 0.2s;
 }
 
+/* Liens textuels s'animant en bleu premium */
 .hover-primary:hover {
     color: #2563eb !important;
     text-decoration: underline !important;

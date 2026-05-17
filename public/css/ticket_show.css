@@ -1,5 +1,21 @@
-/* Styles pour la vue détaillée du dossier */
+/**
+ * SAV Premium - Client Ticket & Dossier Details Styling
+ * 
+ * Ce fichier gère le style visuel de la fiche détaillée d'un dossier (Admin/Agent)
+ * et du suivi de ticket (Client). Il regroupe :
+ * 1. La barre d'onglets premium (`#dossierTabs`) avec transitions de glissement
+ *    et soulignement dynamique de l'onglet actif.
+ * 2. La timeline verticale de suivi des étapes de réparation (`.custom-timeline`),
+ *    avec marqueurs sphériques colorés, lueurs de pulsation et barre centrale.
+ * 3. Les badges sémantiques adoucis (`.bg-soft-*`) pour un look professionnel moderne.
+ * 4. Les animations de soulèvement 3D au survol des cartes interactives (ex: Devis/Factures PDF).
+ */
 
+/* ============================================================
+ * 1. BARRE D'ONGLETS PREMIUM (TABS NAVIGATION)
+ * ============================================================ */
+
+/* Conteneur principal gris clair en forme de capsule */
 #dossierTabs {
     background-color: #f8fafc;
     padding: 6px 10px;
@@ -9,27 +25,30 @@
     margin-bottom: 2rem;
 }
 
+/* Boutons de navigation individuels */
 #dossierTabs .nav-link {
     border: none !important;
-    color: #64748b !important;
+    color: #64748b !important; /* Gris ardoise élégant */
     font-weight: 600 !important;
     padding: 10px 20px !important;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; /* Transition de couleur fluide */
     font-size: 0.85rem;
     background: transparent !important;
     border-radius: 8px !important;
     margin: 0 4px;
 }
 
+/* Icônes intégrées aux onglets */
 #dossierTabs .nav-link i {
     margin-right: 8px;
     font-size: 1rem;
 }
 
+/* État actif (Onglet sélectionné avec soulignement bleu et fond blanc surélevé) */
 #dossierTabs .nav-link.active {
     background-color: #ffffff !important;
-    color: #1e69ff !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    color: #1e69ff !important; /* Couleur active bleue */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important; /* Ombre douce de surélévation */
     border-bottom: 3px solid #1e69ff !important;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
@@ -39,16 +58,83 @@
     color: #1e69ff !important;
 }
 
+/* Effet de survol des onglets non sélectionnés */
 #dossierTabs .nav-link:not(.active):hover {
     color: #1e69ff !important;
     background-color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Timeline V2 */
+/* ============================================================
+ * 2. TIMELINE VERTICALE DE SUIVI DE RÉPARATION
+ * ============================================================ */
+
+/* Conteneur principal de la timeline */
+.custom-timeline {
+    position: relative;
+    padding-left: 30px; /* Espace à gauche pour accueillir la ligne centrale */
+}
+
+/* Ligne centrale verticale grise */
+.custom-timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: #e2e8f0; /* Couleur grise standard neutre */
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+/* Marqueur sphérique indiquant une étape passée ou en cours */
+.timeline-marker {
+    position: absolute;
+    left: -30px; /* Positionnement parfait par rapport à la ligne centrale */
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #2563eb; /* Bordure bleue premium */
+    z-index: 1;
+}
+
+/* Pulsation lumineuse sur l'étape la plus récente (premier enfant) */
+.timeline-item:first-child .timeline-marker {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+/* Variante alternative de timeline v2 */
 .timeline-v2 .timeline-item {
     border-left: 2px solid #eef2f7 !important;
 }
 
 .timeline-v2 .timeline-marker {
     left: -6px !important;
+}
+
+/* ============================================================
+ * 3. BADGES SÉMANTIQUES ET BOUTONS ADOUCIS
+ * ============================================================ */
+.bg-soft-primary { background-color: #eff6ff !important; }
+.btn-soft-primary { background-color: #eff6ff !important; color: #2563eb !important; border: none !important; }
+.bg-soft-success { background-color: #ecfdf5 !important; }
+.bg-soft-danger { background-color: #fef2f2 !important; }
+.btn-white { background-color: white !important; color: #2563eb !important; border: 1px solid #e2e8f0 !important; }
+
+/* ============================================================
+ * 4. MICRO-ANIMATIONS DE SURVOL (INTERACTION CARTES)
+ * ============================================================ */
+.transition-all {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Soulèvement 3D fluide et ombre intense au survol */
+.transition-all:hover {
+    transform: translateY(-3px); /* Effet de lévitation */
+    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08) !important;
 }

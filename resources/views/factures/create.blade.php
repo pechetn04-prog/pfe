@@ -2,6 +2,10 @@
 
 @section('title', 'Établir la Facture - Dossier #' . $dossier->num_dossier)
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/facture-premium.css') }}">
+@endpush
+
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">

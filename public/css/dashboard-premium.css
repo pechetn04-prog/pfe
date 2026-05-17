@@ -98,3 +98,32 @@
     font-size: 0.4rem;
     margin-right: 6px;
 }
+
+/* ============================================================
+ * INTERACTIVE ANIMATIONS & SOFT-BACKGROUNDS
+ * ============================================================ */
+
+/* Fonds adoucis pour les icônes de KPIs */
+.bg-soft-warning { background-color: #fff7ed !important; }
+.bg-soft-success { background-color: #f0fdf4 !important; }
+.bg-soft-info { background-color: #f0f9ff !important; }
+
+/* Animation de pulsation douce (pulse) pour l'attention visuelle */
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+    }
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(251, 191, 36, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+    }
+}

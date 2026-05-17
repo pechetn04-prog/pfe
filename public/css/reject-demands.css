@@ -1,0 +1,54 @@
+/**
+ * SAV Premium - Reject Demands Module Stylesheet
+ * Custom table interactive hover effects and call-to-action transition mechanics.
+ */
+
+/* ============================================================
+ * 1. TABLE INTERACTIVE HOVER EFFECTS
+ * ============================================================ */
+
+/* Effet de survol fluide avec légère mise à l'échelle sur les demandes de retrait */
+.table-hover tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.02) !important;
+    transform: scale(1.002);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+ * 2. CARDS & BUTTONS TRANSITIONS
+ * ============================================================ */
+
+/* Transition fluide des cartes de statistiques */
+.card {
+    transition: all 0.3s ease;
+}
+
+/* Personnalisation des boutons de validation (Acceptation / Refus) */
+.btn-success {
+    background-color: #10b981 !important;
+    border: none !important;
+}
+
+.btn-success:hover {
+    background-color: #059669 !important;
+    transform: translateY(-2px);
+}
+
+.btn-outline-danger:hover {
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+ * 3. TYPOGRAPHY & BADGES
+ * ============================================================ */
+
+/* Texte secondaire en italique */
+.italic {
+    font-style: italic !important;
+}
+
+/* Badges mis en relief avec espacement des lettres */
+.badge {
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}

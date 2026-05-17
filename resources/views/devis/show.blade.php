@@ -2,6 +2,10 @@
 
 @section('title', 'Devis #' . $devis->numero)
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/devis-premium.css') }}">
+@endpush
+
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
