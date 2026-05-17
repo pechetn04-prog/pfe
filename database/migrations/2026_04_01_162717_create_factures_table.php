@@ -14,7 +14,7 @@ return new class extends Migration
     Schema::create('factures', function (Blueprint $table) {
         $table->id();
 
-        $table->foreignId('ticket_id')->constrained()->cascadeOnDelete();
+        $table->foreignId('dossier_id')->constrained()->cascadeOnDelete();
 
         $table->decimal('montant_total', 10, 2);
 

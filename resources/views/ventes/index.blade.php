@@ -51,6 +51,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse($ventes as $vente)
                     <tr>
                         <td class="ps-4 imei-cell">{{ $vente->imei }}</td>
                         <td>

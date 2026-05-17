@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('diagnostics', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('ticket_id')
-                ->constrained('tickets')
+            $table->foreignId('dossier_id')
+                ->constrained('dossiers')
                 ->cascadeOnDelete();
 
             $table->foreignId('technicien_id')
@@ -31,8 +31,8 @@ return new class extends Migration
 
             $table->timestamps();
 
-            // Un seul diagnostic par ticket
-            $table->unique('ticket_id');
+            // Un seul diagnostic par dossier
+            $table->unique('dossier_id');
         });
     }
 

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ticket_piece_manquante', function (Blueprint $table) {
+        Schema::create('dossier_piece_manquante', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
+            $table->foreignId('dossier_id')->constrained()->onDelete('cascade');
             $table->foreignId('piece_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ticket_piece_manquante');
+        Schema::dropIfExists('dossier_piece_manquante');
     }
 };

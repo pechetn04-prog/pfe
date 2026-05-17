@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained('tickets')->cascadeOnDelete();
+            $table->foreignId('dossier_id')->constrained('dossiers')->cascadeOnDelete();
             $table->foreignId('technicien_id')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('date_debut')->nullable();
             $table->dateTime('date_fin')->nullable();

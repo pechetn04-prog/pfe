@@ -8,9 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tickets', function (Blueprint $table) {
+        Schema::create('dossiers', function (Blueprint $table) {
             $table->id();
-            $table->string('num_ticket')->unique();
+            $table->string('num_dossier')->unique();
 
             // Relations
             $table->foreignId('appareil_id')->constrained('appareils')->onDelete('cascade');
@@ -40,6 +40,7 @@ return new class extends Migration
 
             // Statut
             $table->string('statut')->default('RECU');
+            $table->text('commentaire_refus')->nullable();
 
             $table->timestamps();
         });
@@ -47,6 +48,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('tickets');
+        Schema::dropIfExists('dossiers');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('demandes_rejet', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
+            $table->foreignId('dossier_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Le technicien
             $table->text('raison');
             $table->enum('statut', ['EN_ATTENTE', 'ACCEPTE', 'REFUSE'])->default('EN_ATTENTE');

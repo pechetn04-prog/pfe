@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('avis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
+            $table->foreignId('dossier_id')->constrained()->onDelete('cascade');
             $table->integer('note')->comment('Note de 1 à 5');
             $table->text('commentaire')->nullable();
             $table->timestamp('date_avis')->useCurrent();

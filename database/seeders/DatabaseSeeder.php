@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             UsersSeeder::class,
+            VenteSeeder::class,
+            TarifMoSeeder::class,
+            SmartecDataSeeder::class,
         ]);
 
         User::factory()->create([

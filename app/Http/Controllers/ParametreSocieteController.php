@@ -14,7 +14,7 @@ class ParametreSocieteController extends Controller
     {
         // Récupère la première configuration existante, ou en crée une nouvelle instance vide
         $parametre = ParametreSociete::first() ?: new ParametreSociete();
-        return view('admin.parametres-societe.edit', compact('parametre'));
+        return view('admin.parametres.societe.edit', compact('parametre'));
     }
 
     // Met à jour les paramètres de la société avec gestion de l'upload du logo.
