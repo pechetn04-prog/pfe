@@ -186,10 +186,6 @@
                 </thead>
                 <tbody>
                     @forelse($pieces as $piece)
-                    @php
-                        $stock = $piece->quantite;
-                        $lowStock = $stock <= $piece->seuil_alerte;
-                    @endphp
                     <tr>
                         <td class="ps-4 text-muted small">#{{ $piece->id }}</td>
                         <td>
@@ -200,8 +196,8 @@
                             <span class="badge bg-light text-muted border-0 py-2 px-3 fw-normal" style="font-size: 0.7rem;">{{ $piece->categorie ?? 'N/A' }}</span>
                         </td>
                         <td class="text-center">
-                            <span class="badge rounded-circle {{ $lowStock ? 'bg-danger' : 'bg-success' }} bg-opacity-10 {{ $lowStock ? 'text-danger' : 'text-success' }} d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.85rem;">
-                                {{ $stock }}
+                            <span class="badge rounded-circle {{ $piece->quantite <= $piece->seuil_alerte ? 'bg-danger text-danger' : 'bg-success text-success' }} bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                                {{ $piece->quantite }}
                             </span>
                         </td>
                         <td class="text-end fw-bold text-dark">

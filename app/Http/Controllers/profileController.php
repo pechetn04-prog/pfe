@@ -7,19 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+// Ce contrôleur gère la consultation et la mise à jour des informations de profil de l'utilisateur connecté.
 class ProfileController extends Controller
 {
-    /**
-     * Afficher le formulaire de profil.
-     */
+    // Affiche le formulaire d'édition du profil personnel (Nom, Email, Téléphone, Mot de passe).
     public function edit()
     {
         return view('auth.profile');
     }
 
-    /**
-     * Mettre à jour le profil de l'utilisateur connecté.
-     */
+    // Met à jour les informations du profil de l'utilisateur connecté avec validation.
     public function update(UpdateProfileRequest $request)
     {
         $user = Auth::user();
@@ -30,6 +27,7 @@ class ProfileController extends Controller
             'telephone' => $request->telephone,
         ];
 
+        // Hachage sécurisé du mot de passe uniquement s'il est spécifié
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
@@ -38,5 +36,4 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Votre profil a été mis à jour avec succès.');
     }
-
 }

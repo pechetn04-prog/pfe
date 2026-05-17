@@ -41,7 +41,7 @@ Route::get('/client/suivi/{id}', [ClientController::class, 'suiviPublic'])->name
 Route::get('/suivi/dossier/{id}', [ClientController::class, 'show'])->name('client.ticket.view');
 Route::post('/suivi/dossier/{id}/devis/accepter', [ClientController::class, 'accepterDevis'])->name('client.devis.accepter.public');
 Route::post('/suivi/dossier/{id}/devis/refuser', [ClientController::class, 'refuserDevis'])->name('client.devis.refuser.public');
-Route::post('/suivi/dossier/{id}/avis', [ClientController::class, 'submitAvis'])->name('client.avis.submit.public');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -248,7 +248,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/client/dossier/{id}', [ClientController::class, 'show'])->name('client.ticket');
         Route::post('/client/dossier/{id}/devis/accepter', [ClientController::class, 'accepterDevis'])->name('client.devis.accepter');
         Route::post('/client/dossier/{id}/devis/refuser', [ClientController::class, 'refuserDevis'])->name('client.devis.refuser');
-        Route::post('/client/dossier/{id}/avis', [ClientController::class, 'submitAvis'])->name('client.avis.submit');
+
     });
 
 });

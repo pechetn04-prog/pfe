@@ -164,47 +164,19 @@
                     <th style="text-align: right; width: 100px;">Total TTC</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($devis->pieces as $piece)
-                    @php
-                        $qty = $piece->pivot->quantite;
-                        $ttc = $piece->pivot->prix_unitaire;
-                        $ht = $ttc / 1.19;
-                        $tva = $ttc - $ht;
-                        $totalLigne = $qty * $ttc;
-                    @endphp
+                @foreach($lignes as $ligne)
                     <tr>
-                        <td>{{ $piece->nom }}</td>
-                        <td style="text-align: center;">{{ $qty }}</td>
-                        <td style="text-align: right;">{{ number_format($ht, 3, ',', ' ') }}</td>
-                        <td style="text-align: right;">{{ number_format($tva, 3, ',', ' ') }}</td>
-                        <td style="text-align: right; font-weight: bold;">{{ number_format($totalLigne, 3, ',', ' ') }}</td>
-                    </tr>
-                @endforeach
-
-                @foreach($devis->tarifsMo as $mo)
-                    @php
-                        $ttc = $mo->pivot->montant;
-                        $ht = $ttc / 1.19;
-                        $tva = $ttc - $ht;
-                    @endphp
-                    <tr>
-                        <td>Main d'œuvre : {{ $mo->type_intervention }}</td>
-                        <td style="text-align: center;">1</td>
-                        <td style="text-align: right;">{{ number_format($ht, 3, ',', ' ') }}</td>
-                        <td style="text-align: right;">{{ number_format($tva, 3, ',', ' ') }}</td>
-                        <td style="text-align: right; font-weight: bold;">{{ number_format($ttc, 3, ',', ' ') }}</td>
+                        <td>{{ $ligne['designation'] }}</td>
+                        <td style="text-align: center;">{{ $ligne['quantite'] }}</td>
+                        <td style="text-align: right;">{{ number_format($ligne['ht'], 3, ',', ' ') }}</td>
+                        <td style="text-align: right;">{{ number_format($ligne['tva'], 3, ',', ' ') }}</td>
+                        <td style="text-align: right; font-weight: bold;">{{ number_format($ligne['totalLigne'], 3, ',', ' ') }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
-        @php
-            $ttcTotal = $devis->montant_total / (1 - $devis->remise / 100);
-            $htTotal = $ttcTotal / 1.19;
-            $tvaTotal = $ttcTotal - $htTotal;
-            $montantRemise = $ttcTotal * ($devis->remise / 100);
-        @endphp
+
 
         <div class="totals">
             <div class="total-row">
@@ -219,14 +191,7 @@
                     {{ $company->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
-            @if($devis->remise > 0)
-                <div class="total-row" style="color: #dc2626;">
-                    <span style="float: left;">Remise ({{ $devis->remise }}%) :</span>
-                    <span style="float: right;">- {{ number_format($montantRemise, 3, ',', ' ') }}
-                        {{ $company->devise ?? 'DT' }}</span>
-                    <div class="clear"></div>
-                </div>
-            @endif
+
             <div class="grand-total">
                 <span style="float: left;">TOTAL TTC :</span>
                 <span style="float: right;">{{ number_format($devis->montant_total, 3, ',', ' ') }}

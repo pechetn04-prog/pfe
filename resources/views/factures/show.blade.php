@@ -59,8 +59,8 @@
                                         <div class="fw-bold text-dark">{{ $piece->nom }}</div>
                                         <small class="text-muted">Pièce détachée</small>
                                     </td>
-                                    <td class="text-center">{{ $piece->pivot->quantite }}</td>
-                                    <td class="text-end fw-bold">{{ number_format($piece->pivot->quantite * $piece->pivot->prix_unitaire, 3, ',', ' ') }} DT</td>
+                                    <td class="text-center">{{ $piece->qty ?? $piece->pivot->quantite }}</td>
+                                    <td class="text-end fw-bold">{{ number_format($piece->total_ligne ?? ($piece->pivot->quantite * $piece->pivot->prix_unitaire), 3, ',', ' ') }} DT</td>
                                 </tr>
                                 @endforeach
 
@@ -86,11 +86,6 @@
             <div class="card shadow border-0" style="border-radius: 15px; background: #2563eb; color: white;">
                 <div class="card-body p-4">
                     <h6 class="text-white-50 text-uppercase small fw-bold mb-4">Total Facturation</h6>
-                    
-                    @php
-                        $ttcTotal = $facture->montant_total / (1 - $facture->remise/100);
-                        $montantRemise = $ttcTotal * ($facture->remise / 100);
-                    @endphp
 
                     <div class="d-flex justify-content-between mb-2">
                         <span class="opacity-75">Sous-total :</span>

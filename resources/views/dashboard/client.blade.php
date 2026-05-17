@@ -90,16 +90,8 @@
                         </td>
                         <td class="text-muted small">{{ \Carbon\Carbon::parse($d->date_reception)->format('d/m/Y') }}</td>
                         <td class="text-center">
-                            @php
-                                $badgeColor = [
-                                    'REPARE' => 'success', 'LIVRE' => 'success', 'CLOTURE' => 'dark',
-                                    'IRREPARABLE' => 'danger', 'DEVIS_REFUSE' => 'danger',
-                                    'EN_REPARATION' => 'primary', 'EN_DIAGNOSTIC' => 'info',
-                                    'EN_ATTENTE_DEVIS' => 'warning'
-                                ][$d->statut] ?? 'secondary';
-                            @endphp
-                            <span class="badge bg-{{ $badgeColor }} rounded-pill px-3 py-2 small fw-bold">
-                                {{ str_replace('_', ' ', $d->statut) }}
+                            <span class="badge bg-{{ $d->badge_color }} rounded-pill px-3 py-2 small fw-bold">
+                                {{ $d->badge_label }}
                             </span>
                         </td>
                         <td class="text-end pe-4">

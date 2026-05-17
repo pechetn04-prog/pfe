@@ -135,29 +135,14 @@
             {{-- GAUCHE : Statut Actuel et Infos --}}
             <div class="col-lg-5">
                 <div class="premium-card">
-                    @php
-                        $statusConfig = [
-                            'RECU' => ['icon' => 'fa-box-open', 'color' => '#64748b', 'label' => 'Reçu', 'desc' => 'Appareil bien réceptionné.'],
-                            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'color' => '#f59e0b', 'label' => 'Diagnostic', 'desc' => 'Analyse technique en cours.'],
-                            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'color' => '#ea580c', 'label' => 'Devis Prêt', 'desc' => 'En attente de votre validation.'],
-                            'EN_REPARATION' => ['icon' => 'fa-wrench', 'color' => '#2563eb', 'label' => 'Réparation', 'desc' => 'Intervention technique en cours.'],
-                            'REPARE' => ['icon' => 'fa-check-double', 'color' => '#10b981', 'label' => 'Réparé !', 'desc' => 'Prêt pour le retrait.'],
-                            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'color' => '#059669', 'label' => 'Livré', 'desc' => 'Appareil restitué au client.'],
-                            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'color' => '#ef4444', 'label' => 'Attente Pièces', 'desc' => 'En attente de composants.'],
-                            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'color' => '#b91c1c', 'label' => 'Irréparable', 'desc' => 'Dossier classé non réparable.'],
-                            'REMPLACEMENT_PRET' => ['icon' => 'fa-sync-alt', 'color' => '#10b981', 'label' => 'Échange Prêt', 'desc' => 'Nouvel appareil disponible.'],
-                        ];
-                        $conf = $statusConfig[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'color' => '#64748b', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
-                    @endphp
-
                     <div class="status-hero">
                         <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                            style="width: 70px; height: 70px; background-color: {{ $conf['color'] }}15;">
-                            <i class="fas {{ $conf['icon'] }} fs-3" style="color: {{ $conf['color'] }};"></i>
+                            style="width: 70px; height: 70px; background-color: {{ $statusConfig['color'] }}15;">
+                            <i class="fas {{ $statusConfig['icon'] }} fs-3" style="color: {{ $statusConfig['color'] }};"></i>
                         </div>
-                        <h2 class="fw-800 mb-1" style="color: {{ $conf['color'] }}; font-size: 22px;">
-                            {{ $conf['label'] }}</h2>
-                        <p class="text-muted small mb-0">{{ $conf['desc'] }}</p>
+                        <h2 class="fw-800 mb-1" style="color: {{ $statusConfig['color'] }}; font-size: 22px;">
+                            {{ $statusConfig['label'] }}</h2>
+                        <p class="text-muted small mb-0">{{ $statusConfig['desc'] }}</p>
                     </div>
 
                     <div class="info-list">

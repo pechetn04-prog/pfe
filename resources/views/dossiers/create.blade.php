@@ -170,20 +170,7 @@
                                 <i class="fas fa-search me-2 text-primary"></i> PANNE(S) DÉCLARÉE(S)
                             </label>
                             <div class="row row-cols-2 g-3 mb-4">
-                                @php
-                                    $pannes = [
-                                        'Écran & Affichage',
-                                        'Batterie & Alimentation',
-                                        'Connectique & Ports',
-                                        'Caméra',
-                                        'Audio',
-                                        'Connectivité',
-                                        'Logiciel & Système',
-                                        'Dommages Physiques',
-                                        'Sécurité & Accès',
-                                        'Autre'
-                                    ];
-                                @endphp
+
                                 @foreach($pannes as $panne)
                                     <div class="col">
                                         <div class="form-check small">

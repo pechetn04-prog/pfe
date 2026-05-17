@@ -6,25 +6,53 @@ use App\Models\Dossier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class TechnicienDashboardController
+ * 
+ * Gère le tableau de bord technique (UC01 / UC08 / UC09).
+ * Centralise les dossiers assignés au technicien pour diagnostic, réparation, et historique.
+ */
 class TechnicienDashboardController extends Controller
 {
+    /**
+     * Affiche l'index du tableau de bord pour le technicien connecté.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $user = Auth::user();
         
-        $totalAssigne = Dossier::where('technicien_id', $user->id)->count();
+        // ---------------------------------------------------------
+        // 1. STATISTIQUES ET INDICATEURS CLÉS (KPIs)
+        // ---------------------------------------------------------
+        $totalAssigne   = Dossier::where('technicien_id', $user->id)->count();
         $aDiagnostiquer = Dossier::where('technicien_id', $user->id)->where('statut', 'AFFECTE')->count();
-        $enReparation = Dossier::where('technicien_id', $user->id)->where('statut', 'EN_REPARATION')->count();
-        $terminesMois = Dossier::where('technicien_id', $user->id)
+        $enReparation   = Dossier::where('technicien_id', $user->id)->where('statut', 'EN_REPARATION')->count();
+        $terminesMois   = Dossier::where('technicien_id', $user->id)
             ->whereIn('statut', ['REPARE', 'IRREPARABLE', 'LIVRE'])
             ->whereMonth('updated_at', now()->month)
             ->count();
-        $attentePieces = Dossier::where('technicien_id', $user->id)->where('statut', 'ATTENTE_PIECE')->count();
+        $attentePieces  = Dossier::where('technicien_id', $user->id)->where('statut', 'ATTENTE_PIECE')->count();
             
         $dossiersEnCours = Dossier::where('technicien_id', $user->id)
             ->whereNotIn('statut', ['LIVRE', 'CLOTURE'])
             ->count();
 
+        // Tableau des KPIs structuré pour le rendu passif côté vue
+        $tech_kpis = [
+            ['label' => 'Total Assignés',  'val' => $totalAssigne,   'icon' => 'fa-briefcase',       'class' => 'bg-soft-primary'],
+            ['label' => 'À Diagnostiquer', 'val' => $aDiagnostiquer, 'icon' => 'fa-search',          'class' => 'bg-soft-warning'],
+            ['label' => 'En Réparation',   'val' => $enReparation,   'icon' => 'fa-tools',           'class' => 'bg-soft-success'],
+            ['label' => 'Attente Pièces',  'val' => $attentePieces,  'icon' => 'fa-hourglass-half',  'class' => 'bg-soft-danger'],
+            ['label' => 'Terminés (Mois)', 'val' => $terminesMois,   'icon' => 'fa-check-double',    'class' => 'bg-soft-info'],
+        ];
+
+        // ---------------------------------------------------------
+        // 2. FLUX DE TRAVAIL TECHNIQUE (LISTES D'ACTIVITÉS)
+        // ---------------------------------------------------------
+
+        // Dossiers assignés en attente d'analyse technique (UC08)
         $dossiersDiagnostique = Dossier::where('technicien_id', $user->id)
             ->whereIn('statut', ['AFFECTE', 'EN_DIAGNOSTIC'])
             ->with(['client', 'appareil'])
@@ -32,6 +60,7 @@ class TechnicienDashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Dossiers actuellement en cours d'intervention sur table (UC09)
         $dossiersReparation = Dossier::where('technicien_id', $user->id)
             ->where('statut', 'EN_REPARATION')
             ->with(['client', 'appareil'])
@@ -39,6 +68,7 @@ class TechnicienDashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Historique récent des dossiers terminés par ce technicien
         $dossiersTermines = Dossier::where('technicien_id', $user->id)
             ->whereIn('statut', ['REPARE', 'IRREPARABLE', 'LIVRE', 'CLOTURE', 'FACTURE'])
             ->with(['client', 'appareil'])
@@ -46,24 +76,46 @@ class TechnicienDashboardController extends Controller
             ->take(10)
             ->get();
 
+        // Association esthétique des statuts (Couleurs et badges)
+        $statColors = [
+            'REPARE'       => 'success', 
+            'FACTURE'      => 'success', 
+            'LIVRE'        => 'success', 
+            'CLOTURE'      => 'dark', 
+            'IRREPARABLE'  => 'danger', 
+            'DEVIS_REFUSE' => 'danger'
+        ];
+
+        $dossiersTermines->transform(function ($d) use ($statColors) {
+            $d->badge_color = $statColors[$d->statut] ?? 'secondary';
+            $d->garantie_color = $d->sous_garantie ? 'success' : 'danger';
+            $d->garantie_text = $d->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE';
+            return $d;
+        });
+
         return view('dashboard.technicien', compact(
-            'totalAssigne', 'aDiagnostiquer', 'enReparation', 'attentePieces', 'terminesMois', 'dossiersEnCours', 
-            'dossiersDiagnostique', 'dossiersReparation', 'dossiersTermines'
+            'tech_kpis',
+            'dossiersEnCours',
+            'dossiersDiagnostique',
+            'dossiersReparation',
+            'dossiersTermines'
         ));
     }
 
+    // Recherche et filtre la liste des dossiers assignés au technicien (Tickets actifs).
     public function tickets(Request $request)
     {
         $query = Dossier::where('technicien_id', Auth::id())
-            ->whereNotIn('statut', ['CLOTURE', 'LIVRE']) // Exclure les dossiers terminés
+            ->whereNotIn('statut', ['CLOTURE', 'LIVRE']) // Exclure les dossiers terminés / livrés
             ->with(['client', 'appareil'])
             ->latest();
 
-
+        // Filtrage par statut
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
 
+        // Recherche textuelle multi-critères
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -76,24 +128,56 @@ class TechnicienDashboardController extends Controller
             });
         }
 
-
         $dossiers = $query->paginate(20);
         
         $statuts = [
-            'AFFECTE'        => 'Assigné',
-            'EN_DIAGNOSTIC'  => 'En Diagnostic',
+            'AFFECTE'          => 'Assigné',
+            'EN_DIAGNOSTIC'    => 'En Diagnostic',
             'EN_ATTENTE_DEVIS' => 'Attente Devis',
-            'EN_REPARATION'  => 'En Réparation',
-            'ATTENTE_PIECE'  => 'En attente pièces',
-            'REPARE'         => 'Réparé',
-            'IRREPARABLE'    => 'Irréparable',
-            'LIVRE'          => 'Restitué',
-            'CLOTURE'        => 'Clôturé',
+            'EN_REPARATION'    => 'En Réparation',
+            'ATTENTE_PIECE'    => 'En attente pièces',
+            'REPARE'           => 'Réparé',
+            'IRREPARABLE'      => 'Irréparable',
+            'LIVRE'            => 'Restitué',
+            'CLOTURE'          => 'Clôturé',
         ];
+
+        $map = [
+            'AFFECTE'          => 'bg-secondary',
+            'EN_DIAGNOSTIC'    => 'bg-info text-dark',
+            'EN_ATTENTE_DEVIS' => 'bg-warning text-dark',
+            'EN_REPARATION'    => 'bg-primary',
+            'ATTENTE_PIECE'    => 'bg-dark',
+            'REPARE'           => 'bg-success',
+            'IRREPARABLE'      => 'bg-danger',
+            'CLOTURE'          => 'bg-dark',
+            'LIVRE'            => 'bg-success',
+        ];
+
+        $dossiers->getCollection()->transform(function ($d) use ($map, $statuts) {
+            if ($d->garantie_annulee) {
+                $d->garantie_color = 'warning';
+                $d->garantie_text = 'GARANTIE EXCLUE';
+            } elseif ($d->sous_garantie) {
+                $d->garantie_color = 'success';
+                $d->garantie_text = 'SOUS GARANTIE';
+            } else {
+                $d->garantie_color = 'danger';
+                $d->garantie_text = 'HORS GARANTIE';
+            }
+
+            $d->statut_class = $map[$d->statut] ?? 'bg-secondary';
+            $d->statut_label = $statuts[$d->statut] ?? $d->statut;
+
+            return $d;
+        });
 
         return view('technicien.tickets', compact('dossiers', 'statuts'));
     }
 
+    /**
+     * Raccourci de redirection vers la gestion des stocks de pièces détachées.
+     */
     public function stock()
     {
         return redirect()->route('stock.index');

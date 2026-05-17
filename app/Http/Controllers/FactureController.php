@@ -12,14 +12,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class FactureController extends Controller
 {
-    /**
-     * UC08 - Afficher le formulaire de création de facture.
-     * Prépare les données financières de l'intervention (pièces, main d'œuvre) et vérifie 
-     * l'état de la garantie pour pré-remplir la facture. (Logique métier centralisée).
-     *
-     * @param Dossier $dossier Le dossier SAV concerné
-     * @return \Illuminate\View\View
-     */
+    // UC08 - Afficher le formulaire de création de facture.
+    // Prépare les données financières de l'intervention (pièces, main d'œuvre) et vérifie l'état de la garantie.
     public function create(Dossier $dossier)
     {
         // 1. Chargement des relations nécessaires pour optimiser les requêtes (Eager Loading)
@@ -66,9 +60,7 @@ class FactureController extends Controller
         ));
     }
 
-    /**
-     * Enregistrer la facture finale.
-     */
+    // Enregistrer la facture finale.
     public function store(Request $request, Dossier $dossier)
     {
         // Charger l'intervention et les pièces associées
@@ -169,24 +161,76 @@ class FactureController extends Controller
             ->with('success', 'Facture créée avec succès.');
     }
 
-    /**
-     * Afficher les détails d'une facture.
-     */
-    public function show(Facture $facture)
+    // Prépare les données de la facture (Calculs HT, TVA, Totaux) pour alléger les vues Blade (MVC).
+    private function prepareFactureData(Facture &$facture)
     {
-        $facture->load('dossier.intervention.pieces');
-        return view('factures.show', compact('facture'));
+        $ttcTotal = 0;
+
+        // 1. Calculs par ligne pour les pièces
+        if ($facture->pieces) {
+            $facture->pieces->transform(function ($piece) use (&$ttcTotal) {
+                $piece->qty = $piece->pivot->quantite;
+                $piece->ttc_unitaire = $piece->pivot->prix_unitaire;
+                $piece->ht_unitaire = $piece->ttc_unitaire / 1.19;
+                $piece->tva_unitaire = $piece->ttc_unitaire - $piece->ht_unitaire;
+                $piece->total_ligne = $piece->qty * $piece->ttc_unitaire;
+                
+                $ttcTotal += $piece->total_ligne;
+                return $piece;
+            });
+        }
+
+        // 2. Calculs par ligne pour la main d'œuvre
+        if ($facture->tarifsMo) {
+            $facture->tarifsMo->transform(function ($mo) use (&$ttcTotal) {
+                $mo->ttc = $mo->pivot->montant;
+                $mo->ht = $mo->ttc / 1.19;
+                $mo->tva = $mo->ttc - $mo->ht;
+                
+                $ttcTotal += $mo->ttc;
+                return $mo;
+            });
+        }
+
+        // 3. Calculs des totaux globaux (sécurisé)
+        $htTotal = $ttcTotal / 1.19;
+        $tvaTotal = $ttcTotal - $htTotal;
+        $montantRemise = $ttcTotal * ($facture->remise / 100);
+
+        // 4. Conversion du montant en lettres
+        $spellout = number_format($facture->montant_total, 3, ',', ' ');
+        if (class_exists('NumberFormatter')) {
+            $formatter = new \NumberFormatter("fr", \NumberFormatter::SPELLOUT);
+            $spellout = $formatter->format($facture->montant_total);
+        }
+
+        return [
+            'ttcTotal' => $ttcTotal,
+            'htTotal' => $htTotal,
+            'tvaTotal' => $tvaTotal,
+            'montantRemise' => $montantRemise,
+            'spellout' => $spellout
+        ];
     }
 
-    /**
-     * Générer un PDF de la facture.
-     */
+    // Afficher les détails d'une facture.
+    public function show(Facture $facture)
+    {
+        $facture->load('pieces', 'tarifsMo', 'dossier.client', 'dossier.appareil');
+        $totals = $this->prepareFactureData($facture);
+
+        return view('factures.show', array_merge(compact('facture'), $totals));
+    }
+
+    // Générer un PDF de la facture.
     public function pdf(Facture $facture)
     {
-        $facture->load('dossier.intervention.pieces');
+        $facture->load('pieces', 'tarifsMo', 'dossier.client', 'dossier.appareil');
         $company = \App\Models\ParametreSociete::first();
 
-        $pdf = Pdf::loadView('factures.pdf', compact('facture', 'company'))
+        $totals = $this->prepareFactureData($facture);
+
+        $pdf = Pdf::loadView('factures.pdf', array_merge(compact('facture', 'company'), $totals))
             ->setPaper('a4', 'portrait');
 
         return $pdf->stream('facture-' . $facture->numero . '.pdf');

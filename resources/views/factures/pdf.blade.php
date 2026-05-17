@@ -66,46 +66,27 @@
             <tbody>
                 {{-- Pièces --}}
                 @foreach($facture->pieces as $piece)
-                    @php
-                        $qty = $piece->pivot->quantite;
-                        $ttc = $piece->pivot->prix_unitaire;
-                        $ht = $ttc / 1.19;
-                        $tva = $ttc - $ht;
-                        $totalLigne = $qty * $ttc;
-                    @endphp
                     <tr>
                         <td><strong>[Pièce]</strong> {{ $piece->nom }}</td>
-                        <td style="text-align: center;">{{ $qty }}</td>
-                        <td style="text-align: right;">{{ number_format($ht, 3, ',', ' ') }}</td>
-                        <td style="text-align: right;">{{ number_format($tva, 3, ',', ' ') }}</td>
-                        <td style="text-align: right; font-weight: bold;">{{ number_format($totalLigne, 3, ',', ' ') }}</td>
+                        <td style="text-align: center;">{{ $piece->qty ?? $piece->pivot->quantite }}</td>
+                        <td style="text-align: right;">{{ number_format($piece->ht_unitaire ?? ($piece->pivot->prix_unitaire / 1.19), 3, ',', ' ') }}</td>
+                        <td style="text-align: right;">{{ number_format($piece->tva_unitaire ?? ($piece->pivot->prix_unitaire - ($piece->pivot->prix_unitaire / 1.19)), 3, ',', ' ') }}</td>
+                        <td style="text-align: right; font-weight: bold;">{{ number_format($piece->total_ligne ?? ($piece->pivot->quantite * $piece->pivot->prix_unitaire), 3, ',', ' ') }}</td>
                     </tr>
                 @endforeach
 
                 {{-- Main d'oeuvre --}}
                 @foreach($facture->tarifsMo as $mo)
-                    @php
-                        $ttc = $mo->pivot->montant;
-                        $ht = $ttc / 1.19;
-                        $tva = $ttc - $ht;
-                    @endphp
                     <tr>
                         <td><strong>[M.O]</strong> {{ $mo->type_intervention }}</td>
                         <td style="text-align: center;">1</td>
-                        <td style="text-align: right;">{{ number_format($ht, 3, ',', ' ') }}</td>
-                        <td style="text-align: right;">{{ number_format($tva, 3, ',', ' ') }}</td>
-                        <td style="text-align: right; font-weight: bold;">{{ number_format($ttc, 3, ',', ' ') }}</td>
+                        <td style="text-align: right;">{{ number_format($mo->ht ?? ($mo->pivot->montant / 1.19), 3, ',', ' ') }}</td>
+                        <td style="text-align: right;">{{ number_format($mo->tva ?? ($mo->pivot->montant - ($mo->pivot->montant / 1.19)), 3, ',', ' ') }}</td>
+                        <td style="text-align: right; font-weight: bold;">{{ number_format($mo->ttc ?? $mo->pivot->montant, 3, ',', ' ') }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-
-        @php
-            $ttcTotal = $facture->montant_total / (1 - $facture->remise/100);
-            $htTotal = $ttcTotal / 1.19;
-            $tvaTotal = $ttcTotal - $htTotal;
-            $montantRemise = $ttcTotal * ($facture->remise / 100);
-        @endphp
 
         <div class="totals">
             <div class="total-row">
@@ -140,16 +121,7 @@
 
         <div style="margin-top: 50px;">
             <p style="font-size: 11px; color: #555;">Arrêté la présente facture à la somme de : <br>
-            @php
-                $spellout = $facture->montant_total;
-                if (class_exists('NumberFormatter')) {
-                    $formatter = new \NumberFormatter("fr", \NumberFormatter::SPELLOUT);
-                    $spellout = $formatter->format($facture->montant_total);
-                } else {
-                    $spellout = number_format($facture->montant_total, 3, ',', ' ');
-                }
-            @endphp
-            <strong>{{ \Illuminate\Support\Str::upper($spellout) }} {{ $company->devise ?? 'DINARS' }}</strong></p>
+            <strong>{{ \Illuminate\Support\Str::upper($spellout ?? '') }} {{ $company->devise ?? 'DINARS' }}</strong></p>
         </div>
 
         <div class="footer">

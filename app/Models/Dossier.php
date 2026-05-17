@@ -95,10 +95,7 @@ class Dossier extends Model
         return $this->hasMany(DossierMessage::class, 'dossier_id');
     }
 
-    public function avis()
-    {
-        return $this->hasOne(Avis::class, 'dossier_id');
-    }
+
 
     // Helper pour récupérer l'IMEI via l'appareil
     public function getImeiAttribute()

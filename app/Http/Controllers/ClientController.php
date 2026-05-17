@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Dossier;
 use App\Models\Devis;
-use App\Models\Avis;
 use App\Models\SuiviDossier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,7 +63,21 @@ class ClientController extends Controller
             }
         ])->findOrFail($id);
 
-        return view('public.suivi', compact('dossier'));
+        $statusConfigs = [
+            'RECU' => ['icon' => 'fa-box-open', 'color' => '#64748b', 'label' => 'Reçu', 'desc' => 'Appareil bien réceptionné.'],
+            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'color' => '#f59e0b', 'label' => 'Diagnostic', 'desc' => 'Analyse technique en cours.'],
+            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'color' => '#ea580c', 'label' => 'Devis Prêt', 'desc' => 'En attente de votre validation.'],
+            'EN_REPARATION' => ['icon' => 'fa-wrench', 'color' => '#2563eb', 'label' => 'Réparation', 'desc' => 'Intervention technique en cours.'],
+            'REPARE' => ['icon' => 'fa-check-double', 'color' => '#10b981', 'label' => 'Réparé !', 'desc' => 'Prêt pour le retrait.'],
+            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'color' => '#059669', 'label' => 'Livré', 'desc' => 'Appareil restitué au client.'],
+            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'color' => '#ef4444', 'label' => 'Attente Pièces', 'desc' => 'En attente de composants.'],
+            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'color' => '#b91c1c', 'label' => 'Irréparable', 'desc' => 'Dossier classé non réparable.'],
+            'REMPLACEMENT_PRET' => ['icon' => 'fa-sync-alt', 'color' => '#10b981', 'label' => 'Échange Prêt', 'desc' => 'Nouvel appareil disponible.'],
+        ];
+
+        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'color' => '#64748b', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
+
+        return view('public.suivi', compact('dossier', 'statusConfig'));
     }
 
     // ─── UC10 : PORTAIL CLIENT AUTHENTIFIÉ ─────────────────────────────────
@@ -88,7 +101,20 @@ class ClientController extends Controller
             }
         }
 
-        return view('client.ticket', compact('dossier'));
+        $statusConfigs = [
+            'RECU' => ['icon' => 'fa-box-open', 'color' => '#64748b', 'label' => 'Dossier Reçu', 'desc' => 'Votre appareil a bien été réceptionné.'],
+            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'color' => '#f59e0b', 'label' => 'En Diagnostic', 'desc' => 'Nos techniciens analysent la panne.'],
+            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'color' => '#ea580c', 'label' => 'Attente Devis', 'desc' => 'Un devis est prêt pour validation.'],
+            'EN_REPARATION' => ['icon' => 'fa-wrench', 'color' => '#2563eb', 'label' => 'En Réparation', 'desc' => 'L\'intervention technique est en cours.'],
+            'REPARE' => ['icon' => 'fa-check-double', 'color' => '#10b981', 'label' => 'Réparé !', 'desc' => 'Votre appareil est prêt pour le retrait.'],
+            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'color' => '#059669', 'label' => 'Remis / Livré', 'desc' => 'Merci de votre confiance !'],
+            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'color' => '#ef4444', 'label' => 'Attente Pièces', 'desc' => 'Nous attendons les pièces détachées.'],
+            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'color' => '#b91c1c', 'label' => 'Irréparable', 'desc' => 'Malheureusement, l\'appareil n\'est pas réparable.'],
+        ];
+
+        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'color' => '#64748b', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
+
+        return view('client.ticket', compact('dossier', 'statusConfig'));
     }
 
     // ─── UC06 : VALIDATION DEVIS PAR LE CLIENT ──────────────────────────────
@@ -168,33 +194,5 @@ class ClientController extends Controller
         return back()->with('success', 'Devis refusé. Nous vous contacterons pour la restitution.');
     }
 
-    // ─── AVIS CLIENT ─────────────────────────────────────────────────────────
 
-    /**
-     * Soumettre un avis après livraison.
-     */
-    public function submitAvis(Request $request, $id)
-    {
-        $request->validate([
-            'note' => 'required|integer|min:1|max:5',
-            'commentaire' => 'nullable|string|max:500',
-        ]);
-
-        $dossier = Dossier::findOrFail($id);
-
-        if (Auth::check() && $dossier->client_id !== Auth::id()) {
-            abort(403);
-        }
-
-        Avis::updateOrCreate(
-            ['dossier_id' => $dossier->id],
-            [
-                'note' => $request->note,
-                'commentaire' => $request->commentaire,
-                'client_id' => Auth::id(),
-            ]
-        );
-
-        return back()->with('success', 'Merci pour votre avis !');
-    }
 }

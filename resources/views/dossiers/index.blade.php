@@ -2,15 +2,6 @@
 
 @section('title', 'Liste des tickets SAV')
 
-@push('styles')
-<style>
-    .hover-primary:hover {
-        color: #2563eb !important;
-        text-decoration: underline !important;
-    }
-</style>
-@endpush
-
 @section('content')
     <div class="container-fluid">
 
@@ -28,14 +19,7 @@
 
         {{-- KPIs --}}
         <div class="row g-3 mb-4">
-            @php
-                $stats_kpis = [
-                    ['label' => 'TOTAL TICKETS', 'val' => $dossiers->total(), 'icon' => 'fa-folder', 'color' => '#2563eb', 'bg' => '#eff6ff'],
-                    ['label' => 'EN DIAGNOSTIC', 'val' => \App\Models\Dossier::where('statut', 'EN_DIAGNOSTIC')->count(), 'icon' => 'fa-microscope', 'color' => '#f59e0b', 'bg' => '#fff7ed'],
-                    ['label' => 'EN RÉPARATION', 'val' => \App\Models\Dossier::where('statut', 'EN_REPARATION')->count(), 'icon' => 'fa-tools', 'color' => '#0ea5e9', 'bg' => '#f0f9ff'],
-                    ['label' => 'RÉPARÉS AUJOURD\'HUI', 'val' => \App\Models\Dossier::where('statut', 'REPARE')->whereDate('updated_at', now())->count(), 'icon' => 'fa-check-circle', 'color' => '#10b981', 'bg' => '#f0fdf4'],
-                ];
-            @endphp
+
             @foreach($stats_kpis as $k)
                 <div class="col-xl-3 col-md-6">
                     <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
@@ -135,23 +119,6 @@
                     </thead>
                     <tbody class="bg-white">
                         @forelse($dossiers as $d)
-                            @php
-                                $sMap = [
-                                    'RECU' => ['#f1f5f9', '#475569', 'RECU'],
-                                    'AFFECTE' => ['#3b82f6', '#ffffff', 'AFFECTE'],
-                                    'EN_DIAGNOSTIC' => ['#f59e0b', '#ffffff', 'DIAGNOSTIC'],
-                                    'EN_ATTENTE_DEVIS' => ['#6366f1', '#ffffff', 'ATTENTE DEVIS'],
-                                    'EN_REPARATION' => ['#0ea5e9', '#ffffff', 'REPARATION'],
-                                    'REPARE' => ['#10b981', '#ffffff', 'REPARE'],
-                                    'FACTURE' => ['#1e40af', '#ffffff', 'FACTURE'],
-                                    'LIVRE' => ['#16a34a', '#ffffff', 'RESTITUÉ'],
-                                    'CLOTURE' => ['#1e293b', '#ffffff', 'CLOTURE'],
-                                    'DEVIS_REFUSE' => ['#64748b', '#ffffff', 'DEVIS REFUSE'],
-                                    'IRREPARABLE' => ['#dc2626', '#ffffff', 'IRREPARABLE'],
-                                    'ANNULE' => ['#94a3b8', '#ffffff', 'ANNULE'],
-                                ];
-                                $st = $sMap[$d->statut] ?? ['#f1f5f9', '#475569', $d->statut];
-                            @endphp
                             <tr>
                                 <td class="ps-4 fw-bolder" style="font-weight: 800;">
                                     <a href="{{ route('dossiers.show', $d->id) }}" class="text-decoration-none text-dark hover-primary">
@@ -185,8 +152,8 @@
                                 <td class="small">{{ $d->technicien->name ?? 'Non assigné' }}</td>
                                 <td>
                                     <span class="badge rounded-pill px-3 py-1 fw-bold text-uppercase shadow-sm"
-                                        style="background: {{ $st[0] }}; color: {{ $st[1] }}; font-size: 0.68rem; letter-spacing: 0.5px;">
-                                        {{ $st[2] }}
+                                        style="background: {{ $d->statut_bg }}; color: {{ $d->statut_color }}; font-size: 0.68rem; letter-spacing: 0.5px;">
+                                        {{ $d->statut_text }}
                                     </span>
                                 </td>
                                 <td class="text-end pe-4">

@@ -4,19 +4,16 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+// Ce formulaire de requête valide les paramètres d'identité et de configuration fiscale de l'entreprise (UC01 / PFE).
 class UpdateParametreSocieteRequest extends FormRequest
 {
-    /**
-     * Détermine si l'utilisateur est autorisé à faire cette requête.
-     */
+    // Seul le rôle Administrateur est autorisé à modifier la fiche d'identité de la société.
     public function authorize(): bool
     {
         return auth()->user()->role === 'Admin';
     }
 
-    /**
-     * Règles de validation en Français.
-     */
+    // Règles de validation des coordonnées et de la devise locale (DT à 3 décimales).
     public function rules(): array
     {
         return [
@@ -33,16 +30,14 @@ class UpdateParametreSocieteRequest extends FormRequest
         ];
     }
 
-    /**
-     * Messages d'erreur personnalisés.
-     */
+    // Messages d'erreur personnalisés traduits en français.
     public function messages(): array
     {
         return [
-            'email.email' => 'L\'adresse email doit être valide.',
-            'logo.image' => 'Le fichier doit être une image.',
-            'logo.mimes' => 'Formats acceptés : jpg, jpeg, png, webp.',
-            'logo.max'   => 'Le logo ne doit pas dépasser 2 Mo.',
+            'email.email' => 'L\'adresse e-mail saisie doit être au format valide.',
+            'logo.image'  => 'Le logo téléversé doit être une image.',
+            'logo.mimes'  => 'Les formats d\'image acceptés sont : JPG, JPEG, PNG, WEBP.',
+            'logo.max'    => 'Le fichier du logo ne doit pas excéder 2 Mo.',
         ];
     }
 }

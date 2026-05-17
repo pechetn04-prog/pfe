@@ -14,18 +14,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-/**
- * InterventionController
- * 
- * Gère l'exécution technique des réparations.
- * Fonctionnalités :
- * - Saisie du compte-rendu technique.
- * - Gestion des pièces consommées avec mise à jour automatique du stock.
- * - Suivi des temps de main d'œuvre.
- * - Validation finale de la réparation.
- */
+// Ce contrôleur pilote la réalisation technique des interventions et réparations physiques (UC09).
+// Assure la saisie des rapports d'atelier, la gestion de la main d'œuvre, la consommation de pièces et le décrément des stocks.
 class InterventionController extends Controller
 {
+    // Affiche le formulaire de saisie de l'intervention technique.
     public function create(Dossier $dossier)
     {
         $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo');
@@ -35,60 +28,66 @@ class InterventionController extends Controller
         return view('interventions.create', compact('dossier', 'pieces', 'tarifsMo'));
     }
 
+    // Enregistre l'intervention, applique les mouvements de stocks et met à jour le statut du dossier.
     public function store(Request $request, Dossier $dossier)
     {
         $request->validate([
-            'compte_rendu' => 'required|string',
-            'statut_final' => 'required|in:REPARE,IRREPARABLE,ATTENTE_PIECE',
+            'compte_rendu'       => 'required|string',
+            'statut_final'       => 'required|in:REPARE,IRREPARABLE,ATTENTE_PIECE',
             'photo_intervention' => 'nullable|image|max:2048',
         ]);
         
         $nouveauStatut = $request->statut_final;
 
+        // Sauvegarde de la photo de l'appareil après réparation (preuve visuelle de l'état)
         $photoPath = null;
         if ($request->hasFile('photo_intervention')) {
             $photoPath = $request->file('photo_intervention')->store('interventions', 'public');
         }
 
         $intervention = Intervention::create([
-            'dossier_id' => $dossier->id,
-            'technicien_id' => Auth::id(),
-            'compte_rendu' => $request->compte_rendu,
+            'dossier_id'         => $dossier->id,
+            'technicien_id'      => Auth::id(),
+            'compte_rendu'       => $request->compte_rendu,
             'photo_intervention' => $photoPath,
-            'date_fin' => now(),
+            'date_fin'           => now(),
         ]);
 
-        // Gestion des pièces consommées (Uniquement si on ne met pas en attente)
+        // Gestion de la consommation des pièces détachées (uniquement si ce n'est pas en attente de pièce)
         if ($nouveauStatut !== 'ATTENTE_PIECE' && $request->has('pieces')) {
             foreach ($request->pieces as $p) {
-                if (empty($p['id'])) continue;
+                if (empty($p['id'])) {
+                    continue;
+                }
                 
                 $piece = Piece::findOrFail($p['id']);
                 $quantite = $p['quantite'] ?? 1;
 
+                // Validation physique des stocks en magasin
                 if ($piece->quantite < $quantite) {
                     return back()->with('error', "Stock insuffisant pour la pièce : {$piece->nom}");
                 }
 
                 $intervention->pieces()->attach($piece->id, [
-                    'quantite' => $quantite,
+                    'quantite'      => $quantite,
                     'prix_unitaire' => $piece->prix_unitaire
                 ]);
 
-                // Sortie de stock
+                // Décrémentation physique du stock (UC14)
                 $piece->decrement('quantite', $quantite);
                 
+                // Tracing historique du mouvement de stock
                 MouvementStock::create([
                     'piece_id' => $piece->id,
-                    'type' => 'SORTIE',
+                    'type'     => 'SORTIE',
                     'quantite' => $quantite,
-                    'motif' => "Intervention Dossier #{$dossier->num_dossier}",
-                    'user_id' => Auth::id(),
+                    'motif'    => "Intervention Dossier #{$dossier->num_dossier}",
+                    'user_id'  => Auth::id(),
                 ]);
             }
         }
 
-        // Gestion de la main d'œuvre (Tarifs MO)
+        // Association de la main d'œuvre effectuée
         if ($request->has('labors')) {
             foreach ($request->labors as $laborId) {
                 $tarif = TarifMo::find($laborId);
@@ -102,28 +101,33 @@ class InterventionController extends Controller
 
         $ancienStatut = $dossier->statut;
 
-        // Si déclaré irréparable pendant l'intervention
+        // Logique de décision si déclaré irréparable en cours d'intervention (UC04)
         if ($nouveauStatut === 'IRREPARABLE') {
-            // Vérifier si la garantie est toujours valide (pas de garantie annulée par le diagnostic)
+            // Si l'appareil est éligible sous garantie et que la garantie n'a pas été déchue par l'oxydation/casse
             if ($dossier->sous_garantie && !$dossier->garantie_annulee) {
                 $nouveauStatut = 'ATTENTE_VALIDATION_REMPLACEMENT';
             }
         }
 
         $dossier->update([
-            'statut' => $nouveauStatut, 
+            'statut'          => $nouveauStatut, 
             'date_reparation' => $nouveauStatut === 'REPARE' ? now() : null
         ]);
 
+        // Audit Trail du dossier SAV
         SuiviDossier::create([
-            'dossier_id' => $dossier->id,
-            'user_id' => Auth::id(),
-            'ancien_statut' => $ancienStatut,
+            'dossier_id'     => $dossier->id,
+            'user_id'        => Auth::id(),
+            'ancien_statut'  => $ancienStatut,
             'nouveau_statut' => $nouveauStatut,
-            'commentaire' => $nouveauStatut === 'REPARE' ? 'Intervention terminée. Appareil réparé et prêt.' : ($nouveauStatut === 'ATTENTE_PIECE' ? 'Pièce(s) requise(s) non disponible(s) — dossier suspendu.' : 'Verdict technique : appareil non réparable.'),
+            'commentaire'    => $nouveauStatut === 'REPARE' 
+                ? 'Intervention terminée. Appareil réparé et prêt.' 
+                : ($nouveauStatut === 'ATTENTE_PIECE' 
+                    ? 'Pièce(s) requise(s) non disponible(s) — dossier suspendu.' 
+                    : 'Verdict technique : appareil non réparable.'),
         ]);
 
-        // Notification si en attente de pièce
+        // Déclencher une alerte/notification aux administrateurs si des pièces manquent (UC14)
         if ($nouveauStatut === 'ATTENTE_PIECE') {
             $admins = User::where('role', 'Admin')->get();
             foreach ($admins as $admin) {
@@ -134,6 +138,7 @@ class InterventionController extends Controller
         return redirect()->route('technicien.tickets')->with('success', 'Intervention enregistrée avec succès.');
     }
 
+    // Affiche le rapport technique d'intervention d'un dossier.
     public function show(Dossier $dossier)
     {
         $intervention = $dossier->intervention;
@@ -144,6 +149,7 @@ class InterventionController extends Controller
         return view('interventions.show', compact('intervention', 'dossier'));
     }
 
+    // Génère le compte-rendu d'intervention au format PDF pour l'atelier.
     public function pdf(Intervention $intervention)
     {
         $intervention->load('dossier', 'pieces', 'technicien');

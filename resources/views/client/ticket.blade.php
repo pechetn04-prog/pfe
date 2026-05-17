@@ -179,25 +179,7 @@
                         </div>
                     </div>
 
-                    {{-- Avis Client --}}
-                    @if(in_array($dossier->statut, ['LIVRE', 'CLOTURE']))
-                    <div class="card border-0 shadow-lg mt-4 text-center p-5" style="border-radius: 30px; background: linear-gradient(135deg, #1e69ff 0%, #0047d5 100%); color: white;">
-                        <h4 class="fw-bold mb-3">Votre satisfaction ?</h4>
-                        <p class="opacity-75 small mb-4">Aidez-nous à nous améliorer en laissant votre avis sur notre service.</p>
-                        <form action="{{ route('client.avis.submit', $dossier->id) }}" method="POST">
-                            @csrf
-                            <div class="mb-4">
-                                <select name="note" class="form-select border-0 shadow-sm rounded-pill py-2 px-4 mx-auto" style="max-width: 200px;">
-                                    @for($i=5; $i>=1; $i--)
-                                        <option value="{{ $i }}">{{ str_repeat('★', $i) }} ({{ $i }}/5)</option>
-                                    @endfor
-                                </select>
-                            </div>
-                            <textarea name="commentaire" class="form-control border-0 shadow-sm rounded-4 mb-4 p-3" rows="3" placeholder="Écrivez votre commentaire ici..."></textarea>
-                            <button type="submit" class="btn btn-white text-primary fw-bold rounded-pill px-5 py-2">Envoyer mon avis</button>
-                        </form>
-                    </div>
-                    @endif
+
                 </div>
 
                 {{-- Panneau DROIT (5/12) : État --}}
@@ -205,29 +187,15 @@
                     
                     {{-- Carte d'État Héro --}}
                     <div class="card border-0 shadow-lg p-5 mb-4 overflow-hidden" style="border-radius: 30px; background: white;">
-                        @php
-                            $statusConfig = [
-                                'RECU' => ['icon' => 'fa-box-open', 'color' => '#64748b', 'label' => 'Dossier Reçu', 'desc' => 'Votre appareil a bien été réceptionné.'],
-                                'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'color' => '#f59e0b', 'label' => 'En Diagnostic', 'desc' => 'Nos techniciens analysent la panne.'],
-                                'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'color' => '#ea580c', 'label' => 'Attente Devis', 'desc' => 'Un devis est prêt pour validation.'],
-                                'EN_REPARATION' => ['icon' => 'fa-wrench', 'color' => '#2563eb', 'label' => 'En Réparation', 'desc' => 'L\'intervention technique est en cours.'],
-                                'REPARE' => ['icon' => 'fa-check-double', 'color' => '#10b981', 'label' => 'Réparé !', 'desc' => 'Votre appareil est prêt pour le retrait.'],
-                                'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'color' => '#059669', 'label' => 'Remis / Livré', 'desc' => 'Merci de votre confiance !'],
-                                'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'color' => '#ef4444', 'label' => 'Attente Pièces', 'desc' => 'Nous attendons les pièces détachées.'],
-                                'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'color' => '#b91c1c', 'label' => 'Irréparable', 'desc' => 'Malheureusement, l\'appareil n\'est pas réparable.'],
-                            ];
-                            $conf = $statusConfig[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'color' => '#64748b', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
-                        @endphp
-                        
                         <div class="mb-4 position-relative">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 80px; height: 80px; background-color: {{ $conf['color'] }}15;">
-                                <i class="fas {{ $conf['icon'] }} fs-2" style="color: {{ $conf['color'] }};"></i>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 80px; height: 80px; background-color: {{ $statusConfig['color'] }}15;">
+                                <i class="fas {{ $statusConfig['icon'] }} fs-2" style="color: {{ $statusConfig['color'] }};"></i>
                             </div>
                         </div>
                         
                         <div class="small text-muted text-uppercase fw-bold mb-1">Statut actuel</div>
-                        <h2 class="fw-bold mb-2" style="color: {{ $conf['color'] }};">{{ $conf['label'] }}</h2>
-                        <p class="text-muted mb-0">{{ $conf['desc'] }}</p>
+                        <h2 class="fw-bold mb-2" style="color: {{ $statusConfig['color'] }};">{{ $statusConfig['label'] }}</h2>
+                        <p class="text-muted mb-0">{{ $statusConfig['desc'] }}</p>
                     </div>
 
                     {{-- Section Documents PDF --}}

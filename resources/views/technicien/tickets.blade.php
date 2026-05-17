@@ -69,38 +69,13 @@
                         </td>
                         <td class="small fw-bold">{{ $dossier->imei }}</td>
                         <td>
-                            @php
-                                if ($dossier->garantie_annulee) {
-                                    $garantieColor = 'warning';
-                                    $garantieText = 'GARANTIE EXCLUE';
-                                } elseif ($dossier->sous_garantie) {
-                                    $garantieColor = 'success';
-                                    $garantieText = 'SOUS GARANTIE';
-                                } else {
-                                    $garantieColor = 'danger';
-                                    $garantieText = 'HORS GARANTIE';
-                                }
-                            @endphp
-                            <span class="badge bg-{{ $garantieColor }} bg-opacity-10 text-{{ $garantieColor }} border border-{{ $garantieColor }} border-opacity-25 rounded-pill" style="font-size: 0.6rem; font-weight: 800;">
-                                {{ $garantieText }}
+                            <span class="badge bg-{{ $dossier->garantie_color }} bg-opacity-10 text-{{ $dossier->garantie_color }} border border-{{ $dossier->garantie_color }} border-opacity-25 rounded-pill" style="font-size: 0.6rem; font-weight: 800;">
+                                {{ $dossier->garantie_text }}
                             </span>
                         </td>
                         <td>
-                            @php
-                                $map = [
-                                    'AFFECTE'          => 'bg-secondary',
-                                    'EN_DIAGNOSTIC'    => 'bg-info text-dark',
-                                    'EN_ATTENTE_DEVIS' => 'bg-warning text-dark',
-                                    'EN_REPARATION'    => 'bg-primary',
-                                    'ATTENTE_PIECE'    => 'bg-dark',
-                                    'REPARE'           => 'bg-success',
-                                    'IRREPARABLE'      => 'bg-danger',
-                                    'CLOTURE'          => 'bg-dark',
-                                    'LIVRE'            => 'bg-success',
-                                ];
-                            @endphp
-                            <span class="badge {{ $map[$dossier->statut] ?? 'bg-secondary' }} rounded-pill px-3">
-                                {{ $statuts[$dossier->statut] ?? $dossier->statut }}
+                            <span class="badge {{ $dossier->statut_class }} rounded-pill px-3">
+                                {{ $dossier->statut_label }}
                             </span>
                         </td>
                         <td class="small">{{ \Carbon\Carbon::parse($dossier->date_reception)->format('d/m/Y') }}</td>

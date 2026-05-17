@@ -128,10 +128,7 @@
                                 <div class="user-email small text-muted">{{ $user->email }}</div>
                             </td>
                             <td>
-                                @php
-                                    $roleClass = 'role-' . strtolower($user->role);
-                                @endphp
-                                <span class="badge role-badge {{ $roleClass }}">{{ $user->role }}</span>
+                                <span class="badge role-badge role-{{ strtolower($user->role) }}">{{ $user->role }}</span>
                             </td>
                             <td>
                                 <div class="small fw-bold text-dark">{{ $user->telephone ?? '—' }}</div>

@@ -51,18 +51,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($ventes as $vente)
-                    @php
-                        $finGarantie = $vente->date_vente->addMonths($vente->duree_garantie_mois);
-                        $sousGarantie = now()->lessThanOrEqualTo($finGarantie);
-                    @endphp
                     <tr>
                         <td class="ps-4 imei-cell">{{ $vente->imei }}</td>
                         <td>
-                            @php
-                                $badgeClass = $vente->type === 'REMPLACEMENT' ? 'bg-soft-info' : 'bg-light text-dark';
-                            @endphp
-                            <span class="badge rounded-pill {{ $badgeClass }} vente-type-badge">{{ $vente->type ?? 'MATÉRIEL' }}</span>
+                            <span class="badge rounded-pill {{ $vente->badge_class }} vente-type-badge">{{ $vente->type ?? 'MATÉRIEL' }}</span>
                         </td>
                         <td>
                             <div class="modele-text">{{ $vente->modele }}</div>
@@ -76,7 +68,7 @@
                         <td class="small fw-bold text-muted">{{ $vente->date_vente->format('d/m/Y') }}</td>
                         <td class="small fw-bold text-muted">{{ $vente->duree_garantie_mois }} mois</td>
                         <td class="small fw-bold text-muted">
-                            {{ $finGarantie->format('d/m/Y') }}
+                            {{ $vente->fin_garantie_formatted }}
                         </td>
                     </tr>
                     @empty

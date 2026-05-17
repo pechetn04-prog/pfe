@@ -64,15 +64,7 @@
                 <div class="card bg-light border-0 mb-4" id="specialiteField" style="display:none; border-radius: 12px;">
                     <div class="card-body">
                         <label class="form-label fw-bold small text-uppercase mb-2 text-primary">Spécialités Techniques</label>
-                        @php 
-                            $specialitesSAV = [
-                                'Écran & Affichage', 'Batterie & Alimentation', 
-                                'Connectique & Ports', 'Caméra',
-                                'Audio', 'Connectivité',
-                                'Logiciel & Système', 'Dommages Physiques',
-                                'Sécurité & Accès'
-                            ];
-                        @endphp
+
                         <div class="row">
                             @foreach($specialitesSAV as $spec)
                             <div class="col-md-6 mb-2">

@@ -66,54 +66,7 @@
         </div>
 
         {{-- Recommendation Banner --}}
-        @php
-            $action = ['icon' => 'fa-list-check', 'color' => '#1e69ff', 'title' => 'Action suivante recommandée', 'desc' => 'Suivez l\'avancement du dossier via les onglets ci-dessous.'];
 
-            switch ($dossier->statut) {
-                case 'RECU':
-                    $action['desc'] = 'Affectation d\'un technicien requise.';
-                    break;
-                case 'AFFECTE':
-                    $action['desc'] = 'Le diagnostic est prêt à être effectué.';
-                    break;
-                case 'EN_DIAGNOSTIC':
-                    $action['desc'] = 'L\'expertise technique est en cours.';
-                    break;
-                case 'EN_ATTENTE_DEVIS':
-                    $action['desc'] = 'Établissement du devis en attente.';
-                    break;
-                case 'EN_REPARATION':
-                    $action['desc'] = 'Réparation en cours en atelier.';
-                    break;
-                case 'REPARE':
-                    $action['desc'] = 'Appareil réparé, prêt pour facturation.';
-                    break;
-                case 'ATTENTE_PIECE':
-                    $action['desc'] = 'Dossier en attente de pièces détachées.';
-                    break;
-                case 'IRREPARABLE':
-                    $action['desc'] = 'Appareil déclaré irréparable.';
-                    break;
-                case 'LIVRE':
-                    $action['desc'] = 'Appareil restitué, prêt pour clôture.';
-                    break;
-                case 'CLOTURE':
-                    $action['desc'] = 'Dossier clôturé et archivé.';
-                    break;
-                case 'ATTENTE_VALIDATION_REMPLACEMENT':
-                    $action['desc'] = 'Validation du remplacement requise.';
-                    break;
-                case 'REMPLACEMENT_VALIDE':
-                    $action['desc'] = 'Remplacement validé, préparation en cours.';
-                    break;
-                case 'REMPLACEMENT_REFUSE':
-                    $action['desc'] = 'Remplacement refusé, prêt pour restitution.';
-                    break;
-                case 'DEVIS_REFUSE':
-                    $action['desc'] = 'Devis refusé, prêt pour restitution.';
-                    break;
-            }
-        @endphp
         <div class="card border-0 text-white mb-3 shadow-sm"
             style="background-color: {{ $action['color'] }}; border-radius: 12px;">
             <div class="card-body p-3 d-flex align-items-center justify-content-between">
@@ -609,19 +562,14 @@
 
                                 <div id="section-messages" class="chat-box mb-3 p-2 bg-light rounded-3"
                                     style="height: 300px; overflow-y: auto; border: 1px solid #edf2f7;">
-                                    @forelse($dossier->messages->sortBy('created_at') as $msg)
-                                        @php
-                                            $isInternal = str_starts_with($msg->message, '[INT] ');
-                                            $cleanMessage = $isInternal ? substr($msg->message, 6) : $msg->message;
-                                            $isMe = $msg->user_id == auth()->id();
-                                        @endphp
-                                        <div class="mb-3 d-flex {{ $isMe ? 'justify-content-end' : 'justify-content-start' }}">
-                                            <div class="message-bubble p-3 rounded-4 shadow-sm {{ $isInternal ? 'bg-warning bg-opacity-10 border border-warning border-opacity-25' : ($isMe ? 'bg-primary text-white' : 'bg-white text-dark') }}"
+                                    @forelse($messages as $msg)
+                                        <div class="mb-3 d-flex {{ $msg->isMe ? 'justify-content-end' : 'justify-content-start' }}">
+                                            <div class="message-bubble p-3 rounded-4 shadow-sm {{ $msg->isInternal ? 'bg-warning bg-opacity-10 border border-warning border-opacity-25' : ($msg->isMe ? 'bg-primary text-white' : 'bg-white text-dark') }}"
                                                 style="max-width: 80%; min-width: 150px;">
                                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                                     <span class="fw-bold" style="font-size: 0.75rem;">
                                                         {{ $msg->user->name }}
-                                                        @if($isInternal)
+                                                        @if($msg->isInternal)
                                                             <span class="badge bg-warning text-dark ms-2"
                                                                 style="font-size: 0.55rem;"><i class="fas fa-lock me-1"></i>
                                                                 INTERNE</span>
@@ -630,7 +578,7 @@
                                                     <span class="opacity-50 ms-3"
                                                         style="font-size: 0.6rem;">{{ $msg->created_at ? $msg->created_at->format('d/m H:i') : '' }}</span>
                                                 </div>
-                                                <div style="font-size: 0.85rem; line-height: 1.4;">{{ $cleanMessage }}</div>
+                                                <div style="font-size: 0.85rem; line-height: 1.4;">{{ $msg->cleanMessage }}</div>
                                             </div>
                                         </div>
                                     @empty

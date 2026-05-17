@@ -10,27 +10,28 @@ use App\Models\Dossier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+// Ce contrôleur gère l'évaluation technique et l'établissement des rapports de diagnostic (UC04).
+// Pilote la logique de décision automatique (passages en Réparation, Attente Devis, Attente Remplacement, etc.).
 class DiagnosticController extends Controller
 {
-    /**
-     * Affiche le formulaire de diagnostic et change le statut en 'EN_DIAGNOSTIC'.
-     */
+    // Affiche le formulaire de saisie de diagnostic et passe automatiquement l'état à 'EN_DIAGNOSTIC' (UC04 - Point 1).
     public function create(Dossier $dossier)
     {
+        // Règle de sécurité : Un technicien ne peut diagnostiquer que les dossiers qui lui sont attribués
         if ($dossier->technicien_id != Auth::id()) {
             abort(403, 'Ce dossier ne vous est pas assigné.');
         }
 
-        // UC04 - Point 1 : L'ouverture du formulaire fait passer automatiquement le statut à 'En diagnostic'
+        // Changement automatique de l'état SAV lors de l'ouverture du dossier d'évaluation
         if ($dossier->statut === 'AFFECTE') {
             $dossier->update(['statut' => 'EN_DIAGNOSTIC']);
 
             SuiviDossier::create([
-                'dossier_id' => $dossier->id,
-                'user_id' => Auth::id(),
-                'ancien_statut' => 'AFFECTE',
+                'dossier_id'     => $dossier->id,
+                'user_id'        => Auth::id(),
+                'ancien_statut'  => 'AFFECTE',
                 'nouveau_statut' => 'EN_DIAGNOSTIC',
-                'commentaire' => 'Démarrage du diagnostic technique.',
+                'commentaire'    => 'Démarrage de l\'évaluation et du diagnostic technique.',
             ]);
         }
 
@@ -40,49 +41,56 @@ class DiagnosticController extends Controller
         return view('diagnostics.create', compact('dossier', 'pieces', 'tarifsMo'));
     }
 
-    /**
-     * Enregistre le diagnostic avec la logique de décision UC04.
-     */
+    // Enregistre le rapport de diagnostic finalisé et applique les règles de décision automatique (UC04).
     public function store(Request $request, Dossier $dossier)
     {
+        $request->validate([
+            'constat_technique' => 'required|string',
+            'recommandation'    => 'nullable|string',
+            'photo_panne'       => 'nullable|image|max:2048',
+        ]);
+
+        // Gestion de l'image justificative de la panne
         $photoPath = null;
         if ($request->hasFile('photo_panne')) {
             $photoPath = $request->file('photo_panne')->store('diagnostics', 'public');
         }
 
+        // Création ou mise à jour du diagnostic
         $diagnostic = Diagnostic::updateOrCreate(
             ['dossier_id' => $dossier->id],
             [
-                'technicien_id' => Auth::id(),
-                'constat' => $request->constat_technique,
-                'recommandation' => $request->recommandation,
-                'photo_panne' => $photoPath ?? $dossier->diagnostic->photo_panne ?? null,
-                'motif_exclusion' => $request->has('exclusion_garantie') ? ($request->motif_exclusion ?? 'Usage non conforme') : null,
+                'technicien_id'         => Auth::id(),
+                'constat'               => $request->constat_technique,
+                'recommandation'        => $request->recommandation,
+                'photo_panne'           => $photoPath ?? $dossier->diagnostic->photo_panne ?? null,
+                'motif_exclusion'       => $request->has('exclusion_garantie') ? ($request->motif_exclusion ?? 'Usage non conforme') : null,
                 'exclusion_commentaire' => $request->exclusion_commentaire,
-                'date_diagnostic' => now(),
+                'date_diagnostic'       => now(),
             ]
         );
 
-        // Nettoyage des anciennes liaisons pour éviter les doublons si c'est une mise à jour
+        // Nettoyage des anciennes relations pour prévenir des doublons en cas de réédition
         $diagnostic->pieces()->detach();
         $diagnostic->tarifsMo()->detach();
 
-        // Liaison des pièces et prestations
+        // Association des pièces recommandées pour la future intervention ou devis (SNAPSHOT du prix de vente)
         if ($request->has('pieces')) {
             foreach ($request->pieces as $p) {
-                if (empty($p['id']))
+                if (empty($p['id'])) {
                     continue;
+                }
                 $piece = Piece::find($p['id']);
                 if ($piece) {
                     $diagnostic->pieces()->attach($p['id'], [
-                        'quantite' => $p['quantite'] ?? 1,
+                        'quantite'      => $p['quantite'] ?? 1,
                         'prix_unitaire' => $piece->prix_unitaire ?? 0
                     ]);
                 }
             }
         }
 
-        // Liaison des prestations (main d'œuvre)
+        // Association des frais de main d'œuvre prévus
         if ($request->has('labors')) {
             foreach ($request->labors as $lId) {
                 $tarifMo = TarifMo::find($lId);
@@ -94,72 +102,86 @@ class DiagnosticController extends Controller
             }
         }
 
-        // UC04 - Point 7 : Logique de décision finale
-        $isReparable = $request->is_reparable == '1';
+        // -------------------------------------------------------------
+        // UC04 - Point 7 : Logique de décision automatique
+        // -------------------------------------------------------------
+        $isReparable       = $request->is_reparable == '1';
         $exclusionGarantie = $request->has('exclusion_garantie');
-        $isGarantieValide = $dossier->sous_garantie && !$exclusionGarantie;
+        $isGarantieValide  = $dossier->sous_garantie && !$exclusionGarantie;
 
-        $nouveauStatut = 'EN_DIAGNOSTIC'; // Par défaut
+        $nouveauStatut = 'EN_DIAGNOSTIC'; // État transitoire de secours
 
         if ($isReparable) {
             if ($isGarantieValide) {
-                $nouveauStatut = 'EN_REPARATION'; // Réparable + garantie valide
+                $nouveauStatut = 'EN_REPARATION'; // Réparable + garantie valide ➔ Réparation immédiate gratuite (sans devis)
             } else {
-                $nouveauStatut = 'EN_ATTENTE_DEVIS'; // Réparable + hors garantie (ou exclusion)
+                $nouveauStatut = 'EN_ATTENTE_DEVIS'; // Réparable + hors garantie (ou exclu) ➔ Envoi au service commercial
             }
         } else {
             if ($isGarantieValide) {
-                $nouveauStatut = 'ATTENTE_VALIDATION_REMPLACEMENT'; // Irréparable + garantie valide
+                $nouveauStatut = 'ATTENTE_VALIDATION_REMPLACEMENT'; // Irréparable + garantie valide ➔ Demande d'échange de l'appareil
             } else {
-                $nouveauStatut = 'IRREPARABLE'; // Irréparable + hors garantie
+                $nouveauStatut = 'IRREPARABLE'; // Irréparable + hors garantie ➔ Clôture sans solution possible
             }
         }
 
-        // Mise à jour du dossier avec exclusion si nécessaire
+        // Enregistrement des informations sur le dossier
         $dossier->update([
-            'statut' => $nouveauStatut,
-            'date_diagnostic' => now(),
+            'statut'           => $nouveauStatut,
+            'date_diagnostic'  => now(),
             'garantie_annulee' => $exclusionGarantie ? true : $dossier->garantie_annulee
         ]);
 
+        // Audit Trail du dossier
         SuiviDossier::create([
-            'dossier_id' => $dossier->id,
-            'user_id' => Auth::id(),
-            'ancien_statut' => 'EN_DIAGNOSTIC',
+            'dossier_id'     => $dossier->id,
+            'user_id'        => Auth::id(),
+            'ancien_statut'  => 'EN_DIAGNOSTIC',
             'nouveau_statut' => $nouveauStatut,
-            'commentaire' => $exclusionGarantie ? 'Rapport de diagnostic finalisé — garantie non applicable (exclusion retenue).' : 'Rapport de diagnostic finalisé et soumis.',
+            'commentaire'    => $exclusionGarantie 
+                ? 'Rapport de diagnostic finalisé — garantie non applicable (exclusion d\'oxydation ou casse retenue).' 
+                : 'Rapport de diagnostic finalisé et soumis avec succès.',
         ]);
 
-        // Notification au client du résultat du diagnostic
+        // Envoi des notifications automatiques (Client & Administration)
         if ($dossier->client) {
-            $dossier->client->notify(new \App\Notifications\SimpleNotification(
-                'Le diagnostic de votre appareil est terminé.',
-                $dossier
-            ));
+            try {
+                $dossier->client->notify(new \App\Notifications\SimpleNotification(
+                    'Le diagnostic de votre appareil est terminé.',
+                    $dossier
+                ));
+            } catch (\Exception $e) {
+                // Fail-safe
+            }
         }
 
-        // Notification à l'administration/agent pour la suite du traitement
         $adminsAgents = \App\Models\User::whereIn('role', ['Admin', 'Agent'])->get();
-        \Illuminate\Support\Facades\Notification::send($adminsAgents, new \App\Notifications\SimpleNotification(
-            'Diagnostic terminé pour le dossier #' . $dossier->id . '. Action requise selon le nouveau statut : ' . $nouveauStatut,
-            $dossier
-        ));
+        try {
+            \Illuminate\Support\Facades\Notification::send($adminsAgents, new \App\Notifications\SimpleNotification(
+                'Diagnostic terminé pour le dossier #' . $dossier->id . '. Action requise selon le nouveau statut : ' . $nouveauStatut,
+                $dossier
+            ));
+        } catch (\Exception $e) {
+            // Fail-safe
+        }
 
-        return redirect()->route('technicien.dashboard')->with('success', 'Diagnostic enregistré. Statut actuel : ' . $nouveauStatut);
+        return redirect()->route('technicien.dashboard')
+            ->with('success', 'Diagnostic enregistré. Statut actuel du dossier : ' . $nouveauStatut);
     }
 
-    /**
-     * Afficher le résultat d'un diagnostic.
-     */
+    // Affiche les résultats complets du diagnostic technique.
     public function show(Dossier $dossier)
     {
-        $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo', 'client', 'technicien');
+        $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo', 'client', 'technicien', 'appareil');
 
         if (!$dossier->diagnostic) {
             return redirect()->route('diagnostics.create', $dossier->id)
                 ->with('error', 'Aucun diagnostic trouvé pour ce dossier.');
         }
 
-        return view('diagnostics.show', compact('dossier'));
+        $diag = $dossier->diagnostic;
+        $company = \App\Models\ParametreSociete::first();
+
+        return view('diagnostics.show', compact('dossier', 'diag', 'company'));
     }
 }

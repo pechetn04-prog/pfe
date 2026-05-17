@@ -40,11 +40,7 @@
                                 </div>
                                 <div class="text-end">
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">STATUT DU DEVIS</h6>
-                                    @php
-                                        $statutColors = ['EN_ATTENTE' => 'warning', 'ACCEPTE' => 'success', 'REFUSE' => 'danger'];
-                                        $color = $statutColors[$devis->statut] ?? 'secondary';
-                                    @endphp
-                                    <span class="badge bg-{{ $color }} rounded-pill px-4 py-2 mb-2" style="font-size: 0.8rem;">
+                                    <span class="badge bg-{{ $badgeColor }} rounded-pill px-4 py-2 mb-2" style="font-size: 0.8rem;">
                                         {{ $devis->statut }}
                                     </span>
                                     <p class="text-muted mb-0 small">Créé le : {{ $devis->date_creation ? $devis->date_creation->format('d/m/Y') : $devis->created_at->format('d/m/Y') }}</p>
@@ -89,12 +85,7 @@
                                         @endforeach
                                     </tbody>
                                     <tfoot class="bg-light bg-opacity-50">
-                                        @if($devis->remise > 0)
-                                        <tr>
-                                            <th colspan="3" class="text-end small text-muted">Remise ({{ $devis->remise }}%)</th>
-                                            <th class="text-end text-danger small">-{{ number_format($devis->montant_total * ($devis->remise / (100 - $devis->remise)), 3, '.', ' ') }} DT</th>
-                                        </tr>
-                                        @endif
+
                                         <tr class="h5">
                                             <th colspan="3" class="text-end fw-bold">TOTAL TTC</th>
                                             <th class="text-end fw-bold text-primary">{{ number_format($devis->montant_total, 3, '.', ' ') }} DT</th>

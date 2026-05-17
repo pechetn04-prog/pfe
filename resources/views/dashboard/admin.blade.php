@@ -57,31 +57,12 @@
                 </div>
             </div>
 
-            <style>
-                .pulse-warning { animation: pulse-orange 2s infinite; }
-                @keyframes pulse-orange {
-                    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-                    70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-                }
-                .hover-scale:hover { transform: scale(1.05); }
-            </style>
+
         @endif
 
-        {{-- 8 KPIs principaux Style Premium --}}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
-            @php
-                $adminKpis = [
-                    ['label' => 'TOTAL TICKETS', 'val' => $stats['total'], 'icon' => 'fa-folder-open', 'class' => 'bg-soft-primary'],
-                    ['label' => 'NOUVEAUX REÇUS', 'val' => $stats['recu'], 'icon' => 'fa-inbox', 'class' => 'bg-soft-danger'],
-                    ['label' => 'EN DIAGNOSTIC', 'val' => $stats['en_diagnostic'], 'icon' => 'fa-microscope', 'class' => 'bg-soft-warning'],
-                    ['label' => 'ATTENTE DEVIS', 'val' => $stats['attente_devis'], 'icon' => 'fa-file-invoice-dollar', 'class' => 'bg-soft-info'],
-                    ['label' => 'EN RÉPARATION', 'val' => $stats['en_reparation'], 'icon' => 'fa-tools', 'class' => 'bg-soft-success'],
-                    ['label' => 'ATTENTE PIÈCES', 'val' => $stats['attente_pieces'], 'icon' => 'fa-clock', 'class' => 'bg-soft-danger'],
-                    ['label' => 'LIVRÉS / CLOS', 'val' => $stats['cloture'], 'icon' => 'fa-check-double', 'class' => 'bg-soft-slate'],
-                    ['label' => 'UTILISATEURS', 'val' => $stats['users'], 'icon' => 'fa-users', 'class' => 'bg-soft-purple'],
-                ];
-            @endphp
+        {{-- KPIs principaux Style Premium --}}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-3 mb-4">
+
             @foreach($adminKpis as $k)
                 <div class="col">
                     <div class="card kpi-card">
@@ -125,20 +106,7 @@
                             </thead>
                             <tbody>
                                 @foreach($recentDossiers as $d)
-                                    @php
-                                        $statClasses = [
-                                            'RECU' => 'bg-light text-muted',
-                                            'AFFECTE' => 'bg-secondary text-white',
-                                            'EN_DIAGNOSTIC' => 'bg-info text-dark',
-                                            'EN_REPARATION' => 'bg-primary text-white',
-                                            'EN_ATTENTE_DEVIS' => 'bg-warning text-dark',
-                                            'REPARE' => 'bg-success text-white',
-                                            'FACTURE' => 'bg-success text-white',
-                                            'LIVRE' => 'bg-success text-white',
-                                            'CLOTURE' => 'bg-dark text-white',
-                                            'IRREPARABLE' => 'bg-danger text-white',
-                                        ];
-                                    @endphp
+
                                     <tr>
                                         <td class="ps-4 py-3">
                                             <div class="fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
@@ -176,6 +144,41 @@
 
             {{-- Colonne de droite : Alertes et Blocages --}}
             <div class="col-xl-4">
+                
+                {{-- Dossiers en attente de remplacement --}}
+                @if($dossiersAttenteRemplacement->count() > 0)
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; border-left: 4px solid #f59e0b !important;">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0 text-dark">
+                            <span class="p-2 bg-warning bg-opacity-10 rounded-3 me-2"><i class="fas fa-exchange-alt text-warning"></i></span>
+                            En Attente Remplacement
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @foreach($dossiersAttenteRemplacement as $d)
+                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="small fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
+                                        <div class="text-muted fw-bold" style="font-size: 0.65rem;">{{ $d->appareil->modele ?? '—' }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="small text-muted fw-bold" style="font-size: 0.6rem;">{{ $d->updated_at->diffForHumans() }}</div>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1" style="font-size: 0.6rem; font-weight: 800;">À VALIDER</span>
+                                    </div>
+                                </div>
+                            </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0 text-center pb-3 pt-2">
+                        <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_VALIDATION_REMPLACEMENT']) }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">
+                            Voir tout
+                        </a>
+                    </div>
+                </div>
+                @endif
                 
                 {{-- Dossiers en attente de pièces --}}
                 @if($dossiersAttentePieces->count() > 0)

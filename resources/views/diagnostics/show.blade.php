@@ -42,7 +42,7 @@
                 @endif
             </div>
         @else
-            @php $diag = $dossier->diagnostic; @endphp
+
 
             {{-- Décision technique --}}
             <div class="card border-0 shadow-sm mb-4"
