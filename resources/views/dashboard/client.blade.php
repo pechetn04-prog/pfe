@@ -11,8 +11,10 @@
 
     {{-- En-tête --}}
     <div class="mb-4">
-        <h1 class="h3 fw-bold mb-0 text-dark">Espace Client</h1>
-        <p class="text-muted small">Bienvenue sur votre portail de suivi SAV, {{ $user->name }}</p>
+        <h1 class="h3 fw-bold mb-0 text-dark">{{ $isArchive ? 'Archives de Réparations' : 'Espace Client' }}</h1>
+        <p class="text-muted small">
+            {{ $isArchive ? 'Consultez l\'historique complet de vos dossiers archivés et finalisés.' : 'Bienvenue sur votre portail de suivi SAV, ' . $user->name }}
+        </p>
     </div>
 
     {{-- Résumé en Cartes --}}
@@ -52,11 +54,11 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="h3 fw-bold mb-0 text-success">{{ $dossiersPrets }}</div>
-                            <div class="small text-muted fw-bold text-uppercase">Prêts pour retrait</div>
+                            <div class="h3 fw-bold mb-0 text-dark">{{ $dossiersClotures }}</div>
+                            <div class="small text-muted fw-bold text-uppercase">Dossiers Clôturés</div>
                         </div>
-                        <div class="bg-soft-success rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                            <i class="fas fa-check-circle text-success fs-4"></i>
+                        <div class="bg-soft-secondary rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(108, 117, 125, 0.1);">
+                            <i class="fas fa-archive text-secondary fs-4"></i>
                         </div>
                     </div>
                 </div>
@@ -67,7 +69,7 @@
     {{-- Historique complet --}}
     <div class="card border-0 shadow-sm" style="border-radius: 20px;">
         <div class="card-header bg-white border-0 py-4 px-4">
-            <h5 class="fw-bold mb-0 text-dark">Historique de vos dossiers</h5>
+            <h5 class="fw-bold mb-0 text-dark">{{ $isArchive ? 'Dossiers Finalisés & Archivés' : 'Dossiers en cours de traitement' }}</h5>
         </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">

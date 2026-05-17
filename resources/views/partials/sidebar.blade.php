@@ -140,8 +140,14 @@
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item mb-1">
                         <a href="{{ route('client.dashboard') }}"
-                            class="nav-link d-flex align-items-center {{ request()->routeIs('client.dashboard') ? 'active' : '' }}">
+                            class="nav-link d-flex align-items-center {{ request()->routeIs('client.dashboard') && !request('archive') ? 'active' : '' }}">
                             <i class="fas fa-ticket-alt me-3"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a href="{{ route('client.dashboard', ['archive' => 1]) }}"
+                            class="nav-link d-flex align-items-center {{ request('archive') == 1 ? 'active' : '' }}">
+                            <i class="fas fa-archive me-3"></i> Mes Archives
                         </a>
                     </li>
                 </ul>

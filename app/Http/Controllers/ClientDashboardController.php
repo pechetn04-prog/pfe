@@ -18,7 +18,7 @@ class ClientDashboardController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         $user = Auth::user();
 
@@ -29,17 +29,26 @@ class ClientDashboardController extends Controller
         $dossiersEnCours = Dossier::where('client_id', $user->id)
             ->whereNotIn('statut', ['LIVRE', 'CLOTURE', 'IRREPARABLE', 'DEVIS_REFUSE'])
             ->count();
-        $dossiersPrets   = Dossier::where('client_id', $user->id)
-            ->where('statut', 'REPARE')
+        $dossiersClotures = Dossier::where('client_id', $user->id)
+            ->where('statut', 'CLOTURE')
             ->count();
 
         // ---------------------------------------------------------
         // 2. RECUPERATION ET FORMATAGE DES DOSSIERS
         // ---------------------------------------------------------
-        $dossiers = Dossier::where('client_id', $user->id)
+        $query = Dossier::where('client_id', $user->id)
             ->with(['devis', 'facture', 'appareil'])
-            ->latest('updated_at')
-            ->get();
+            ->latest('updated_at');
+
+        $isArchive = $request->get('archive') == 1;
+
+        if ($isArchive) {
+            $query->whereIn('statut', ['LIVRE', 'CLOTURE', 'IRREPARABLE', 'DEVIS_REFUSE']);
+        } else {
+            $query->whereNotIn('statut', ['LIVRE', 'CLOTURE']);
+        }
+
+        $dossiers = $query->get();
 
         // Mapping visuel des statuts
         $badgeColors = [
@@ -68,7 +77,8 @@ class ClientDashboardController extends Controller
             'dossiers', 
             'totalDossiers', 
             'dossiersEnCours', 
-            'dossiersPrets'
+            'dossiersClotures',
+            'isArchive'
         ));
     }
 }

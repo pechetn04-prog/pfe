@@ -148,13 +148,19 @@
                                 @endforelse
                             </div>
 
-                            <form action="{{ route('dossiers.messages.store', $dossier->id) }}" method="POST">
-                                @csrf
-                                <div class="input-group bg-light rounded-pill p-1 shadow-sm">
-                                    <input type="text" name="message" class="form-control border-0 bg-transparent px-3" placeholder="Votre message au SAV..." required style="box-shadow: none;">
-                                    <button class="btn btn-primary rounded-pill px-4 fw-bold" type="submit">Envoyer</button>
-                                </div>
-                            </form>
+                             @if($dossier->statut === 'CLOTURE')
+                                 <div class="alert alert-secondary border-0 rounded-pill p-3 text-center mb-0 small fw-bold">
+                                     <i class="fas fa-lock me-2 text-secondary"></i> Ce dossier est clôturé. L'espace de discussion est fermé.
+                                 </div>
+                             @else
+                                 <form action="{{ route('dossiers.messages.store', $dossier->id) }}" method="POST">
+                                     @csrf
+                                     <div class="input-group bg-light rounded-pill p-1 shadow-sm">
+                                         <input type="text" name="message" class="form-control border-0 bg-transparent px-3" placeholder="Votre message au SAV..." required style="box-shadow: none;">
+                                         <button class="btn btn-primary rounded-pill px-4 fw-bold" type="submit">Envoyer</button>
+                                     </div>
+                                 </form>
+                             @endif
                         </div>
                     </div>
 

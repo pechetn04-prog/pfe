@@ -209,21 +209,6 @@ $(document).ready(function () {
     $('input[name="type_pannes[]"]').on('change', function () {
         filterTechnicians();
 
-        let isAutreChecked = false;
-        $('input[name="type_pannes[]"]:checked').each(function () {
-            if ($(this).val() === 'Autre') {
-                isAutreChecked = true;
-            }
-        });
-
-        if (isAutreChecked) {
-            $('#autre_panne_container').fadeIn();
-            $('#panne_declaree_input').prop('required', true);
-        } else {
-            $('#autre_panne_container').fadeOut();
-            $('#panne_declaree_input').prop('required', false).val('');
-        }
-
         // Affiche la boîte de sélection des techniciens uniquement si une panne est cochée
         if ($('input[name="type_pannes[]"]:checked').length > 0) {
             $('#no_panne_message').hide();

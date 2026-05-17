@@ -27,9 +27,8 @@
                             <label class="form-label fw-bold small text-uppercase">Type de mouvement <span
                                     class="text-danger">*</span></label>
                             <select name="type" class="form-select border-0 bg-light" required>
-                                <option value="ENTREE">ENTRÉE (+)</option>
-                                <option value="SORTIE">SORTIE (-)</option>
-                                <option value="AJUSTEMENT">AJUSTEMENT (+/-)</option>
+                                <option value="entree">ENTRÉE (+)</option>
+                                <option value="sortie">SORTIE (-)</option>
                             </select>
                         </div>
                         <div class="col-md-6">

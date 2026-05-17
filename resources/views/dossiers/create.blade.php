@@ -184,11 +184,13 @@
                                 @endforeach
                             </div>
 
-                            <div id="autre_panne_container" class="mb-4" style="display: none;">
-                                <label class="form-label text-muted small fw-bold mb-2">PRÉCISEZ LA PANNE</label>
+                            <div class="mb-4" id="autre_panne_container">
+                                <label class="form-label text-muted small fw-bold mb-2">
+                                    <i class="fas fa-edit me-1 text-primary"></i> DESCRIPTION DÉTAILLÉE / CONSTAT DE PANNE <span class="text-danger">*</span>
+                                </label>
                                 <textarea name="panne_declaree" id="panne_declaree_input"
                                     class="form-control bg-light border-0 rounded-3 small" rows="3"
-                                    placeholder="Détails de la panne..." required>{{ old('panne_declaree') }}</textarea>
+                                    placeholder="Décrivez précisément les symptômes constatés par le client..." required>{{ old('panne_declaree') }}</textarea>
                             </div>
 
 

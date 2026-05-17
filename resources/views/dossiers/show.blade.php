@@ -589,38 +589,43 @@
                                     @endforelse
                                 </div>
 
-                                {{-- Formulaire d'envoi --}}
-                                <form action="{{ route('dossiers.messages.store', $dossier->id) }}#section-messages"
-                                    method="POST">
-                                    @csrf
-                                    <div class="bg-white border rounded-4 p-3 shadow-sm">
-                                        <textarea name="message" class="form-control border-0 bg-transparent mb-2" rows="3"
-                                            placeholder="Tapez votre message ici..." required
-                                            style="box-shadow: none; resize: none;"></textarea>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex gap-3">
-                                                @if(auth()->user()->role !== 'Client')
-                                                    <div class="form-check form-check-inline m-0">
-                                                        <input class="form-check-input" type="radio" name="type" id="typePublic"
-                                                            value="public" checked>
-                                                        <label class="form-check-label small fw-bold text-muted"
-                                                            for="typePublic">Communication Client</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline m-0">
-                                                        <input class="form-check-input" type="radio" name="type"
-                                                            id="typeInternal" value="internal">
-                                                        <label class="form-check-label small fw-bold text-warning"
-                                                            for="typeInternal">Note Interne <i
-                                                                class="fas fa-lock small"></i></label>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">
-                                                Envoyer <i class="fas fa-paper-plane ms-2"></i>
-                                            </button>
-                                        </div>
+                                @if($dossier->statut === 'CLOTURE')
+                                    <div class="alert alert-secondary border-0 rounded-pill p-3 text-center mb-0 small fw-bold">
+                                        <i class="fas fa-lock me-2 text-secondary"></i> Ce dossier est clôturé. L'espace de discussion est fermé.
                                     </div>
-                                </form>
+                                @else
+                                    <form action="{{ route('dossiers.messages.store', $dossier->id) }}#section-messages"
+                                        method="POST">
+                                        @csrf
+                                        <div class="bg-white border rounded-4 p-3 shadow-sm">
+                                            <textarea name="message" class="form-control border-0 bg-transparent mb-2" rows="3"
+                                                placeholder="Tapez votre message ici..." required
+                                                style="box-shadow: none; resize: none;"></textarea>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="d-flex gap-3">
+                                                    @if(auth()->user()->role !== 'Client')
+                                                        <div class="form-check form-check-inline m-0">
+                                                            <input class="form-check-input" type="radio" name="type" id="typePublic"
+                                                                value="public" checked>
+                                                            <label class="form-check-label small fw-bold text-muted"
+                                                                for="typePublic">Communication Client</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline m-0">
+                                                            <input class="form-check-input" type="radio" name="type"
+                                                                id="typeInternal" value="internal">
+                                                            <label class="form-check-label small fw-bold text-warning"
+                                                                for="typeInternal">Note Interne <i
+                                                                    class="fas fa-lock small"></i></label>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">
+                                                    Envoyer <i class="fas fa-paper-plane ms-2"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                     </div>
