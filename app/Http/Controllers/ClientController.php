@@ -72,7 +72,7 @@ class ClientController extends Controller
             'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'color' => '#059669', 'label' => 'Livré', 'desc' => 'Appareil restitué au client.'],
             'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'color' => '#ef4444', 'label' => 'Attente Pièces', 'desc' => 'En attente de composants.'],
             'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'color' => '#b91c1c', 'label' => 'Irréparable', 'desc' => 'Dossier classé non réparable.'],
-            'REMPLACEMENT_PRET' => ['icon' => 'fa-sync-alt', 'color' => '#10b981', 'label' => 'Échange Prêt', 'desc' => 'Nouvel appareil disponible.'],
+            'REMPLACEMENT_PRET' => ['icon' => 'fa-sync-alt', 'color' => '#10b981', 'label' => 'Remplacement Prêt', 'desc' => 'Nouvel appareil disponible.'],
         ];
 
         $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'color' => '#64748b', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
@@ -153,6 +153,15 @@ class ClientController extends Controller
             'nouveau_statut' => 'EN_REPARATION',
             'commentaire' => 'Client a accepté le devis. Réparation autorisée.',
         ]);
+
+        // Notification au technicien assigné
+        if ($dossier->technicien) {
+            $dossier->technicien->notify(new \App\Notifications\GenericNotification(
+                "Devis accepté - Lancer réparation (#{$dossier->num_dossier})",
+                "Le client a accepté le devis pour le dossier #{$dossier->num_dossier}. Vous pouvez maintenant commencer la réparation.",
+                route('dossiers.show', $dossier->id)
+            ));
+        }
 
         return back()->with('success', 'Devis accepté. La réparation va commencer.');
     }

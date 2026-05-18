@@ -106,6 +106,9 @@
                     <li class="nav-item mb-1"><a href="{{ route('dashboard') }}"
                             class="nav-link d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i
                                 class="fas fa-th-large me-3"></i> Vue d'ensemble</a></li>
+                    <li class="nav-item mb-1"><a href="{{ route('technicien.demandes_reaffectation') }}"
+                            class="nav-link d-flex align-items-center {{ request()->routeIs('technicien.demandes_reaffectation') ? 'active' : '' }}"><i
+                                class="fas fa-undo-alt me-3"></i> Réaffectations</a></li>
                 </ul>
 
                 <small class="text-muted text-uppercase fw-bold mb-2 d-block ps-3"

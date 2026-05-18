@@ -141,7 +141,7 @@
                                                 <select name="pieces[0][id]" class="form-select border-0 bg-light rounded-3 shadow-none piece-select">
                                                     <option value="">Sélectionner une pièce...</option>
                                                     @foreach($pieces as $p)
-                                                        <option value="{{ $p->id }}" data-stock="{{ $p->quantite }}">{{ $p->nom }} — [STOCK: {{ $p->quantite }}]</option>
+                                                        <option value="{{ $p->id }}" data-stock="{{ $p->quantite }}">{{ $p->nom }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>

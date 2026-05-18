@@ -161,6 +161,8 @@ Route::middleware('auth')->group(function () {
 
         // Devis et Factures
         Route::get('/devis/{devis}', [DevisController::class, 'show'])->name('devis.show');
+        Route::get('/devis/{devis}/modifier', [DevisController::class, 'edit'])->name('devis.edit');
+        Route::put('/devis/{devis}', [DevisController::class, 'update'])->name('devis.update');
         Route::get('/factures/{facture}', [FactureController::class, 'show'])->name('factures.show');
         Route::get('/dossiers/{dossier}/devis/create', [DevisController::class, 'create'])->name('devis.create');
         Route::post('/dossiers/{dossier}/devis', [DevisController::class, 'store'])->name('devis.store');
@@ -212,6 +214,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/technicien/dashboard', [TechnicienDashboardController::class, 'index'])->name('technicien.dashboard');
         Route::get('/technicien/dossiers', [TechnicienDossierController::class, 'index'])->name('technicien.tickets');
         Route::get('/technicien/stock', [PieceController::class, 'index'])->name('technicien.stock');
+        Route::get('/technicien/demandes-reaffectation', [TechnicienDashboardController::class, 'demandesReaffectationList'])->name('technicien.demandes_reaffectation');
 
         // Diagnostics
         Route::post('/dossiers/{dossier}/diagnostic/start', [DossierController::class, 'startDiagnostic'])->name('dossiers.startDiagnostic');

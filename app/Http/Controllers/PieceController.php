@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Piece;
 use App\Models\MouvementStock;
+use App\Http\Requests\StorePieceRequest;
+use App\Http\Requests\UpdatePieceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,18 +54,8 @@ class PieceController extends Controller
     }
 
     // Enregistre une nouvelle pièce en base de données avec validation stricte.
-    public function store(Request $request)
+    public function store(StorePieceRequest $request)
     {
-        // Validation stricte des données pour assurer l'intégrité du catalogue
-        $request->validate([
-            'nom'           => 'required|string|max:255',
-            'reference'     => 'required|string|max:100|unique:pieces,reference',
-            'prix_unitaire' => 'required|numeric|min:0',
-            'prix_vente'    => 'required|numeric|min:0',
-            'quantite'      => 'required|integer|min:0',
-            'seuil_alerte'  => 'required|integer|min:0',
-            'categorie'     => 'nullable|string|max:100',
-        ]);
 
         Piece::create($request->all());
         return redirect()->route('stock.index')->with('success', 'La pièce a été ajoutée avec succès au catalogue.');
@@ -77,18 +69,8 @@ class PieceController extends Controller
     }
 
     // Met à jour les informations d'une pièce avec validation.
-    public function update(Request $request, Piece $piece)
+    public function update(UpdatePieceRequest $request, Piece $piece)
     {
-        // Validation des modifications pour éviter les doublons de références
-        $request->validate([
-            'nom'           => 'required|string|max:255',
-            'reference'     => 'required|string|max:100|unique:pieces,reference,' . $piece->id,
-            'prix_unitaire' => 'required|numeric|min:0',
-            'prix_vente'    => 'required|numeric|min:0',
-            'quantite'      => 'required|integer|min:0',
-            'seuil_alerte'  => 'required|integer|min:0',
-            'categorie'     => 'nullable|string|max:100',
-        ]);
 
         $piece->update($request->all());
         return redirect()->route('stock.index')->with('success', 'Les informations de la pièce ont été mises à jour.');

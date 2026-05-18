@@ -8,6 +8,8 @@ use App\Models\Vente;
 use App\Models\Appareil;
 use App\Models\SuiviDossier;
 use App\Models\ParametreSociete;
+use App\Http\Requests\StoreDossierRequest;
+use App\Http\Requests\AssignDossierRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -133,14 +135,8 @@ class DossierController extends Controller
     /**
      * UC03 (Réception) — Enregistrer un nouveau dossier SAV.
      */
-    public function store(Request $request)
+    public function store(StoreDossierRequest $request)
     {
-        $request->validate([
-            'imei' => 'required|string',
-            'modele' => 'required|string',
-            'client_nom' => 'required|string',
-            'client_telephone' => 'required|string',
-        ]);
 
         // 1. Vérifier si un dossier actif existe déjà pour cet IMEI
         $dossierExistant = Dossier::whereHas('appareil', function ($q) use ($request) {
@@ -162,6 +158,7 @@ class DossierController extends Controller
         }
 
         // 3. Gérer le client (Recherche par email OU téléphone pour éviter les doublons)
+        $clientExistant = true;
         $client = User::where('role', 'Client')
             ->where(function ($q) use ($request) {
                 if ($request->client_email) {
@@ -173,6 +170,7 @@ class DossierController extends Controller
             })->first();
 
         if (!$client) {
+            $clientExistant = false;
             $email = $request->client_email ?: 'client_' . str_replace('.', '', microtime(true)) . '@maisontel.dz';
             // Mot de passe par défaut = numéro de téléphone (sinon sav12345)
             $defaultPassword = $request->client_telephone ?: 'sav12345';
@@ -196,6 +194,9 @@ class DossierController extends Controller
                 }
             }
         }
+
+        // Assurer la liaison de l'appareil avec son propriétaire (client)
+        $appareil->update(['client_id' => $client->id]);
 
         // 4. Vérification de la garantie via les ventes
         $vente = Vente::where('imei', $request->imei)->first();
@@ -221,7 +222,7 @@ class DossierController extends Controller
             'date_reception' => now(),
             'date_vente' => $vente ? $vente->date_vente : null,
             'fin_garantie' => $vente ? Carbon::parse($vente->date_vente)->addMonths($vente->duree_garantie_mois) : null,
-            'statut' => $request->technicien_id ? 'AFFECTE' : 'RECU',
+            'statut' => 'AFFECTE',
             'sous_garantie' => $sousGarantie,
             'panne_declaree' => $panneComplete,
             'etat_appareil' => $request->etat_appareil,
@@ -251,8 +252,21 @@ class DossierController extends Controller
             $client->notify(new \App\Notifications\TicketCreatedNotification($dossier, $client->_plainPassword ?? null));
         }
 
+        // Notification au technicien assigné
+        if ($dossier->technicien) {
+            $dossier->technicien->notify(new \App\Notifications\GenericNotification(
+                "Nouveau dossier assigné (#{$dossier->num_dossier})",
+                "Vous avez été assigné au dossier #{$dossier->num_dossier} pour l'appareil {$appareil->modele}.",
+                route('dossiers.show', $dossier->id)
+            ));
+        }
+
+        $clientMsg = $clientExistant
+            ? "Compte client existant associé"
+            : "Nouveau compte client créé";
+
         return redirect()->route('dossiers.show', $dossier->id)
-            ->with('success', "Le dossier #{$numDossier} a été créé avec succès.");
+            ->with('success', "Le dossier #{$numDossier} a été créé avec succès ({$clientMsg}).");
     }
 
     /**
@@ -312,12 +326,8 @@ class DossierController extends Controller
     /**
      * UC15 — Affecter / réaffecter un technicien à un dossier.
      */
-    public function assign(Request $request, Dossier $dossier)
+    public function assign(AssignDossierRequest $request, Dossier $dossier)
     {
-        $request->validate([
-            'technicien_id' => 'required|exists:users,id',
-            'commentaire' => 'nullable|string|max:500',
-        ]);
 
         // UC15 : Bloquer si dossier clôturé ou livré
         if (in_array($dossier->statut, ['LIVRE', 'CLOTURE', 'FACTURE'])) {

@@ -14,6 +14,7 @@ class DemandeRejet extends Model
     protected $fillable = [
         'dossier_id',
         'user_id',
+        'nouveau_technicien_id',
         'raison',
         'statut',
         'commentaire_admin'
@@ -35,5 +36,13 @@ class DemandeRejet extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relation vers le nouveau technicien réassigné lors de l'approbation (Admin).
+     */
+    public function nouveauTechnicien()
+    {
+        return $this->belongsTo(User::class, 'nouveau_technicien_id');
     }
 }

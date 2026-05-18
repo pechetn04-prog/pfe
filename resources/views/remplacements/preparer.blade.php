@@ -36,7 +36,7 @@
                         </div>
                         <div>
                             <h6 class="fw-bold mb-1">Remplacement Validé</h6>
-                            <p class="mb-0 small opacity-75">L'administration a autorisé l'échange à neuf pour ce dossier.</p>
+                            <p class="mb-0 small opacity-75">L'administration a autorisé le remplacement à neuf pour ce dossier.</p>
                         </div>
                     </div>
                     <div class="bg-white bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">

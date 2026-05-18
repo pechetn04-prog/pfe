@@ -29,14 +29,9 @@ class InterventionController extends Controller
     }
 
     // Enregistre l'intervention, applique les mouvements de stocks et met à jour le statut du dossier.
-    public function store(Request $request, Dossier $dossier)
+    public function store(StoreInterventionRequest $request, Dossier $dossier)
     {
-        $request->validate([
-            'compte_rendu'       => 'required|string',
-            'statut_final'       => 'required|in:REPARE,IRREPARABLE,ATTENTE_PIECE',
-            'photo_intervention' => 'nullable|image|max:2048',
-        ]);
-        
+
         $nouveauStatut = $request->statut_final;
 
         // Sauvegarde de la photo de l'appareil après réparation (preuve visuelle de l'état)
@@ -46,11 +41,11 @@ class InterventionController extends Controller
         }
 
         $intervention = Intervention::create([
-            'dossier_id'         => $dossier->id,
-            'technicien_id'      => Auth::id(),
-            'compte_rendu'       => $request->compte_rendu,
+            'dossier_id' => $dossier->id,
+            'technicien_id' => Auth::id(),
+            'compte_rendu' => $request->compte_rendu,
             'photo_intervention' => $photoPath,
-            'date_fin'           => now(),
+            'date_fin' => now(),
         ]);
 
         // Gestion de la consommation des pièces détachées (uniquement si ce n'est pas en attente de pièce)
@@ -59,7 +54,7 @@ class InterventionController extends Controller
                 if (empty($p['id'])) {
                     continue;
                 }
-                
+
                 $piece = Piece::findOrFail($p['id']);
                 $quantite = $p['quantite'] ?? 1;
 
@@ -69,20 +64,22 @@ class InterventionController extends Controller
                 }
 
                 $intervention->pieces()->attach($piece->id, [
-                    'quantite'      => $quantite,
+                    'quantite' => $quantite,
                     'prix_unitaire' => $piece->prix_unitaire
                 ]);
 
                 // Décrémentation physique du stock (UC14)
                 $piece->decrement('quantite', $quantite);
-                
+
                 // Tracing historique du mouvement de stock
                 MouvementStock::create([
                     'piece_id' => $piece->id,
-                    'type'     => 'SORTIE',
+                    'type' => 'SORTIE',
                     'quantite' => $quantite,
-                    'motif'    => "Intervention Dossier #{$dossier->num_dossier}",
-                    'user_id'  => Auth::id(),
+                    'motif' => "Sortie pour Intervention pour dossier #{$dossier->num_dossier}",
+                    'user_id' => Auth::id(),
+                    'reference_id' => $intervention->id,
+                    'reference_type' => 'App\Models\Intervention',
                 ]);
             }
         }
@@ -110,20 +107,20 @@ class InterventionController extends Controller
         }
 
         $dossier->update([
-            'statut'          => $nouveauStatut, 
+            'statut' => $nouveauStatut,
             'date_reparation' => $nouveauStatut === 'REPARE' ? now() : null
         ]);
 
         // Audit Trail du dossier SAV
         SuiviDossier::create([
-            'dossier_id'     => $dossier->id,
-            'user_id'        => Auth::id(),
-            'ancien_statut'  => $ancienStatut,
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => $ancienStatut,
             'nouveau_statut' => $nouveauStatut,
-            'commentaire'    => $nouveauStatut === 'REPARE' 
-                ? 'Intervention terminée. Appareil réparé et prêt.' 
-                : ($nouveauStatut === 'ATTENTE_PIECE' 
-                    ? 'Pièce(s) requise(s) non disponible(s) — dossier suspendu.' 
+            'commentaire' => $nouveauStatut === 'REPARE'
+                ? 'Intervention terminée. Appareil réparé et prêt.'
+                : ($nouveauStatut === 'ATTENTE_PIECE'
+                    ? 'Pièce(s) requise(s) non disponible(s) — dossier suspendu.'
                     : 'Verdict technique : appareil non réparable.'),
         ]);
 

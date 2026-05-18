@@ -18,24 +18,6 @@ $(document).ready(function () {
     // Attache les événements d'écoute aux éléments d'une ligne spécifique (pièce ou prestation)
     function bindRowEvents(row) {
         
-        // Mise à jour de l'affichage du stock restant pour la pièce choisie
-        $(row).find('.piece-select').on('change', function () {
-            // Lecture du stock stocké dans l'attribut data-stock de l'option sélectionnée
-            const stock = $(this).find(':selected').data('stock');
-            const stockDisplay = $(row).find('.stock-display');
-            
-            if (stock !== undefined) {
-                // Affiche en vert si disponible, sinon en rouge
-                stockDisplay.text(stock)
-                    .removeClass('text-muted')
-                    .addClass(stock > 0 ? 'text-success' : 'text-danger');
-            } else {
-                stockDisplay.text('—')
-                    .addClass('text-muted')
-                    .removeClass('text-success text-danger');
-            }
-        });
-
         // Affichage du coût de la prestation de main d'œuvre sélectionnée
         $(row).find('.presta-select').on('change', function () {
             const price = parseFloat($(this).find(':selected').data('price') || 0);
@@ -58,10 +40,9 @@ $(document).ready(function () {
                 // Si c'est l'unique ligne, on réinitialise simplement ses champs à blanc
                 $(row).find('select').val('');
                 $(row).find('input').val(1);
-                $(row).find('.stock-display, .price-display')
+                $(row).find('.price-display')
                     .text('—')
-                    .addClass('text-muted')
-                    .removeClass('text-success text-danger');
+                    .addClass('text-muted');
             }
         });
     }
@@ -80,7 +61,6 @@ $(document).ready(function () {
         // Réinitialisation des inputs et attributs name
         newRow.find('select').attr('name', `pieces[${pieceIndex}][id]`).val('');
         newRow.find('input[type="number"]').attr('name', `pieces[${pieceIndex}][quantite]`).val(1);
-        newRow.find('.stock-display').text('—').addClass('text-muted').removeClass('text-success text-danger');
 
         // Ajout au tableau HTML et écoute des nouveaux éléments
         tbody.append(newRow);

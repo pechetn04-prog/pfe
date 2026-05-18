@@ -16,6 +16,11 @@
                     <p class="text-muted mb-0">{{ $devis->numero }} — Dossier #{{ $devis->dossier->num_dossier }}</p>
                 </div>
                 <div class="d-flex gap-2">
+                    @if($devis->statut === 'EN_ATTENTE' && in_array(auth()->user()->role, ['Agent', 'Admin']))
+                    <a href="{{ route('devis.edit', $devis->id) }}" class="btn btn-warning text-white rounded-pill px-4 shadow-sm">
+                        <i class="fas fa-edit me-2"></i> Modifier
+                    </a>
+                    @endif
                     <a href="{{ route('devis.pdf', $devis->id) }}" target="_blank" class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
                         <i class="fas fa-file-pdf me-2"></i> Télécharger PDF
                     </a>
@@ -102,34 +107,6 @@
                 </div>
 
                 <div class="col-md-4">
-                    {{-- Actions Agent --}}
-                    @if($devis->statut === 'EN_ATTENTE' && in_array(auth()->user()->role, ['Agent', 'Admin']))
-                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; border-top: 4px solid #ff9800 !important;">
-                        <div class="card-body p-4 text-center">
-                            <div class="bg-soft-warning p-3 rounded-circle d-inline-flex mb-3">
-                                <i class="fas fa-phone-alt fa-2x text-warning"></i>
-                            </div>
-                            <h5 class="fw-bold mb-3">Validation Manuelle</h5>
-                            <p class="text-muted small mb-4">Après avoir contacté le client par téléphone, vous pouvez valider sa décision ici.</p>
-                            
-                            <div class="d-grid gap-2">
-                                <form action="{{ route('devis.accepter', $devis->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success w-100 rounded-pill py-2 fw-bold shadow-sm" onclick="return confirm('Confirmer l\'acceptation du devis par le client ?')">
-                                        <i class="fas fa-check-circle me-2"></i> LE CLIENT ACCEPTE
-                                    </button>
-                                </form>
-                                <form action="{{ route('devis.refuser', $devis->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-outline-danger w-100 rounded-pill py-2 fw-bold" onclick="return confirm('Confirmer le refus du devis par le client ?')">
-                                        <i class="fas fa-times-circle me-2"></i> LE CLIENT REFUSE
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
                     <div class="card border-0 shadow-sm" style="border-radius: 15px;">
                         <div class="card-body p-4">
                             <h6 class="fw-bold mb-3">Détails Appareil</h6>

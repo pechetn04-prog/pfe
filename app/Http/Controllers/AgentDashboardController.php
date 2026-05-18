@@ -99,8 +99,8 @@ class AgentDashboardController extends Controller
             'IRREPARABLE'                     => 'Irréparable',
             'DEVIS_REFUSE'                    => 'Refusé',
             'ATTENTE_PIECE'                   => 'Attente Pièce',
-            'REMPLACEMENT_PRET'               => 'Échange Prêt',
-            'ATTENTE_VALIDATION_REMPLACEMENT' => 'Attente Échange'
+            'REMPLACEMENT_PRET'               => 'Remplacement Prêt',
+            'ATTENTE_VALIDATION_REMPLACEMENT' => 'Attente Remplacement'
         ];
 
         $recentDossiers->transform(function ($d) use ($statColors, $statLabels) {

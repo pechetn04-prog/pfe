@@ -6,6 +6,9 @@ use App\Models\DemandeRejet;
 use App\Models\Dossier;
 use App\Models\SuiviDossier;
 use App\Models\User;
+use App\Http\Requests\StoreDemandeRejetRequest;
+use App\Http\Requests\ApproveDemandeRejetRequest;
+use App\Http\Requests\RejectDemandeRejetRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,24 +23,30 @@ class DemandeRejetController extends Controller
 
         $total     = $query->count();
         $enAttente = (clone $query)->where('statut', 'EN_ATTENTE')->count();
-        $acceptees = (clone $query)->where('statut', 'APPROUVE')->count();
+        $acceptees = (clone $query)->where('statut', 'ACCEPTE')->count();
         $refusees  = (clone $query)->where('statut', 'REFUSE')->count();
 
         // Afficher les demandes en attente de traitement en premier
-        $demandes = DemandeRejet::with(['dossier.client', 'user'])
+        $demandes = DemandeRejet::with(['dossier.client', 'user', 'nouveauTechnicien'])
             ->orderByRaw("CASE WHEN statut = 'EN_ATTENTE' THEN 0 ELSE 1 END")
             ->latest()
             ->paginate(15);
 
-        return view('admin.demandes_rejet.index', compact('demandes', 'total', 'enAttente', 'acceptees', 'refusees'));
+        // Liste des techniciens qualifiés pour réaffectation directe
+        $techniciens = User::where('role', 'Technicien')
+            ->where('actif', true)
+            ->withCount([
+                'dossiers as dossiers_en_cours' => function ($q) {
+                    $q->whereNotIn('statut', ['LIVRE', 'CLOTURE']);
+                }
+            ])
+            ->get();
+
+        return view('admin.demandes_rejet.index', compact('demandes', 'total', 'enAttente', 'acceptees', 'refusees', 'techniciens'));
     }
 
-    // Enregistre une demande de retrait de dossier formulée par un technicien de l'atelier (UC12).
-    public function store(Request $request, Dossier $dossier)
+    public function store(StoreDemandeRejetRequest $request, Dossier $dossier)
     {
-        $request->validate([
-            'raison' => 'required|string|min:10|max:1000',
-        ]);
 
         // Règle métier : Empêcher d'avoir plusieurs demandes actives en attente pour le même dossier
         $existante = DemandeRejet::where('dossier_id', $dossier->id)
@@ -68,9 +77,10 @@ class DemandeRejetController extends Controller
         return back()->with('success', 'Votre demande de retrait a été soumise avec succès à l\'administrateur.');
     }
 
-    // Approuve la demande de retrait : libère le dossier en retirant le technicien et le remet en statut initial 'RECU' pour réaffectation (Admin).
-    public function approve(Request $request, DemandeRejet $demande)
+    // Approuve la demande de retrait : libère le dossier en retirant le technicien et le réaffecte immédiatement à un nouveau technicien (Admin).
+    public function approve(ApproveDemandeRejetRequest $request, DemandeRejet $demande)
     {
+
         $dossier = $demande->dossier;
 
         if (!$dossier) {
@@ -80,16 +90,18 @@ class DemandeRejetController extends Controller
         // Transaction SQL sécurisée pour assurer la cohérence de l'état SAV
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $demande, $dossier) {
             $demande->update([
-                'statut'             => 'APPROUVE',
-                'commentaire_admin'  => $request->commentaire_admin,
+                'statut'                => 'ACCEPTE',
+                'commentaire_admin'     => $request->commentaire_admin,
+                'nouveau_technicien_id' => $request->new_technicien_id,
             ]);
 
             $ancienStatut = $dossier->statut;
+            $nouveauTech = User::find($request->new_technicien_id);
             
-            // Libérer le technicien et repasser le dossier dans le pool d'attente d'affectation
+            // Réaffecter le nouveau technicien et passer le dossier en statut 'AFFECTE'
             $dossier->update([
-                'technicien_id' => null,
-                'statut'        => 'RECU',
+                'technicien_id' => $request->new_technicien_id,
+                'statut'        => 'AFFECTE',
             ]);
 
             // Audit Trail de l'opération
@@ -97,21 +109,37 @@ class DemandeRejetController extends Controller
                 'dossier_id'     => $dossier->id,
                 'user_id'        => auth()->id(),
                 'ancien_statut'  => $ancienStatut,
-                'nouveau_statut' => 'RECU',
-                'commentaire'    => 'Désaffectation du technicien approuvée. Motif : ' . ($request->commentaire_admin ?? 'Non spécifié'),
+                'nouveau_statut' => 'AFFECTE',
+                'commentaire'    => 'Retrait approuvé. Dossier réaffecté au technicien : ' . $nouveauTech->name . '. Commentaire : ' . $request->commentaire_admin,
             ]);
+
+            // Notifications en temps réel
+            // 1. Notifier le technicien demandeur que sa demande est acceptée
+            if ($demande->user) {
+                $demande->user->notify(new \App\Notifications\GenericNotification(
+                    "Demande de désaffectation acceptée (#{$dossier->num_dossier})",
+                    "Votre demande de retrait pour le dossier #{$dossier->num_dossier} a été approuvée par l'administrateur. Commentaire : " . $request->commentaire_admin,
+                    route('dossiers.show', $dossier->id)
+                ));
+            }
+
+            // 2. Notifier le nouveau technicien affecté
+            if ($nouveauTech) {
+                $nouveauTech->notify(new \App\Notifications\GenericNotification(
+                    "Nouveau dossier assigné (#{$dossier->num_dossier})",
+                    "Vous avez été assigné au dossier #{$dossier->num_dossier} suite à une réaffectation.",
+                    route('dossiers.show', $dossier->id)
+                ));
+            }
         });
 
         return redirect()->route('admin.demandes_rejet.index')
-            ->with('success', 'La demande a été approuvée. Le dossier est à nouveau disponible pour affectation.');
+            ->with('success', 'La demande a été approuvée et le dossier a été réaffecté au nouveau technicien avec succès.');
     }
 
     // Refuse la demande de retrait : le dossier reste attribué au technicien pour traitement (Admin).
-    public function reject(Request $request, DemandeRejet $demande)
+    public function reject(RejectDemandeRejetRequest $request, DemandeRejet $demande)
     {
-        $request->validate([
-            'commentaire_admin' => 'required|string|min:5',
-        ]);
 
         $demande->update([
             'statut'            => 'REFUSE',
@@ -126,6 +154,16 @@ class DemandeRejetController extends Controller
             'nouveau_statut' => $demande->dossier->statut, // L'état du dossier reste inchangé
             'commentaire'    => 'Demande de désaffectation refusée par l\'administrateur. Motif : ' . $request->commentaire_admin,
         ]);
+
+        // Notification en temps réel
+        // Notifier le technicien demandeur que sa demande est refusée
+        if ($demande->user) {
+            $demande->user->notify(new \App\Notifications\GenericNotification(
+                "Demande de désaffectation refusée (#{$demande->dossier->num_dossier})",
+                "Votre demande de retrait pour le dossier #{$demande->dossier->num_dossier} a été refusée par l'administrateur. Motif : " . $request->commentaire_admin,
+                route('dossiers.show', $demande->dossier_id)
+            ));
+        }
 
         return back()->with('success', 'La demande de retrait a été rejetée. Le dossier reste assigné au technicien.');
     }

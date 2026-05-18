@@ -25,7 +25,7 @@ class StoreInterventionRequest extends FormRequest
             'labors.*.id'        => ['nullable', 'exists:tarif_mos,id'],
             'labors.*.montant'   => ['nullable', 'numeric', 'min:0'],
             'photo_intervention' => ['nullable', 'image', 'max:2048'],
-            'statut_final'       => ['nullable', 'string', 'in:REPARE,IRREPARABLE,ATTENTE_PIECE'],
+            'statut_final'       => ['required', 'string', 'in:REPARE,IRREPARABLE,ATTENTE_PIECE'],
         ];
     }
 

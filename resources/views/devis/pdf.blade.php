@@ -124,10 +124,10 @@
                     <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo"
                         style="max-height: 120px; margin-bottom: 8px;"><br>
                 @else
-                    <div class="company-name">{{ $company->nom_societe ?? 'MAISON TEL' }}</div>
+                    <div class="company-name">{{ optional($company)->nom_societe ?? 'MAISON TEL' }}</div>
                 @endif
-                <div>{{ $company->adresse ?? 'Adresse non configurée' }}</div>
-                <div>Tél : {{ $company->telephone ?? '—' }} @if($company->email) | Email : {{ $company->email }} @endif
+                <div>{{ optional($company)->adresse ?? 'Adresse non configurée' }}</div>
+                <div>Tél : {{ optional($company)->telephone ?? '—' }} @if($company && $company->email) | Email : {{ $company->email }} @endif
                 </div>
                 @if($company && $company->numero_fiscal)
                     <div style="margin-top: 3px; font-weight: bold;">MF/RC : {{ $company->numero_fiscal }}</div>
@@ -182,28 +182,28 @@
             <div class="total-row">
                 <span style="float: left;">Total Hors Taxe :</span>
                 <span style="float: right;">{{ number_format($htTotal, 3, ',', ' ') }}
-                    {{ $company->devise ?? 'DT' }}</span>
+                    {{ optional($company)->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
             <div class="total-row">
                 <span style="float: left;">TVA (19%) :</span>
                 <span style="float: right;">{{ number_format($tvaTotal, 3, ',', ' ') }}
-                    {{ $company->devise ?? 'DT' }}</span>
+                    {{ optional($company)->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
 
             <div class="grand-total">
                 <span style="float: left;">TOTAL TTC :</span>
                 <span style="float: right;">{{ number_format($devis->montant_total, 3, ',', ' ') }}
-                    {{ $company->devise ?? 'DT' }}</span>
+                    {{ optional($company)->devise ?? 'DT' }}</span>
                 <div class="clear"></div>
             </div>
         </div>
         <div class="clear"></div>
 
         <div class="footer">
-            {{ $company->nom_societe ?? 'MAISON TEL' }} — {{ $company->numero_fiscal ?? '' }} —
-            {{ $company->adresse ?? '' }} <br>
+            {{ optional($company)->nom_societe ?? 'MAISON TEL' }} — {{ optional($company)->numero_fiscal ?? '' }} —
+            {{ optional($company)->adresse ?? '' }} <br>
         </div>
     </div>
 </body>

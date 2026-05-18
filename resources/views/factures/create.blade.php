@@ -109,7 +109,7 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <input type="number" step="0.001" name="labors[{{ $index }}][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="{{ $mo->pivot->montant ?? $mo->montant }}" required>
+                                                            <input type="number" step="0.001" min="0" name="labors[{{ $index }}][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="{{ $mo->pivot->montant ?? $mo->montant }}" required>
                                                         </td>
                                                         <td class="text-end pe-3">
                                                             <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>
@@ -141,7 +141,7 @@
 
                                 <div class="mb-4">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <label class="form-label small fw-bold text-muted text-uppercase mb-0">Remise Exceptionnelle (%)</label>
+                                        <label class="form-label small fw-bold text-muted text-uppercase mb-0">Remise (%)</label>
                                         @if($isGarantieValide)
                                             <span class="badge bg-success rounded-pill" style="font-size: 0.65rem;"><i class="fas fa-shield-alt me-1"></i> Sous Garantie</span>
                                         @endif
@@ -157,7 +157,7 @@
                                         <span class="fw-bold text-success">TOTAL NET TTC</span>
                                         <div class="text-end">
                                             <div class="h3 fw-bold text-success mb-0" id="total-final">0.000</div>
-                                            <small class="text-success opacity-75">Dinar Tunisien (DT)</small>
+                                            <small class="text-success opacity-75">(DT)</small>
                                         </div>
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@
             </select>
         </td>
         <td>
-            <input type="number" step="0.001" name="labors[INDEX][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="0.000" required>
+            <input type="number" step="0.001" min="0" name="labors[INDEX][montant]" class="form-control form-control-sm border-0 bg-light rounded-pill px-3 text-center labor-input" value="0.000" required>
         </td>
         <td class="text-end pe-3">
             <button type="button" class="btn btn-sm btn-outline-danger border-0 remove-row"><i class="fas fa-trash"></i></button>

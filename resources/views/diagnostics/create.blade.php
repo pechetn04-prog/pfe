@@ -141,7 +141,6 @@
                                             <tr>
                                                 <th class="ps-4">RÉFÉRENCE / DÉSIGNATION</th>
                                                 <th class="text-center" style="width: 120px;">QUANTITÉ</th>
-                                                <th class="text-center" style="width: 100px;">STOCK</th>
                                                 <th class="text-end pe-4" style="width: 50px;"></th>
                                             </tr>
                                         </thead>
@@ -153,7 +152,7 @@
                                                         <option value="">Choisir une pièce...</option>
                                                         @foreach($pieces as $p)
                                                             <option value="{{ $p->id }}" data-stock="{{ $p->quantite }}">
-                                                                {{ $p->nom }} — [STOCK: {{ $p->quantite }}]
+                                                                {{ $p->nom }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -163,7 +162,6 @@
                                                         class="form-control border-0 bg-light text-center rounded-3 fw-bold"
                                                         value="1" min="1">
                                                 </td>
-                                                <td class="text-center fw-bold text-muted stock-display">—</td>
                                                 <td class="text-end pe-4">
                                                     <button type="button"
                                                         class="btn btn-light btn-sm rounded-circle shadow-sm remove-row"

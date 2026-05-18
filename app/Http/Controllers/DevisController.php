@@ -124,9 +124,13 @@ class DevisController extends Controller
         return view('devis.show', compact('devis', 'badgeColor'));
     }
 
-    // UC06 — Acceptation manuelle du devis par l'Agent SAV (au comptoir).
     public function accepterDevis(Request $request, Devis $devis)
     {
+        // Règle métier : Seul un Agent SAV peut valider un devis
+        if (auth()->user()->role !== 'Agent') {
+            abort(403, 'Seul un Agent SAV peut valider un devis.');
+        }
+
         // Règle métier : Empêcher de traiter à nouveau un devis déjà décidé
         if ($devis->statut !== 'EN_ATTENTE') {
             return back()->with('error', 'Ce devis a déjà été traité.');
@@ -152,12 +156,25 @@ class DevisController extends Controller
             'commentaire'    => 'Devis validé. Autorisation de réparation accordée et dossier transmis à l\'atelier.',
         ]);
 
+        // Notification au technicien assigné
+        if ($dossier->technicien) {
+            $dossier->technicien->notify(new \App\Notifications\GenericNotification(
+                "Devis accepté - Lancer réparation (#{$dossier->num_dossier})",
+                "Le devis a été accepté pour le dossier #{$dossier->num_dossier}. Vous pouvez maintenant commencer la réparation.",
+                route('dossiers.show', $dossier->id)
+            ));
+        }
+
         return back()->with('success', 'Devis accepté. Dossier passé en réparation.');
     }
 
-    // UC06 — Refus du devis par le client ou l'agent.
     public function refuser(Request $request, Devis $devis)
     {
+        // Règle métier : Seul un Agent SAV peut refuser un devis
+        if (auth()->user()->role !== 'Agent') {
+            abort(403, 'Seul un Agent SAV peut refuser un devis.');
+        }
+
         // Règle métier : Empêcher de traiter à nouveau un devis déjà décidé
         if ($devis->statut !== 'EN_ATTENTE') {
             return back()->with('error', 'Ce devis a déjà été traité.');
@@ -201,6 +218,82 @@ class DevisController extends Controller
         // Chargement du template PDF avec les données
         $pdf = Pdf::loadView('devis.pdf', array_merge(compact('devis', 'company'), $devisData));
         return $pdf->stream('devis-' . $devis->numero . '.pdf');
+    }
+
+    public function edit(Devis $devis)
+    {
+        // Règle métier : On ne peut modifier un devis que s'il est encore en attente de décision
+        if ($devis->statut !== 'EN_ATTENTE') {
+            return redirect()->route('dossiers.show', $devis->dossier_id)
+                ->with('error', 'Impossible de modifier un devis déjà traité (accepté ou refusé).');
+        }
+
+        $dossier = $devis->dossier;
+        $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo');
+        
+        // Liste des ressources actives pour d'éventuels ajustements en cours de devis
+        $pieces = Piece::where('actif', true)->orderBy('nom')->get();
+        $tarifsMo = TarifMo::where('actif', true)->orderBy('type_intervention')->get();
+
+        // Charger les pièces déjà sélectionnées dans le devis
+        $devisPieces = $devis->pieces->pluck('pivot.quantite', 'id')->toArray();
+        $devisLabors = $devis->tarifsMo->pluck('id')->toArray();
+
+        return view('devis.edit', compact('devis', 'dossier', 'pieces', 'tarifsMo', 'devisPieces', 'devisLabors'));
+    }
+
+    public function update(Request $request, Devis $devis)
+    {
+        if ($devis->statut !== 'EN_ATTENTE') {
+            return back()->with('error', 'Ce devis ne peut plus être modifié.');
+        }
+
+        $devis->update([
+            'montant_total' => (float) $request->total_ttc,
+            'frais_mod'     => (float) $request->frais_mod ?? 0,
+        ]);
+
+        $devis->pieces()->detach();
+        $devis->tarifsMo()->detach();
+
+        // 1. Sauvegarde des pièces
+        if ($request->has('pieces')) {
+            foreach ($request->pieces as $p) {
+                if (empty($p['id'])) {
+                    continue;
+                }
+                $devis->pieces()->attach($p['id'], [
+                    'quantite'      => $p['quantite'] ?? 1,
+                    'prix_unitaire' => $p['prix_unitaire'] ?? 0
+                ]);
+            }
+        }
+
+        // 2. Sauvegarde de la main d'œuvre
+        if ($request->has('labors')) {
+            foreach ($request->labors as $l) {
+                if (empty($l['id'])) {
+                    continue;
+                }
+                $devis->tarifsMo()->attach($l['id'], [
+                    'montant' => $l['montant'] ?? 0
+                ]);
+            }
+        }
+
+        // Progression/Maintien de l'état du dossier (déjà EN_ATTENTE_DEVIS)
+        $devis->dossier->update(['statut' => 'EN_ATTENTE_DEVIS']);
+
+        SuiviDossier::create([
+            'dossier_id'     => $devis->dossier_id,
+            'user_id'        => auth()->id(),
+            'ancien_statut'  => 'EN_ATTENTE_DEVIS',
+            'nouveau_statut' => 'EN_ATTENTE_DEVIS',
+            'commentaire'    => 'Mise à jour du devis #' . $devis->numero . ' par l\'administration.',
+        ]);
+
+        return redirect()->route('dossiers.show', $devis->dossier_id)
+            ->with('success', 'Devis mis à jour avec succès.');
     }
 
     // Prépare et calcule les montants HT, TVA (19%) et TTC pour le PDF.

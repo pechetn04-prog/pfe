@@ -8,6 +8,20 @@
 
 @section('content')
 <div class="container-fluid">
+    @if($errors->any())
+        <div class="alert alert-premium alert-premium-danger alert-dismissible fade show mb-4">
+            <i class="fas fa-exclamation-triangle alert-icon"></i>
+            <div class="alert-content">
+                <ul class="mb-0 ps-3">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <div class="mb-4">
         <h1 class="h3 mb-1 text-gray-800 fw-bold">Demandes de Retrait</h1>
         <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1 small fw-bold">
@@ -157,15 +171,30 @@
                                 <form action="{{ route('admin.demandes_rejet.approve', $demande->id) }}" method="POST">
                                     @csrf
                                     <div class="modal-body p-4">
-                                        <p class="text-muted small">En approuvant, le dossier sera <strong>désaffecté</strong> du technicien et reviendra en statut <strong>"RECU"</strong>.</p>
+                                        <p class="text-muted small">En approuvant, le dossier sera désaffecté du technicien actuel et réassigné au nouveau technicien sélectionné.</p>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Nouveau Technicien Réaffecté <span class="text-danger">*</span></label>
+                                            <select name="new_technicien_id" class="form-select bg-light border-0" required>
+                                                <option value="" disabled selected>-- Choisir un nouveau technicien --</option>
+                                                @foreach($techniciens as $tech)
+                                                    @if($tech->id !== $demande->user_id)
+                                                        <option value="{{ $tech->id }}">
+                                                            {{ $tech->name }} ({{ $tech->dossiers_en_cours }} dossiers actifs)
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+
                                         <div class="mb-0">
-                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Commentaire pour le technicien</label>
-                                            <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" placeholder="Ex: Retrait accepté..."></textarea>
+                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Commentaire d'approbation <span class="text-danger">*</span></label>
+                                            <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" required placeholder="Saisissez le motif de réaffectation..."></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer border-0 pb-4 px-4">
                                         <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
-                                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow" onclick="this.innerHTML='Traitement...'; this.disabled=true; this.form.submit();">CONFIRMER</button>
+                                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow" onclick="if(this.form.reportValidity()) { this.innerHTML='Traitement...'; this.disabled=true; this.form.submit(); }">CONFIRMER</button>
                                     </div>
                                 </form>
                             </div>
@@ -193,7 +222,7 @@
                                     </div>
                                     <div class="modal-footer border-0 pb-4 px-4">
                                         <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Annuler</button>
-                                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow" onclick="this.innerHTML='Traitement...'; this.disabled=true; this.form.submit();">CONFIRMER LE REFUS</button>
+                                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow" onclick="if(this.form.reportValidity()) { this.innerHTML='Traitement...'; this.disabled=true; this.form.submit(); }">CONFIRMER LE REFUS</button>
                                     </div>
                                 </form>
                             </div>
@@ -223,7 +252,8 @@
                         <thead class="bg-light text-muted small text-uppercase fw-bold">
                             <tr>
                                 <th class="ps-4">Dossier</th>
-                                <th>Technicien</th>
+                                <th>Ancien Technicien</th>
+                                <th>Nouveau Technicien</th>
                                 <th>Statut</th>
                                 <th>Commentaire Admin</th>
                                 <th class="text-end pe-4">Date Traitement</th>
@@ -237,12 +267,19 @@
                                         <div class="text-muted small">{{ $demande->dossier->appareil->modele ?? '—' }}</div>
                                     </td>
                                     <td>
-                                        <div class="small fw-bold">{{ $demande->user->name ?? '—' }}</div>
+                                        <div class="small fw-bold text-muted">{{ $demande->user->name ?? '—' }}</div>
+                                    </td>
+                                    <td>
+                                        @if($demande->nouveauTechnicien)
+                                            <div class="small fw-bold text-primary">{{ $demande->nouveauTechnicien->name }}</div>
+                                        @else
+                                            <span class="text-muted small">—</span>
+                                        @endif
                                     </td>
                                     <td>
                                         @php
                                             $hStatus = [
-                                                'APPROUVE' => ['class' => 'bg-success text-white', 'label' => 'APPROUVÉ'],
+                                                'ACCEPTE' => ['class' => 'bg-success text-white', 'label' => 'APPROUVÉ'],
                                                 'REFUSE' => ['class' => 'bg-danger text-white', 'label' => 'REFUSÉ']
                                             ][$demande->statut] ?? ['class' => 'bg-secondary text-white', 'label' => $demande->statut];
                                         @endphp

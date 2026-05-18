@@ -8,9 +8,15 @@
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
             <!-- En-tête : Titre et bouton de retour au dossier -->
             <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('dossiers.show', $intervention->dossier_id) }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="fas fa-arrow-left"></i>
-                </a>
+                @if(auth()->user()->role === 'Technicien')
+                    <a href="{{ route('technicien.dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                @else
+                    <a href="{{ route('dossiers.show', $intervention->dossier_id) }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                @endif
                 <div>
                     <h1 class="h4 fw-bold mb-0">Rapport d'Intervention</h1>
                     <small class="text-muted">Dossier #{{ $intervention->dossier->num_dossier }} —

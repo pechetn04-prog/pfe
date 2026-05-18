@@ -36,40 +36,18 @@ class MouvementStockController extends Controller
     }
 
     /**
-     * Formulaire d'un mouvement manuel (entrée en stock).
+     * Formulaire d'un mouvement manuel (DÉSACTIVÉ).
      */
     public function create()
     {
-        $pieces = Piece::where('actif', true)->orderBy('nom')->get();
-        return view('stock.mouvement-create', compact('pieces'));
+        abort(403, "La saisie manuelle de mouvements de stock a été désactivée. Tous les flux de stock doivent être tracés automatiquement par le système SAV.");
     }
 
     /**
-     * Enregistrer un mouvement manuel (réapprovisionnement).
+     * Enregistrer un mouvement manuel (DÉSACTIVÉ).
      */
     public function store(StoreMouvementStockRequest $request)
     {
-
-        $piece = Piece::findOrFail($request->piece_id);
-
-        if ($request->type === 'entree') {
-            $piece->increment('quantite', $request->quantite);
-        } elseif ($request->type === 'sortie') {
-            if ($piece->quantite < $request->quantite) {
-                return back()->with('error', 'Stock insuffisant pour cette sortie.');
-            }
-            $piece->decrement('quantite', $request->quantite);
-        }
-
-        MouvementStock::create([
-            'piece_id' => $piece->id,
-            'user_id' => Auth::id(),
-            'type' => $request->type,
-            'quantite' => $request->quantite,
-            'motif' => $request->motif ?? 'Mouvement manuel',
-        ]);
-
-        return redirect()->route('stock.mouvements')
-            ->with('success', 'Mouvement de stock enregistré.');
+        abort(403, "La saisie manuelle de mouvements de stock a été désactivée. Tous les flux de stock doivent être tracés automatiquement par le système SAV.");
     }
 }

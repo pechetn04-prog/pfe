@@ -40,16 +40,37 @@ class AdminDashboardController extends Controller
                 ->get(),
         ];
 
-        // Distribution globale des statuts pour le graphique de synthèse
-        $stats['status_distribution'] = [
-            'Nouveaux' => $stats['recu'],
-            'En Cours' => Dossier::whereIn('statut', [
-                'AFFECTE', 'EN_DIAGNOSTIC', 'EN_REPARATION', 'ATTENTE_PIECE', 'ATTENTE_VALIDATION_REMPLACEMENT'
-            ])->count(),
-            'Terminés' => Dossier::whereIn('statut', [
-                'REPARE', 'FACTURE', 'LIVRE', 'CLOTURE', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE', 'IRREPARABLE'
-            ])->count(),
+        // Distribution globale de TOUS les statuts individuels pour le graphique de synthèse
+        $statusLabels = [
+            'RECU'                            => 'Reçu',
+            'AFFECTE'                         => 'Affecté',
+            'EN_DIAGNOSTIC'                   => 'En Diagnostic',
+            'EN_ATTENTE_DEVIS'                => 'En Attente Devis',
+            'DEVIS_REFUSE'                    => 'Devis Refusé',
+            'EN_REPARATION'                   => 'En Réparation',
+            'REPARE'                          => 'Réparé',
+            'IRREPARABLE'                     => 'Irréparable',
+            'ATTENTE_PIECE'                   => 'Attente Pièce',
+            'ATTENTE_VALIDATION_REMPLACEMENT' => 'Attente Remplacement',
+            'ATTENTE_REMPLACEMENT'            => 'Attente Remplacement Prêt',
+            'REMPLACEMENT_PRET'               => 'Remplacement Prêt',
+            'FACTURE'                         => 'Facturé',
+            'LIVRE'                           => 'Restitué',
+            'CLOTURE'                         => 'Clôturé',
+            'ANNULE'                          => 'Annulé',
+            'REMPLACEMENT_VALIDE'             => 'Remplacement Validé',
+            'REMPLACEMENT_REFUSE'             => 'Remplacement Refusé'
         ];
+
+        $stats['status_distribution'] = [];
+        $dossierCounts = Dossier::select('statut', \DB::raw('count(*) as count'))
+            ->groupBy('statut')
+            ->get();
+
+        foreach ($dossierCounts as $dc) {
+            $label = $statusLabels[$dc->statut] ?? str_replace('_', ' ', $dc->statut);
+            $stats['status_distribution'][$label] = $dc->count;
+        }
 
         // Répartition des dossiers selon l'éligibilité à la garantie commerciale (UC03)
         $stats['warranty_distribution'] = [
@@ -107,7 +128,7 @@ class AdminDashboardController extends Controller
             ['label' => 'ATTENTE DEVIS',   'val' => $stats['attente_devis'],  'icon' => 'fa-file-invoice-dollar',  'class' => 'bg-soft-info'],
             ['label' => 'EN RÉPARATION',   'val' => $stats['en_reparation'],  'icon' => 'fa-tools',                'class' => 'bg-soft-success'],
             ['label' => 'ATTENTE PIÈCES',  'val' => $stats['attente_pieces'], 'icon' => 'fa-clock',                'class' => 'bg-soft-danger'],
-            ['label' => 'ATTENTE ÉCHANGE', 'val' => $stats['attente_validation_remplacement'], 'icon' => 'fa-exchange-alt', 'class' => 'bg-soft-warning text-warning'],
+            ['label' => 'ATTENTE REMPLACEMENT', 'val' => $stats['attente_validation_remplacement'], 'icon' => 'fa-exchange-alt', 'class' => 'bg-soft-warning text-warning'],
             ['label' => 'IRRÉPARABLES',    'val' => $stats['irreparable'],    'icon' => 'fa-times-circle',         'class' => 'bg-soft-danger text-danger'],
             ['label' => 'LIVRÉS / CLOS',   'val' => $stats['cloture'],        'icon' => 'fa-check-double',         'class' => 'bg-soft-slate'],
             ['label' => 'UTILISATEURS',    'val' => $stats['users'],          'icon' => 'fa-users',                'class' => 'bg-soft-purple'],

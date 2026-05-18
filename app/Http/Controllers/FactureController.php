@@ -6,6 +6,7 @@ use App\Models\Facture;
 use App\Models\SuiviDossier;
 use App\Models\Dossier;
 use App\Models\TarifMo;
+use App\Http\Requests\StoreFactureRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -61,8 +62,9 @@ class FactureController extends Controller
     }
 
     // Enregistrer la facture finale.
-    public function store(Request $request, Dossier $dossier)
+    public function store(StoreFactureRequest $request, Dossier $dossier)
     {
+
         // Charger l'intervention et les pièces associées
         $dossier->load('intervention.pieces');
         $intervention = $dossier->intervention;

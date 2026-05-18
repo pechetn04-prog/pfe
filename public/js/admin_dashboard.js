@@ -11,29 +11,29 @@
  * Les données brutes proviennent directement de Laravel via la variable 'window.dashboardStats'.
  */
 
-$(document).ready(function() {
-    
+$(document).ready(function () {
+
     // Configuration commune des options graphiques pour un aspect premium épuré
     const doughnutOptions = {
         responsive: true,           // Ajuste la taille au changement de résolution d'écran
         maintainAspectRatio: false, // Permet d'étirer le graphique dans son conteneur HTML
         plugins: {
-            legend: { 
+            legend: {
                 position: 'bottom', // Légendes disposées sous le graphique
-                labels: { 
+                labels: {
                     boxWidth: 12,   // Largeur du carré de couleur indicateur
                     padding: 15,    // Espace de confort autour du libellé
-                    font: { 
+                    font: {
                         size: 11,
-                        family: "'Inter', sans-serif" 
-                    } 
-                } 
+                        family: "'Inter', sans-serif"
+                    }
+                }
             },
             tooltip: {
                 callbacks: {
                     // Fonction interne pour formater l'infobulle au survol d'un secteur
                     // Affiche le libellé, la quantité brute et calcule le pourcentage correspondant
-                    label: function(context) {
+                    label: function (context) {
                         let label = context.label || '';
                         let value = context.raw || 0;
                         let total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -55,8 +55,14 @@ $(document).ready(function() {
                 labels: Object.keys(window.dashboardStats.status_distribution),
                 datasets: [{
                     data: Object.values(window.dashboardStats.status_distribution),
-                    // Palette de couleurs : Bleu, Jaune-Orange, Vert
-                    backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
+                    // Palette de couleurs premium étendue pour tous les statuts
+                    backgroundColor: [
+                        '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+                        '#8b5cf6', '#ec4899', '#06b6d4', '#14b8a6',
+                        '#6366f1', '#f43f5e', '#10b981', '#6b7280',
+                        '#84cc16', '#eab308', '#d946ef', '#fb923c',
+                        '#22d3ee', '#c084fc'
+                    ],
                     borderWidth: 0,
                     hoverOffset: 10 // Animation légère d'agrandissement au survol
                 }]

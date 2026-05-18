@@ -17,9 +17,6 @@
                 <a href="{{ route('stock.index') }}" class="btn btn-light border shadow-sm">
                     <i class="fas fa-boxes me-1"></i> Inventaire
                 </a>
-                <a href="{{ route('stock.mouvements.create') }}" class="btn btn-primary shadow-sm fw-bold">
-                    <i class="fas fa-plus me-1"></i> Nouveau Flux
-                </a>
             </div>
         </div>
 

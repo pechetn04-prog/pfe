@@ -101,13 +101,13 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-muted small fw-bold mb-1">EMAIL</label>
+                                    <label class="form-label text-muted small fw-bold mb-1">EMAIL <span class="text-danger">*</span></label>
                                     <div class="input-group bg-light rounded-3 overflow-hidden border-0">
                                         <span class="input-group-text bg-transparent border-0 pe-0"><i
                                                 class="fas fa-envelope text-muted opacity-50"></i></span>
                                         <input type="email" name="client_email" id="client_email"
                                             class="form-control bg-transparent border-0 py-2 fw-bold"
-                                            placeholder="client@email.com" value="{{ old('client_email') }}">
+                                            placeholder="client@email.com" required value="{{ old('client_email') }}">
                                     </div>
                                 </div>
                             </div>
@@ -197,17 +197,12 @@
                             <div id="technicien_selection_container">
                                 <div class="mb-4">
                                     <label class="form-label text-muted small fw-bold mb-2">
-                                        <i class="fas fa-user-cog me-1"></i> TECHNICIEN ASSIGNÉ
+                                        <i class="fas fa-user-cog me-1"></i> TECHNICIEN ASSIGNÉ <span class="text-danger">*</span>
                                     </label>
 
-                                    <div id="no_panne_message" class="alert alert-light border small py-2 text-muted">
-                                        <i class="fas fa-info-circle me-1"></i> Sélectionnez une panne pour voir les
-                                        techniciens.
-                                    </div>
-
-                                    <div id="technicien_select_wrapper" style="display: none;">
+                                    <div id="technicien_select_wrapper">
                                         <select name="technicien_id" id="technicien_id"
-                                            class="form-select bg-light border-0 rounded-3 small fw-bold py-2">
+                                            class="form-select bg-light border-0 rounded-3 small fw-bold py-2" required>
                                             <option value="">-- Choisir un technicien --</option>
                                             @foreach($techniciens as $tech)
                                                 <option value="{{ $tech->id }}" data-specialite="{{ $tech->specialite ?? '' }}"

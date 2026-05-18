@@ -145,6 +145,9 @@ $(document).ready(function () {
         checkImei();
     }
 
+    // Stockage en mémoire de toutes les options de techniciens d'origine au chargement
+    let allTechOptions = $('#technicien_id option').clone();
+
     // Filtrage dynamique des techniciens selon la spécialité requise par la panne
     function filterTechnicians() {
         let selectedPannes = [];
@@ -153,38 +156,68 @@ $(document).ready(function () {
             selectedPannes.push($(this).val());
         });
 
-        $('#technicien_id option').each(function () {
+        let selectedValue = $('#technicien_id').val();
+        
+        // Vider le select actuel pour forcer le masquage sur tous les navigateurs
+        $('#technicien_id').empty();
+
+        if (selectedPannes.length === 0) {
+            // Si aucune panne n'est cochée, on ne montre aucun technicien et on invite l'utilisateur à en choisir une d'abord
+            let placeholderOption = allTechOptions.filter('[value=""]');
+            let placeholderClone = placeholderOption.clone();
+            placeholderClone.text('-- Sélectionnez d\'abord une panne --');
+            $('#technicien_id').append(placeholderClone);
+            $('#technicien_id').val("");
+            return;
+        }
+
+        // Réinsérer le placeholder de choix par défaut
+        let placeholderOption = allTechOptions.filter('[value=""]');
+        let placeholderClone = placeholderOption.clone();
+        placeholderClone.text('-- Choisir un technicien --');
+        $('#technicien_id').append(placeholderClone);
+
+        // Filtrer et rajouter dynamiquement les techniciens correspondants
+        allTechOptions.each(function () {
             let option = $(this);
+            if (option.val() === "") return; // Déjà géré par le placeholder
+
             let techSpecialites = option.data('specialite') || '';
 
-            if (option.val() === "") return; // Laisse l'option vide de choix intacte
+            // Décodage des entités HTML (ex: &amp; -> &) pour comparaison exacte
+            let decodedSpecialites = $('<div>').html(techSpecialites).text();
 
-            if (selectedPannes.length === 0) {
-                // Si aucune panne n'est choisie, réaffiche tous les techniciens
-                option.prop('disabled', false).show().css('display', '');
-                return;
-            }
-
-            // Vérification des spécialités correspondantes
-            let matchesAll = true;
-            selectedPannes.forEach(function (panne) {
-                if (!techSpecialites.toLowerCase().includes(panne.toLowerCase())) {
-                    matchesAll = false;
-                }
+            // Vérification des spécialités correspondantes (ignorer la panne "Autre" ou "Autre...")
+            let hasMatch = false;
+            let filteredPannes = selectedPannes.filter(function (panne) {
+                return panne.toLowerCase() !== 'autre' && panne.toLowerCase() !== 'autre...';
             });
 
-            if (matchesAll) {
-                // Affiche et colore en bleu les techniciens qualifiés
-                option.prop('disabled', false).show().css('display', '');
-                option.css('color', '#2563eb');
+            // Si seule la panne "Autre" est cochée, tout le monde est qualifié par défaut
+            if (filteredPannes.length === 0) {
+                hasMatch = true;
             } else {
-                // Cache les non qualifiés
-                option.prop('disabled', true).hide().css('display', 'none');
-                if (option.is(':selected')) {
-                    $('#technicien_id').val("");
-                }
+                filteredPannes.forEach(function (panne) {
+                    if (decodedSpecialites.toLowerCase().includes(panne.toLowerCase())) {
+                        hasMatch = true;
+                    }
+                });
+            }
+
+            if (hasMatch) {
+                let optClone = option.clone();
+                // Colore en bleu le technicien qualifié pour attirer l'attention
+                optClone.css('color', '#2563eb');
+                $('#technicien_id').append(optClone);
             }
         });
+
+        // Restaurer la valeur sélectionnée si elle fait toujours partie des techniciens valides
+        if (selectedValue && $('#technicien_id option[value="' + selectedValue + '"]').length > 0) {
+            $('#technicien_id').val(selectedValue);
+        } else {
+            $('#technicien_id').val("");
+        }
     }
 
     // Gestion de la saisie conditionnelle d'accessoires personnalisés
@@ -208,15 +241,8 @@ $(document).ready(function () {
     // Gestion des types de pannes et du choix de technicien
     $('input[name="type_pannes[]"]').on('change', function () {
         filterTechnicians();
-
-        // Affiche la boîte de sélection des techniciens uniquement si une panne est cochée
-        if ($('input[name="type_pannes[]"]:checked').length > 0) {
-            $('#no_panne_message').hide();
-            $('#technicien_select_wrapper').fadeIn();
-        } else {
-            $('#no_panne_message').show();
-            $('#technicien_select_wrapper').hide();
-            $('#technicien_id').val('');
-        }
     });
+
+    // Évaluation initiale au chargement de la page
+    filterTechnicians();
 });

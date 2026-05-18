@@ -7,6 +7,7 @@ use App\Models\Piece;
 use App\Models\SuiviDossier;
 use App\Models\TarifMo;
 use App\Models\Dossier;
+use App\Http\Requests\StoreDiagnosticRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,13 +43,8 @@ class DiagnosticController extends Controller
     }
 
     // Enregistre le rapport de diagnostic finalisé et applique les règles de décision automatique (UC04).
-    public function store(Request $request, Dossier $dossier)
+    public function store(StoreDiagnosticRequest $request, Dossier $dossier)
     {
-        $request->validate([
-            'constat_technique' => 'required|string',
-            'recommandation'    => 'nullable|string',
-            'photo_panne'       => 'nullable|image|max:2048',
-        ]);
 
         // Gestion de l'image justificative de la panne
         $photoPath = null;

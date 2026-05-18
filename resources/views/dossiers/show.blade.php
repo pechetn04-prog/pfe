@@ -3,6 +3,15 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/ticket_show.css') }}">
+    <style>
+        .hover-zoom {
+            transition: all 0.2s ease-in-out;
+        }
+        .hover-zoom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+        }
+    </style>
 @endpush
 
 
@@ -396,11 +405,22 @@
                                         <div class="p-3 bg-light rounded-3 border-start border-primary border-4">
                                             {{ $dossier->diagnostic->constat }}</div>
                                     </div>
-                                    <div class="mb-0">
+                                    <div class="mb-4">
                                         <label class="small text-muted text-uppercase fw-bold mb-2 d-block"
                                             style="font-size: 0.6rem;">RECOMMANDATION</label>
                                         <div class="p-3 bg-light rounded-3">{{ $dossier->diagnostic->recommandation }}</div>
                                     </div>
+
+                                    {{-- Photo de la Panne --}}
+                                    @if($dossier->diagnostic->photo_panne)
+                                        <div class="mt-3 pt-3 border-top">
+                                            <label class="small text-muted text-uppercase fw-bold mb-2 d-block"
+                                                style="font-size: 0.6rem; letter-spacing: 0.5px;">📸 PHOTO CONSTAT PANNE</label>
+                                            <a href="{{ asset('storage/' . $dossier->diagnostic->photo_panne) }}" target="_blank" class="d-inline-block">
+                                                <img src="{{ asset('storage/' . $dossier->diagnostic->photo_panne) }}" class="img-thumbnail shadow-sm hover-zoom" style="max-height: 180px; border-radius: 12px; cursor: pointer;">
+                                            </a>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="text-center py-5 text-muted small"><i
                                             class="fas fa-clock fa-2x mb-2 opacity-25"></i>
@@ -431,6 +451,17 @@
                                         <div class="p-3 bg-light rounded-3 border-start border-success border-4">
                                             {{ $dossier->intervention->compte_rendu }}</div>
                                     </div>
+
+                                    {{-- Photo de l'Intervention --}}
+                                    @if($dossier->intervention->photo_intervention)
+                                        <div class="mt-3 pt-3 border-top">
+                                            <label class="small text-muted text-uppercase fw-bold mb-2 d-block"
+                                                style="font-size: 0.6rem; letter-spacing: 0.5px;">📸 PREUVE DE RÉPARATION (PHOTO)</label>
+                                            <a href="{{ asset('storage/' . $dossier->intervention->photo_intervention) }}" target="_blank" class="d-inline-block">
+                                                <img src="{{ asset('storage/' . $dossier->intervention->photo_intervention) }}" class="img-thumbnail shadow-sm hover-zoom" style="max-height: 180px; border-radius: 12px; cursor: pointer;">
+                                            </a>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="text-center py-5 text-muted small"><i
                                             class="fas fa-tools fa-2x mb-2 opacity-25"></i>
@@ -452,11 +483,25 @@
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <h6 class="fw-bold text-primary mb-0" style="font-size: 0.85rem;">Devis Estimatif</h6>
                                     @if($dossier->devis)
-                                        <a href="{{ route('devis.pdf', $dossier->devis->id) }}" target="_blank"
-                                            class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold"
-                                            style="font-size: 0.75rem;">
-                                            <i class="fas fa-file-pdf me-1"></i> PDF
-                                        </a>
+                                        <div class="d-flex gap-1">
+                                            @if($dossier->devis->statut === 'EN_ATTENTE' && in_array(auth()->user()->role, ['Agent', 'Admin']))
+                                                <a href="{{ route('devis.edit', $dossier->devis->id) }}"
+                                                    class="btn btn-warning btn-sm text-white rounded-pill px-3 fw-bold shadow-sm"
+                                                    style="font-size: 0.75rem;">
+                                                    <i class="fas fa-edit me-1"></i> Modifier
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('devis.show', $dossier->devis->id) }}"
+                                                class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold"
+                                                style="font-size: 0.75rem;">
+                                                <i class="fas fa-eye me-1"></i> Voir
+                                            </a>
+                                            <a href="{{ route('devis.pdf', $dossier->devis->id) }}" target="_blank"
+                                                class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold"
+                                                style="font-size: 0.75rem;">
+                                                <i class="fas fa-file-pdf me-1"></i> PDF
+                                            </a>
+                                        </div>
                                     @endif
                                 </div>
                                 @if($dossier->devis)
@@ -476,7 +521,7 @@
                                         </div>
                                     </div>
 
-                                    @if($dossier->devis->statut === 'EN_ATTENTE' && in_array(auth()->user()->role, ['Admin', 'Agent']))
+                                    @if($dossier->devis->statut === 'EN_ATTENTE' && auth()->user()->role === 'Agent')
                                         <div class="d-flex gap-2 mt-3">
                                             <form action="{{ route('devis.accepter', $dossier->devis->id) }}" method="POST"
                                                 class="flex-grow-1">

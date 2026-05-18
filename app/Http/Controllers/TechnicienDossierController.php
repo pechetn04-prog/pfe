@@ -32,28 +32,28 @@ class TechnicienDossierController extends Controller
 
         // Nomenclature des libellés de l'état SAV
         $statuts = [
-            'AFFECTE'            => 'Affecté',
-            'EN_DIAGNOSTIC'      => 'En diagnostic',
-            'EN_ATTENTE_DEVIS'   => 'Attente Devis',
-            'EN_REPARATION'      => 'En réparation',
-            'ATTENTE_PIECE'      => 'Attente pièce',
-            'REPARE'             => 'Réparé',
-            'IRREPARABLE'        => 'Irréparable',
-            'LIVRE'              => 'Restitué',
-            'CLOTURE'            => 'Clôturé',
+            'AFFECTE' => 'Affecté',
+            'EN_DIAGNOSTIC' => 'En diagnostic',
+            'EN_ATTENTE_DEVIS' => 'Attente Devis',
+            'EN_REPARATION' => 'En réparation',
+            'ATTENTE_PIECE' => 'Attente pièce',
+            'REPARE' => 'Réparé',
+            'IRREPARABLE' => 'Irréparable',
+            'LIVRE' => 'Restitué',
+            'CLOTURE' => 'Clôturé',
         ];
 
         // Mapping des styles graphiques Bootstrap (couleurs des badges)
         $map = [
-            'AFFECTE'          => 'bg-secondary',
-            'EN_DIAGNOSTIC'    => 'bg-info text-dark',
+            'AFFECTE' => 'bg-secondary',
+            'EN_DIAGNOSTIC' => 'bg-info text-dark',
             'EN_ATTENTE_DEVIS' => 'bg-warning text-dark',
-            'EN_REPARATION'    => 'bg-primary',
-            'ATTENTE_PIECE'    => 'bg-dark',
-            'REPARE'           => 'bg-success',
-            'IRREPARABLE'      => 'bg-danger',
-            'CLOTURE'          => 'bg-dark',
-            'LIVRE'            => 'bg-success',
+            'EN_REPARATION' => 'bg-primary',
+            'ATTENTE_PIECE' => 'bg-dark',
+            'REPARE' => 'bg-success',
+            'IRREPARABLE' => 'bg-danger',
+            'CLOTURE' => 'bg-dark',
+            'LIVRE' => 'bg-success',
         ];
 
         // Formatage des données dans le contrôleur (respect du pattern MVC)
@@ -61,13 +61,13 @@ class TechnicienDossierController extends Controller
             // Logique de calcul de l'éligibilité de la garantie commerciale (UC03)
             if ($d->garantie_annulee) {
                 $d->garantie_color = 'warning';
-                $d->garantie_text  = 'GARANTIE EXCLUE';
+                $d->garantie_text = 'GARANTIE EXCLUE';
             } elseif ($d->sous_garantie) {
                 $d->garantie_color = 'success';
-                $d->garantie_text  = 'SOUS GARANTIE';
+                $d->garantie_text = 'SOUS GARANTIE';
             } else {
                 $d->garantie_color = 'danger';
-                $d->garantie_text  = 'HORS GARANTIE';
+                $d->garantie_text = 'HORS GARANTIE';
             }
 
             $d->statut_class = $map[$d->statut] ?? 'bg-secondary';
