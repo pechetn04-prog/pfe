@@ -2,10 +2,6 @@
 
 @section('title', 'Demandes de Retrait')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/reject-demands.css') }}">
-@endpush
-
 @section('content')
 <div class="container-fluid">
     @if($errors->any())
@@ -32,44 +28,44 @@
     {{-- Statistiques --}}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3" style="border-radius: 15px;">
+            <div class="card shadow-sm border-0 h-100 p-3 card-stat-box">
                 <div class="d-flex align-items-center">
                     <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3 text-primary"><i class="fas fa-list"></i></div>
                     <div>
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">TOTAL</small>
+                        <small class="text-muted text-uppercase fw-bold d-block font-size-07">TOTAL</small>
                         <h4 class="mb-0 fw-bold">{{ $total }}</h4>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3" style="border-radius: 15px;">
+            <div class="card shadow-sm border-0 h-100 p-3 card-stat-box">
                 <div class="d-flex align-items-center">
                     <div class="bg-warning bg-opacity-10 p-3 rounded-3 me-3 text-warning"><i class="fas fa-clock"></i></div>
                     <div>
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">EN ATTENTE</small>
+                        <small class="text-muted text-uppercase fw-bold d-block font-size-07">EN ATTENTE</small>
                         <h4 class="mb-0 fw-bold">{{ $enAttente }}</h4>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3" style="border-radius: 15px;">
+            <div class="card shadow-sm border-0 h-100 p-3 card-stat-box">
                 <div class="d-flex align-items-center">
                     <div class="bg-success bg-opacity-10 p-3 rounded-3 me-3 text-success"><i class="fas fa-check-circle"></i></div>
                     <div>
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">ACCEPTÉES</small>
+                        <small class="text-muted text-uppercase fw-bold d-block font-size-07">ACCEPTÉES</small>
                         <h4 class="mb-0 fw-bold">{{ $acceptees }}</h4>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3" style="border-radius: 15px;">
+            <div class="card shadow-sm border-0 h-100 p-3 card-stat-box">
                 <div class="d-flex align-items-center">
                     <div class="bg-danger bg-opacity-10 p-3 rounded-3 me-3 text-danger"><i class="fas fa-times-circle"></i></div>
                     <div>
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">REFUSÉES</small>
+                        <small class="text-muted text-uppercase fw-bold d-block font-size-07">REFUSÉES</small>
                         <h4 class="mb-0 fw-bold">{{ $refusees }}</h4>
                     </div>
                 </div>
@@ -88,10 +84,10 @@
         <h5 class="fw-bold text-dark mb-3 d-flex align-items-center">
             <span class="p-2 bg-warning bg-opacity-10 rounded-3 me-2 text-warning"><i class="fas fa-clock"></i></span>
             Demandes en Attente de Traitement
-            <span class="badge bg-warning text-dark ms-2 rounded-pill small" style="font-size: 0.7rem;">{{ $enAttenteList->count() }}</span>
+            <span class="badge bg-warning text-dark ms-2 rounded-pill small badge-rejet-count">{{ $enAttenteList->count() }}</span>
         </h5>
         
-        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+        <div class="card shadow-sm border-0 card-rejet-list">
             @if($enAttenteList->isEmpty())
                 <div class="card-body text-center py-5">
                     <div class="bg-light d-inline-block p-4 rounded-circle mb-3">
@@ -132,7 +128,7 @@
                                         <div class="small text-muted">{{ $demande->dossier->client->telephone ?? '—' }}</div>
                                     </td>
                                     <td>
-                                        <div class="small text-dark fw-medium" style="max-width: 300px; white-space: normal;">
+                                        <div class="small text-dark fw-medium raison-column-wrap">
                                             {{ $demande->raison }}
                                         </div>
                                     </td>
@@ -161,7 +157,7 @@
                     {{-- Modal Approuver --}}
                     <div class="modal fade text-start" id="modalApprouver{{ $demande->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                            <div class="modal-content border-0 shadow-lg modal-content-rejet">
                                 <div class="modal-header border-0 pb-0 pt-4 px-4">
                                     <h5 class="modal-title fw-bold text-success d-flex align-items-center">
                                         <i class="fas fa-check-circle me-2"></i> Approuver le retrait
@@ -174,7 +170,7 @@
                                         <p class="text-muted small">En approuvant, le dossier sera désaffecté du technicien actuel et réassigné au nouveau technicien sélectionné.</p>
                                         
                                         <div class="mb-3">
-                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Nouveau Technicien Réaffecté <span class="text-danger">*</span></label>
+                                            <label class="form-label small fw-bold text-muted text-uppercase font-size-06">Nouveau Technicien Réaffecté <span class="text-danger">*</span></label>
                                             <select name="new_technicien_id" class="form-select bg-light border-0" required>
                                                 <option value="" disabled selected>-- Choisir un nouveau technicien --</option>
                                                 @foreach($techniciens as $tech)
@@ -188,7 +184,7 @@
                                         </div>
 
                                         <div class="mb-0">
-                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Commentaire d'approbation <span class="text-danger">*</span></label>
+                                            <label class="form-label small fw-bold text-muted text-uppercase font-size-06">Commentaire d'approbation <span class="text-danger">*</span></label>
                                             <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" required placeholder="Saisissez le motif de réaffectation..."></textarea>
                                         </div>
                                     </div>
@@ -204,7 +200,7 @@
                     {{-- Modal Refuser --}}
                     <div class="modal fade text-start" id="modalRefuser{{ $demande->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                            <div class="modal-content border-0 shadow-lg modal-content-rejet">
                                 <div class="modal-header border-0 pb-0 pt-4 px-4">
                                     <h5 class="modal-title fw-bold text-danger d-flex align-items-center">
                                         <i class="fas fa-times-circle me-2"></i> Refuser le retrait
@@ -216,7 +212,7 @@
                                     <div class="modal-body p-4">
                                         <p class="text-muted small">Veuillez justifier votre refus.</p>
                                         <div class="mb-0">
-                                            <label class="form-label small fw-bold text-muted text-uppercase" style="font-size: 0.6rem;">Motif du refus (Requis)</label>
+                                            <label class="form-label small fw-bold text-muted text-uppercase font-size-06">Motif du refus (Requis)</label>
                                             <textarea name="commentaire_admin" class="form-control bg-light border-0" rows="3" required placeholder="Ex: Expertise requise indispensable..."></textarea>
                                         </div>
                                     </div>
@@ -238,10 +234,10 @@
         <h5 class="fw-bold text-muted mb-3 d-flex align-items-center">
             <span class="p-2 bg-light rounded-3 me-2 text-muted"><i class="fas fa-history"></i></span>
             Historique des Demandes Traitées
-            <span class="badge bg-light text-muted ms-2 rounded-pill small" style="font-size: 0.7rem;">{{ $historiqueList->count() }}</span>
+            <span class="badge bg-light text-muted ms-2 rounded-pill small badge-rejet-count">{{ $historiqueList->count() }}</span>
         </h5>
 
-        <div class="card shadow-sm border-0" style="border-radius: 15px; opacity: 0.85;">
+        <div class="card shadow-sm border-0 historique-card">
             @if($historiqueList->isEmpty())
                 <div class="card-body text-center py-4">
                     <p class="text-muted small mb-0">Aucun historique disponible.</p>
@@ -283,12 +279,12 @@
                                                 'REFUSE' => ['class' => 'bg-danger text-white', 'label' => 'REFUSÉ']
                                             ][$demande->statut] ?? ['class' => 'bg-secondary text-white', 'label' => $demande->statut];
                                         @endphp
-                                        <span class="badge rounded-pill {{ $hStatus['class'] }} px-2 py-1 small fw-bold" style="font-size: 0.6rem;">
+                                        <span class="badge rounded-pill {{ $hStatus['class'] }} px-2 py-1 small fw-bold badge-historique-status">
                                             {{ $hStatus['label'] }}
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="small text-muted italic" style="max-width: 400px; white-space: normal;">
+                                        <div class="small text-muted italic commentaire-admin-column">
                                             {{ $demande->commentaire_admin ?: '—' }}
                                         </div>
                                     </td>

@@ -118,40 +118,56 @@
 
 <body>
     <div class="invoice-box">
-        <div class="header">
-            <div class="company-info">
-                @if($company && $company->logo)
-                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo"
-                        style="max-height: 120px; margin-bottom: 8px;"><br>
-                @else
-                    <div class="company-name">{{ optional($company)->nom_societe ?? 'MAISON TEL' }}</div>
-                @endif
-                <div>{{ optional($company)->adresse ?? 'Adresse non configurée' }}</div>
-                <div>Tél : {{ optional($company)->telephone ?? '—' }} @if($company && $company->email) | Email : {{ $company->email }} @endif
-                </div>
-                @if($company && $company->numero_fiscal)
-                    <div style="margin-top: 3px; font-weight: bold;">MF/RC : {{ $company->numero_fiscal }}</div>
-                @endif
-            </div>
-            <div class="invoice-info">
-                <div class="invoice-title">DEVIS DE RÉPARATION</div>
-                <div style="font-size: 18px; font-weight: bold; margin: 5px 0; color: #2563eb;">#{{ $devis->numero }}
-                </div>
-                <div>Date : {{ \Carbon\Carbon::parse($devis->created_at)->format('d/m/Y') }}</div>
-                <div>Validité : 30 jours</div>
-                <div>Dossier : #{{ $devis->dossier->num_dossier }}</div>
-            </div>
-            <div class="clear"></div>
-        </div>
+        <table style="width: 100%; border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px;">
+            <tr>
+                <td style="width: 55%; vertical-align: top;">
+                    @if($company && $company->logo)
+                        <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 80px; margin-bottom: 8px;"><br>
+                    @else
+                        <div class="company-name" style="font-size: 22px; font-weight: bold; color: #2563eb; margin-bottom: 5px;">{{ optional($company)->nom_societe ?? 'MAISON TEL' }}</div>
+                    @endif
+                    <div style="color: #555; font-size: 11px; line-height: 1.4;">
+                        {{ optional($company)->adresse ?? 'Adresse non configurée' }}<br>
+                        Tél : {{ optional($company)->telephone ?? '—' }} @if($company && $company->email) | Email : {{ $company->email }} @endif
+                        @if($company && $company->numero_fiscal)
+                            <br>Matricule Fiscal : {{ $company->numero_fiscal }}
+                        @endif
+                    </div>
+                </td>
+                <td style="width: 45%; text-align: right; vertical-align: top;">
+                    <div class="invoice-title" style="font-size: 22px; font-weight: bold; color: #2563eb; margin-bottom: 5px;">DEVIS DE RÉPARATION</div>
+                    <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 5px;">#{{ $devis->numero }}</div>
+                    <div style="color: #555; font-size: 11px; line-height: 1.4;">
+                        Date : {{ \Carbon\Carbon::parse($devis->created_at)->format('d/m/Y') }}<br>
+                        Validité : 30 jours<br>
+                        Dossier : #{{ $devis->dossier->num_dossier }}
+                    </div>
+                </td>
+            </tr>
+        </table>
 
         <div class="client-info">
-            <div
-                style="font-weight: bold; color: #2563eb; margin-bottom: 5px; font-size: 10px; text-transform: uppercase;">
-                CLIENT :</div>
-            <div style="font-size: 13px; font-weight: bold; color: #1a2332;">{{ $devis->dossier->client->name ?? '—' }}
+            <div style="float: left; width: 50%;">
+                <div style="font-weight: bold; color: #2563eb; margin-bottom: 5px; font-size: 10px; text-transform: uppercase;">CLIENT :</div>
+                <div style="font-size: 13px; font-weight: bold; color: #1a2332;">{{ $devis->dossier->client->name ?? '—' }}</div>
+                @if($devis->dossier->client->email)
+                    <div style="margin-top: 3px;">Email : {{ $devis->dossier->client->email }}</div>
+                @endif
+                <div style="margin-top: 3px;">Tél : {{ $devis->dossier->client->telephone ?? '—' }}</div>
             </div>
-            <div style="margin-top: 3px;">Tél : {{ $devis->dossier->client->telephone ?? '—' }}</div>
-            <div>Appareil : <strong>{{ $devis->dossier->appareil->modele ?? '—' }}</strong></div>
+            <div style="float: right; width: 50%; text-align: right;">
+                <div style="font-weight: bold; color: #2563eb; margin-bottom: 5px; font-size: 10px; text-transform: uppercase;">APPAREIL & IDENTIFICATION :</div>
+                <div style="font-size: 13px; font-weight: bold; color: #1a2332;">{{ $devis->dossier->appareil->modele ?? '—' }}</div>
+                <div style="margin-top: 3px;">IMEI : <span style="font-family: monospace;">{{ $devis->dossier->imei ?? '—' }}</span></div>
+                @if($devis->dossier->garantie_annulee)
+                    <div style="color: #f59e0b; font-weight: bold; margin-top: 5px; font-size: 10px;">[GARANTIE EXCLUE]</div>
+                @elseif($devis->dossier->sous_garantie)
+                    <div style="color: #16a34a; font-weight: bold; margin-top: 5px; font-size: 10px;">[SOUS GARANTIE]</div>
+                @else
+                    <div style="color: #dc2626; font-weight: bold; margin-top: 5px; font-size: 10px;">[HORS GARANTIE]</div>
+                @endif
+            </div>
+            <div class="clear"></div>
         </div>
 
         <table class="table">
@@ -200,6 +216,12 @@
             </div>
         </div>
         <div class="clear"></div>
+
+        <div style="margin-top: 50px; border-top: 1px dashed #ddd; padding-top: 15px;">
+            <p style="font-size: 10px; color: #555; line-height: 1.5; font-style: italic; margin: 0;">
+                * <strong>Note importante :</strong> Ce devis est établi sur la base d'une expertise technique initiale. Les tarifs indiqués (pièces et main-d'œuvre) sont susceptibles d'être ajustés ou modifiés en cas de constatation d'autres pannes ou anomalies cachées lors du démontage ou de la phase active de réparation. Si un ajustement de prix s'avère nécessaire, le client en sera informé pour approbation avant toute intervention complémentaire.
+            </p>
+        </div>
 
         <div class="footer">
             {{ optional($company)->nom_societe ?? 'MAISON TEL' }} — {{ optional($company)->numero_fiscal ?? '' }} —

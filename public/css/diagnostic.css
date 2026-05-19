@@ -108,3 +108,93 @@
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+.alert-diagnostic-danger {
+    border-radius: 12px !important;
+    background-color: #fef2f2 !important;
+    border-left: 4px solid #ef4444 !important;
+}
+
+.line-height-16 {
+    line-height: 1.6 !important;
+}
+
+.card-diagnostic-sidebar {
+    border-radius: 16px !important;
+    top: 1.5rem !important;
+}
+
+.card-diagnostic-box {
+    border-radius: 16px !important;
+}
+
+.cursor-pointer-custom {
+    cursor: pointer !important;
+}
+
+.font-size-065 {
+    font-size: 0.65rem !important;
+}
+
+.letter-spacing-05 {
+    letter-spacing: 0.5px !important;
+}
+
+.w-col-120 {
+    width: 120px !important;
+}
+
+.w-col-50 {
+    width: 50px !important;
+}
+
+.w-col-180 {
+    width: 180px !important;
+}
+
+.btn-remove-circle {
+    width: 32px !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.status-selector-oui {
+    --btn-color: #10b981 !important;
+    --btn-bg: #f0fdf4 !important;
+}
+
+.status-selector-non {
+    --btn-color: #ef4444 !important;
+    --btn-bg: #fef2f2 !important;
+}
+
+.display-none {
+    display: none !important;
+}
+
+.font-size-075 {
+    font-size: 0.75rem !important;
+}
+
+.modal-diagnostic-radius {
+    border-radius: 20px !important;
+}
+
+.container-max-1000 {
+    max-width: 1000px !important;
+}
+
+.card-diagnostic-show-box {
+    border-radius: 14px !important;
+}
+
+.constat-body {
+    min-height: 100px !important;
+}
+
+.recommandation-body {
+    background: #fffbeb !important;
+    border: 1px solid #fde68a !important;
+}
+

@@ -121,3 +121,61 @@
         font-size: 1.75rem;
     }
 }
+
+/* Classes additionnelles pour éliminer les styles en ligne */
+.card-stats-rounded {
+    border-radius: 15px !important;
+}
+
+.label-stats-caps {
+    font-size: 0.65rem !important;
+}
+
+.kpi-gradient-blue {
+    border-radius: 15px !important;
+    background: linear-gradient(135deg, #1e40af, #3b82f6) !important;
+}
+
+.kpi-gradient-green {
+    border-radius: 15px !important;
+    background: linear-gradient(135deg, #065f46, #10b981) !important;
+}
+
+.kpi-gradient-orange {
+    border-radius: 15px !important;
+    background: linear-gradient(135deg, #92400e, #f59e0b) !important;
+}
+
+.kpi-gradient-red {
+    border-radius: 15px !important;
+    background: linear-gradient(135deg, #991b1b, #ef4444) !important;
+}
+
+.kpi-caps-title {
+    font-size: 0.65rem !important;
+    opacity: 0.8 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.kpi-subtitle {
+    opacity: 0.7 !important;
+}
+
+.kpi-bg-icon {
+    right: -10px !important;
+    bottom: -10px !important;
+    font-size: 5rem !important;
+    opacity: 0.1 !important;
+}
+
+.small-currency {
+    font-size: 1rem !important;
+}
+
+.chart-height-wrapper {
+    height: 300px !important;
+}
+
+.table-header-micro {
+    font-size: 0.6rem !important;
+}

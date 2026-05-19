@@ -90,3 +90,45 @@
     font-size: 2.25rem;
     letter-spacing: -0.5px;
 }
+
+.card-devis-box-15 {
+    border-radius: 15px !important;
+}
+
+.sticky-devis-top {
+    position: sticky !important;
+    top: 20px !important;
+    z-index: 10;
+}
+
+.w-col-35 {
+    width: 35% !important;
+}
+
+.w-col-20 {
+    width: 20% !important;
+}
+
+.w-col-15 {
+    width: 15% !important;
+}
+
+.w-col-10 {
+    width: 10% !important;
+}
+
+.w-col-50 {
+    width: 50% !important;
+}
+
+.w-col-30 {
+    width: 30% !important;
+}
+
+.font-size-08 {
+    font-size: 0.8rem !important;
+}
+
+.font-size-06 {
+    font-size: 0.6rem !important;
+}

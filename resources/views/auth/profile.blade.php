@@ -3,7 +3,7 @@
 @section('title', 'Mon Profil')
 
 @section('content')
-    <div class="container-fluid" style="max-width: 600px;">
+    <div class="container-fluid profile-container">
         <div class="mb-4">
             <h1 class="h3 fw-bold mb-1">Mon Profil</h1>
             <p class="text-muted">Gérez vos informations personnelles et votre mot de passe.</p>
@@ -26,7 +26,7 @@
             </div>
         @endif
 
-        <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+        <div class="card border-0 shadow-sm profile-card">
             <div class="card-body p-4">
                 <form action="{{ route('profile.update') }}" method="POST">
                     @csrf

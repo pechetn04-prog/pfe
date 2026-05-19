@@ -2,9 +2,7 @@
 
 @section('title', 'Expertise & Diagnostic Technique')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/diagnostic-premium.css') }}">
-@endpush
+
 
 
 @section('content')
@@ -32,7 +30,7 @@
             <div class="row g-4">
                 {{-- SIDEBAR: Infos Dossier --}}
                 <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm sticky-top" style="border-radius:16px; top:1.5rem;">
+                    <div class="card border-0 shadow-sm sticky-top card-diagnostic-sidebar">
                         <div class="card-header bg-white border-0 py-3">
                             <h6 class="m-0 fw-bold d-flex align-items-center gap-2">
                                 <i class="fas fa-info-circle text-primary"></i> RÉSUMÉ DU DOSSIER
@@ -75,19 +73,19 @@
                     </div>
 
                     {{-- PIÈCE JOINTE --}}
-                    <div class="card border-0 shadow-sm mt-4" style="border-radius:16px;">
+                    <div class="card border-0 shadow-sm mt-4 card-diagnostic-box">
                         <div class="card-header bg-white border-0 py-3 text-center">
                             <h6 class="m-0 fw-bold text-muted small text-uppercase">
                                 <i class="fas fa-camera text-primary me-2"></i>PIÈCE JOINTE
                             </h6>
                         </div>
                         <div class="card-body p-4 pt-0 text-center">
-                            <div class="upload-area border border-2 border-dashed rounded-4 p-4 bg-light mb-2 cursor-pointer position-relative" style="transition: all 0.3s;">
+                            <div class="upload-area border border-2 border-dashed rounded-4 p-4 bg-light mb-2 cursor-pointer position-relative">
                                 <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
                                 <div class="small fw-bold text-dark" id="file-label">Choisir une photo</div>
-                                <input type="file" name="photo_panne" id="photo_panne" class="position-absolute w-100 h-100 top-0 start-0 opacity-0" style="cursor: pointer;" accept="image/*">
+                                <input type="file" name="photo_panne" id="photo_panne" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer-custom" accept="image/*">
                             </div>
-                            <small class="text-muted small" style="font-size: 0.65rem;">Photo du constat technique ou justificatif</small>
+                            <small class="text-muted small font-size-065">Photo du constat technique ou justificatif</small>
                         </div>
                     </div>
                 </div>
@@ -96,7 +94,7 @@
                 <div class="col-lg-8">
                     <div class="d-flex flex-column gap-4">
                         {{-- 1. Constat & Recommandation --}}
-                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                        <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div class="card-header bg-white border-0 py-3">
                                 <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
                                     <i class="fas fa-stethoscope me-2"></i>1. ANALYSE TECHNIQUE
@@ -122,7 +120,7 @@
                         </div>
 
                         {{-- 2. Pièces Détachées --}}
-                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                        <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div
                                 class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                                 <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
@@ -136,12 +134,11 @@
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table table-borderless align-middle mb-0" id="pieces-table">
-                                        <thead class="small text-muted text-uppercase bg-light"
-                                            style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                                        <thead class="small text-muted text-uppercase bg-light font-size-065 letter-spacing-05">
                                             <tr>
                                                 <th class="ps-4">RÉFÉRENCE / DÉSIGNATION</th>
-                                                <th class="text-center" style="width: 120px;">QUANTITÉ</th>
-                                                <th class="text-end pe-4" style="width: 50px;"></th>
+                                                <th class="text-center w-col-120">QUANTITÉ</th>
+                                                <th class="text-end pe-4 w-col-50"></th>
                                             </tr>
                                         </thead>
                                         <tbody class="border-top border-light">
@@ -164,8 +161,7 @@
                                                 </td>
                                                 <td class="text-end pe-4">
                                                     <button type="button"
-                                                        class="btn btn-light btn-sm rounded-circle shadow-sm remove-row"
-                                                        style="width: 32px; height: 32px;">
+                                                        class="btn btn-light btn-sm rounded-circle shadow-sm remove-row btn-remove-circle">
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </td>
@@ -177,7 +173,7 @@
                         </div>
 
                         {{-- 3. Main d'œuvre --}}
-                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                        <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div
                                 class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                                 <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
@@ -191,12 +187,11 @@
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table table-borderless align-middle mb-0" id="presta-table">
-                                        <thead class="small text-muted text-uppercase bg-light"
-                                            style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                                        <thead class="small text-muted text-uppercase bg-light font-size-065 letter-spacing-05">
                                             <tr>
                                                 <th class="ps-4">DÉSIGNATION PRESTATION</th>
-                                                <th class="text-center" style="width: 180px;">MONTANT (DT)</th>
-                                                <th class="text-end pe-4" style="width: 50px;"></th>
+                                                <th class="text-center w-col-180">MONTANT (DT)</th>
+                                                <th class="text-end pe-4 w-col-50"></th>
                                             </tr>
                                         </thead>
                                         <tbody class="border-top border-light">
@@ -215,8 +210,7 @@
                                                 <td class="text-center fw-bold text-primary price-display h6 mb-0">—</td>
                                                 <td class="text-end pe-4">
                                                     <button type="button"
-                                                        class="btn btn-light btn-sm rounded-circle shadow-sm remove-row"
-                                                        style="width: 32px; height: 32px;">
+                                                        class="btn btn-light btn-sm rounded-circle shadow-sm remove-row btn-remove-circle">
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </td>
@@ -228,7 +222,7 @@
                         </div>
 
                         {{-- 4. Décision & Validation --}}
-                        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                        <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div class="card-body p-4">
                                 <label class="small fw-bold text-uppercase text-muted mb-3 d-block">Est ce que on peut
                                     reparer appareil?</label>
@@ -239,8 +233,8 @@
                                                 <input type="radio" class="btn-check" name="is_reparable" id="rep_oui"
                                                     value="1" checked>
                                                 <label
-                                                    class="btn btn-light border-0 w-100 p-3 text-start rounded-4 status-selector"
-                                                    for="rep_oui" style="--btn-color: #10b981; --btn-bg: #f0fdf4;">
+                                                    class="btn btn-light border-0 w-100 p-3 text-start rounded-4 status-selector status-selector-oui"
+                                                    for="rep_oui">
                                                     <div class="d-flex align-items-center">
                                                         <div class="icon-circle me-3"><i class="fas fa-check"></i></div>
                                                         <div>
@@ -254,8 +248,8 @@
                                                 <input type="radio" class="btn-check" name="is_reparable" id="rep_non"
                                                     value="0">
                                                 <label
-                                                    class="btn btn-light border-0 w-100 p-3 text-start rounded-4 status-selector"
-                                                    for="rep_non" style="--btn-color: #ef4444; --btn-bg: #fef2f2;">
+                                                    class="btn btn-light border-0 w-100 p-3 text-start rounded-4 status-selector status-selector-non"
+                                                    for="rep_non">
                                                     <div class="d-flex align-items-center">
                                                         <div class="icon-circle me-3"><i class="fas fa-times"></i></div>
                                                         <div>
@@ -278,15 +272,15 @@
                                                         EXCLUSION DE GARANTIE
                                                     </label>
                                                 </div>
-                                                <div id="exclusion-details" style="display: none;">
-                                                    <select name="motif_exclusion" class="form-select form-select-sm bg-white border-danger border-opacity-25 mb-2" style="font-size: 0.75rem;">
+                                                <div id="exclusion-details" class="display-none">
+                                                    <select name="motif_exclusion" class="form-select form-select-sm bg-white border-danger border-opacity-25 mb-2 font-size-075">
                                                         <option value="Usage non conforme">Usage non conforme</option>
                                                         <option value="Choc / Casse">Choc / Casse</option>
                                                         <option value="Oxydation / Humidité">Oxydation / Humidité</option>
                                                         <option value="Tentative de réparation tierce">Tentative de réparation tierce</option>
                                                         <option value="Autre">Autre</option>
                                                     </select>
-                                                    <textarea name="exclusion_commentaire" class="form-control form-control-sm border-danger border-opacity-25" rows="2" placeholder="Précisez le motif de l'exclusion..." style="font-size: 0.75rem;"></textarea>
+                                                    <textarea name="exclusion_commentaire" class="form-control form-control-sm border-danger border-opacity-25 font-size-075" rows="2" placeholder="Précisez le motif de l'exclusion..."></textarea>
                                                 </div>
                                                 <small class="text-muted d-block mt-auto" id="exclusion-hint">Usage non conforme (Choc,
                                                     Humidité...)</small>
@@ -310,7 +304,7 @@
     {{-- MODAL : Retrait du dossier --}}
     <div class="modal fade" id="modalRetrait" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+            <div class="modal-content border-0 shadow modal-diagnostic-radius">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-danger">Motif du retrait</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

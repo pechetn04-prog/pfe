@@ -2,9 +2,7 @@
 
 @section('title', 'Établir un Devis - Dossier #' . $dossier->num_dossier)
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/devis-premium.css') }}">
-@endpush
+
 
 @section('content')
 <div class="container-fluid">
@@ -26,7 +24,7 @@
                 <div class="row g-4">
                     <div class="col-md-8">
                         {{-- Section 1 : Pièces --}}
-                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                        <div class="card border-0 shadow-sm mb-4 card-devis-box-15">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
                                 <div class="bg-soft-primary p-2 rounded-3 me-3">
                                     <i class="fas fa-microchip text-primary"></i>
@@ -38,11 +36,11 @@
                                     <table class="table table-hover align-middle" id="piecesTable">
                                         <thead class="bg-light">
                                             <tr class="small text-muted text-uppercase">
-                                                <th style="width: 35%;">Désignation</th>
-                                                <th style="width: 20%;">P.U (DT)</th>
-                                                <th style="width: 15%;">Qté</th>
-                                                <th style="width: 20%;">Total</th>
-                                                <th style="width: 10%;" class="text-end">Actions</th>
+                                                <th class="w-col-35">Désignation</th>
+                                                <th class="w-col-20">P.U (DT)</th>
+                                                <th class="w-col-15">Qté</th>
+                                                <th class="w-col-20">Total</th>
+                                                <th class="text-end w-col-10">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -77,7 +75,7 @@
                         </div>
  
                         {{-- Section 2 : Prestations --}}
-                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                        <div class="card border-0 shadow-sm mb-4 card-devis-box-15">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
                                 <div class="bg-soft-info p-2 rounded-3 me-3">
                                     <i class="fas fa-hand-holding-heart text-info"></i>
@@ -89,9 +87,9 @@
                                     <table class="table table-hover align-middle" id="laborsTable">
                                         <thead class="bg-light">
                                             <tr class="small text-muted text-uppercase">
-                                                <th style="width: 50%;">Type d'intervention</th>
-                                                <th style="width: 30%;" class="text-center">Montant (DT)</th>
-                                                <th style="width: 20%;" class="text-end">Actions</th>
+                                                <th class="w-col-50">Type d'intervention</th>
+                                                <th class="text-center w-col-30">Montant (DT)</th>
+                                                <th class="text-end w-col-20">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -124,7 +122,7 @@
 
                     <div class="col-md-4">
                         {{-- Récapitulatif Financier --}}
-                        <div class="card border-0 shadow-sm sticky-top" style="border-radius: 15px; top: 20px;">
+                        <div class="card border-0 shadow-sm sticky-top card-devis-box-15 sticky-devis-top">
                             <div class="card-body p-4">
                                 <h6 class="fw-bold text-dark mb-4">Résumé du Devis</h6>
                                 

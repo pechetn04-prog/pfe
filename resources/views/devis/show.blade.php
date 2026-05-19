@@ -2,9 +2,7 @@
 
 @section('title', 'Devis #' . $devis->numero)
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/devis-premium.css') }}">
-@endpush
+
 
 @section('content')
 <div class="container-fluid">
@@ -38,7 +36,7 @@
 
             <div class="row g-4">
                 <div class="col-md-8">
-                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                    <div class="card border-0 shadow-sm mb-4 card-devis-box-15">
                         <div class="card-body p-4">
                             <div class="d-flex justify-content-between mb-5">
                                 <div>
@@ -49,7 +47,7 @@
                                 </div>
                                 <div class="text-end">
                                     <h6 class="text-muted text-uppercase small fw-bold mb-3">STATUT DU DEVIS</h6>
-                                    <span class="badge bg-{{ $badgeColor }} rounded-pill px-4 py-2 mb-2" style="font-size: 0.8rem;">
+                                    <span class="badge bg-{{ $badgeColor }} rounded-pill px-4 py-2 mb-2 font-size-08">
                                         {{ $devis->statut }}
                                     </span>
                                     <p class="text-muted mb-0 small">Créé le : {{ $devis->date_creation ? $devis->date_creation->format('d/m/Y') : $devis->created_at->format('d/m/Y') }}</p>
@@ -60,7 +58,7 @@
                                 <table class="table table-hover align-middle mb-4">
                                     <thead class="bg-light">
                                         <tr class="small text-muted text-uppercase">
-                                            <th style="width: 50%;">Désignation</th>
+                                            <th class="w-col-50">Désignation</th>
                                             <th class="text-center">Qté</th>
                                             <th class="text-end">P.U (DT)</th>
                                             <th class="text-end">Total (DT)</th>
@@ -85,7 +83,7 @@
                                         <tr>
                                             <td>
                                                 <div class="fw-bold text-dark">{{ $tarif->type_intervention }}</div>
-                                                <small class="text-muted text-uppercase" style="font-size: 0.6rem;">Main d'œuvre</small>
+                                                <small class="text-muted text-uppercase font-size-06">Main d'œuvre</small>
                                             </td>
                                             <td class="text-center">1</td>
                                             <td class="text-end">{{ number_format($tarif->pivot->montant, 3, '.', ' ') }}</td>
@@ -107,7 +105,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card border-0 shadow-sm card-devis-box-15">
                         <div class="card-body p-4">
                             <h6 class="fw-bold mb-3">Détails Appareil</h6>
                             <div class="d-flex align-items-center mb-3">

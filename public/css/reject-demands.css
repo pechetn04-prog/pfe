@@ -52,3 +52,104 @@
     letter-spacing: 0.5px;
     font-weight: 700;
 }
+
+/* Classes pour éliminer le CSS en ligne des demandes de réaffectation */
+.badge-header-total {
+    font-size: 0.8rem !important;
+}
+
+.card-reaffectation-pending {
+    border-radius: 15px !important;
+    border-left: 4px solid #f59e0b !important;
+}
+
+.card-reaffectation-history {
+    border-radius: 15px !important;
+}
+
+.icon-reaffectation-box {
+    width: 32px !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.table-head-uppercase {
+    font-size: 0.75rem !important;
+}
+
+.imei-text-sub {
+    font-size: 0.7rem !important;
+}
+
+.time-text-sub {
+    font-size: 0.65rem !important;
+}
+
+.raison-text-wrap {
+    max-width: 350px !important;
+    word-break: break-word !important;
+}
+
+.raison-text-wrap-history {
+    max-width: 300px !important;
+    word-break: break-word !important;
+}
+
+.badge-reaffectation-status {
+    font-size: 0.75rem !important;
+}
+
+.badge-reaffectation-status i {
+    font-size: 0.5rem !important;
+}
+
+.commentaire-admin-text {
+    max-width: 250px !important;
+    word-break: break-word !important;
+}
+
+/* Classes pour éliminer le CSS en ligne de l'administration des demandes de retrait */
+.card-stat-box {
+    border-radius: 15px !important;
+}
+
+.font-size-07 {
+    font-size: 0.7rem !important;
+}
+
+.font-size-06 {
+    font-size: 0.6rem !important;
+}
+
+.badge-rejet-count {
+    font-size: 0.7rem !important;
+}
+
+.card-rejet-list {
+    border-radius: 15px !important;
+}
+
+.raison-column-wrap {
+    max-width: 300px !important;
+    white-space: normal !important;
+}
+
+.modal-content-rejet {
+    border-radius: 20px !important;
+}
+
+.historique-card {
+    border-radius: 15px !important;
+    opacity: 0.85 !important;
+}
+
+.badge-historique-status {
+    font-size: 0.6rem !important;
+}
+
+.commentaire-admin-column {
+    max-width: 400px !important;
+    white-space: normal !important;
+}

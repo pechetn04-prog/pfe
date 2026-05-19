@@ -27,17 +27,18 @@ class AgentDashboardController extends Controller
         // 1. STATISTIQUES OPÉRATIONNELLES (KPIs)
         // ---------------------------------------------------------
         $stats = [
-            'total'            => Dossier::count(),
-            'recu'             => Dossier::where('statut', 'RECU')->count(),
-            'affecte'          => Dossier::where('statut', 'AFFECTE')->count(),
-            'en_diagnostic'    => Dossier::where('statut', 'EN_DIAGNOSTIC')->count(),
-            'attente_devis'    => Dossier::where('statut', 'EN_ATTENTE_DEVIS')->count(),
-            'en_reparation'    => Dossier::where('statut', 'EN_REPARATION')->count(),
-            'attente_pieces'   => Dossier::where('statut', 'ATTENTE_PIECE')->count(),
-            'prets'            => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE'])->count(),
-            'prets_aujourdhui' => Dossier::whereIn('statut', ['REPARE', 'FACTURE'])->whereDate('date_reparation', now())->count(),
-            'facture'          => Dossier::where('statut', 'FACTURE')->count(),
-            'cloture'          => Dossier::where('statut', 'CLOTURE')->count(),
+            'total'                => Dossier::count(),
+            'recu'                 => Dossier::where('statut', 'RECU')->count(),
+            'affecte'              => Dossier::where('statut', 'AFFECTE')->count(),
+            'en_diagnostic'        => Dossier::where('statut', 'EN_DIAGNOSTIC')->count(),
+            'attente_devis'        => Dossier::where('statut', 'EN_ATTENTE_DEVIS')->count(),
+            'en_reparation'        => Dossier::where('statut', 'EN_REPARATION')->count(),
+            'attente_pieces'       => Dossier::where('statut', 'ATTENTE_PIECE')->count(),
+            'prets'                => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE'])->count(),
+            'prets_aujourdhui'     => Dossier::whereIn('statut', ['REPARE', 'FACTURE'])->whereDate('date_reparation', now())->count(),
+            'attente_remplacement' => Dossier::where('statut', 'ATTENTE_VALIDATION_REMPLACEMENT')->count(),
+            'facture'              => Dossier::where('statut', 'FACTURE')->count(),
+            'cloture'              => Dossier::where('statut', 'CLOTURE')->count(),
         ];
 
         // Calcul des pourcentages par rapport au volume total
@@ -48,16 +49,14 @@ class AgentDashboardController extends Controller
 
         // Configuration visuelle des indicateurs clés (KPIs)
         $all_kpis = [
-            ['label' => 'Total Tickets',  'val' => $stats['total'],            'icon' => 'fa-folder-open',          'class' => 'bg-soft-primary'],
-            ['label' => 'À Affecter',     'val' => $stats['recu'],             'icon' => 'fa-plus-square',          'class' => 'bg-soft-secondary'],
-            ['label' => 'Diagnostic',     'val' => $stats['en_diagnostic'],    'icon' => 'fa-microscope',           'class' => 'bg-soft-warning'],
-            ['label' => 'Attente Devis',  'val' => $stats['attente_devis'],    'icon' => 'fa-file-invoice-dollar',  'class' => 'bg-soft-warning'],
-            ['label' => 'En Réparation',  'val' => $stats['en_reparation'],    'icon' => 'fa-tools',                'class' => 'bg-soft-info'],
-            ['label' => 'Attente Pièces', 'val' => $stats['attente_pieces'],   'icon' => 'fa-hourglass-half',       'class' => 'bg-soft-danger'],
-            ['label' => 'Réparés / Jour', 'val' => $stats['prets_aujourdhui'], 'icon' => 'fa-check-circle',         'class' => 'bg-soft-success'],
-            ['label' => 'Prêts à livrer', 'val' => $stats['prets'],            'icon' => 'fa-hand-holding-heart',   'class' => 'bg-soft-success'],
-            ['label' => 'Facturés',       'val' => $stats['facture'],          'icon' => 'fa-file-invoice',         'class' => 'bg-soft-primary'],
-            ['label' => 'Clôturés',       'val' => $stats['cloture'],          'icon' => 'fa-archive',              'class' => 'bg-soft-dark'],
+            ['label' => 'Total Tickets',  'val' => $stats['total'],                'icon' => 'fa-folder-open',          'class' => 'bg-soft-primary'],
+            ['label' => 'À Affecter',     'val' => $stats['recu'],                 'icon' => 'fa-plus-square',          'class' => 'bg-soft-secondary'],
+            ['label' => 'Attente Devis',  'val' => $stats['attente_devis'],        'icon' => 'fa-file-invoice-dollar',  'class' => 'bg-soft-warning'],
+            ['label' => 'Attente Remplacement', 'val' => $stats['attente_remplacement'], 'icon' => 'fa-exchange-alt', 'class' => 'bg-soft-warning'],
+            ['label' => 'Attente Pièces', 'val' => $stats['attente_pieces'],       'icon' => 'fa-hourglass-half',       'class' => 'bg-soft-danger'],
+            ['label' => 'Prêts à livrer', 'val' => $stats['prets'],                'icon' => 'fa-hand-holding-heart',   'class' => 'bg-soft-success'],
+            ['label' => 'Facturés',       'val' => $stats['facture'],              'icon' => 'fa-file-invoice',         'class' => 'bg-soft-primary'],
+            ['label' => 'Clôturés',       'val' => $stats['cloture'],              'icon' => 'fa-archive',              'class' => 'bg-soft-dark'],
         ];
 
         // ---------------------------------------------------------

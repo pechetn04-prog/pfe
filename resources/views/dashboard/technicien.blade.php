@@ -2,9 +2,7 @@
 
 @section('title', 'Tableau de bord Technicien')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-premium.css') }}">
-@endpush
+
 
 @section('content')
     <div class="container-fluid">
@@ -17,7 +15,7 @@
                     {{ now()->translatedFormat('d F Y') }}</small>
             </div>
             <div class="text-end">
-                <span class="badge bg-soft-info py-2 px-3 rounded-pill fw-bold" style="font-size: 0.8rem;">
+                <span class="badge bg-soft-info py-2 px-3 rounded-pill fw-bold font-size-08">
                     <i class="fas fa-microscope me-2"></i>{{ $dossiersEnCours }} Dossiers Actifs
                 </span>
             </div>
@@ -153,7 +151,7 @@
                         <h6 class="fw-bold mb-0 text-dark d-flex align-items-center">
                             <span class="p-2 bg-info bg-opacity-10 rounded-3 me-2"><i
                                     class="fas fa-history text-info"></i></span>
-                            Dernières activités
+                            Derniers dossiers
                         </h6>
                         <a href="{{ route('technicien.tickets') }}"
                             class="btn btn-sm btn-light border rounded-pill px-4 fw-bold">Historique Complet</a>
@@ -186,8 +184,7 @@
                                         </td>
                                         <td>
                                             <span
-                                                class="badge bg-{{ $d->garantie_color }} bg-opacity-10 text-{{ $d->garantie_color }} rounded-pill px-2 py-1"
-                                                style="font-size: 0.6rem; font-weight: 800;">
+                                                class="badge bg-{{ $d->garantie_color }} bg-opacity-10 text-{{ $d->garantie_color }} rounded-pill px-2 py-1 font-size-06 font-weight-800">
                                                 {{ $d->garantie_text }}
                                             </span>
                                         </td>

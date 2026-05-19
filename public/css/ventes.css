@@ -87,3 +87,41 @@
     border: none;
     padding-left: 20px;
 }
+
+/* Classes additionnelles pour éliminer le CSS en ligne */
+.btn-import-excel {
+    font-size: 0.8rem !important;
+    letter-spacing: 0.5px !important;
+}
+
+.alert-ventes-danger {
+    border-radius: 12px !important;
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+}
+
+.card-ventes-filter {
+    border-radius: 15px !important;
+}
+
+.btn-raz-ventes {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+}
+
+.modal-content-ventes {
+    border-radius: 20px !important;
+}
+
+.modal-structure-cols {
+    font-family: monospace !important;
+    font-size: 0.7rem !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    border-style: dashed !important;
+}
+
+.modal-info-text {
+    font-size: 0.7rem !important;
+    line-height: 1.4 !important;
+}

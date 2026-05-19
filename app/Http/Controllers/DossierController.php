@@ -43,6 +43,9 @@ class DossierController extends Controller
                     ->orWhereHas('client', function ($q2) use ($search) {
                         $q2->where('name', 'like', "%{$search}%")
                             ->orWhere('telephone', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('technicien', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
                     });
             });
         }
@@ -73,29 +76,6 @@ class DossierController extends Controller
             ['label' => 'EN RÉPARATION', 'val' => Dossier::where('statut', 'EN_REPARATION')->count(), 'icon' => 'fa-tools', 'color' => '#0ea5e9', 'bg' => '#f0f9ff'],
             ['label' => 'RÉPARÉS AUJOURD\'HUI', 'val' => Dossier::where('statut', 'REPARE')->whereDate('updated_at', now())->count(), 'icon' => 'fa-check-circle', 'color' => '#10b981', 'bg' => '#f0fdf4'],
         ];
-
-        $sMap = [
-            'RECU' => ['#f1f5f9', '#475569', 'RECU'],
-            'AFFECTE' => ['#3b82f6', '#ffffff', 'AFFECTE'],
-            'EN_DIAGNOSTIC' => ['#f59e0b', '#ffffff', 'DIAGNOSTIC'],
-            'EN_ATTENTE_DEVIS' => ['#6366f1', '#ffffff', 'ATTENTE DEVIS'],
-            'EN_REPARATION' => ['#0ea5e9', '#ffffff', 'REPARATION'],
-            'REPARE' => ['#10b981', '#ffffff', 'REPARE'],
-            'FACTURE' => ['#1e40af', '#ffffff', 'FACTURE'],
-            'LIVRE' => ['#16a34a', '#ffffff', 'RESTITUÉ'],
-            'CLOTURE' => ['#1e293b', '#ffffff', 'CLOTURE'],
-            'DEVIS_REFUSE' => ['#64748b', '#ffffff', 'DEVIS REFUSE'],
-            'IRREPARABLE' => ['#dc2626', '#ffffff', 'IRREPARABLE'],
-            'ANNULE' => ['#94a3b8', '#ffffff', 'ANNULE'],
-        ];
-
-        $dossiers->getCollection()->transform(function ($d) use ($sMap) {
-            $st = $sMap[$d->statut] ?? ['#f1f5f9', '#475569', $d->statut];
-            $d->statut_bg = $st[0];
-            $d->statut_color = $st[1];
-            $d->statut_text = $st[2];
-            return $d;
-        });
 
         return view('dossiers.index', compact('dossiers', 'stats_kpis'));
     }
@@ -188,7 +168,7 @@ class DossierController extends Controller
             $client->_plainPassword = $defaultPassword;
         } else {
             // Optionnel : Mettre à jour l'email si le client n'en avait pas
-            if (!$client->email || str_contains($client->email, '@maisontel.dz')) {
+            if (!$client->email || str_contains($client->email, '@maisontel')) {
                 if ($request->client_email) {
                     $client->update(['email' => $request->client_email]);
                 }
@@ -287,6 +267,7 @@ class DossierController extends Controller
             'diagnostic.pieces',
             'diagnostic.tarifsMo',
             'intervention.pieces',
+            'intervention.tarifsMo',
             'devis',
             'facture',
             'messages.user',
@@ -297,20 +278,48 @@ class DossierController extends Controller
         $action = ['icon' => 'fa-list-check', 'color' => '#1e69ff', 'title' => 'Action suivante recommandée', 'desc' => 'Suivez l\'avancement du dossier via les onglets ci-dessous.'];
 
         switch ($dossier->statut) {
-            case 'RECU': $action['desc'] = 'Affectation d\'un technicien requise.'; break;
-            case 'AFFECTE': $action['desc'] = 'Le diagnostic est prêt à être effectué.'; break;
-            case 'EN_DIAGNOSTIC': $action['desc'] = 'L\'expertise technique est en cours.'; break;
-            case 'EN_ATTENTE_DEVIS': $action['desc'] = 'Établissement du devis en attente.'; break;
-            case 'EN_REPARATION': $action['desc'] = 'Réparation en cours en atelier.'; break;
-            case 'REPARE': $action['desc'] = 'Appareil réparé, prêt pour facturation.'; break;
-            case 'ATTENTE_PIECE': $action['desc'] = 'Dossier en attente de pièces détachées.'; break;
-            case 'IRREPARABLE': $action['desc'] = 'Appareil déclaré irréparable.'; break;
-            case 'LIVRE': $action['desc'] = 'Appareil restitué, prêt pour clôture.'; break;
-            case 'CLOTURE': $action['desc'] = 'Dossier clôturé et archivé.'; break;
-            case 'ATTENTE_VALIDATION_REMPLACEMENT': $action['desc'] = 'Validation du remplacement requise.'; break;
-            case 'REMPLACEMENT_VALIDE': $action['desc'] = 'Remplacement validé, préparation en cours.'; break;
-            case 'REMPLACEMENT_REFUSE': $action['desc'] = 'Remplacement refusé, prêt pour restitution.'; break;
-            case 'DEVIS_REFUSE': $action['desc'] = 'Devis refusé, prêt pour restitution.'; break;
+            case 'RECU':
+                $action['desc'] = 'Affectation d\'un technicien requise.';
+                break;
+            case 'AFFECTE':
+                $action['desc'] = 'Le diagnostic est prêt à être effectué.';
+                break;
+            case 'EN_DIAGNOSTIC':
+                $action['desc'] = 'L\'expertise technique est en cours.';
+                break;
+            case 'EN_ATTENTE_DEVIS':
+                $action['desc'] = 'Établissement du devis en attente.';
+                break;
+            case 'EN_REPARATION':
+                $action['desc'] = 'Réparation en cours en atelier.';
+                break;
+            case 'REPARE':
+                $action['desc'] = 'Appareil réparé, prêt pour facturation.';
+                break;
+            case 'ATTENTE_PIECE':
+                $action['desc'] = 'Dossier en attente de pièces détachées.';
+                break;
+            case 'IRREPARABLE':
+                $action['desc'] = 'Appareil déclaré irréparable.';
+                break;
+            case 'LIVRE':
+                $action['desc'] = 'Appareil restitué, prêt pour clôture.';
+                break;
+            case 'CLOTURE':
+                $action['desc'] = 'Dossier clôturé et archivé.';
+                break;
+            case 'ATTENTE_VALIDATION_REMPLACEMENT':
+                $action['desc'] = 'Validation du remplacement requise.';
+                break;
+            case 'REMPLACEMENT_VALIDE':
+                $action['desc'] = 'Remplacement validé, préparation en cours.';
+                break;
+            case 'REMPLACEMENT_REFUSE':
+                $action['desc'] = 'Remplacement refusé, prêt pour restitution.';
+                break;
+            case 'DEVIS_REFUSE':
+                $action['desc'] = 'Devis refusé, prêt pour restitution.';
+                break;
         }
 
         $messages = $dossier->messages->sortBy('created_at')->map(function ($msg) {
@@ -441,24 +450,7 @@ class DossierController extends Controller
         return response()->json($techniciens);
     }
 
-    /**
-     * UC07 — Lancer la réparation (basculer statut EN_REPARATION).
-     */
-    public function lancerReparation(Dossier $dossier)
-    {
-        $ancienStatut = $dossier->statut;
-        $dossier->update(['statut' => 'EN_REPARATION']);
 
-        SuiviDossier::create([
-            'dossier_id' => $dossier->id,
-            'user_id' => Auth::id(),
-            'ancien_statut' => $ancienStatut,
-            'nouveau_statut' => 'EN_REPARATION',
-            'commentaire' => 'Lancement de l\'intervention technique approuvé.',
-        ]);
-
-        return back()->with('success', 'Statut mis à jour : En Réparation.');
-    }
 
     /**
      * UC09 — Marquer le dossier comme livré.
@@ -714,45 +706,5 @@ class DossierController extends Controller
         $pdf = Pdf::loadView('dossiers.reception-pdf', compact('dossier', 'company'))
             ->setPaper('a4', 'portrait');
         return $pdf->stream("bon-reception-{$dossier->num_dossier}.pdf");
-    }
-
-    /**
-     * PDF du rapport de diagnostic.
-     */
-    public function diagnosticReport(Dossier $dossier)
-    {
-        $dossier->load('client', 'technicien', 'appareil', 'diagnostic.pieces', 'diagnostic.tarifsMo');
-        $company = ParametreSociete::first();
-        $pdf = Pdf::loadView('diagnostics.diagnostic-pdf', compact('dossier', 'company'))
-            ->setPaper('a4', 'portrait');
-        return $pdf->stream("diagnostic-{$dossier->num_dossier}.pdf");
-    }
-
-    /**
-     * PDF du rapport d'intervention.
-     */
-    public function interventionReport(Dossier $dossier)
-    {
-        $dossier->load('client', 'technicien', 'appareil', 'intervention.pieces', 'intervention.tarifsMo');
-        $company = ParametreSociete::first();
-        $pdf = Pdf::loadView('interventions.intervention-pdf', compact('dossier', 'company'))
-            ->setPaper('a4', 'portrait');
-        return $pdf->stream("intervention-{$dossier->num_dossier}.pdf");
-    }
-
-    /**
-     * Commencer le diagnostic (Passage au statut EN_DIAGNOSTIC).
-     */
-    public function startDiagnostic(Dossier $dossier)
-    {
-        if ($dossier->technicien_id != Auth::id() && Auth::user()->role !== 'Admin') {
-            abort(403);
-        }
-
-        if ($dossier->statut === 'AFFECTE') {
-            $dossier->update(['statut' => 'EN_DIAGNOSTIC']);
-        }
-
-        return redirect()->route('diagnostics.create', $dossier->id);
     }
 }

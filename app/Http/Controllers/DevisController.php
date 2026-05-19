@@ -24,7 +24,7 @@ class DevisController extends Controller
 
         // Chargement du diagnostic et des pièces et main d'œuvre associées
         $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo');
-        
+
         // Liste des ressources actives pour d'éventuels ajustements en cours de devis
         $pieces = Piece::where('actif', true)->orderBy('nom')->get();
         $tarifsMo = TarifMo::where('actif', true)->orderBy('type_intervention')->get();
@@ -49,12 +49,12 @@ class DevisController extends Controller
 
         // Création du devis avec numéro séquentiel unique
         $devis = Devis::create([
-            'dossier_id'    => $dossier->id,
-            'numero'        => 'DEV-' . now()->format('Ymd') . '-' . str_pad(Devis::count() + 1, 4, '0', STR_PAD_LEFT),
+            'dossier_id' => $dossier->id,
+            'numero' => 'DEV-' . now()->format('Ymd') . '-' . str_pad(Devis::count() + 1, 4, '0', STR_PAD_LEFT),
             'montant_total' => $totalTtc,
-            'frais_mod'     => (float) $request->frais_mod ?? 0,
-            'remise'        => 0, // Pas de remise
-            'statut'        => 'EN_ATTENTE',
+            'frais_mod' => (float) $request->frais_mod ?? 0,
+            'remise' => 0, // Pas de remise
+            'statut' => 'EN_ATTENTE',
             'date_creation' => now(),
         ]);
 
@@ -65,7 +65,7 @@ class DevisController extends Controller
                     continue;
                 }
                 $devis->pieces()->attach($p['id'], [
-                    'quantite'      => $p['quantite'] ?? 1,
+                    'quantite' => $p['quantite'] ?? 1,
                     'prix_unitaire' => $p['prix_unitaire'] ?? 0
                 ]);
             }
@@ -88,11 +88,11 @@ class DevisController extends Controller
 
         // Tracing de l'historique SAV (Audit Trail)
         SuiviDossier::create([
-            'dossier_id'     => $dossier->id,
-            'user_id'        => auth()->id(),
-            'ancien_statut'  => 'EN_DIAGNOSTIC',
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'ancien_statut' => 'EN_DIAGNOSTIC',
             'nouveau_statut' => 'EN_ATTENTE_DEVIS',
-            'commentaire'    => 'Devis établi et transmis au client pour validation.',
+            'commentaire' => 'Devis établi et transmis au client pour validation.',
         ]);
 
         // Notification automatique si le client est enregistré
@@ -112,13 +112,13 @@ class DevisController extends Controller
     public function show(Devis $devis)
     {
         $devis->load('dossier.client');
-        
+
         $statutColors = [
-            'EN_ATTENTE' => 'warning', 
-            'ACCEPTE'    => 'success', 
-            'REFUSE'     => 'danger'
+            'EN_ATTENTE' => 'warning',
+            'ACCEPTE' => 'success',
+            'REFUSE' => 'danger'
         ];
-        
+
         $badgeColor = $statutColors[$devis->statut] ?? 'secondary';
 
         return view('devis.show', compact('devis', 'badgeColor'));
@@ -140,7 +140,7 @@ class DevisController extends Controller
 
         // Mise à jour du statut du devis
         $devis->update([
-            'statut'        => 'ACCEPTE',
+            'statut' => 'ACCEPTE',
             'date_decision' => now(),
         ]);
 
@@ -149,11 +149,11 @@ class DevisController extends Controller
 
         // Enregistrement dans l'historique
         SuiviDossier::create([
-            'dossier_id'     => $dossier->id,
-            'user_id'        => auth()->id(),
-            'ancien_statut'  => 'EN_ATTENTE_DEVIS',
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'ancien_statut' => 'EN_ATTENTE_DEVIS',
             'nouveau_statut' => 'EN_REPARATION',
-            'commentaire'    => 'Devis validé. Autorisation de réparation accordée et dossier transmis à l\'atelier.',
+            'commentaire' => 'Devis validé. Autorisation de réparation accordée et dossier transmis à l\'atelier.',
         ]);
 
         // Notification au technicien assigné
@@ -184,23 +184,23 @@ class DevisController extends Controller
 
         // Enregistrement du refus
         $devis->update([
-            'statut'        => 'REFUSE',
+            'statut' => 'REFUSE',
             'date_decision' => now(),
         ]);
 
         // Mise à jour du dossier avec le motif de refus
         $dossier->update([
-            'statut'            => 'DEVIS_REFUSE',
+            'statut' => 'DEVIS_REFUSE',
             'commentaire_refus' => $request->commentaire_refus
         ]);
 
         // Enregistrement dans l'historique
         SuiviDossier::create([
-            'dossier_id'     => $dossier->id,
-            'user_id'        => auth()->id(),
-            'ancien_statut'  => 'EN_ATTENTE_DEVIS',
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'ancien_statut' => 'EN_ATTENTE_DEVIS',
             'nouveau_statut' => 'DEVIS_REFUSE',
-            'commentaire'    => 'Devis refusé. Motif : ' . $request->commentaire_refus,
+            'commentaire' => 'Devis refusé. Motif : ' . $request->commentaire_refus,
         ]);
 
         return redirect()->route('dossiers.show', $dossier->id)
@@ -212,7 +212,7 @@ class DevisController extends Controller
     {
         $devis->load('dossier.client', 'pieces', 'tarifsMo', 'dossier.appareil');
         $company = \App\Models\ParametreSociete::first();
-        
+
         $devisData = $this->prepareDevisData($devis);
 
         // Chargement du template PDF avec les données
@@ -230,7 +230,7 @@ class DevisController extends Controller
 
         $dossier = $devis->dossier;
         $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo');
-        
+
         // Liste des ressources actives pour d'éventuels ajustements en cours de devis
         $pieces = Piece::where('actif', true)->orderBy('nom')->get();
         $tarifsMo = TarifMo::where('actif', true)->orderBy('type_intervention')->get();
@@ -250,7 +250,7 @@ class DevisController extends Controller
 
         $devis->update([
             'montant_total' => (float) $request->total_ttc,
-            'frais_mod'     => (float) $request->frais_mod ?? 0,
+            'frais_mod' => (float) $request->frais_mod ?? 0,
         ]);
 
         $devis->pieces()->detach();
@@ -263,7 +263,7 @@ class DevisController extends Controller
                     continue;
                 }
                 $devis->pieces()->attach($p['id'], [
-                    'quantite'      => $p['quantite'] ?? 1,
+                    'quantite' => $p['quantite'] ?? 1,
                     'prix_unitaire' => $p['prix_unitaire'] ?? 0
                 ]);
             }
@@ -285,11 +285,11 @@ class DevisController extends Controller
         $devis->dossier->update(['statut' => 'EN_ATTENTE_DEVIS']);
 
         SuiviDossier::create([
-            'dossier_id'     => $devis->dossier_id,
-            'user_id'        => auth()->id(),
-            'ancien_statut'  => 'EN_ATTENTE_DEVIS',
+            'dossier_id' => $devis->dossier_id,
+            'user_id' => auth()->id(),
+            'ancien_statut' => 'EN_ATTENTE_DEVIS',
             'nouveau_statut' => 'EN_ATTENTE_DEVIS',
-            'commentaire'    => 'Mise à jour du devis #' . $devis->numero . ' par l\'administration.',
+            'commentaire' => 'Mise à jour du devis #' . $devis->numero . ' par l\'administration.',
         ]);
 
         return redirect()->route('dossiers.show', $devis->dossier_id)
@@ -317,10 +317,10 @@ class DevisController extends Controller
 
             $lignes[] = [
                 'designation' => $piece->nom,
-                'quantite'    => $qty,
-                'ht'          => $ht,
-                'tva'         => $tva,
-                'totalLigne'  => $totalLigne
+                'quantite' => $qty,
+                'ht' => $ht,
+                'tva' => $tva,
+                'totalLigne' => $totalLigne
             ];
         }
 
@@ -332,17 +332,17 @@ class DevisController extends Controller
 
             $lignes[] = [
                 'designation' => "Main d'œuvre : " . $mo->type_intervention,
-                'quantite'    => 1,
-                'ht'          => $ht,
-                'tva'         => $tva,
-                'totalLigne'  => $ttc
+                'quantite' => 1,
+                'ht' => $ht,
+                'tva' => $tva,
+                'totalLigne' => $ttc
             ];
         }
 
         return [
-            'htTotal'  => $htTotal,
+            'htTotal' => $htTotal,
             'tvaTotal' => $tvaTotal,
-            'lignes'   => $lignes
+            'lignes' => $lignes
         ];
     }
 }

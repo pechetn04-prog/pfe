@@ -16,7 +16,12 @@ function toggleSpecialite(role) {
     const field = document.getElementById('specialiteField');
     if (field) {
         // Affiche si c'est un Technicien (display block), sinon masque complètement (display none)
-        field.style.display = role === 'Technicien' ? 'block' : 'none';
+        if (role === 'Technicien') {
+            field.classList.remove('d-none-init');
+            field.style.display = 'block';
+        } else {
+            field.style.display = 'none';
+        }
     }
 }
 

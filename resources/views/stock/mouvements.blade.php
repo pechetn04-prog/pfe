@@ -2,9 +2,7 @@
 
 @section('title', 'Historique des Mouvements Stock')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/stock_mouvements.css') }}">
-@endpush
+
 
 @section('content')
     <div class="container-fluid">

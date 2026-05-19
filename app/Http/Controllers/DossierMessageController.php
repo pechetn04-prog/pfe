@@ -18,7 +18,7 @@ class DossierMessageController extends Controller
         }
         $request->validate([
             'message' => 'required|string|max:1000',
-            'type'    => 'nullable|string|in:public,internal',
+            'type' => 'nullable|string|in:public,internal',
         ]);
 
         // Préfixe distinctif pour marquer visuellement les messages internes de l'atelier
@@ -26,8 +26,8 @@ class DossierMessageController extends Controller
 
         DossierMessage::create([
             'dossier_id' => $dossier->id,
-            'user_id'    => Auth::id(),
-            'message'    => $prefix . $request->message,
+            'user_id' => Auth::id(),
+            'message' => $prefix . $request->message,
         ]);
 
         // Redirection ciblée selon le rôle pour éviter les erreurs d'accès (403)

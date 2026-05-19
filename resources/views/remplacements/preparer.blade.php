@@ -2,9 +2,7 @@
 
 @section('title', 'Préparer le Remplacement — #' . $dossier->num_dossier)
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/replacement-premium.css') }}">
-@endpush
+
 
 @section('content')
 <div class="container-fluid px-4 py-4">

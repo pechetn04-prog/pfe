@@ -2,9 +2,7 @@
 
 @section('title', 'Liste des utilisateurs')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/users.css') }}">
-@endpush
+
 
 @section('content')
     <div class="container-fluid">
@@ -20,57 +18,53 @@
 
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm card-user-stat">
                 <div class="card-body p-3 d-flex align-items-center">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
-                         style="width: 50px; height: 50px; background: #eff6ff;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3 icon-wrapper-stat icon-wrapper-blue">
                         <i class="fas fa-users text-primary fs-5"></i>
                     </div>
                     <div>
                         <div class="h3 fw-bold mb-0">{{ $stats['total'] }}</div>
-                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Utilisateurs</div>
+                        <div class="small text-uppercase fw-bold text-muted text-caps-stat">Utilisateurs</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm card-user-stat">
                 <div class="card-body p-3 d-flex align-items-center">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
-                         style="width: 50px; height: 50px; background: #f0fdf4;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3 icon-wrapper-stat icon-wrapper-green">
                         <i class="fas fa-user-check text-success fs-5"></i>
                     </div>
                     <div>
                         <div class="h3 fw-bold mb-0 text-success">{{ $stats['actifs'] }}</div>
-                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Comptes Actifs</div>
+                        <div class="small text-uppercase fw-bold text-muted text-caps-stat">Comptes Actifs</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm card-user-stat">
                 <div class="card-body p-3 d-flex align-items-center">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
-                         style="width: 50px; height: 50px; background: #fef2f2;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3 icon-wrapper-stat icon-wrapper-red">
                         <i class="fas fa-user-tie text-danger fs-5"></i>
                     </div>
                     <div>
                         <div class="h3 fw-bold mb-0 text-danger">{{ $stats['clients'] }}</div>
-                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Clients SAV</div>
+                        <div class="small text-uppercase fw-bold text-muted text-caps-stat">Clients SAV</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm card-user-stat">
                 <div class="card-body p-3 d-flex align-items-center">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3" 
-                         style="width: 50px; height: 50px; background: #fff7ed;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center me-3 icon-wrapper-stat icon-wrapper-orange">
                         <i class="fas fa-user-shield text-warning fs-5"></i>
                     </div>
                     <div>
                         <div class="h3 fw-bold mb-0 text-warning">{{ $stats['staff'] }}</div>
-                        <div class="small text-uppercase fw-bold text-muted" style="font-size: 0.6rem; letter-spacing: 0.5px;">Équipe Système</div>
+                        <div class="small text-uppercase fw-bold text-muted text-caps-stat">Équipe Système</div>
                     </div>
                 </div>
             </div>
@@ -100,15 +94,14 @@
                 <button type="submit" class="btn btn-primary flex-grow-1 shadow-sm">
                     <i class="fas fa-filter me-2"></i> FILTRER
                 </button>
-                <a href="{{ route('users.index') }}" class="btn btn-light border-0 fw-bold"
-                    style="background: #f1f5f9; color: #64748b;">
+                <a href="{{ route('users.index') }}" class="btn btn-light border-0 fw-bold btn-raz-users">
                     <i class="fas fa-undo me-2"></i> RAZ
                 </a>
             </div>
         </form>
     </div>
 
-    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">
+    <div class="card border-0 shadow-sm overflow-hidden card-users-list">
         <div class="table-responsive">
             <table class="table table-hover mb-0 align-middle">
                 <thead>
@@ -134,7 +127,7 @@
                                 <div class="small fw-bold text-dark">{{ $user->telephone ?? '—' }}</div>
                             </td>
                             <td>
-                                <div class="small text-muted text-truncate" style="max-width: 150px;">
+                                <div class="small text-muted text-truncate user-address-cell">
                                     {{ $user->adresse ?? '—' }}</div>
                             </td>
                             <td class="text-end pe-4">

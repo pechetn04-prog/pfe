@@ -2,9 +2,7 @@
  
 @section('title', 'Réinitialiser le mot de passe')
  
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/auth-premium.css') }}">
-@endpush
+
  
 @section('content')
 <div class="auth-page">
@@ -22,7 +20,7 @@
                 <label class="form-label">Adresse e-mail</label>
                 <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ $email ?? old('email') }}" required readonly>
                 @error('email')
-                    <span class="invalid-feedback small fw-bold mt-2 d-block" role="alert" style="color: #dc2626;">
+                    <span class="invalid-feedback small fw-bold mt-2 d-block auth-error-feedback" role="alert">
                         {{ $message }}
                     </span>
                 @enderror
@@ -32,7 +30,7 @@
                 <label class="form-label">Nouveau mot de passe</label>
                 <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="••••••••" required autofocus>
                 @error('password')
-                    <span class="invalid-feedback small fw-bold mt-2 d-block" role="alert" style="color: #dc2626;">
+                    <span class="invalid-feedback small fw-bold mt-2 d-block auth-error-feedback" role="alert">
                         {{ $message }}
                     </span>
                 @enderror

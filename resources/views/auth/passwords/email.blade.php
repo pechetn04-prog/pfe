@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/auth-premium.css') }}">
-@endpush
+
 
 @section('content')
 <div class="auth-page">

@@ -237,9 +237,7 @@
         </form>
     </div>
 
-    @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/dossier-create.css') }}">
-    @endpush
+
 
     @push('scripts')
         <script>

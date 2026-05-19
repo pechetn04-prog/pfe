@@ -12,6 +12,7 @@ use App\Http\Controllers\TechnicienDossierController;
 use App\Http\Controllers\DossierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\StatistiqueController;
 use App\Http\Controllers\VenteController;
 use App\Http\Controllers\DevisController;
 use App\Http\Controllers\FactureController;
@@ -33,6 +34,19 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::redirect('/', '/login');
+
+Route::get('/debug-db', function () {
+    try {
+        $users = \App\Models\User::all(['name', 'email', 'role'])->toArray();
+        return response()->json([
+            'database' => config('database.default'),
+            'users_count' => count($users),
+            'users' => $users
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
+});
 
 // Suivi de dossier pour le client (sans connexion)
 Route::get('/suivi', [ClientController::class, 'index'])->name('client.suivi');
@@ -95,7 +109,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:Admin')->group(function () {
         // Dashboard Admin & Stats
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/admin/statistiques', [AdminDashboardController::class, 'statistiques'])->name('admin.statistiques');
+        Route::get('/admin/statistiques', [StatistiqueController::class, 'index'])->name('admin.statistiques');
 
         // Paramètres Société
         Route::get('/admin/parametres-societe', [ParametreSocieteController::class, 'edit'])->name('parametres-societe.edit');
@@ -116,6 +130,8 @@ Route::middleware('auth')->group(function () {
 
         // Ventes
         Route::get('/admin/ventes-produits', [VenteController::class, 'index'])->name('ventes.index');
+        Route::post('/admin/ventes-produits/import', [VenteController::class, 'import'])->name('ventes.import');
+        Route::get('/admin/ventes-produits/template', [VenteController::class, 'downloadTemplate'])->name('ventes.template');
 
         // Gestion des Tarifs Main d'œuvre
         Route::get('/admin/tarifs-mo', [\App\Http\Controllers\TarifMoController::class, 'index'])->name('admin.tarifs_mo.index');
@@ -201,8 +217,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/factures/{facture}/pdf', [FactureController::class, 'pdf'])->name('factures.pdf');
         Route::get('/devis/{devis}/pdf', [DevisController::class, 'pdf'])->name('devis.pdf');
         Route::get('/dossiers/{dossier}/reception-pdf', [DossierController::class, 'receptionPdf'])->name('dossiers.reception.pdf');
-        Route::get('/dossiers/{dossier}/diagnostic-pdf', [DossierController::class, 'diagnosticReport'])->name('dossiers.diagnostic.pdf');
-        Route::get('/dossiers/{dossier}/intervention-pdf', [DossierController::class, 'interventionReport'])->name('dossiers.intervention.pdf');
+        Route::get('/dossiers/{dossier}/diagnostic-pdf', [DiagnosticController::class, 'pdf'])->name('dossiers.diagnostic.pdf');
+        Route::get('/dossiers/{dossier}/intervention-pdf', [InterventionController::class, 'pdf'])->name('dossiers.intervention.pdf');
     });
 
     /*
@@ -217,7 +233,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/technicien/demandes-reaffectation', [TechnicienDashboardController::class, 'demandesReaffectationList'])->name('technicien.demandes_reaffectation');
 
         // Diagnostics
-        Route::post('/dossiers/{dossier}/diagnostic/start', [DossierController::class, 'startDiagnostic'])->name('dossiers.startDiagnostic');
+        Route::post('/dossiers/{dossier}/diagnostic/start', [DiagnosticController::class, 'start'])->name('dossiers.startDiagnostic');
         Route::get('/technicien/dossiers/{dossier}/diagnostic', [DiagnosticController::class, 'create'])->name('diagnostics.create');
         Route::post('/technicien/dossiers/{dossier}/diagnostic', [DiagnosticController::class, 'store'])->name('diagnostics.store');
         Route::get('/technicien/dossiers/{dossier}/diagnostic/show', [DiagnosticController::class, 'show'])->name('diagnostics.show');
@@ -228,7 +244,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/technicien/dossiers/{dossier}/intervention/show', [InterventionController::class, 'show'])->name('interventions.show');
 
         // Actions techniques
-        Route::post('/dossiers/{dossier}/reparation', [DossierController::class, 'lancerReparation'])->name('dossiers.reparation');
+        Route::post('/dossiers/{dossier}/reparation', [InterventionController::class, 'start'])->name('dossiers.reparation');
 
         // Demande de retrait du dossier (Rejet)
         Route::post('/dossiers/{dossier}/rejeter', [DemandeRejetController::class, 'store'])->name('dossiers.rejeter');

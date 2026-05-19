@@ -1,31 +1,17 @@
 @extends('layouts.app')
 @section('title', 'Gestion détaillée du dossier #' . $dossier->num_dossier)
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/ticket_show.css') }}">
-    <style>
-        .hover-zoom {
-            transition: all 0.2s ease-in-out;
-        }
-        .hover-zoom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
-        }
-    </style>
-@endpush
-
 
 @section('content')
     <div class="container-fluid px-4 py-3">
         {{-- Header / Breadcrumb --}}
         <div class="d-flex align-items-center mb-1">
             <a href="{{ route('dossiers.index') }}"
-                class="btn btn-sm bg-white shadow-sm me-3 border-0 d-flex align-items-center justify-content-center"
-                style="width: 32px; height: 32px; border-radius: 8px; color: #1e69ff;">
+                class="btn btn-sm bg-white shadow-sm me-3 border-0 d-flex align-items-center justify-content-center btn-back-dossier">
                 <i class="fas fa-arrow-left"></i>
             </a>
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0" style="font-size: 0.75rem; font-weight: 500;">
+                <ol class="breadcrumb mb-0 font-size-075 fw-medium">
                     <li class="breadcrumb-item"><a href="{{ route('dossiers.index') }}"
                             class="text-primary text-decoration-none">Tickets</a></li>
                     <li class="breadcrumb-item active text-muted" aria-current="page">Dossier #{{ $dossier->num_dossier }}
@@ -35,7 +21,7 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="h5 fw-bold mb-0" style="color: #1a2332; letter-spacing: -0.5px;">Gestion détaillée du dossier</h1>
+            <h1 class="h5 fw-bold mb-0 text-dark">Gestion détaillée du dossier</h1>
             <div class="d-flex align-items-center gap-2">
                 <a href="{{ route('dossiers.reception.pdf', $dossier->id) }}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark border shadow-sm">
                     <i class="fas fa-file-invoice me-1"></i> Bon
@@ -48,27 +34,22 @@
 
 
         {{-- Info Card --}}
-        <div class="card border-0 shadow-sm mb-3" style="border-radius: 15px;">
+        <div class="card border-0 shadow-sm mb-3 card-dossier-box-15">
             <div class="card-body p-3 d-flex align-items-center">
-                <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center"
-                    style="width: 50px; height: 50px;">
-                    <div class="bg-primary rounded-2 p-2 d-flex align-items-center justify-content-center shadow-sm"
-                        style="width: 35px; height: 35px;">
+                <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center icon-circle-wrapper-50">
+                    <div class="bg-primary rounded-2 p-2 d-flex align-items-center justify-content-center shadow-sm icon-circle-wrapper-35">
                         <i class="fas fa-folder-open fa-sm text-white"></i>
                     </div>
                 </div>
                 <div class="flex-grow-1">
-                    <div class="small text-muted text-uppercase fw-bold mb-1"
-                        style="font-size: 0.6rem; letter-spacing: 0.8px; opacity: 0.6;">RÉFÉRENCE DOSSIER</div>
-                    <h4 class="mb-0 fw-bold" style="color: #1a2332; letter-spacing: -0.5px;">#{{ $dossier->num_dossier }}
+                    <div class="small text-muted text-uppercase fw-bold mb-1 font-size-06 letter-spacing-08 opacity-06">RÉFÉRENCE DOSSIER</div>
+                    <h4 class="mb-0 fw-bold text-dark">#{{ $dossier->num_dossier }}
                     </h4>
                 </div>
                 <div class="text-end">
-                    <div class="small text-muted text-uppercase fw-bold mb-2"
-                        style="font-size: 0.6rem; letter-spacing: 0.8px; opacity: 0.6;">STATUT ACTUEL</div>
-                    <span class="badge rounded-pill px-4 py-2"
-                        style="background-color: #eef4ff; color: #1e69ff; font-weight: 700; font-size: 0.7rem; border: 1px solid #e0eaff;">
-                        {{ str_replace('_', ' ', $dossier->statut) }}
+                    <div class="small text-muted text-uppercase fw-bold mb-2 font-size-06 letter-spacing-08 opacity-06">STATUT ACTUEL</div>
+                    <span class="status-badge-capsule {{ $dossier->statut_class }} text-uppercase">
+                        {{ $dossier->statut_text }}
                     </span>
                 </div>
             </div>
@@ -76,8 +57,8 @@
 
         {{-- Recommendation Banner --}}
 
-        <div class="card border-0 text-white mb-3 shadow-sm"
-            style="background-color: {{ $action['color'] }}; border-radius: 12px;">
+        <div class="card border-0 text-white mb-3 shadow-sm action-banner-card"
+            style="background-color: {{ $action['color'] }};">
             <div class="card-body p-3 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <div class="me-3 fs-4">
@@ -85,7 +66,7 @@
                     </div>
                     <div>
                         <h6 class="mb-0 fw-bold">{{ $action['title'] }}</h6>
-                        <p class="mb-0" style="font-size: 0.8rem; opacity: 0.9;">{{ $action['desc'] }}</p>
+                        <p class="mb-0 action-banner-text">{{ $action['desc'] }}</p>
                     </div>
                 </div>
 
@@ -202,86 +183,58 @@
             <div class="tab-pane fade show active" id="details">
                 <div class="row g-3">
                     <div class="col-lg-5">
-                        <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background-color: #ffffff;">
+                        <div class="card shadow-sm border-0 h-100 card-dossier-box-15 bg-white-important">
                             <div class="card-body p-3">
-                                <h6 class="fw-bold mb-3 d-flex align-items-center"
-                                    style="color: #1a2332; font-size: 0.85rem;">
+                                <h6 class="fw-bold mb-3 d-flex align-items-center info-section-title">
                                     <i class="fas fa-id-card me-2 text-primary"></i> Information client et appareil
                                 </h6>
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <div class="p-3 rounded-3"
-                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">NOM
-                                                CLIENT</label>
-                                            <div class="fw-bolder"
-                                                style="font-size: 1rem; color: #1a2332; font-weight: 800;">
-                                                {{ $dossier->client->name ?? '—' }}</div>
+                                        <div class="p-3 rounded-3 info-block-wrapper">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block info-block-label">NOM CLIENT</label>
+                                            <div class="fw-bolder info-block-value-large">{{ $dossier->client->name ?? '—' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="p-3 rounded-3"
-                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">ADRESSE
-                                                EMAIL</label>
-                                            <div class="fw-bold" style="font-size: 0.85rem; color: #1a2332;">
-                                                {{ $dossier->client->email ?? '—' }}</div>
+                                        <div class="p-3 rounded-3 info-block-wrapper">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block info-block-label">ADRESSE EMAIL</label>
+                                            <div class="fw-bold info-block-value-email">{{ $dossier->client->email ?? '—' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="p-3 rounded-3"
-                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">NUMÉRO
-                                                DE TÉLÉPHONE</label>
-                                            <div class="fw-bold" style="font-size: 0.9rem; color: #1a2332;">
-                                                {{ $dossier->client->telephone ?? '—' }}</div>
+                                        <div class="p-3 rounded-3 info-block-wrapper">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block info-block-label">NUMÉRO DE TÉLÉPHONE</label>
+                                            <div class="fw-bold info-block-value-standard">{{ $dossier->client->telephone ?? '—' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-7">
-                                        <div class="p-3 rounded-3"
-                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">ARTICLE
-                                                / MODÈLE</label>
-                                            <div class="fw-bold" style="font-size: 0.9rem; color: #1a2332;">
-                                                {{ $dossier->appareil->modele ?? '—' }}</div>
+                                        <div class="p-3 rounded-3 info-block-wrapper">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block info-block-label">ARTICLE / MODÈLE</label>
+                                            <div class="fw-bold info-block-value-standard">{{ $dossier->appareil->modele ?? '—' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-5">
-                                        <div class="p-3 rounded-3"
-                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">RÉFÉRENCE
-                                                PRODUIT</label>
-                                            <div class="fw-bold" style="font-size: 0.9rem; color: #1a2332;">
-                                                {{ $dossier->appareil->reference_produit ?? '—' }}</div>
+                                        <div class="p-3 rounded-3 info-block-wrapper">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block info-block-label">RÉFÉRENCE PRODUIT</label>
+                                            <div class="fw-bold info-block-value-standard">{{ $dossier->appareil->reference_produit ?? '—' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <div class="p-3 rounded-3"
-                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">NUMÉRO
-                                                IMEI / SÉRIE</label>
-                                            <div class="fw-bold" style="font-size: 1rem; color: #1e69ff;">
-                                                {{ $dossier->imei }}</div>
+                                        <div class="p-3 rounded-3 info-block-wrapper">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block info-block-label">NUMÉRO IMEI / SÉRIE</label>
+                                            <div class="fw-bold info-block-value-imei">{{ $dossier->imei }}</div>
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <div class="p-3 rounded-3"
-                                            style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                                style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">STATUT GARANTIE</label>
+                                        <div class="p-3 rounded-3 info-block-wrapper">
+                                            <label class="small text-muted text-uppercase fw-bold mb-1 d-block info-block-label">STATUT GARANTIE</label>
                                             <div class="mt-1">
                                                 @if($dossier->garantie_annulee)
-                                                    <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 fw-bold" style="font-size: 0.75rem;">GARANTIE EXCLUE</span>
+                                                    <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 fw-bold font-size-075">GARANTIE EXCLUE</span>
                                                 @elseif($dossier->sous_garantie)
-                                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 fw-bold" style="font-size: 0.75rem;">SOUS GARANTIE</span>
+                                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 fw-bold font-size-075">SOUS GARANTIE</span>
                                                 @else
-                                                    <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 fw-bold" style="font-size: 0.75rem;">HORS GARANTIE</span>
+                                                    <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 fw-bold font-size-075">HORS GARANTIE</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -289,22 +242,16 @@
 
                                     @if($dossier->imei_remplacement)
                                         <div class="col-12 mt-2">
-                                            <div class="p-3 rounded-3"
-                                                style="background-color: #f0fdf4; border: 1px solid #bcf0da;">
-                                                <label class="small text-success text-uppercase fw-bold mb-1 d-block"
-                                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">APPAREIL DE
-                                                    REMPLACEMENT</label>
+                                            <div class="p-3 rounded-3 info-block-replacement">
+                                                <label class="small text-success text-uppercase fw-bold mb-1 d-block info-block-label">APPAREIL DE REMPLACEMENT</label>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
-                                                        <div class="small text-muted" style="font-size: 0.7rem;">Modèle</div>
-                                                        <div class="fw-bold" style="color: #065f46; font-size: 0.9rem;">
-                                                            {{ $dossier->modele_remplacement }}</div>
+                                                        <div class="small text-muted font-size-07">Modèle</div>
+                                                        <div class="fw-bold text-success-dark font-size-09">{{ $dossier->modele_remplacement }}</div>
                                                     </div>
                                                     <div class="text-end">
-                                                        <div class="small text-muted" style="font-size: 0.7rem;">Nouvel IMEI
-                                                        </div>
-                                                        <div class="fw-bold" style="color: #10b981; font-size: 0.9rem;">
-                                                            {{ $dossier->imei_remplacement }}</div>
+                                                        <div class="small text-muted font-size-07">Nouvel IMEI</div>
+                                                        <div class="fw-bold text-success font-size-09">{{ $dossier->imei_remplacement }}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -316,65 +263,54 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; background-color: #ffffff;">
+                        <div class="card shadow-sm border-0 h-100 card-dossier-box-15 bg-white-important">
                             <div class="card-body p-3">
-                                <h6 class="fw-bold mb-3 d-flex align-items-center"
-                                    style="color: #1a2332; font-size: 0.85rem;">
+                                <h6 class="fw-bold mb-3 d-flex align-items-center info-section-title">
                                     <i class="fas fa-clipboard-list me-2 text-primary"></i> Panne et Accessoires
                                 </h6>
 
                                 <div class="mb-4">
-                                    <label class="small text-muted text-uppercase fw-bold mb-1 d-block"
-                                        style="font-size: 0.6rem; letter-spacing: 0.5px;">PANNE DÉCLARÉE PAR LE
-                                        CLIENT</label>
-                                    <div class="fw-bold" style="color: #1a2332; font-size: 0.9rem;">
-                                        <span
-                                            style="color: #1e69ff;">{{ $dossier->type_panne ?? 'Logiciel & Système' }}</span>
+                                    <label class="small text-muted text-uppercase fw-bold mb-1 d-block font-size-06 letter-spacing-05">PANNE DÉCLARÉE PAR LE CLIENT</label>
+                                    <div class="fw-bold text-dark font-size-09">
+                                        <span class="text-primary">{{ $dossier->type_panne ?? 'Logiciel & Système' }}</span>
                                         <span class="mx-1 text-muted">|</span>
                                         {{ $dossier->panne_declaree }}
                                     </div>
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="small text-muted text-uppercase fw-bold mb-2 d-block"
-                                        style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">ÉTAT
-                                        EXTÉRIEUR / OBSERVATIONS</label>
-                                    <div class="p-3 rounded-3"
-                                        style="background-color: #f8fafc; border: 1px solid #edf2f7;">
-                                        <span class="small"
-                                            style="color: #64748b;">{{ $dossier->etat_appareil ?: '-' }}</span>
+                                    <label class="small text-muted text-uppercase fw-bold mb-2 d-block info-block-label">ÉTAT EXTÉRIEUR / OBSERVATIONS</label>
+                                    <div class="p-3 rounded-3 info-block-wrapper">
+                                        <span class="small fw-bold text-dark">{{ $dossier->etat_appareil ?: 'Aucune observation' }}</span>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label class="small text-muted text-uppercase fw-bold mb-2 d-block"
-                                        style="font-size: 0.65rem; letter-spacing: 0.5px; color: #64748b !important;">ACCESSOIRES
-                                        DÉPOSÉS</label>
-                                    <p class="small italic mb-0" style="color: #64748b;">
-                                        {{ $dossier->accessoires_remis ?: 'Aucun accessoire' }}</p>
+                                    <label class="small text-muted text-uppercase fw-bold mb-2 d-block info-block-label">ACCESSOIRES DÉPOSÉS</label>
+                                    <div class="p-3 rounded-3 info-block-wrapper">
+                                        <span class="small fw-bold text-dark">{{ $dossier->accessoires_remis ?: 'Aucun accessoire' }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-lg-3">
-                        <div class="card shadow-sm border-0 mb-4 overflow-hidden"
-                            style="border-radius: 15px; background-color: #ffffff;">
-                            <div class="p-2 px-3 d-flex align-items-center justify-content-between"
-                                style="background-color: #1a2332; color: white;">
-                                <span class="fw-bold" style="font-size: 0.75rem;">
+                        <div class="card shadow-sm border-0 mb-4 overflow-hidden card-dossier-box-15 bg-white-important">
+                            <div class="p-2 px-3 d-flex align-items-center justify-content-between assignment-header">
+                                <span class="fw-bold font-size-075">
                                     <i class="fas fa-user-friends me-1"></i> Affectation
                                 </span>
                             </div>
                             <div class="card-body text-center py-4">
 
-                                <h6 class="fw-bold mb-1" style="color: #1a2332; font-size: 0.95rem;">
+                                <h6 class="fw-bold mb-1 info-section-title font-size-095">
                                     {{ $dossier->technicien->name ?? 'Non assigné' }}
                                 </h6>
                                 <div class="text-primary fw-bold small mb-2">
                                     <i class="fas fa-phone-alt me-1"></i> {{ $dossier->technicien->telephone ?? 'Aucun numéro' }}
                                 </div>
-                                <p class="small text-muted mb-0" style="font-size: 0.7rem;">Technicien en charge du dossier</p>
+                                <p class="small text-muted mb-0 font-size-07">Technicien en charge du dossier</p>
                             </div>
                         </div>
                     </div>
@@ -385,7 +321,7 @@
             <div class="tab-pane fade" id="atelier">
                 <div class="row g-3">
                     <div class="col-lg-6">
-                        <div class="card shadow-sm border-0 mb-3 h-100" style="border-radius: 15px;">
+                        <div class="card shadow-sm border-0 mb-3 h-100 card-dossier-box-15">
                             <div
                                 class="card-header bg-white border-0 py-2 px-3 d-flex justify-content-between align-items-center">
                                 <h6 class="fw-bold text-primary mb-0" style="font-size: 0.85rem;"><i
@@ -421,6 +357,56 @@
                                             </a>
                                         </div>
                                     @endif
+
+                                    {{-- Pièces demandées / requises --}}
+                                    @if($dossier->diagnostic->pieces && $dossier->diagnostic->pieces->count())
+                                        <div class="mt-4 pt-3 border-top">
+                                            <label class="small text-muted text-uppercase fw-bold mb-2 d-block text-primary"
+                                                style="font-size: 0.65rem;"><i class="fas fa-cubes me-1"></i> Pièces détachées demandées</label>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.8rem;">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Désignation</th>
+                                                            <th class="text-center" style="width: 80px;">Quantité</th>
+                                                            <th class="text-end" style="width: 120px;">Disponibilité</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($dossier->diagnostic->pieces as $piece)
+                                                            <tr>
+                                                                <td class="fw-semibold">{{ $piece->nom }}</td>
+                                                                <td class="text-center">{{ $piece->pivot->quantite ?? 1 }}</td>
+                                                                <td class="text-end">
+                                                                    @if($piece->quantite >= ($piece->pivot->quantite ?? 1))
+                                                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 fw-bold" style="font-size: 0.65rem;">En Stock ({{ $piece->quantite }})</span>
+                                                                    @else
+                                                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 fw-bold" style="font-size: 0.65rem;">Rupture ({{ $piece->quantite }})</span>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    {{-- Prestations / Main d'œuvre --}}
+                                    @if($dossier->diagnostic->tarifsMo && $dossier->diagnostic->tarifsMo->count())
+                                        <div class="mt-3 pt-3 border-top">
+                                            <label class="small text-muted text-uppercase fw-bold mb-2 d-block text-info"
+                                                style="font-size: 0.65rem;"><i class="fas fa-tools me-1"></i> Prestations requises</label>
+                                            <ul class="list-group list-group-flush mb-0" style="font-size: 0.8rem;">
+                                                @foreach($dossier->diagnostic->tarifsMo as $mo)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 bg-transparent">
+                                                        <span><i class="fas fa-check text-success me-2"></i>{{ $mo->type_intervention }}</span>
+                                                        <span class="fw-bold text-dark">{{ number_format($mo->pivot->montant ?? $mo->montant, 3, '.', ' ') }} DT</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="text-center py-5 text-muted small"><i
                                             class="fas fa-clock fa-2x mb-2 opacity-25"></i>
@@ -431,7 +417,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <div class="card shadow-sm border-0 mb-3 h-100" style="border-radius: 15px;">
+                        <div class="card shadow-sm border-0 mb-3 h-100 card-dossier-box-15">
                             <div
                                 class="card-header bg-white border-0 py-2 px-3 d-flex justify-content-between align-items-center">
                                 <h6 class="fw-bold text-success mb-0" style="font-size: 0.85rem;"><i
@@ -462,6 +448,48 @@
                                             </a>
                                         </div>
                                     @endif
+
+                                    {{-- Pièces consommées --}}
+                                    @if($dossier->intervention->pieces && $dossier->intervention->pieces->count())
+                                        <div class="mt-4 pt-3 border-top">
+                                            <label class="small text-muted text-uppercase fw-bold mb-2 d-block text-success"
+                                                style="font-size: 0.65rem;"><i class="fas fa-cubes me-1"></i> Pièces détachées consommées</label>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.8rem;">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Désignation</th>
+                                                            <th class="text-center" style="width: 80px;">Quantité</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($dossier->intervention->pieces as $piece)
+                                                            <tr>
+                                                                <td class="fw-semibold text-success">{{ $piece->nom }}</td>
+                                                                <td class="text-center fw-bold">{{ $piece->pivot->quantite ?? 1 }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    {{-- Prestations appliquées --}}
+                                    @if($dossier->intervention->tarifsMo && $dossier->intervention->tarifsMo->count())
+                                        <div class="mt-3 pt-3 border-top">
+                                            <label class="small text-muted text-uppercase fw-bold mb-2 d-block text-info"
+                                                style="font-size: 0.65rem;"><i class="fas fa-tools me-1"></i> Prestations appliquées</label>
+                                            <ul class="list-group list-group-flush mb-0" style="font-size: 0.8rem;">
+                                                @foreach($dossier->intervention->tarifsMo as $mo)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 bg-transparent">
+                                                        <span><i class="fas fa-check text-success me-2"></i>{{ $mo->type_intervention }}</span>
+                                                        <span class="fw-bold text-dark">{{ number_format($mo->pivot->montant ?? $mo->montant, 3, '.', ' ') }} DT</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="text-center py-5 text-muted small"><i
                                             class="fas fa-tools fa-2x mb-2 opacity-25"></i>
@@ -478,7 +506,7 @@
             <div class="tab-pane fade" id="finances">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 mb-3" style="border-radius: 15px;">
+                        <div class="card shadow-sm border-0 mb-3 card-dossier-box-15">
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <h6 class="fw-bold text-primary mb-0" style="font-size: 0.85rem;">Devis Estimatif</h6>
@@ -600,7 +628,7 @@
             <div class="tab-pane fade" id="communication">
                 <div class="row g-3">
                     <div class="col-lg-8">
-                        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                        <div class="card shadow-sm border-0 card-dossier-box-15">
                             <div class="card-body p-3">
                                 <h6 class="fw-bold text-primary mb-3" style="font-size: 0.85rem;"><i
                                         class="fas fa-comments me-2"></i> Flux de communication</h6>
@@ -735,7 +763,7 @@
     {{-- Modal de demande de retrait --}}
     <div class="modal fade" id="rejetModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+            <div class="modal-content border-0 shadow modal-content-box-15">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-danger">Demande de retrait du dossier</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -765,7 +793,7 @@
     {{-- Modal Refus Devis --}}
     <div class="modal fade" id="refusDevisModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+            <div class="modal-content border-0 shadow modal-content-box-15">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-danger">Motif du refus de devis</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -796,7 +824,7 @@
     {{-- Modal Impossible de Réapprovisionner --}}
     <div class="modal fade" id="modalImpossibleReappro" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+            <div class="modal-content border-0 shadow modal-content-box-15">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-danger">Impossible de réapprovisionner</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -827,7 +855,7 @@
     {{-- Modal Refus Remplacement (Admin) --}}
     <div class="modal fade" id="refusRemplacementModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+            <div class="modal-content border-0 shadow modal-content-box-15">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-danger">Refus de remplacement</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -857,7 +885,7 @@
     {{-- Modal Préparer Remplacement (Agent) --}}
     <div class="modal fade" id="preparerRemplacementModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+            <div class="modal-content border-0 shadow modal-content-box-15">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-success"><i class="fas fa-box-open me-2"></i> Nouvel Appareil</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

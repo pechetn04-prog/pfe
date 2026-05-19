@@ -138,3 +138,164 @@
     transform: translateY(-3px); /* Effet de lévitation */
     box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08) !important;
 }
+
+/* Classes additionnelles pour éliminer les styles en ligne de ticket.blade.php */
+.ticket-wrapper {
+    background-color: #f8fafc !important;
+    min-height: 90vh !important;
+}
+
+.btn-back-ticket {
+    width: 45px !important;
+    height: 45px !important;
+}
+
+.card-action-banner {
+    border-radius: 20px !important;
+    background: #2563eb !important;
+    color: white !important;
+}
+
+.action-icon-box {
+    width: 45px !important;
+    height: 45px !important;
+}
+
+.card-info-appareil {
+    border-radius: 24px !important;
+    background: white !important;
+}
+
+.bg-symptome-text {
+    font-size: 0.95rem !important;
+}
+
+.card-chat-sav {
+    border-radius: 24px !important;
+    background: white !important;
+}
+
+.chat-box-scroll {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+}
+
+.msg-micro-time {
+    font-size: 0.6rem !important;
+}
+
+.msg-text-body {
+    font-size: 0.85rem !important;
+}
+
+.chat-input-field {
+    box-shadow: none !important;
+}
+
+.card-timeline-history {
+    border-radius: 24px !important;
+    background: white !important;
+}
+
+.timeline-micro-time {
+    font-size: 0.75rem !important;
+}
+
+.card-status-hero {
+    border-radius: 30px !important;
+    background: white !important;
+}
+
+.status-icon-circle {
+    width: 80px !important;
+    height: 80px !important;
+}
+
+.card-docs-pdf {
+    border-radius: 24px !important;
+    background: white !important;
+}
+
+.doc-sub-text {
+    font-size: 0.7rem !important;
+}
+
+.diagnostic-pdf-box {
+    background-color: #fffbeb !important;
+    color: #d97706 !important;
+}
+
+.msg-box-max {
+    max-width: 85% !important;
+}
+
+/* ============================================================
+ * 5. ZOOM ET SURVOLS INTERACTIFS
+ * ============================================================ */
+.hover-zoom {
+    transition: all 0.2s ease-in-out;
+}
+
+.hover-zoom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+/* Bandeau d'action recommandé */
+.action-banner-card {
+    border-radius: 12px !important;
+}
+
+.action-banner-text {
+    font-size: 0.8rem !important;
+    opacity: 0.9 !important;
+}
+
+/* Blocs d'informations Client & Appareil */
+.info-section-title {
+    color: #1a2332 !important;
+    font-size: 0.85rem !important;
+}
+
+.info-block-wrapper {
+    background-color: #f8fafc !important;
+    border: 1px solid #edf2f7 !important;
+}
+
+.info-block-label {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.5px !important;
+    color: #64748b !important;
+}
+
+.info-block-value-large {
+    font-size: 1rem !important;
+    color: #1a2332 !important;
+    font-weight: 800 !important;
+}
+
+.info-block-value-standard {
+    font-size: 0.9rem !important;
+    color: #1a2332 !important;
+}
+
+.info-block-value-email {
+    font-size: 0.85rem !important;
+    color: #1a2332 !important;
+}
+
+.info-block-value-imei {
+    font-size: 1rem !important;
+    color: #1e69ff !important;
+    font-weight: 700 !important;
+}
+
+.info-block-replacement {
+    background-color: #f0fdf4 !important;
+    border: 1px solid #bcf0da !important;
+}
+
+.assignment-header {
+    background-color: #1a2332 !important;
+    color: white !important;
+}

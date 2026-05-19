@@ -10,12 +10,14 @@ use App\Models\Dossier;
 use App\Http\Requests\StoreDiagnosticRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ParametreSociete;
+use Barryvdh\DomPDF\Facade\Pdf;
 
-// Ce contrôleur gère l'évaluation technique et l'établissement des rapports de diagnostic (UC04).
+// Ce contrôleur gère l'évaluation technique et l'établissement des rapports de diagnostic.
 // Pilote la logique de décision automatique (passages en Réparation, Attente Devis, Attente Remplacement, etc.).
 class DiagnosticController extends Controller
 {
-    // Affiche le formulaire de saisie de diagnostic et passe automatiquement l'état à 'EN_DIAGNOSTIC' (UC04 - Point 1).
+    // Affiche le formulaire de saisie de diagnostic et passe automatiquement l'état à 'EN_DIAGNOSTIC'.
     public function create(Dossier $dossier)
     {
         // Règle de sécurité : Un technicien ne peut diagnostiquer que les dossiers qui lui sont attribués
@@ -28,11 +30,11 @@ class DiagnosticController extends Controller
             $dossier->update(['statut' => 'EN_DIAGNOSTIC']);
 
             SuiviDossier::create([
-                'dossier_id'     => $dossier->id,
-                'user_id'        => Auth::id(),
-                'ancien_statut'  => 'AFFECTE',
+                'dossier_id' => $dossier->id,
+                'user_id' => Auth::id(),
+                'ancien_statut' => 'AFFECTE',
                 'nouveau_statut' => 'EN_DIAGNOSTIC',
-                'commentaire'    => 'Démarrage de l\'évaluation et du diagnostic technique.',
+                'commentaire' => 'Démarrage de l\'évaluation et du diagnostic technique.',
             ]);
         }
 
@@ -42,10 +44,9 @@ class DiagnosticController extends Controller
         return view('diagnostics.create', compact('dossier', 'pieces', 'tarifsMo'));
     }
 
-    // Enregistre le rapport de diagnostic finalisé et applique les règles de décision automatique (UC04).
+    // Enregistre le rapport de diagnostic finalisé et applique les règles de décision automatique.
     public function store(StoreDiagnosticRequest $request, Dossier $dossier)
     {
-
         // Gestion de l'image justificative de la panne
         $photoPath = null;
         if ($request->hasFile('photo_panne')) {
@@ -56,13 +57,13 @@ class DiagnosticController extends Controller
         $diagnostic = Diagnostic::updateOrCreate(
             ['dossier_id' => $dossier->id],
             [
-                'technicien_id'         => Auth::id(),
-                'constat'               => $request->constat_technique,
-                'recommandation'        => $request->recommandation,
-                'photo_panne'           => $photoPath ?? $dossier->diagnostic->photo_panne ?? null,
-                'motif_exclusion'       => $request->has('exclusion_garantie') ? ($request->motif_exclusion ?? 'Usage non conforme') : null,
+                'technicien_id' => Auth::id(),
+                'constat' => $request->constat_technique,
+                'recommandation' => $request->recommandation,
+                'photo_panne' => $photoPath ?? $dossier->diagnostic->photo_panne ?? null,
+                'motif_exclusion' => $request->boolean('exclusion_garantie') ? ($request->motif_exclusion ?? 'Usage non conforme') : null,
                 'exclusion_commentaire' => $request->exclusion_commentaire,
-                'date_diagnostic'       => now(),
+                'date_diagnostic' => now(),
             ]
         );
 
@@ -79,7 +80,7 @@ class DiagnosticController extends Controller
                 $piece = Piece::find($p['id']);
                 if ($piece) {
                     $diagnostic->pieces()->attach($p['id'], [
-                        'quantite'      => $p['quantite'] ?? 1,
+                        'quantite' => $p['quantite'] ?? 1,
                         'prix_unitaire' => $piece->prix_unitaire ?? 0
                     ]);
                 }
@@ -99,11 +100,11 @@ class DiagnosticController extends Controller
         }
 
         // -------------------------------------------------------------
-        // UC04 - Point 7 : Logique de décision automatique
+        // Logique de décision automatique
         // -------------------------------------------------------------
-        $isReparable       = $request->is_reparable == '1';
-        $exclusionGarantie = $request->has('exclusion_garantie');
-        $isGarantieValide  = $dossier->sous_garantie && !$exclusionGarantie;
+        $isReparable = $request->is_reparable == '1';
+        $exclusionGarantie = $request->boolean('exclusion_garantie');
+        $isGarantieValide = $dossier->sous_garantie && !$exclusionGarantie;
 
         $nouveauStatut = 'EN_DIAGNOSTIC'; // État transitoire de secours
 
@@ -123,19 +124,19 @@ class DiagnosticController extends Controller
 
         // Enregistrement des informations sur le dossier
         $dossier->update([
-            'statut'           => $nouveauStatut,
-            'date_diagnostic'  => now(),
+            'statut' => $nouveauStatut,
+            'date_diagnostic' => now(),
             'garantie_annulee' => $exclusionGarantie ? true : $dossier->garantie_annulee
         ]);
 
         // Audit Trail du dossier
         SuiviDossier::create([
-            'dossier_id'     => $dossier->id,
-            'user_id'        => Auth::id(),
-            'ancien_statut'  => 'EN_DIAGNOSTIC',
+            'dossier_id' => $dossier->id,
+            'user_id' => Auth::id(),
+            'ancien_statut' => 'EN_DIAGNOSTIC',
             'nouveau_statut' => $nouveauStatut,
-            'commentaire'    => $exclusionGarantie 
-                ? 'Rapport de diagnostic finalisé — garantie non applicable (exclusion d\'oxydation ou casse retenue).' 
+            'commentaire' => $exclusionGarantie
+                ? 'Rapport de diagnostic finalisé — garantie non applicable (exclusion d\'oxydation ou casse retenue).'
                 : 'Rapport de diagnostic finalisé et soumis avec succès.',
         ]);
 
@@ -178,6 +179,73 @@ class DiagnosticController extends Controller
         $diag = $dossier->diagnostic;
         $company = \App\Models\ParametreSociete::first();
 
-        return view('diagnostics.show', compact('dossier', 'diag', 'company'));
+        $isReparable = !in_array($dossier->statut, ['IRREPARABLE', 'ATTENTE_VALIDATION_REMPLACEMENT', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_REFUSE', 'REMPLACEMENT_PRET']);
+        $exclusionGarantie = $dossier->garantie_annulee || !empty($diag->motif_exclusion);
+        $isGarantieValide = $dossier->sous_garantie && !$exclusionGarantie;
+
+        return view('diagnostics.show', compact('dossier', 'diag', 'company', 'isReparable', 'exclusionGarantie', 'isGarantieValide'));
+    }
+
+    /**
+     * Génère la fiche technique de diagnostic au format PDF pour l'archivage ou l'atelier.
+     */
+    public function pdf(Dossier $dossier)
+    {
+        $dossier->load('client', 'technicien', 'appareil', 'diagnostic.pieces', 'diagnostic.tarifsMo');
+        $company = ParametreSociete::first();
+
+        $diagnostic = $dossier->diagnostic;
+
+        if ($dossier->garantie_annulee) {
+            $garantieText = 'GARANTIE EXCLUE';
+        } else {
+            $garantieText = $dossier->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE';
+        }
+
+        $isReparable = !in_array($dossier->statut, ['IRREPARABLE', 'ATTENTE_VALIDATION_REMPLACEMENT', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_REFUSE', 'REMPLACEMENT_PRET']);
+        $decisionClass = $isReparable ? 'reparable' : 'irreparable';
+
+        $exclusionGarantie = $dossier->garantie_annulee || ($diagnostic && !empty($diagnostic->motif_exclusion));
+        $isGarantieValide = $dossier->sous_garantie && !$exclusionGarantie;
+
+        if ($isReparable) {
+            $decisionText = 'APPAREIL RÉPARABLE';
+        } else {
+            $decisionText = $isGarantieValide
+                ? 'ON NE PEUT PAS RÉPARER (EN ATTENTE VALIDATION REMPLACEMENT)'
+                : 'ON NE PEUT PAS RÉPARER';
+        }
+
+        $dateImpression = now()->format('d/m/Y');
+        $dateGeneration = now()->format('d/m/Y H:i');
+
+        $pdf = Pdf::loadView('diagnostics.diagnostic-pdf', compact(
+            'dossier',
+            'company',
+            'diagnostic',
+            'garantieText',
+            'decisionClass',
+            'decisionText',
+            'dateImpression',
+            'dateGeneration'
+        ))->setPaper('a4', 'portrait');
+
+        return $pdf->stream("diagnostic-{$dossier->num_dossier}.pdf");
+    }
+
+    /**
+     * Commencer le diagnostic (Passage au statut EN_DIAGNOSTIC).
+     */
+    public function start(Dossier $dossier)
+    {
+        if ($dossier->technicien_id != Auth::id() && Auth::user()->role !== 'Admin') {
+            abort(403);
+        }
+
+        if ($dossier->statut === 'AFFECTE') {
+            $dossier->update(['statut' => 'EN_DIAGNOSTIC']);
+        }
+
+        return redirect()->route('diagnostics.create', $dossier->id);
     }
 }

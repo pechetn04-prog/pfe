@@ -108,3 +108,52 @@
     border-color: #2563eb !important;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
 }
+
+/* Classes additionnelles pour éliminer le CSS en ligne de la liste des utilisateurs */
+.card-user-stat {
+    border-radius: 15px !important;
+}
+
+.icon-wrapper-stat {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.icon-wrapper-blue { background: #eff6ff !important; }
+.icon-wrapper-green { background: #f0fdf4 !important; }
+.icon-wrapper-red { background: #fef2f2 !important; }
+.icon-wrapper-orange { background: #fff7ed !important; }
+
+.text-caps-stat {
+    font-size: 0.6rem !important;
+    letter-spacing: 0.5px !important;
+}
+
+.btn-raz-users {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+}
+
+.card-users-list {
+    border-radius: 20px !important;
+}
+
+.user-address-cell {
+    max-width: 150px !important;
+}
+
+.max-w-900 {
+    max-width: 900px !important;
+}
+
+.card-specialite {
+    border-radius: 12px !important;
+}
+
+.card-user-form {
+    border-radius: 15px !important;
+}
+
+.d-none-init {
+    display: none;
+}

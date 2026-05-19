@@ -1,0 +1,92 @@
+/* 
+ * Design Système Premium SAV - Maison Tel
+ * Fichier d'Utilitaires Généraux & Intégrations Tierces (ex: Select2)
+ * Épuré de toutes les redondances (Layouts, variables, et cartes hérités de common.css/theme.css)
+ */
+
+/* 1. Intégrations de Bibliothèques Externes (ex: Select2) */
+.select2-container--default .select2-selection--single {
+    height: 45px;
+    border: none;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding-top: 8px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 45px;
+}
+
+/* 2. Lignes de Formulaire Dynamiques (Main d'œuvre) */
+.ligne-mo-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* 3. Dégradés Premium pour les Statistiques */
+.bg-gradient-blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+}
+
+.bg-gradient-green {
+    background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
+}
+
+.bg-gradient-orange {
+    background: linear-gradient(135deg, #f59e0b 0%, #9a3412 100%);
+}
+
+.bg-gradient-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%);
+}
+
+/* 4. Tableaux de Statistiques Spécifiques */
+.custom-stats-table th {
+    padding: 12px 8px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.custom-stats-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* 5. Utilitaires de Typographie & Micro-Animations */
+.fw-black {
+    font-weight: 900;
+}
+
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.border-bottom-subtle {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.bg-light-subtle {
+    background-color: #fbfcfd;
+}
+
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}

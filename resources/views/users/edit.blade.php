@@ -3,7 +3,7 @@
 @section('title', 'Modifier — ' . $user->name)
 
 @section('content')
-<div class="container-fluid" style="max-width: 900px;">
+<div class="container-fluid max-w-900">
 
     <div class="mb-4">
         <div class="d-flex align-items-center mb-1">
@@ -22,7 +22,7 @@
     </div>
     @endif
 
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm card-user-form">
         <div class="card-body p-4">
             <form action="{{ route('users.update', $user->id) }}" method="POST">
                 @csrf @method('PUT')
@@ -55,7 +55,7 @@
                 </div>
 
                 {{-- Spécialités Technicien --}}
-                <div class="card bg-light border-0 mb-4" id="specialiteField" style="display:none; border-radius: 12px;">
+                <div class="card bg-light border-0 mb-4 card-specialite d-none-init" id="specialiteField">
                     <div class="card-body">
                         <label class="form-label fw-bold small text-uppercase mb-2 text-primary">Spécialités Techniques</label>
 

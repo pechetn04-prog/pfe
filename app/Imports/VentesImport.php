@@ -7,13 +7,11 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
 
+// Gère l'importation massive des ventes d'appareils depuis un fichier Excel ou CSV.
+// Assure la validation des données, la conversion robuste des dates Excel et la création des fiches de vente.
 class VentesImport implements ToModel, WithHeadingRow
 {
-    /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+    // Transforme chaque ligne du fichier importé en une fiche de vente d'appareil.
     public function model(array $row)
     {
         // Vérification de la présence de l'IMEI

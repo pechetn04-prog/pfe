@@ -26,7 +26,7 @@ class FactureController extends Controller
         if ($dossier->intervention && $dossier->intervention->pieces) {
             foreach ($dossier->intervention->pieces as $piece) {
                 $qty = $piece->pivot->quantite ?? 1;
-                $pu = $piece->pivot->prix_unitaire ?? $piece->prix_vente;
+                $pu = $piece->pivot->prix_unitaire ?? $piece->prix_unitaire;
                 $totalPieces += ($qty * $pu);
             }
         }
@@ -178,7 +178,7 @@ class FactureController extends Controller
                 $piece->ht_unitaire = $piece->ttc_unitaire / 1.19;
                 $piece->tva_unitaire = $piece->ttc_unitaire - $piece->ht_unitaire;
                 $piece->total_ligne = $piece->qty * $piece->ttc_unitaire;
-                
+
                 $ttcTotal += $piece->total_ligne;
                 return $piece;
             });
@@ -190,7 +190,7 @@ class FactureController extends Controller
                 $mo->ttc = $mo->pivot->montant;
                 $mo->ht = $mo->ttc / 1.19;
                 $mo->tva = $mo->ttc - $mo->ht;
-                
+
                 $ttcTotal += $mo->ttc;
                 return $mo;
             });

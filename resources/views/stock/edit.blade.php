@@ -2,24 +2,22 @@
 
 @section('title', 'Modifier la Pièce')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/stock.css') }}">
-@endpush
+
 
 @section('content')
-<div class="container py-4" style="max-width: 850px;">
+<div class="container py-4 max-w-850">
     {{-- Header avec retour --}}
     <div class="d-flex align-items-center mb-4">
-        <a href="{{ route('stock.index') }}" class="btn bg-white shadow-sm me-3 border-0 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; border-radius: 12px; color: #1e69ff;">
+        <a href="{{ route('stock.index') }}" class="btn bg-white shadow-sm me-3 border-0 d-flex align-items-center justify-content-center btn-premium-back">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div>
-            <h1 class="h4 fw-bold mb-0" style="color: #1a2332; letter-spacing: -0.5px;">Modifier : {{ $piece->nom }}</h1>
+            <h1 class="h4 fw-bold mb-0 text-premium-navy">Modifier : {{ $piece->nom }}</h1>
             <small class="text-muted fw-medium">Référence : {{ $piece->reference ?? '—' }}</small>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden;">
+    <div class="card border-0 shadow-sm card-premium-rounded overflow-hidden">
         <div class="card-header bg-white border-0 py-3 ps-4">
             <h6 class="fw-bold mb-0 text-primary"><i class="fas fa-edit me-2"></i> Informations de l'article</h6>
         </div>
@@ -29,17 +27,17 @@
                 @method('PUT')
                 <div class="row g-4">
                     <div class="col-md-8">
-                        <label class="form-label fw-bold small text-muted text-uppercase mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">DÉSIGNATION <span class="text-danger">*</span></label>
-                        <input type="text" name="nom" class="form-control form-control-lg border-0 bg-light rounded-pill px-4" value="{{ $piece->nom }}" required style="font-size: 0.95rem;">
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2 text-uppercase-small">DÉSIGNATION <span class="text-danger">*</span></label>
+                        <input type="text" name="nom" class="form-control form-control-lg border-0 bg-light rounded-pill px-4 input-premium-text" value="{{ $piece->nom }}" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold small text-muted text-uppercase mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">RÉFÉRENCE</label>
-                        <input type="text" name="reference" class="form-control form-control-lg border-0 bg-light rounded-pill px-4" value="{{ $piece->reference }}" style="font-size: 0.95rem;">
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2 text-uppercase-small">RÉFÉRENCE</label>
+                        <input type="text" name="reference" class="form-control form-control-lg border-0 bg-light rounded-pill px-4 input-premium-text" value="{{ $piece->reference }}">
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted text-uppercase mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">CATÉGORIE <span class="text-danger">*</span></label>
-                        <select name="categorie" class="form-select form-select-lg border-0 bg-light rounded-pill px-4" required style="font-size: 0.95rem;">
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2 text-uppercase-small">CATÉGORIE <span class="text-danger">*</span></label>
+                        <select name="categorie" class="form-select form-select-lg border-0 bg-light rounded-pill px-4 input-premium-text" required>
                             @foreach(\App\Models\Piece::CATEGORIES as $cat)
                                 <option value="{{ $cat }}" {{ $piece->categorie == $cat ? 'selected' : '' }}>{{ $cat }}</option>
                             @endforeach
@@ -47,22 +45,22 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted text-uppercase mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">PRIX UNITAIRE (TTC) <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2 text-uppercase-small">PRIX UNITAIRE (TTC) <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="number" step="0.001" name="prix_unitaire" class="form-control form-control-lg border-0 bg-light rounded-pill-start px-4" value="{{ $piece->prix_unitaire }}" required style="font-size: 0.95rem; border-top-right-radius: 0; border-bottom-right-radius: 0;">
-                            <span class="input-group-text border-0 bg-primary bg-opacity-10 text-primary fw-bold px-4" style="border-top-right-radius: 50rem; border-bottom-right-radius: 50rem; font-size: 0.85rem;">{{ $parametre->devise ?? 'DT' }}</span>
+                            <input type="number" step="0.001" name="prix_unitaire" class="form-control form-control-lg border-0 bg-light rounded-pill-start px-4 input-premium-text" value="{{ $piece->prix_unitaire }}" required>
+                            <span class="input-group-text border-0 bg-primary bg-opacity-10 text-primary fw-bold px-4 input-addon-pill-end">{{ $parametre->devise ?? 'DT' }}</span>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted text-uppercase mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">STOCK ACTUEL</label>
-                        <input type="number" class="form-control form-control-lg border-0 bg-white border rounded-pill px-4" value="{{ $piece->quantite }}" readonly disabled style="font-size: 0.95rem; opacity: 0.7;">
-                        <small class="text-muted mt-2 d-block px-2" style="font-size: 0.7rem;"><i class="fas fa-info-circle me-1"></i> Utilisez les mouvements de stock pour ajuster la quantité.</small>
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2 text-uppercase-small">STOCK ACTUEL</label>
+                        <input type="number" class="form-control form-control-lg border-0 bg-white border rounded-pill px-4 input-premium-text opacity-75" value="{{ $piece->quantite }}" readonly disabled>
+                        <small class="text-muted mt-2 d-block px-2 text-uppercase-small"><i class="fas fa-info-circle me-1"></i> Utilisez les mouvements de stock pour ajuster la quantité.</small>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted text-uppercase mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">SEUIL D'ALERTE <span class="text-danger">*</span></label>
-                        <input type="number" name="seuil_alerte" class="form-control form-control-lg border-0 bg-light rounded-pill px-4" value="{{ $piece->seuil_alerte }}" min="1" required style="font-size: 0.95rem;">
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2 text-uppercase-small">SEUIL D'ALERTE <span class="text-danger">*</span></label>
+                        <input type="number" name="seuil_alerte" class="form-control form-control-lg border-0 bg-light rounded-pill px-4 input-premium-text" value="{{ $piece->seuil_alerte }}" min="1" required>
                     </div>
 
                     <div class="col-12 mt-5 text-center">
@@ -75,5 +73,4 @@
         </div>
     </div>
 </div>
-
 @endsection

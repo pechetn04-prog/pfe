@@ -144,25 +144,37 @@
 
 <body>
     <div class="invoice-box">
-        <div class="header">
-            <div class="company-info">
-                @if($company && $company->logo)
-                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo"
-                        style="max-height: 120px; margin-bottom: 8px;"><br>
-                @else
-                    <div class="company-name">{{ $company->nom_societe ?? 'MAISON TEL' }}</div>
-                @endif
-                <div>{{ $company->adresse ?? '' }}</div>
-                <div>Tél : {{ $company->telephone ?? '' }}</div>
-            </div>
-            <div class="invoice-info">
-                <div class="invoice-title">RAPPORT D'INTERVENTION</div>
-                <div style="font-size: 18px; font-weight: bold; margin: 5px 0; color: #10b981;">
-                    #{{ $dossier->num_dossier }}</div>
-                <div>Date : {{ now()->format('d/m/Y') }}</div>
-            </div>
-            <div class="clear"></div>
-        </div>
+        <table style="width: 100%; border-bottom: 2px solid #10b981; padding-bottom: 15px; margin-bottom: 20px;">
+            <tr>
+                <td style="width: 55%; vertical-align: top;">
+                    @if($company && $company->logo)
+                        <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo"
+                            style="max-height: 80px; margin-bottom: 8px;"><br>
+                    @else
+                        <div class="company-name"
+                            style="font-size: 22px; font-weight: bold; color: #10b981; margin-bottom: 5px;">
+                            {{ $company->nom_societe ?? 'MAISON TEL' }}</div>
+                    @endif
+                    <div style="color: #555; font-size: 11px; line-height: 1.4;">
+                        {{ $company->adresse ?? '' }}<br>
+                        Tél : {{ $company->telephone ?? '' }}
+                        @if($company && $company->numero_fiscal)
+                            <br>Matricule Fiscal : {{ $company->numero_fiscal }}
+                        @endif
+                    </div>
+                </td>
+                <td style="width: 45%; text-align: right; vertical-align: top;">
+                    <div class="invoice-title"
+                        style="font-size: 22px; font-weight: bold; color: #10b981; margin-bottom: 5px;">RAPPORT
+                        D'INTERVENTION</div>
+                    <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 5px;">
+                        #{{ $dossier->num_dossier }}</div>
+                    <div style="color: #555; font-size: 11px; line-height: 1.4;">
+                        Date d'édition : {{ now()->format('d/m/Y') }}
+                    </div>
+                </td>
+            </tr>
+        </table>
 
         <div class="section-title">Informations Dossier & Appareil</div>
         <table class="info-table">
@@ -199,7 +211,6 @@
                             <th>Référence</th>
                             <th>Désignation</th>
                             <th style="text-align: center;">Qté</th>
-                            <th style="text-align: right;">Prix Unit. TTC</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -208,8 +219,6 @@
                                 <td>{{ $p->reference ?? '—' }}</td>
                                 <td>{{ $p->nom }}</td>
                                 <td style="text-align: center;">{{ $p->pivot->quantite ?? 1 }}</td>
-                                <td style="text-align: right;">{{ number_format($p->prix_vente ?? 0, 3, ',', ' ') }}
-                                    {{ $company->devise ?? 'DA' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -221,16 +230,18 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Désignation</th>
-                            <th style="text-align: right;">Montant TTC</th>
+                            <th>Désignation Prestation</th>
+                            <th style="text-align: right; width: 120px;">Montant</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($int->tarifsMo as $mo)
                             <tr>
                                 <td>{{ $mo->type_intervention }}</td>
-                                <td style="text-align: right;">{{ number_format($mo->pivot->montant ?? 0, 3, ',', ' ') }}
-                                    {{ $company->devise ?? 'DA' }}</td>
+                                <td style="text-align: right; font-weight: bold;">
+                                    {{ number_format($mo->pivot->montant ?? $mo->montant, 3, '.', ' ') }}
+                                    {{ $company->devise ?? 'TND' }}
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

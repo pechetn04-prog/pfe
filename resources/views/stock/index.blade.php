@@ -2,9 +2,7 @@
 
 @section('title', 'Gestion du Stock')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/stock.css') }}">
-@endpush
+
 
 @section('content')
 <div class="container-fluid">
@@ -32,7 +30,7 @@
     @if(auth()->user()->role !== 'Technicien')
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
         <div class="col">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm h-100 card-stock-box-15">
                 <div class="card-body d-flex align-items-center p-3">
                     <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3 text-primary">
                         <i class="fas fa-cubes fa-lg"></i>
@@ -45,7 +43,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card border-0 shadow-sm h-100 border-start border-4 border-danger" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm h-100 border-start border-4 border-danger card-stock-box-15">
                 <div class="card-body d-flex align-items-center p-3">
                     <div class="bg-danger bg-opacity-10 p-3 rounded-3 me-3 text-danger">
                         <i class="fas fa-exclamation-circle fa-lg"></i>
@@ -58,7 +56,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card border-0 shadow-sm h-100 border-start border-4 border-warning" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm h-100 border-start border-4 border-warning card-stock-box-15">
                 <div class="card-body d-flex align-items-center p-3">
                     <div class="bg-warning bg-opacity-10 p-3 rounded-3 me-3 text-warning">
                         <i class="fas fa-bell fa-lg"></i>
@@ -71,7 +69,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+            <div class="card border-0 shadow-sm h-100 card-stock-box-15">
                 <div class="card-body d-flex align-items-center p-3">
                     <div class="bg-success bg-opacity-10 p-3 rounded-3 me-3 text-success">
                         <i class="fas fa-dollar-sign fa-lg"></i>
@@ -89,8 +87,8 @@
     {{-- Modal Ajouter Pièce --}}
     <div class="modal fade" id="addPieceModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow" style="border-radius: 15px;">
-                <div class="modal-header bg-success text-white border-0 py-3" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+            <div class="modal-content border-0 shadow modal-stock-box-15">
+                <div class="modal-header bg-success text-white border-0 py-3 modal-header-radius-15">
                     <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle me-2"></i> Ajouter une nouvelle pièce</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -169,7 +167,7 @@
     </div>
 
     {{-- Tableau des pièces --}}
-    <div class="card shadow border-0 overflow-hidden" style="border-radius: 15px;">
+    <div class="card shadow border-0 overflow-hidden card-stock-box-15">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted small text-uppercase fw-bold">

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
+// Notification envoyée à l'administrateur lorsqu'un technicien demande le retrait d'un dossier (UC05).
 class DemandeRejetNotification extends Notification
 {
     use Queueable;
@@ -14,17 +15,20 @@ class DemandeRejetNotification extends Notification
     protected $dossier;
     protected $technicien;
 
+    // Initialise la notification de demande de retrait.
     public function __construct(Dossier $dossier, User $technicien)
     {
         $this->dossier = $dossier;
         $this->technicien = $technicien;
     }
 
+    // Définit le canal de diffusion de la notification (Base de données locale).
     public function via($notifiable)
     {
         return ['database'];
     }
 
+    // Formate la notification pour l'affichage dans le panneau d'administration.
     public function toArray($notifiable)
     {
         return [

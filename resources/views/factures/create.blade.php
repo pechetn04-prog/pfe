@@ -2,10 +2,6 @@
 
 @section('title', 'Établir la Facture - Dossier #' . $dossier->num_dossier)
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/facture-premium.css') }}">
-@endpush
-
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
@@ -26,9 +22,9 @@
                 <div class="row g-4">
                     <div class="col-md-8">
                         {{-- Section 1 : Pièces Consommées (Intervention) --}}
-                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                        <div class="card border-0 shadow-sm mb-4 card-invoice-billing">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
-                                <div class="bg-soft-primary p-2 rounded-3 me-3" style="background-color: rgba(30, 105, 255, 0.1);">
+                                <div class="bg-soft-primary p-2 rounded-3 me-3">
                                     <i class="fas fa-microchip text-primary"></i>
                                 </div>
                                 <h6 class="fw-bold mb-0">1. Pièces consommées (Atelier)</h6>
@@ -38,17 +34,17 @@
                                     <table class="table table-hover align-middle mb-0">
                                         <thead class="bg-light">
                                             <tr class="small text-muted text-uppercase">
-                                                <th style="width: 40%;">Désignation</th>
-                                                <th class="text-center" style="width: 15%;">Qté</th>
-                                                <th class="text-end" style="width: 20%;">P.U TTC</th>
-                                                <th class="text-end pe-3" style="width: 25%;">Total TTC</th>
+                                                <th class="th-w-40">Désignation</th>
+                                                <th class="text-center th-w-15">Qté</th>
+                                                <th class="text-end th-w-20">P.U TTC</th>
+                                                <th class="text-end pe-3 th-w-25">Total TTC</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse($dossier->intervention->pieces as $piece)
                                                 @php 
                                                     $qty = $piece->pivot->quantite ?? 1;
-                                                    $pu = $piece->pivot->prix_unitaire ?? $piece->prix_vente;
+                                                    $pu = $piece->pivot->prix_unitaire ?? $piece->prix_unitaire;
                                                     $totalLigne = $qty * $pu;
                                                 @endphp
                                                 <tr>
@@ -71,10 +67,10 @@
                         </div>
 
                         {{-- Section 2 : Prestations --}}
-                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                        <div class="card border-0 shadow-sm mb-4 card-invoice-billing">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-soft-info p-2 rounded-3 me-3" style="background-color: rgba(13, 202, 240, 0.1);">
+                                    <div class="bg-soft-info p-2 rounded-3 me-3">
                                         <i class="fas fa-hand-holding-heart text-info"></i>
                                     </div>
                                     <h6 class="fw-bold mb-0">2. Prestations & Main d'œuvre</h6>
@@ -88,9 +84,9 @@
                                     <table class="table table-hover align-middle" id="laborsTable">
                                         <thead class="bg-light">
                                             <tr class="small text-muted text-uppercase">
-                                                <th style="width: 60%;">Type d'intervention</th>
-                                                <th style="width: 30%;" class="text-center">Montant TTC (DT)</th>
-                                                <th style="width: 10%;" class="text-end pe-3">Actions</th>
+                                                <th class="th-w-60">Type d'intervention</th>
+                                                <th class="text-center th-w-30">Montant TTC (DT)</th>
+                                                <th class="text-end pe-3 th-w-10">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -126,7 +122,7 @@
 
                     <div class="col-md-4">
                         {{-- Récapitulatif Financier --}}
-                        <div class="card border-0 shadow-sm sticky-top" style="border-radius: 15px; top: 20px;">
+                        <div class="card border-0 shadow-sm sticky-top card-recap-sticky">
                             <div class="card-body p-4">
                                 <h6 class="fw-bold text-dark mb-4">Récapitulatif de la Facture</h6>
                                 
@@ -143,7 +139,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <label class="form-label small fw-bold text-muted text-uppercase mb-0">Remise (%)</label>
                                         @if($isGarantieValide)
-                                            <span class="badge bg-success rounded-pill" style="font-size: 0.65rem;"><i class="fas fa-shield-alt me-1"></i> Sous Garantie</span>
+                                            <span class="badge bg-success rounded-pill badge-garantie-micro-invoice"><i class="fas fa-shield-alt me-1"></i> Sous Garantie</span>
                                         @endif
                                     </div>
                                     <div class="input-group input-group-lg bg-light rounded-pill overflow-hidden border-0">
@@ -152,7 +148,7 @@
                                     </div>
                                 </div>
 
-                                <div class="bg-success bg-opacity-10 p-3 rounded-4 mb-4" style="background-color: rgba(25, 135, 84, 0.1);">
+                                <div class="bg-success bg-opacity-10 p-3 rounded-4 mb-4 bg-net-ttc-box">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold text-success">TOTAL NET TTC</span>
                                         <div class="text-end">
@@ -166,7 +162,7 @@
                                     <i class="fas fa-check-double me-2"></i> GÉNÉRER LA FACTURE
                                 </button>
                                 
-                                <p class="text-muted small text-center mb-0" style="font-size: 0.7rem;">
+                                <p class="text-muted small text-center mb-0 disclaimer-text-invoice">
                                     <i class="fas fa-shield-alt me-1"></i> Cette action clôturera l'aspect financier du dossier.
                                 </p>
                             </div>

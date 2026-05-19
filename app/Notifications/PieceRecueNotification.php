@@ -5,24 +5,27 @@ namespace App\Notifications;
 use App\Models\Dossier;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
 
+// Notification alertant le technicien assigné qu'une pièce manquante en attente est arrivée en stock (UC06).
 class PieceRecueNotification extends Notification
 {
     use Queueable;
 
     protected $dossier;
 
+    // Initialise une nouvelle instance de la notification.
     public function __construct(Dossier $dossier)
     {
         $this->dossier = $dossier;
     }
 
+    // Spécifie le canal d'envoi (Notification interne à destination du technicien).
     public function via($notifiable)
     {
-        return ['database']; // On privilégie les notifications internes pour le technicien
+        return ['database'];
     }
 
+    // Formate l'alerte pour affichage direct dans le tableau de bord du technicien.
     public function toArray($notifiable)
     {
         return [

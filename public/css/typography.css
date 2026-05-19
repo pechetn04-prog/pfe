@@ -126,3 +126,23 @@ input, select, textarea, button {
 .text-slate-800 {
     color: #1e293b !important;
 }
+
+/* === 7. Utilitaire Typographique Atomique & Border-Radius (Look Premium) === */
+.font-size-055 { font-size: 0.55rem !important; }
+.font-size-06 { font-size: 0.6rem !important; }
+.font-size-065 { font-size: 0.65rem !important; }
+.font-size-07 { font-size: 0.7rem !important; }
+.font-size-075 { font-size: 0.75rem !important; }
+.font-size-085 { font-size: 0.85rem !important; }
+.font-size-09 { font-size: 0.9rem !important; }
+.font-size-095 { font-size: 0.95rem !important; }
+.font-size-1 { font-size: 1rem !important; }
+
+.letter-spacing-05 { letter-spacing: 0.5px !important; }
+.letter-spacing-08 { letter-spacing: 0.8px !important; }
+.letter-spacing-1 { letter-spacing: 1px !important; }
+
+.border-radius-10 { border-radius: 10px !important; }
+.border-radius-12 { border-radius: 12px !important; }
+.border-radius-15 { border-radius: 15px !important; }
+.border-radius-20 { border-radius: 20px !important; }

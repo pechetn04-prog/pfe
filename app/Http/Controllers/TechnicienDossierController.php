@@ -17,9 +17,25 @@ class TechnicienDossierController extends Controller
         $user = Auth::user();
 
         // Récupération des dossiers assignés, triés par date de mise à jour récente
+        // Eager-loading de 'client' et 'appareil' pour éviter le problème de requêtes N+1 lors de l'accès à l'IMEI
         $query = Dossier::where('technicien_id', $user->id)
-            ->with(['client'])
+            ->with(['client', 'appareil'])
             ->latest('updated_at');
+
+        // Recherche textuelle multi-critères
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('num_dossier', 'like', "%{$search}%")
+                    ->orWhereHas('appareil', function ($q2) use ($search) {
+                        $q2->where('imei', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('client', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%")
+                            ->orWhere('telephone', 'like', "%{$search}%");
+                    });
+            });
+        }
 
         // Filtrage dynamique par statut. Par défaut, on cache les dossiers clos pour ne pas surcharger la vue.
         if ($request->filled('statut')) {
@@ -28,7 +44,7 @@ class TechnicienDossierController extends Controller
             $query->where('statut', '!=', 'CLOTURE');
         }
 
-        $dossiers = $query->paginate(15);
+        $dossiers = $query->paginate(15)->withQueryString();
 
         // Nomenclature des libellés de l'état SAV
         $statuts = [

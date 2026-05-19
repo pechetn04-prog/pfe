@@ -52,3 +52,16 @@
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
     border-color: #6366f1 !important;
 }
+
+.card-stock-box-15 {
+    border-radius: 15px !important;
+}
+
+.modal-stock-box-15 {
+    border-radius: 15px !important;
+}
+
+.modal-header-radius-15 {
+    border-top-left-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+}

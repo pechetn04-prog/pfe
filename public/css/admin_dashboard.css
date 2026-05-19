@@ -1,50 +1,43 @@
-.kpi-card {
-    border: none;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+/**
+ * SAV Premium - Admin Dashboard Styles
+ * Styles spécifiques, animations et utilitaires pour le tableau de bord Administrateur.
+ * Ce fichier est complémentaire à dashboard-cards.css (qui centralise les KPI).
+ */
+
+/* 1. Transitions et Effets de Survol */
+.transition-all {
     transition: all 0.3s ease;
-    overflow: hidden;
-    background: #fff;
 }
-.kpi-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-}
-.kpi-icon-wrapper {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-}
-.kpi-value {
-    font-size: 1.5rem;
-    color: #1a2332;
-}
-.kpi-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.bg-soft-primary { background: #eff6ff; color: #3b82f6; }
-.bg-soft-danger { background: #fef2f2; color: #ef4444; }
-.bg-soft-warning { background: #fffbeb; color: #f59e0b; }
-.bg-soft-info { background: #f0f9ff; color: #06b6d4; }
-.bg-soft-success { background: #f0fdf4; color: #10b981; }
-.bg-soft-slate { background: #f8fafc; color: #475569; }
-.bg-soft-purple { background: #faf5ff; color: #a855f7; }
 
-.transition-all { transition: all 0.3s ease; }
+.hover-scale:hover {
+    transform: scale(1.03);
+}
 
-.pulse-warning { animation: pulse-orange 2s infinite; }
+/* 2. Animation Pulse pour les alertes orange */
+.pulse-warning {
+    animation: pulse-orange 2s infinite;
+}
+
 @keyframes pulse-orange {
-    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-    70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 12px rgba(245, 158, 11, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+    }
 }
-.hover-scale:hover { transform: scale(1.05); }
+
+/* 3. Utilitaires de Tableaux Admin */
+.table-th-small {
+    font-size: 0.65rem !important;
+}
+
+/* 4. Cartes Spécifiques du Tableau de Bord */
+.card-replacement-waiting {
+    border-radius: 15px !important;
+    border-left: 4px solid #f59e0b !important;
+}
+

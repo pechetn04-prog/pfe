@@ -4,10 +4,10 @@ namespace App\Notifications;
 
 use App\Models\Dossier;
 use Illuminate\Bus\Queueable;
-// ShouldQueue retiré : envoi synchrone sans queue worker
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+// Notification de confirmation de réception d'un appareil et transmission des accès de compte client (UC01 / UC02).
 class TicketCreatedNotification extends Notification
 {
     use Queueable;
@@ -15,17 +15,20 @@ class TicketCreatedNotification extends Notification
     protected $dossier;
     protected $defaultPassword;
 
+    // Initialise une nouvelle instance de la notification.
     public function __construct(Dossier $dossier, ?string $defaultPassword = null)
     {
         $this->dossier = $dossier;
         $this->defaultPassword = $defaultPassword;
     }
 
+    // Définit les canaux de notification (Mail pour le client, Database pour la cloche).
     public function via($notifiable)
     {
         return ['mail', 'database'];
     }
 
+    // Génère le message d'e-mail avec identifiants pour le client.
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
@@ -48,6 +51,7 @@ class TicketCreatedNotification extends Notification
         return $mail->line('Merci de votre confiance !');
     }
 
+    // Formate les données pour la cloche d'alertes locale de l'espace client.
     public function toArray($notifiable)
     {
         return [

@@ -2,9 +2,7 @@
 
 @section('title', 'Tarifs Main d\'œuvre')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/tarifs_mo.css') }}">
-@endpush
+
 
 @section('content')
 <div class="container-fluid">
@@ -19,7 +17,7 @@
     </div>
 
     {{-- Filtre de recherche --}}
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+    <div class="card border-0 shadow-sm mb-4 card-mo-rounded">
         <div class="card-body p-3">
             <form action="{{ route('admin.tarifs_mo.index') }}" method="GET" class="row g-2 align-items-center">
                 <div class="col-md-8">
@@ -32,13 +30,13 @@
                     <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold shadow-sm">FILTRER</button>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route('admin.tarifs_mo.index') }}" class="btn btn-light border-0 w-100 rounded-3 fw-bold" style="background: #f1f5f9; color: #64748b;">RAZ</a>
+                    <a href="{{ route('admin.tarifs_mo.index') }}" class="btn btn-light border-0 w-100 rounded-3 fw-bold btn-mo-raz">RAZ</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+    <div class="card shadow-sm border-0 card-mo-rounded">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
@@ -77,7 +75,7 @@
                             <!-- Modal Edit -->
                             <div class="modal fade text-start" id="editModal{{ $tarif->id }}" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
-                                    <form action="{{ route('admin.tarifs_mo.update', $tarif->id) }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 15px;">
+                                    <form action="{{ route('admin.tarifs_mo.update', $tarif->id) }}" method="POST" class="modal-content border-0 shadow modal-mo-content">
                                         @csrf @method('PUT')
                                         <div class="modal-header border-0 pb-0">
                                             <h5 class="fw-bold">Modifier le Tarif</h5>

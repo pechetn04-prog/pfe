@@ -1,0 +1,214 @@
+/**
+ * SAV Premium - Tickets Index (Liste des dossiers) Styling
+ * 
+ * Ce fichier regroupe tous les styles visuels de la page d'accueil de gestion des dossiers (tickets).
+ * 1. KPI Cards : Bloc de statistiques avec survol 3D et dégradés.
+ * 2. Filters Block : Formulaire de filtrage ergonomique et réactif.
+ * 3. Dossiers Table : Grille de données premium avec transitions d'accentuation et survol fluide.
+ * 4. Custom Badges : Badges sémantiques aux couleurs douces pour les statuts et garanties.
+ */
+
+/* ============================================================
+ * 1. CARTES KPI (STATISTIQUES & RAPPORTS)
+ * ============================================================ */
+.kpi-card {
+    border-radius: 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #ffffff;
+    border: none !important;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.06) !important;
+}
+
+.kpi-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.kpi-card:hover .kpi-icon-wrapper {
+    transform: scale(1.08) rotate(3deg);
+}
+
+/* ============================================================
+ * 2. COMPOSANT DE FILTRAGE DES DOSSIERS
+ * ============================================================ */
+.filter-card {
+    border-radius: 20px !important;
+    background-color: #ffffff;
+    border: none !important;
+}
+
+.filter-input, .filter-select {
+    border-radius: 10px !important;
+    background-color: #f8fafc !important;
+    border: 1px solid #f1f5f9 !important;
+    color: #1a2332 !important;
+    font-size: 0.9rem !important;
+    padding: 10px 14px !important;
+    transition: all 0.25s ease;
+}
+
+.filter-input:focus, .filter-select:focus {
+    background-color: #ffffff !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* ============================================================
+ * 3. TABLEAU DES DOSSIERS (DATA GRID)
+ * ============================================================ */
+.dossiers-table-card {
+    border-radius: 20px !important;
+    background-color: #ffffff;
+    border: none !important;
+}
+
+.dossier-table thead {
+    background-color: #f8fafc !important;
+}
+
+.dossier-table th {
+    padding: 16px 20px !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.8px !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    border-bottom: 2px solid #f1f5f9 !important;
+}
+
+.dossier-table td {
+    padding: 16px 20px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    font-size: 0.88rem;
+    color: #334155;
+    transition: all 0.2s ease;
+}
+
+.dossier-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.dossier-table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+.dossier-table tbody tr:hover td {
+    color: #0f172a;
+}
+
+/* Lien interactif sur le N° de Ticket */
+.dossier-num-link {
+    font-weight: 800;
+    color: #1e293b;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.dossier-num-link:hover {
+    color: #2563eb !important;
+}
+
+/* Boutons d'Action Circulaires */
+.action-btn-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50% !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-btn-circle:hover {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #2563eb !important;
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* ============================================================
+ * 4. BADGES STATUTS & GARANTIES CAPSULES
+ * ============================================================ */
+.status-badge-capsule {
+    border-radius: 50rem !important;
+    padding: 6px 14px !important;
+    font-weight: 700 !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04) !important;
+    display: inline-block;
+}
+
+.warranty-badge-capsule {
+    border-radius: 50rem !important;
+    padding: 6px 14px !important;
+    font-weight: 800 !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    display: inline-block;
+}
+
+.warranty-badge-capsule.under-warranty {
+    background-color: #ecfdf5 !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+
+.warranty-badge-capsule.out-of-warranty {
+    background-color: #fef2f2 !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+
+.warranty-badge-capsule.excluded-warranty {
+    background-color: #fffbeb !important;
+    color: #f59e0b !important;
+    border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+/* Dossier Detail and Modals styling */
+.card-dossier-box-15 {
+    border-radius: 15px !important;
+}
+
+.bg-white-important {
+    background-color: #ffffff !important;
+}
+
+.modal-content-box-15 {
+    border-radius: 15px !important;
+}
+
+.btn-back-dossier {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    color: #1e69ff !important;
+}
+
+.icon-circle-wrapper-35 {
+    width: 35px !important;
+    height: 35px !important;
+}
+
+.letter-spacing-08 {
+    letter-spacing: 0.8px !important;
+}
+
+.opacity-06 {
+    opacity: 0.6 !important;
+}

@@ -97,6 +97,38 @@ class Dossier extends Model
 
 
 
+    // Récupère la classe CSS associée au statut (ex: status-recu, status-en_diagnostic)
+    public function getStatutClassAttribute()
+    {
+        return 'status-' . strtolower($this->statut);
+    }
+
+    // Récupère le libellé propre en français pour chaque statut
+    public function getStatutTextAttribute()
+    {
+        $translations = [
+            'RECU'                            => 'REÇU',
+            'AFFECTE'                         => 'AFFECTÉ',
+            'EN_DIAGNOSTIC'                   => 'DIAGNOSTIC',
+            'EN_ATTENTE_DEVIS'                => 'ATTENTE DEVIS',
+            'EN_REPARATION'                   => 'RÉPARATION',
+            'REPARE'                          => 'RÉPARÉ',
+            'FACTURE'                         => 'FACTURE',
+            'LIVRE'                           => 'RESTITUÉ',
+            'CLOTURE'                         => 'CLÔTURE',
+            'DEVIS_REFUSE'                    => 'DEVIS REFUSÉ',
+            'IRREPARABLE'                     => 'IRRÉPARABLE',
+            'ANNULE'                          => 'ANNULÉ',
+            'ATTENTE_PIECE'                   => 'ATTENTE PIÈCE',
+            'ATTENTE_VALIDATION_REMPLACEMENT' => 'ATTENTE REMPLACEMENT',
+            'REMPLACEMENT_VALIDE'             => 'REMPLACEMENT VALIDÉ',
+            'REMPLACEMENT_REFUSE'             => 'REMPLACEMENT REFUSÉ',
+            'REMPLACEMENT_PRET'               => 'REMPLACEMENT PRÊT',
+        ];
+
+        return $translations[$this->statut] ?? str_replace('_', ' ', $this->statut);
+    }
+
     // Helper pour récupérer l'IMEI via l'appareil
     public function getImeiAttribute()
     {

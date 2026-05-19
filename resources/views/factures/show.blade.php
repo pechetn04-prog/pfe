@@ -2,10 +2,6 @@
 
 @section('title', 'Détails de la Facture')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/facture-premium.css') }}">
-@endpush
-
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -25,7 +21,7 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card shadow mb-4 border-0" style="border-radius: 15px;">
+            <div class="card shadow mb-4 border-0 card-invoice-billing">
                 <div class="card-body p-4">
                     <div class="row mb-4">
                         <div class="col-sm-6">
@@ -87,7 +83,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card shadow border-0" style="border-radius: 15px; background: #2563eb; color: white;">
+            <div class="card shadow border-0 card-invoice-total-recap">
                 <div class="card-body p-4">
                     <h6 class="text-white-50 text-uppercase small fw-bold mb-4">Total Facturation</h6>
 

@@ -2,9 +2,7 @@
 
 @section('title', 'Tableau de Bord Agent SAV')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-premium.css') }}">
-@endpush
+
 
 @section('content')
     <div class="container-fluid">
@@ -21,7 +19,7 @@
 
 
 
-        <div class="row row-cols-xl-5 row-cols-md-3 row-cols-2 g-3 mb-4">
+        <div class="row row-cols-xl-4 row-cols-md-3 row-cols-2 g-3 mb-4">
             @foreach($all_kpis as $k)
                 <div class="col">
                     <div class="card kpi-card shadow-sm h-100">

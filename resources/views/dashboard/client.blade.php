@@ -2,9 +2,7 @@
 
 @section('title', 'Mon Espace SAV — Maison Tel')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-premium.css') }}">
-@endpush
+
 
 @section('content')
 <div class="container-fluid px-4 py-4">
@@ -20,7 +18,7 @@
     {{-- Résumé en Cartes --}}
     <div class="row g-3 mb-5">
         <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: linear-gradient(135deg, #1e69ff 0%, #0047d5 100%); color: white;">
+            <div class="card border-0 shadow-sm h-100 card-client-kpi-1">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -35,14 +33,14 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: #ffffff;">
+            <div class="card border-0 shadow-sm h-100 card-client-kpi-2">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="h3 fw-bold mb-0 text-dark">{{ $dossiersEnCours }}</div>
                             <div class="small text-muted fw-bold text-uppercase">En cours de traitement</div>
                         </div>
-                        <div class="bg-soft-warning rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                        <div class="bg-soft-warning rounded-circle p-3 d-flex align-items-center justify-content-center icon-circle-wrapper-50">
                             <i class="fas fa-tools text-warning fs-4"></i>
                         </div>
                     </div>
@@ -50,14 +48,14 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: #ffffff;">
+            <div class="card border-0 shadow-sm h-100 card-client-kpi-2">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="h3 fw-bold mb-0 text-dark">{{ $dossiersClotures }}</div>
                             <div class="small text-muted fw-bold text-uppercase">Dossiers Clôturés</div>
                         </div>
-                        <div class="bg-soft-secondary rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(108, 117, 125, 0.1);">
+                        <div class="bg-soft-secondary rounded-circle p-3 d-flex align-items-center justify-content-center icon-circle-wrapper-50">
                             <i class="fas fa-archive text-secondary fs-4"></i>
                         </div>
                     </div>
@@ -67,7 +65,7 @@
     </div>
 
     {{-- Historique complet --}}
-    <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+    <div class="card border-0 shadow-sm card-client-table-container">
         <div class="card-header bg-white border-0 py-4 px-4">
             <h5 class="fw-bold mb-0 text-dark">{{ $isArchive ? 'Dossiers Finalisés & Archivés' : 'Dossiers en cours de traitement' }}</h5>
         </div>
@@ -92,7 +90,7 @@
                         </td>
                         <td>
                             <div class="fw-bold text-dark">{{ $d->appareil->modele ?? '—' }}</div>
-                            <div class="small text-muted text-truncate" style="max-width: 250px;">{{ $d->panne_declaree }}</div>
+                            <div class="small text-muted text-truncate max-width-250">{{ $d->panne_declaree }}</div>
                         </td>
                         <td class="text-muted small">{{ \Carbon\Carbon::parse($d->date_reception)->format('d/m/Y') }}</td>
                         <td class="text-center">

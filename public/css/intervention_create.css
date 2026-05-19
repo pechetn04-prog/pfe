@@ -162,3 +162,133 @@ body.intervention-page {
 .card-select:hover { background-color: #e2e8f0 !important; }
 .upload-area:hover { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
 
+/* Classes pour éliminer le CSS en ligne de la création d'interventions */
+.modal-content-rounded {
+    border-radius: 15px !important;
+}
+
+.card-intervention-box {
+    border-radius: 15px !important;
+}
+
+.badge-status-intervention {
+    font-size: 0.75rem !important;
+}
+
+.font-size-075 {
+    font-size: 0.75rem !important;
+}
+
+.font-size-07 {
+    font-size: 0.7rem !important;
+}
+
+.font-size-065 {
+    font-size: 0.65rem !important;
+}
+
+.upload-area-transition {
+    transition: all 0.3s !important;
+}
+
+.cursor-pointer-custom {
+    cursor: pointer !important;
+}
+
+.compte-rendu-textarea {
+    border-radius: 12px !important;
+    background-color: #f8fafc !important;
+}
+
+.th-center-w-100 {
+    width: 100px !important;
+    text-align: center !important;
+}
+
+.th-end-w-50 {
+    width: 50px !important;
+    text-align: end !important;
+}
+
+.th-end-w-150 {
+    width: 150px !important;
+    text-align: end !important;
+}
+
+.status-selector-repare {
+    --btn-color: #10b981 !important;
+    --btn-bg: #f0fdf4 !important;
+}
+
+.status-selector-irreparable {
+    --btn-color: #ef4444 !important;
+    --btn-bg: #fef2f2 !important;
+}
+
+.status-selector-attente {
+    --btn-color: #3b82f6 !important;
+    --btn-bg: #eff6ff !important;
+}
+
+/* Classes pour éliminer le CSS en ligne du rapport d'intervention (show) */
+.container-max-1000 {
+    max-width: 1000px !important;
+}
+
+.card-intervention-show-status {
+    border-radius: 14px !important;
+}
+
+.card-intervention-show-box {
+    border-radius: 14px !important;
+}
+
+.rapport-atelier-body {
+    min-height: 120px !important;
+    white-space: pre-wrap !important;
+}
+
+.photo-wrapper {
+    max-width: 100% !important;
+}
+
+.photo-preview {
+    max-height: 450px !important;
+    object-fit: contain !important;
+}
+
+.font-size-09 {
+    font-size: 0.9rem !important;
+}
+
+/* Classes sémantiques pour éliminer la logique de style du contrôleur */
+.card-verdict-repare {
+    border-left: 5px solid #10b981 !important;
+}
+.card-verdict-irreparable {
+    border-left: 5px solid #ef4444 !important;
+}
+.card-verdict-attente {
+    border-left: 5px solid #f59e0b !important;
+}
+.card-verdict-default {
+    border-left: 5px solid #6b7280 !important;
+}
+
+.badge-verdict-repare {
+    background-color: #10b981 !important;
+    color: white !important;
+}
+.badge-verdict-irreparable {
+    background-color: #ef4444 !important;
+    color: white !important;
+}
+.badge-verdict-attente {
+    background-color: #f59e0b !important;
+    color: #000 !important;
+}
+.badge-verdict-default {
+    background-color: #6b7280 !important;
+    color: white !important;
+}
+

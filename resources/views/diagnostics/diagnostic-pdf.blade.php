@@ -186,7 +186,7 @@
                 <div class="invoice-title">RAPPORT DE DIAGNOSTIC</div>
                 <div style="font-size: 18px; font-weight: bold; margin: 5px 0; color: #dc2626;">
                     #{{ $dossier->num_dossier }}</div>
-                <div>Date : {{ now()->format('d/m/Y') }}</div>
+                <div>Date : {{ $dateImpression }}</div>
             </div>
             <div class="clear"></div>
         </div>
@@ -208,40 +208,80 @@
             </tr>
             <tr>
                 <td class="label">Garantie</td>
-                <td class="val">{{ $dossier->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE' }}</td>
+                <td class="val" {!! $dossier->garantie_annulee ? 'style="color: #dc2626; font-weight: bold;"' : '' !!}>{{ $garantieText }}</td>
                 <td class="label">Panne déclarée</td>
                 <td class="val">{{ $dossier->panne_declaree }}</td>
             </tr>
+            @if($diagnostic && (!empty($diagnostic->motif_exclusion) || !empty($diagnostic->exclusion_commentaire)))
+            <tr>
+                <td class="label" style="color: #dc2626; font-weight: bold;">Exclusion de Garantie</td>
+                <td class="val" colspan="3" style="color: #dc2626;">
+                    @if(!empty($diagnostic->motif_exclusion))
+                        <strong>Motif :</strong> {{ $diagnostic->motif_exclusion }}
+                    @endif
+                    @if(!empty($diagnostic->exclusion_commentaire))
+                        @if(!empty($diagnostic->motif_exclusion)) <br> @endif
+                        <strong>Commentaire :</strong> {{ $diagnostic->exclusion_commentaire }}
+                    @endif
+                </td>
+            </tr>
+            @endif
         </table>
 
         <!-- Section : Analyse Technique (si existante) -->
-        @if($dossier->diagnostic)
-            @php $diag = $dossier->diagnostic; @endphp
+        @if($diagnostic)
             <div class="section-title">Constat Technique</div>
-            <div class="box">{{ $diag->constat ?? 'Aucun constat renseigné.' }}</div>
+            <div class="box">{{ $diagnostic->constat ?? 'Aucun constat renseigné.' }}</div>
 
             <div class="section-title">Recommandation du Technicien</div>
-            <div class="box">{{ $diag->recommandation ?? 'Aucune recommandation.' }}</div>
+            <div class="box">{{ $diagnostic->recommandation ?? 'Aucune recommandation.' }}</div>
 
-            @if($diag->pieces && $diag->pieces->count())
+            @if($diagnostic->pieces && $diagnostic->pieces->count())
                 <div class="section-title">Pièces & Composants à prévoir</div>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Référence</th>
                             <th>Désignation</th>
+                            <th style="text-align: right;">P.U. TTC</th>
                             <th style="text-align: center;">Qté</th>
-                            <th style="text-align: right;">Prix Unit. TTC</th>
+                            <th style="text-align: right;">Total TTC</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($diag->pieces as $p)
+                        @foreach($diagnostic->pieces as $p)
+                            @php
+                                $pu = $p->pivot->prix_unitaire ?? $p->prix_unitaire;
+                                $qty = $p->pivot->quantite ?? 1;
+                                $tot = $pu * $qty;
+                            @endphp
                             <tr>
                                 <td>{{ $p->reference ?? '—' }}</td>
                                 <td>{{ $p->nom }}</td>
-                                <td style="text-align: center;">{{ $p->pivot->quantite ?? 1 }}</td>
-                                <td style="text-align: right;">{{ number_format($p->prix_vente ?? 0, 3, ',', ' ') }}
-                                    {{ $company->devise ?? 'DT' }}
+                                <td style="text-align: right;">{{ number_format($pu) }} {{ $company->devise ?? 'TND' }}</td>
+                                <td style="text-align: center;">{{ $qty }}</td>
+                                <td style="text-align: right; font-weight: bold;">{{ number_format($tot) }} {{ $company->devise ?? 'TND' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+
+            @if($diagnostic->tarifsMo && $diagnostic->tarifsMo->count())
+                <div class="section-title">Prestations & Main d'œuvre estimées</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Type d'intervention</th>
+                            <th style="text-align: right;">Montant estimé</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($diagnostic->tarifsMo as $mo)
+                            <tr>
+                                <td>{{ $mo->type_intervention }}</td>
+                                <td style="text-align: right; font-weight: bold;">
+                                    {{ number_format($mo->pivot->montant ?? $mo->montant) }} {{ $company->devise ?? 'TND' }}
                                 </td>
                             </tr>
                         @endforeach
@@ -250,8 +290,8 @@
             @endif
 
             <!-- Résultat Final de l'expertise -->
-            <div class="decision-box {{ ($diag->is_reparable ?? true) ? 'reparable' : 'irreparable' }}">
-                DÉCISION : {{ ($diag->is_reparable ?? true) ? 'APPAREIL RÉPARABLE' : 'APPAREIL IRRÉPARABLE' }}
+            <div class="decision-box {{ $decisionClass }}">
+                DÉCISION : {{ $decisionText }}
             </div>
         @else
             <div style="text-align: center; padding: 40px; color: #94a3b8;">
@@ -266,7 +306,7 @@
         </div>
 
         <div class="footer">
-            {{ $company->nom_societe ?? 'MAISON TEL' }} — Rapport généré le {{ now()->format('d/m/Y H:i') }}
+            {{ $company->nom_societe ?? 'MAISON TEL' }} — Rapport généré le {{ $dateGeneration }}
         </div>
     </div>
 </body>

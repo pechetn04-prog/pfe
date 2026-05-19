@@ -142,7 +142,9 @@ class TechnicienDashboardController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('num_dossier', 'like', "%{$search}%")
-                    ->orWhere('imei', 'like', "%{$search}%")
+                    ->orWhereHas('appareil', function ($q2) use ($search) {
+                        $q2->where('imei', 'like', "%{$search}%");
+                    })
                     ->orWhereHas('client', function ($q2) use ($search) {
                         $q2->where('name', 'like', "%{$search}%")
                             ->orWhere('telephone', 'like', "%{$search}%");
@@ -150,7 +152,7 @@ class TechnicienDashboardController extends Controller
             });
         }
 
-        $dossiers = $query->paginate(20);
+        $dossiers = $query->paginate(20)->withQueryString();
 
         $statuts = [
             'AFFECTE' => 'Assigné',

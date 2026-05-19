@@ -3,7 +3,7 @@
 @section('title', 'Créer un utilisateur')
 
 @section('content')
-<div class="container-fluid" style="max-width: 900px;">
+<div class="container-fluid max-w-900">
     
     {{-- Titres Hiérarchiques --}}
     <div class="mb-4">
@@ -22,7 +22,7 @@
     </div>
     @endif
 
-    <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+    <div class="card border-0 shadow-sm card-user-form">
         <div class="card-body p-4">
             <form action="{{ route('users.store') }}" method="POST">
                 @csrf
@@ -61,7 +61,7 @@
 
                 {{-- Spécialités Technicien (Uniquement visible pour l'Admin s'il choisit Technicien) --}}
                 @if(auth()->user()->role === 'Admin')
-                <div class="card bg-light border-0 mb-4" id="specialiteField" style="display:none; border-radius: 12px;">
+                <div class="card bg-light border-0 mb-4 card-specialite d-none-init" id="specialiteField">
                     <div class="card-body">
                         <label class="form-label fw-bold small text-uppercase mb-2 text-primary">Spécialités Techniques</label>
 

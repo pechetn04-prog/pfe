@@ -1,9 +1,8 @@
 {{-- Modal Mouvement de Stock --}}
 <div class="modal fade" id="mouvementModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 15px;">
-            <div class="modal-header bg-primary text-white border-0 py-3"
-                style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+        <div class="modal-content border-0 shadow modal-stock-box-15">
+            <div class="modal-header bg-primary text-white border-0 py-3 modal-header-radius-15">
                 <h5 class="modal-title fw-bold"><i class="fas fa-exchange-alt me-2"></i> Enregistrer un mouvement</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>

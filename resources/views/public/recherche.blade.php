@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suivi de réparation — Maison Tel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/public_search.css') }}">
-</head>
-<body>
- 
+@extends('layouts.app')
+
+@section('title', 'Suivi de réparation')
+
+@section('body-class', 'public-search')
+
+@section('content')
     <div class="search-container">
         <div class="card-pro">
             <div class="logo-container">
@@ -29,7 +23,7 @@
             <form action="{{ route('client.search') }}" method="POST">
                 @csrf
                 <div class="mb-4 position-relative">
-                    <i class="fas fa-search position-absolute text-muted" style="left: 16px; top: 50%; transform: translateY(-50%);"></i>
+                    <i class="fas fa-search position-absolute text-muted search-input-icon"></i>
                     <input type="text" name="search" class="input-pro ps-5 mb-0" 
                            placeholder="N° Ticket, IMEI ou Téléphone" 
                            value="{{ old('search') }}" required autofocus>
@@ -52,6 +46,4 @@
             </div>
         </div>
     </div>
- 
-</body>
-</html>
+@endsection

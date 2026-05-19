@@ -437,3 +437,117 @@ body {
     color: #2563eb !important;
     text-decoration: underline !important;
 }
+
+/* ============================================================
+ * 13. CENTRALIZED SAV STATUS BADGE CAPSULES (DESIGN SYSTEM)
+ * ============================================================ */
+.status-badge-capsule.status-recu { background: #f1f5f9 !important; color: #475569 !important; }
+.status-badge-capsule.status-affecte { background: #3b82f6 !important; color: #ffffff !important; }
+.status-badge-capsule.status-en_diagnostic { background: #f59e0b !important; color: #ffffff !important; }
+.status-badge-capsule.status-en_attente_devis { background: #6366f1 !important; color: #ffffff !important; }
+.status-badge-capsule.status-en_reparation { background: #0ea5e9 !important; color: #ffffff !important; }
+.status-badge-capsule.status-repare { background: #10b981 !important; color: #ffffff !important; }
+.status-badge-capsule.status-facture { background: #1e40af !important; color: #ffffff !important; }
+.status-badge-capsule.status-livre { background: #16a34a !important; color: #ffffff !important; }
+.status-badge-capsule.status-cloture { background: #1e293b !important; color: #ffffff !important; }
+.status-badge-capsule.status-devis_refuse { background: #64748b !important; color: #ffffff !important; }
+.status-badge-capsule.status-irreparable { background: #dc2626 !important; color: #ffffff !important; }
+.status-badge-capsule.status-annule { background: #94a3b8 !important; color: #ffffff !important; }
+.status-badge-capsule.status-attente_piece { background: #f97316 !important; color: #ffffff !important; }
+.status-badge-capsule.status-attente_validation_remplacement { background: #a855f7 !important; color: #ffffff !important; }
+.status-badge-capsule.status-remplacement_valide { background: #22c55e !important; color: #ffffff !important; }
+.status-badge-capsule.status-remplacement_refuse { background: #ef4444 !important; color: #ffffff !important; }
+.status-badge-capsule.status-remplacement_pret { background: #06b6d4 !important; color: #ffffff !important; }
+
+/* ============================================================
+ * 14. NEW DESIGN SYSTEM PREMIUM CLASS UTILITIES (CLEAN BLADES)
+ * ============================================================ */
+.text-premium-navy {
+    color: #1a2332 !important;
+    letter-spacing: -0.5px !important;
+}
+
+.text-uppercase-small {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.5px !important;
+}
+
+.btn-premium-back {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 12px !important;
+    color: #1e69ff !important;
+}
+
+.card-premium-rounded {
+    border-radius: 20px !important;
+}
+
+.input-premium-text {
+    font-size: 0.95rem !important;
+}
+
+.input-addon-pill-end {
+    border-top-right-radius: 50rem !important;
+    border-bottom-right-radius: 50rem !important;
+    font-size: 0.85rem !important;
+}
+
+.max-w-850 {
+    max-width: 850px !important;
+}
+
+.input-societe-form {
+    font-size: 0.95rem !important;
+    border-radius: 8px !important;
+}
+
+.img-logo-preview {
+    height: 40px !important;
+}
+
+.btn-save-societe {
+    border-radius: 8px !important;
+    background-color: #2563eb !important;
+}
+
+.card-societe-box {
+    border-radius: 12px !important;
+    background: #ffffff !important;
+}
+
+.alert-societe-success {
+    border-radius: 12px !important;
+}
+
+.card-mo-rounded {
+    border-radius: 15px !important;
+}
+
+.btn-mo-raz {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+}
+
+.modal-mo-content {
+    border-radius: 15px !important;
+}
+
+/* Reusable micro classes for ticket index and search lists */
+.card-filter-box {
+    border-radius: 12px !important;
+}
+
+.client-tel-sub {
+    font-size: 0.7rem !important;
+}
+
+.badge-garantie-micro {
+    font-size: 0.6rem !important;
+    font-weight: 800 !important;
+}
+
+.btn-history-micro {
+    font-size: 0.65rem !important;
+    max-width: 70px !important;
+}

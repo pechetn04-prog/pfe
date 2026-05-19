@@ -12,7 +12,7 @@
     </div>
 
     {{-- Section Filtres (Premium Style) --}}
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+    <div class="card border-0 shadow-sm mb-4 card-filter-box">
         <div class="card-body p-3">
             <form method="GET" class="row g-3 align-items-center">
                 <div class="col-md-4">
@@ -65,11 +65,11 @@
                         <td class="ps-4 fw-bold text-primary">#{{ $dossier->num_dossier }}</td>
                         <td>
                             <div class="fw-bold text-dark small">{{ $dossier->client->name ?? '—' }}</div>
-                            <div class="text-muted small" style="font-size: 0.7rem;">{{ $dossier->client->telephone ?? '' }}</div>
+                            <div class="text-muted small client-tel-sub">{{ $dossier->client->telephone ?? '' }}</div>
                         </td>
                         <td class="small fw-bold">{{ $dossier->imei }}</td>
                         <td>
-                            <span class="badge bg-{{ $dossier->garantie_color }} bg-opacity-10 text-{{ $dossier->garantie_color }} border border-{{ $dossier->garantie_color }} border-opacity-25 rounded-pill" style="font-size: 0.6rem; font-weight: 800;">
+                            <span class="badge bg-{{ $dossier->garantie_color }} bg-opacity-10 text-{{ $dossier->garantie_color }} border border-{{ $dossier->garantie_color }} border-opacity-25 rounded-pill badge-garantie-micro">
                                 {{ $dossier->garantie_text }}
                             </span>
                         </td>
@@ -99,12 +99,12 @@
                         <td class="text-end pe-4">
                             <div class="d-flex flex-column align-items-end gap-1">
                                 @if($dossier->diagnostic)
-                                    <a href="{{ route('diagnostics.show', $dossier->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-2 fw-bold w-100" style="font-size: 0.65rem; max-width: 70px;" title="Consulter le diagnostic">
+                                    <a href="{{ route('diagnostics.show', $dossier->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-2 fw-bold w-100 btn-history-micro" title="Consulter le diagnostic">
                                         <i class="fas fa-file-alt"></i> Diag
                                     </a>
                                 @endif
                                 @if($dossier->intervention)
-                                    <a href="{{ route('interventions.show', $dossier->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-2 fw-bold w-100" style="font-size: 0.65rem; max-width: 70px;" title="Consulter l'intervention">
+                                    <a href="{{ route('interventions.show', $dossier->id) }}" class="btn btn-sm btn-outline-success rounded-pill px-2 fw-bold w-100 btn-history-micro" title="Consulter l'intervention">
                                         <i class="fas fa-check-double"></i> Interv
                                     </a>
                                 @endif

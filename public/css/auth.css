@@ -17,9 +17,17 @@
 }
 
 @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* 2. Premium Auth Card */
@@ -155,4 +163,17 @@
     border: none;
     font-size: 0.9rem;
     font-weight: 600;
+}
+
+/* 8. Profile Styles */
+.profile-container {
+    max-width: 600px !important;
+}
+
+.profile-card {
+    border-radius: 15px !important;
+}
+
+.auth-error-feedback {
+    color: #dc2626 !important;
 }

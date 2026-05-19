@@ -3,7 +3,7 @@
  * Externalisé pour respecter la séparation des préoccupations (Separation of Concerns).
  */
 
-body {
+body.public-search {
     background-color: #f8fafc;
     font-family: 'Outfit', 'Inter', sans-serif;
     color: #0f172a;
@@ -56,6 +56,12 @@ h1 {
     line-height: 1.5;
 }
  
+.search-input-icon {
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .input-pro {
     width: 100%;
     background: #f8fafc;

@@ -17,15 +17,15 @@
 
 
         @if($stats['demandes_rejet_count'] > 0)
-            <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="border-radius: 15px; background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%); border-left: 5px solid #f59e0b !important;">
-                <div class="card-body p-4">
+            <div class="card border-0 shadow-sm mb-4 overflow-hidden card-admin-alert-banner">
+                <div class="card-body p-3">
                     <div class="row align-items-center">
                         <div class="col-auto">
                             <div class="position-relative">
                                 <div class="bg-warning bg-opacity-20 p-3 rounded-circle pulse-warning">
                                     <i class="fas fa-exclamation-triangle text-warning fs-3"></i>
                                 </div>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm" style="font-size: 0.6rem;">{{ $stats['demandes_rejet_count'] }}</span>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm font-size-06">{{ $stats['demandes_rejet_count'] }}</span>
                             </div>
                         </div>
                         <div class="col">
@@ -33,13 +33,13 @@
                             <p class="text-muted small mb-0">Plusieurs techniciens ont soumis des demandes de désistement pour des dossiers critiques.</p>
                             <div class="d-flex flex-wrap gap-3 mt-3">
                                 @foreach($stats['demandes_rejet_recent'] as $rj)
-                                    <div class="bg-white p-2 px-3 rounded-3 shadow-sm border d-flex align-items-center" style="min-width: 200px;">
+                                    <div class="bg-white p-2 px-3 rounded-3 shadow-sm border d-flex align-items-center min-width-200">
                                         <div class="me-3 text-center">
-                                            <div class="fw-bold text-primary" style="font-size: 0.9rem;">#{{ $rj->dossier->num_dossier ?? '???' }}</div>
-                                            <div class="text-muted" style="font-size: 0.65rem;">{{ $rj->user->name ?? 'Tech' }}</div>
+                                            <div class="fw-bold text-primary font-size-09">#{{ $rj->dossier->num_dossier ?? '???' }}</div>
+                                            <div class="text-muted font-size-065">{{ $rj->user->name ?? 'Tech' }}</div>
                                         </div>
                                         <div class="border-start ps-3">
-                                            <div class="text-dark fw-medium small text-truncate" style="max-width: 150px;">{{ $rj->raison }}</div>
+                                            <div class="text-dark fw-medium small text-truncate max-width-150">{{ $rj->raison }}</div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -61,7 +61,7 @@
         @endif
 
         {{-- KPIs principaux Style Premium --}}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-3 mb-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-3 mb-4">
 
             @foreach($adminKpis as $k)
                 <div class="col">
@@ -71,7 +71,7 @@
                                 <i class="fas {{ $k['icon'] }}"></i>
                             </div>
                             <div class="kpi-content">
-                                <div class="kpi-value" style="font-weight: 800;">{{ $k['val'] }}</div>
+                                <div class="kpi-value font-weight-800">{{ $k['val'] }}</div>
                                 <div class="kpi-label">{{ $k['label'] }}</div>
                             </div>
                         </div>
@@ -80,10 +80,10 @@
             @endforeach
         </div>
 
-        <div class="row g-4 mb-4">
+        <div class="row g-3 mb-4">
             {{-- Dossiers récents --}}
             <div class="col-xl-8">
-                <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px;">
+                <div class="card border-0 shadow-sm overflow-hidden card-admin-box-15">
                     <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                         <h6 class="fw-bold mb-0 text-dark">
                             <span class="p-2 bg-primary bg-opacity-10 rounded-3 me-2"><i
@@ -97,11 +97,11 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr class="small text-muted text-uppercase">
-                                    <th class="ps-4" style="font-size: 0.65rem;">N° Dossier</th>
-                                    <th style="font-size: 0.65rem;">Client</th>
-                                    <th style="font-size: 0.65rem;">Statut</th>
-                                    <th style="font-size: 0.65rem;">Date</th>
-                                    <th class="text-end pe-4" style="font-size: 0.65rem;">Action</th>
+                                    <th class="ps-4 table-th-small">N° Dossier</th>
+                                    <th class="table-th-small">Client</th>
+                                    <th class="table-th-small">Statut</th>
+                                    <th class="table-th-small">Date</th>
+                                    <th class="text-end pe-4 table-th-small">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -109,19 +109,18 @@
 
                                     <tr>
                                         <td class="ps-4 py-3">
-                                            <div class="fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
-                                            <div class="text-muted" style="font-size: 0.65rem;">
+                                            <div class="fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
+                                            <div class="text-muted font-size-065">
                                                 {{ $d->appareil->modele ?? '—' }}</div>
                                         </td>
                                         <td>
-                                            <div class="fw-bolder text-dark" style="font-weight: 800;">{{ $d->client->name ?? '—' }}</div>
-                                            <div class="text-muted" style="font-size: 0.65rem;">
+                                            <div class="fw-bolder text-dark font-weight-800">{{ $d->client->name ?? '—' }}</div>
+                                            <div class="text-muted font-size-065">
                                                 {{ $d->client->telephone ?? '—' }}</div>
                                         </td>
                                         <td>
                                             <span
-                                                class="badge {{ $statClasses[$d->statut] ?? 'bg-secondary' }} rounded-pill px-3 py-1"
-                                                style="font-size: 0.65rem;">
+                                                class="badge {{ $statClasses[$d->statut] ?? 'bg-secondary' }} rounded-pill px-3 py-1 font-size-065">
                                                 {{ str_replace('_', ' ', $d->statut) }}
                                             </span>
                                         </td>
@@ -129,8 +128,7 @@
                                             {{ $d->created_at ? $d->created_at->format('d/m/Y') : '—' }}</td>
                                         <td class="text-end pe-4">
                                             <a href="{{ route('dossiers.show', $d->id) }}"
-                                                class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold"
-                                                style="font-size: 0.75rem;">
+                                                class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold font-size-075">
                                                 Voir
                                             </a>
                                         </td>
@@ -147,7 +145,7 @@
                 
                 {{-- Dossiers en attente de remplacement --}}
                 @if($dossiersAttenteRemplacement->count() > 0)
-                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; border-left: 4px solid #f59e0b !important;">
+                <div class="card border-0 shadow-sm mb-4 card-replacement-waiting">
                     <div class="card-header bg-white border-0 py-3">
                         <h6 class="fw-bold mb-0 text-dark">
                             <span class="p-2 bg-warning bg-opacity-10 rounded-3 me-2"><i class="fas fa-exchange-alt text-warning"></i></span>
@@ -157,15 +155,15 @@
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
                             @foreach($dossiersAttenteRemplacement as $d)
-                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-3">
+                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <div class="small fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
-                                        <div class="text-muted fw-bold" style="font-size: 0.65rem;">{{ $d->appareil->modele ?? '—' }}</div>
+                                        <div class="small fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
+                                        <div class="text-muted fw-bold font-size-065">{{ $d->appareil->modele ?? '—' }}</div>
                                     </div>
                                     <div class="text-end">
-                                        <div class="small text-muted fw-bold" style="font-size: 0.6rem;">{{ $d->updated_at->diffForHumans() }}</div>
-                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1" style="font-size: 0.6rem; font-weight: 800;">À VALIDER</span>
+                                        <div class="small text-muted fw-bold font-size-06">{{ $d->updated_at->diffForHumans() }}</div>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1 font-size-06 font-weight-800">À VALIDER</span>
                                     </div>
                                 </div>
                             </a>
@@ -182,7 +180,7 @@
                 
                 {{-- Dossiers en attente de pièces --}}
                 @if($dossiersAttentePieces->count() > 0)
-                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                <div class="card border-0 shadow-sm mb-4 card-stat-box">
                     <div class="card-header bg-white border-0 py-3">
                         <h6 class="fw-bold mb-0 text-dark">
                             <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-clock text-danger"></i></span>
@@ -192,15 +190,15 @@
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
                             @foreach($dossiersAttentePieces as $d)
-                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-3">
+                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <div class="small fw-bolder text-dark" style="font-weight: 800;">#{{ $d->num_dossier }}</div>
-                                        <div class="text-muted fw-bold" style="font-size: 0.65rem;">{{ $d->appareil->modele ?? '—' }}</div>
+                                        <div class="small fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
+                                        <div class="text-muted fw-bold font-size-065">{{ $d->appareil->modele ?? '—' }}</div>
                                     </div>
                                     <div class="text-end">
-                                        <div class="small text-muted fw-bold" style="font-size: 0.6rem;">{{ $d->updated_at->diffForHumans() }}</div>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1" style="font-size: 0.6rem; font-weight: 800;">BLOQUÉ</span>
+                                        <div class="small text-muted fw-bold font-size-06">{{ $d->updated_at->diffForHumans() }}</div>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 font-size-06 font-weight-800">BLOQUÉ</span>
                                     </div>
                                 </div>
                             </a>
@@ -216,7 +214,7 @@
                 @endif
 
                 {{-- Alertes de Stock --}}
-                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                <div class="card border-0 shadow-sm mb-4 card-stat-box">
                     <div class="card-header bg-white border-0 py-3">
                         <h6 class="fw-bold mb-0 text-dark">
                             <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-exclamation-circle text-danger"></i></span>
@@ -226,16 +224,16 @@
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
                             @forelse($stockAlerts as $alert)
-                                <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom mx-2 px-2">
+                                <div class="list-group-item d-flex justify-content-between align-items-center py-2 border-0 border-bottom mx-2 px-2">
                                     <div>
-                                        <div class="small fw-bolder text-dark" style="font-weight: 800;">{{ $alert->nom }}</div>
-                                        <div class="text-muted fw-bold" style="font-size: 0.65rem;">Réf: {{ $alert->reference }}</div>
+                                        <div class="small fw-800 text-dark">{{ $alert->nom }}</div>
+                                        <div class="text-muted fw-bold font-size-065">Réf: {{ $alert->reference }}</div>
                                     </div>
                                     <div class="text-end">
-                                        <span class="badge {{ $alert->quantite == 0 ? 'bg-danger' : 'bg-warning text-dark' }} rounded-pill fw-bold" style="font-size: 0.65rem;">
+                                        <span class="badge {{ $alert->quantite == 0 ? 'bg-danger' : 'bg-warning text-dark' }} rounded-pill fw-bold font-size-065">
                                             {{ $alert->quantite }} restant(s)
                                         </span>
-                                        <div class="text-muted fw-bold" style="font-size: 0.6rem;">Seuil: {{ $alert->seuil_alerte }}</div>
+                                        <div class="text-muted fw-bold font-size-06">Seuil: {{ $alert->seuil_alerte }}</div>
                                     </div>
                                 </div>
                             @empty
@@ -257,43 +255,10 @@
             </div>
         </div>
 
-
-        <div class="row g-4 mb-4">
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h6 class="m-0 fw-bold text-dark"><i class="fas fa-chart-pie text-primary me-2"></i> Répartition des Statuts (%)</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="statusChart" height="300"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h6 class="m-0 fw-bold text-dark"><i class="fas fa-shield-alt text-primary me-2"></i> État des Garanties (%)</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="warrantyChart" height="300"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin_dashboard.css') }}">
-@endpush
 
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Passage des données statistiques au JS externe
-        window.dashboardStats = {!! json_encode($stats) !!};
-    </script>
-    <script src="{{ asset('js/admin_dashboard.js') }}"></script>
-@endpush
+
 </div>
 @endsection
