@@ -42,7 +42,7 @@ class TechnicienDashboardController extends Controller
         // Tableau des KPIs structuré pour le rendu passif côté vue
         $tech_kpis = [
             ['label' => 'Total Assignés', 'val' => $totalAssigne, 'icon' => 'fa-briefcase', 'class' => 'bg-soft-primary'],
-            ['label' => 'À Diagnostiquer', 'val' => $aDiagnostiquer, 'icon' => 'fa-search', 'class' => 'bg-soft-warning'],
+            ['label' => 'En Diagnostic', 'val' => $aDiagnostiquer, 'icon' => 'fa-search', 'class' => 'bg-soft-warning'],
             ['label' => 'En Réparation', 'val' => $enReparation, 'icon' => 'fa-tools', 'class' => 'bg-soft-success'],
             ['label' => 'Attente Pièces', 'val' => $attentePieces, 'icon' => 'fa-hourglass-half', 'class' => 'bg-soft-danger'],
             ['label' => 'Terminés (Mois)', 'val' => $terminesMois, 'icon' => 'fa-check-double', 'class' => 'bg-soft-info'],
@@ -68,9 +68,8 @@ class TechnicienDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Historique récent des dossiers terminés par ce technicien
+        // Activité et historique récent des dossiers de ce technicien
         $dossiersTermines = Dossier::where('technicien_id', $user->id)
-            ->whereIn('statut', ['REPARE', 'IRREPARABLE', 'LIVRE', 'CLOTURE', 'FACTURE'])
             ->with(['client', 'appareil'])
             ->latest('updated_at')
             ->take(10)
@@ -83,7 +82,12 @@ class TechnicienDashboardController extends Controller
             'LIVRE' => 'success',
             'CLOTURE' => 'dark',
             'IRREPARABLE' => 'danger',
-            'DEVIS_REFUSE' => 'danger'
+            'DEVIS_REFUSE' => 'danger',
+            'AFFECTE' => 'secondary',
+            'EN_DIAGNOSTIC' => 'info',
+            'EN_ATTENTE_DEVIS' => 'warning',
+            'EN_REPARATION' => 'primary',
+            'ATTENTE_PIECE' => 'warning',
         ];
 
         $dossiersTermines->transform(function ($d) use ($statColors) {
