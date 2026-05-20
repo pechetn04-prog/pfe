@@ -1,10 +1,18 @@
-/* Tarifs Main d'Œuvre Styles */
+/* ====================================================================
+ * SYSTEM DE TARIFS DE MAIN D'ŒUVRE (LABOR RATES MODULE)
+ * ====================================================================
+ * Ce fichier gère la présentation visuelle et l'interactivité de la page
+ * de gestion des tarifs de main d'œuvre (liste, filtres, formulaires).
+ * ==================================================================== */
+
+/* Page principale des tarifs de main d'œuvre */
 .tarifs-page {
     padding: 20px;
     min-height: 100vh;
-    background: #f4f7fb;
+    background: #f4f7fb; /* Fond gris-bleu très clair et reposant */
 }
 
+/* En-tête de la page des tarifs */
 .tarifs-header {
     display: flex;
     justify-content: space-between;
@@ -12,6 +20,7 @@
     margin-bottom: 2rem;
 }
 
+/* Titre principal de la page */
 .tarifs-header h1 {
     margin: 0;
     font-size: 1.75rem;
@@ -19,11 +28,13 @@
     color: #1a202c;
 }
 
+/* Sous-titre ou description de l'en-tête */
 .tarifs-header p {
     margin: 0.25rem 0 0;
     color: #718096;
 }
 
+/* Carte principale contenant la grille de données */
 .tarifs-card {
     background: white;
     border-radius: 8px;
@@ -31,6 +42,7 @@
     padding: 1.5rem;
 }
 
+/* Formulaire de filtrage rapide */
 .filter-form {
     display: flex;
     gap: 1rem;
@@ -38,21 +50,25 @@
     align-items: flex-end;
 }
 
+/* Groupe individuel de champ de filtre */
 .filter-group {
     flex: 1;
 }
 
+/* Libellé du champ de filtre */
 .filter-label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
 }
 
+/* Tableau d'affichage des tarifs */
 .tarifs-table {
     width: 100%;
     border-collapse: collapse;
 }
 
+/* En-tête des colonnes du tableau */
 .tarifs-table th {
     padding: 1rem;
     text-align: left;
@@ -61,28 +77,33 @@
     border-bottom: 2px solid #edf2f7;
 }
 
+/* Cellules de données du tableau */
 .tarifs-table td {
     padding: 1rem;
     border-bottom: 1px solid #edf2f7;
 }
 
+/* Libellé du type ou de la catégorie de tarif */
 .tarif-type {
     font-weight: 500;
     color: #1a202c;
     margin-bottom: 0.25rem;
 }
 
+/* Affichage du montant financier */
 .tarif-amount {
     font-weight: 600;
-    color: #3b82f6;
+    color: #3b82f6; /* Bleu primaire informatif */
 }
 
+/* Symbole de devise monétaire associé au montant */
 .tarif-currency {
     font-size: 0.75rem;
     color: #a0aec0;
     margin-left: 2px;
 }
 
+/* Badge d'état / de statut du tarif */
 .badge-status {
     font-size: 0.7rem;
     padding: 2px 8px;
@@ -91,16 +112,19 @@
     display: inline-block;
 }
 
+/* Badge vert représentant l'état actif */
 .badge-actif {
     color: #276749;
     background: #c6f6d5;
 }
 
+/* Badge rouge représentant l'état inactif */
 .badge-inactif {
     color: #c53030;
     background: #fed7d7;
 }
 
+/* Zone contenant les boutons d'action en bout de ligne */
 .action-buttons {
     display: flex;
     justify-content: flex-end;
@@ -108,6 +132,7 @@
     align-items: center;
 }
 
+/* Bouton d'action interactif standard */
 .btn-action {
     background: none;
     border: none;
@@ -116,30 +141,43 @@
     transition: transform 0.2s;
 }
 
+/* Légère augmentation d'échelle au survol de l'action */
 .btn-action:hover {
     transform: scale(1.1);
 }
 
+/* Icône d'interrupteur actif (Toggle ON) */
 .btn-toggle-on { color: #48bb78; font-size: 1.2rem; }
+
+/* Icône d'interrupteur inactif (Toggle OFF) */
 .btn-toggle-off { color: #cbd5e0; font-size: 1.2rem; }
+
+/* Bouton d'édition d'un tarif */
 .btn-edit-action { color: #3b82f6; font-size: 1.1rem; }
 
-/* Modals */
+/* ============================================================
+ * MODALS DE SAISIE ET DE CONFIGURATION
+ * ============================================================ */
+
+/* Boîte de dialogue de saisie personnalisée */
 .modal-custom-content {
     border-radius: 8px;
     border: none;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
+/* En-tête de la boîte de dialogue */
 .modal-custom-header {
     border-bottom: 1px solid #edf2f7;
     padding: 1.5rem;
 }
 
+/* Corps interne de la boîte de dialogue */
 .modal-custom-body {
     padding: 1.5rem;
 }
 
+/* Zone de boutons de validation en bas de dialogue */
 .modal-custom-footer {
     border-top: none;
     padding: 1.5rem;
@@ -148,6 +186,7 @@
     justify-content: flex-end;
 }
 
+/* Libellé de champ de saisie dans le formulaire de la modale */
 .form-label-custom {
     display: block;
     margin-bottom: 0.5rem;
@@ -157,6 +196,7 @@
     text-transform: uppercase;
 }
 
+/* Champ de saisie stylisé pour la modale */
 .form-input-custom {
     width: 100%;
     padding: 0.75rem;
@@ -165,6 +205,7 @@
     background-color: #f8fafc;
 }
 
+/* Boutons de style capsule (Pill) */
 .btn-pill {
     padding: 0.5rem 1.5rem;
     border-radius: 9999px;
@@ -173,11 +214,13 @@
     border: none;
 }
 
+/* Bouton de secours ou d'annulation */
 .btn-pill-secondary {
     background-color: #f1f5f9;
     color: #475569;
 }
 
+/* Bouton d'action principal ou d'enregistrement */
 .btn-pill-primary {
     background-color: #3b82f6;
     color: white;

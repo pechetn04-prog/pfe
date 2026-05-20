@@ -65,18 +65,18 @@ class ClientController extends Controller
         ])->findOrFail($id);
 
         $statusConfigs = [
-            'RECU' => ['icon' => 'fa-box-open', 'class' => 'status-theme-recu', 'bg_class' => 'bg-status-theme-recu-soft', 'label' => 'Reçu', 'desc' => 'Appareil bien réceptionné.'],
-            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'class' => 'status-theme-en_diagnostic', 'bg_class' => 'bg-status-theme-en_diagnostic-soft', 'label' => 'Diagnostic', 'desc' => 'Analyse technique en cours.'],
-            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'class' => 'status-theme-en_attente_devis', 'bg_class' => 'bg-status-theme-en_attente_devis-soft', 'label' => 'Devis Prêt', 'desc' => 'En attente de votre validation.'],
-            'EN_REPARATION' => ['icon' => 'fa-wrench', 'class' => 'status-theme-en_reparation', 'bg_class' => 'bg-status-theme-en_reparation-soft', 'label' => 'Réparation', 'desc' => 'Intervention technique en cours.'],
-            'REPARE' => ['icon' => 'fa-check-double', 'class' => 'status-theme-repare', 'bg_class' => 'bg-status-theme-repare-soft', 'label' => 'Réparé !', 'desc' => 'Prêt pour le retrait.'],
-            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'class' => 'status-theme-livre', 'bg_class' => 'bg-status-theme-livre-soft', 'label' => 'Livré', 'desc' => 'Appareil restitué au client.'],
-            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'class' => 'status-theme-attente_piece', 'bg_class' => 'bg-status-theme-attente_piece-soft', 'label' => 'Attente Pièces', 'desc' => 'En attente de composants.'],
-            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'class' => 'status-theme-irreparable', 'bg_class' => 'bg-status-theme-irreparable-soft', 'label' => 'Irréparable', 'desc' => 'Dossier classé non réparable.'],
-            'REMPLACEMENT_PRET' => ['icon' => 'fa-sync-alt', 'class' => 'status-theme-remplacement_pret', 'bg_class' => 'bg-status-theme-remplacement_pret-soft', 'label' => 'Remplacement Prêt', 'desc' => 'Nouvel appareil disponible.'],
+            'RECU' => ['icon' => 'fa-box-open', 'label' => 'Reçu', 'desc' => 'Appareil bien réceptionné.'],
+            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'label' => 'Diagnostic', 'desc' => 'Analyse technique en cours.'],
+            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'label' => 'Devis Prêt', 'desc' => 'En attente de votre validation.'],
+            'EN_REPARATION' => ['icon' => 'fa-wrench', 'label' => 'Réparation', 'desc' => 'Intervention technique en cours.'],
+            'REPARE' => ['icon' => 'fa-check-double', 'label' => 'Réparé !', 'desc' => 'Prêt pour le retrait.'],
+            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'label' => 'Livré', 'desc' => 'Appareil restitué au client.'],
+            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'label' => 'Attente Pièces', 'desc' => 'En attente de composants.'],
+            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'label' => 'Irréparable', 'desc' => 'Dossier classé non réparable.'],
+            'REMPLACEMENT_PRET' => ['icon' => 'fa-sync-alt', 'label' => 'Remplacement Prêt', 'desc' => 'Nouvel appareil disponible.'],
         ];
 
-        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'class' => 'status-theme-recu', 'bg_class' => 'bg-status-theme-recu-soft', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
+        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
 
         return view('public.suivi', compact('dossier', 'statusConfig'));
     }
@@ -103,17 +103,17 @@ class ClientController extends Controller
         }
 
         $statusConfigs = [
-            'RECU' => ['icon' => 'fa-box-open', 'class' => 'status-theme-recu', 'bg_class' => 'bg-status-theme-recu-soft', 'label' => 'Dossier Reçu', 'desc' => 'Votre appareil a bien été réceptionné.'],
-            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'class' => 'status-theme-en_diagnostic', 'bg_class' => 'bg-status-theme-en_diagnostic-soft', 'label' => 'En Diagnostic', 'desc' => 'Nos techniciens analysent la panne.'],
-            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'class' => 'status-theme-en_attente_devis', 'bg_class' => 'bg-status-theme-en_attente_devis-soft', 'label' => 'Attente Devis', 'desc' => 'Un devis est prêt pour validation.'],
-            'EN_REPARATION' => ['icon' => 'fa-wrench', 'class' => 'status-theme-en_reparation', 'bg_class' => 'bg-status-theme-en_reparation-soft', 'label' => 'En Réparation', 'desc' => 'L\'intervention technique est en cours.'],
-            'REPARE' => ['icon' => 'fa-check-double', 'class' => 'status-theme-repare', 'bg_class' => 'bg-status-theme-repare-soft', 'label' => 'Réparé !', 'desc' => 'Votre appareil est prêt pour le retrait.'],
-            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'class' => 'status-theme-livre', 'bg_class' => 'bg-status-theme-livre-soft', 'label' => 'Remis / Livré', 'desc' => 'Merci de votre confiance !'],
-            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'class' => 'status-theme-attente_piece', 'bg_class' => 'bg-status-theme-attente_piece-soft', 'label' => 'Attente Pièces', 'desc' => 'Nous attendons les pièces détachées.'],
-            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'class' => 'status-theme-irreparable', 'bg_class' => 'bg-status-theme-irreparable-soft', 'label' => 'Irréparable', 'desc' => 'Malheureusement, l\'appareil n\'est pas réparable.'],
+            'RECU' => ['icon' => 'fa-box-open', 'label' => 'Dossier Reçu', 'desc' => 'Votre appareil a bien été réceptionné.'],
+            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'label' => 'En Diagnostic', 'desc' => 'Nos techniciens analysent la panne.'],
+            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'label' => 'Attente Devis', 'desc' => 'Un devis est prêt pour validation.'],
+            'EN_REPARATION' => ['icon' => 'fa-wrench', 'label' => 'En Réparation', 'desc' => 'L\'intervention technique est en cours.'],
+            'REPARE' => ['icon' => 'fa-check-double', 'label' => 'Réparé !', 'desc' => 'Votre appareil est prêt pour le retrait.'],
+            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'label' => 'Remis / Livré', 'desc' => 'Merci de votre confiance !'],
+            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'label' => 'Attente Pièces', 'desc' => 'Nous attendons les pièces détachées.'],
+            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'label' => 'Irréparable', 'desc' => 'Malheureusement, l\'appareil n\'est pas réparable.'],
         ];
 
-        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'class' => 'status-theme-recu', 'bg_class' => 'bg-status-theme-recu-soft', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
+        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
 
         return view('client.ticket', compact('dossier', 'statusConfig'));
     }

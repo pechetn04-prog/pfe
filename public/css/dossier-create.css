@@ -1,34 +1,41 @@
-/* Styles personnalisés pour le formulaire de création de dossier SAV */
+/* ====================================================================
+ * FORMULAIRE DE CRÉATION DE DOSSIER SAV (DOSSIER CREATION SYSTEM)
+ * ====================================================================
+ * Ce fichier gère le style esthétique et la mise en page spécifique du
+ * formulaire de création et d'enregistrement d'un nouveau ticket SAV.
+ * ==================================================================== */
 
+/* Couleur d'arrière-plan claire et douce pour les sections */
 .bg-light { 
     background-color: #f8fafc !important; 
 }
 
-/* Effet au survol des cases à cocher personnalisées */
+/* Effet au survol des cases à cocher personnalisées (effet tactile) */
 .custom-check:hover { 
     background-color: #f1f5f9 !important; 
     border-color: #2563eb !important; 
 }
 
-/* Couleur de la case à cocher quand elle est active */
+/* Couleur de la case à cocher active (Bleu primaire de la marque) */
 .form-check-input:checked { 
     background-color: #2563eb; 
     border-color: #2563eb; 
 }
 
-/* Alignement des icônes dans les groupes d'input */
+/* Alignement et largeur minimale des icônes dans les groupes d'input */
 .input-group-text { 
     min-width: 45px; 
     justify-content: center; 
 }
 
-/* Effet de focus premium sur les champs de saisie */
+/* Effet de focus premium sur les champs de saisie (lueur bleue subtile) */
 .form-control:focus, .form-select:focus { 
     background-color: #fff !important; 
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); 
     border-color: #2563eb !important; 
 }
 
+/* Boutons secondaires clairs au survol */
 .btn-white:hover { 
     background-color: #f8fafc; 
 }

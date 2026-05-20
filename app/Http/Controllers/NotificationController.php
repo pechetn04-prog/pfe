@@ -12,7 +12,9 @@ class NotificationController extends Controller
      */
     public function markAsRead($id)
     {
-        $notification = Auth::user()->notifications()->findOrFail($id);
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $notification = $user->notifications()->findOrFail($id);
         $notification->markAsRead();
 
         return response()->json(['success' => true]);
@@ -23,7 +25,9 @@ class NotificationController extends Controller
      */
     public function markAllAsRead()
     {
-        Auth::user()->unreadNotifications->markAsRead();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->unreadNotifications->markAsRead();
 
         return response()->json(['success' => true]);
     }

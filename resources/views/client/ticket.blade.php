@@ -219,13 +219,13 @@
                         {{-- Carte d'État Héro --}}
                         <div class="card border-0 shadow-lg p-5 mb-4 overflow-hidden card-status-hero">
                             <div class="mb-4 position-relative">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-sm status-icon-circle {{ $statusConfig['bg_class'] }}">
-                                    <i class="fas {{ $statusConfig['icon'] }} fs-2 {{ $statusConfig['class'] }}"></i>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-sm status-icon-circle bg-status-theme-{{ strtolower($dossier->statut) }}-soft">
+                                    <i class="fas {{ $statusConfig['icon'] }} fs-2 status-theme-{{ strtolower($dossier->statut) }}"></i>
                                 </div>
                             </div>
 
                             <div class="small text-muted text-uppercase fw-bold mb-1">Statut actuel</div>
-                            <h2 class="fw-bold mb-2 {{ $statusConfig['class'] }}">
+                            <h2 class="fw-bold mb-2 status-theme-{{ strtolower($dossier->statut) }}">
                                 {{ $statusConfig['label'] }}</h2>
                             <p class="text-muted mb-0">{{ $statusConfig['desc'] }}</p>
                         </div>
