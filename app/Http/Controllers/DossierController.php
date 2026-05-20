@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Notifications\TicketCreatedNotification;
+use App\Notifications\GenericNotification;
+use App\Notifications\PieceRecueNotification;
 
 class DossierController extends Controller
 {
@@ -72,9 +75,9 @@ class DossierController extends Controller
 
         $stats_kpis = [
             ['label' => 'TOTAL TICKETS', 'val' => $dossiers->total(), 'icon' => 'fa-folder', 'color' => '#2563eb', 'bg' => '#eff6ff'],
+            ['label' => 'AFFECTÉS', 'val' => Dossier::where('statut', 'AFFECTE')->count(), 'icon' => 'fa-user-check', 'color' => '#0ea5e9', 'bg' => '#f0f9ff'],
             ['label' => 'EN DIAGNOSTIC', 'val' => Dossier::where('statut', 'EN_DIAGNOSTIC')->count(), 'icon' => 'fa-microscope', 'color' => '#f59e0b', 'bg' => '#fff7ed'],
-            ['label' => 'EN RÉPARATION', 'val' => Dossier::where('statut', 'EN_REPARATION')->count(), 'icon' => 'fa-tools', 'color' => '#0ea5e9', 'bg' => '#f0f9ff'],
-            ['label' => 'RÉPARÉS AUJOURD\'HUI', 'val' => Dossier::where('statut', 'REPARE')->whereDate('updated_at', now())->count(), 'icon' => 'fa-check-circle', 'color' => '#10b981', 'bg' => '#f0fdf4'],
+            ['label' => 'EN RÉPARATION', 'val' => Dossier::where('statut', 'EN_REPARATION')->count(), 'icon' => 'fa-tools', 'color' => '#6366f1', 'bg' => '#e0e7ff'],
         ];
 
         return view('dossiers.index', compact('dossiers', 'stats_kpis'));
@@ -229,12 +232,12 @@ class DossierController extends Controller
 
         // Notification au client par email
         if ($client && $client->email && !str_contains($client->email, '@maisontel.dz')) {
-            $client->notify(new \App\Notifications\TicketCreatedNotification($dossier, $client->_plainPassword ?? null));
+            $client->notify(new TicketCreatedNotification($dossier, $client->_plainPassword ?? null));
         }
 
         // Notification au technicien assigné
         if ($dossier->technicien) {
-            $dossier->technicien->notify(new \App\Notifications\GenericNotification(
+            $dossier->technicien->notify(new GenericNotification(
                 "Nouveau dossier assigné (#{$dossier->num_dossier})",
                 "Vous avez été assigné au dossier #{$dossier->num_dossier} pour l'appareil {$appareil->modele}.",
                 route('dossiers.show', $dossier->id)
@@ -588,7 +591,7 @@ class DossierController extends Controller
         // Notification aux agents SAV
         $agents = User::where('role', 'Agent')->where('actif', true)->get();
         foreach ($agents as $agent) {
-            $agent->notify(new \App\Notifications\GenericNotification(
+            $agent->notify(new GenericNotification(
                 "Remplacement validé (#{$dossier->num_dossier})",
                 "L'administration a validé le remplacement. Veuillez préparer un appareil neuf.",
                 route('dossiers.show', $dossier->id)
@@ -622,7 +625,7 @@ class DossierController extends Controller
         // Notification aux agents SAV
         $agents = User::where('role', 'Agent')->where('actif', true)->get();
         foreach ($agents as $agent) {
-            $agent->notify(new \App\Notifications\GenericNotification(
+            $agent->notify(new GenericNotification(
                 "Remplacement refusé (#{$dossier->num_dossier})",
                 "L'administration a refusé le remplacement. Motif : {$request->raison}. Veuillez informer le client.",
                 route('dossiers.show', $dossier->id)
@@ -669,7 +672,7 @@ class DossierController extends Controller
 
         // Notifier le technicien
         if ($dossier->technicien) {
-            $dossier->technicien->notify(new \App\Notifications\PieceRecueNotification($dossier));
+            $dossier->technicien->notify(new PieceRecueNotification($dossier));
         }
 
         return back()->with('success', 'Dossier réapprovisionné, prêt pour la réparation.');

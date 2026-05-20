@@ -49,13 +49,11 @@ class AgentDashboardController extends Controller
 
         // Configuration visuelle des indicateurs clés (KPIs)
         $all_kpis = [
-            ['label' => 'Total Tickets',  'val' => $stats['total'],                'icon' => 'fa-folder-open',          'class' => 'bg-soft-primary'],
-            ['label' => 'À Affecter',     'val' => $stats['recu'],                 'icon' => 'fa-plus-square',          'class' => 'bg-soft-secondary'],
+            ['label' => 'Total Tickets',  'val' => $stats['total'],                'icon' => 'fa-folder-open',          'class' => 'bg-soft-sky'],
+            ['label' => 'Affectés',       'val' => $stats['affecte'],              'icon' => 'fa-user-check',           'class' => 'bg-soft-info'],
             ['label' => 'Attente Devis',  'val' => $stats['attente_devis'],        'icon' => 'fa-file-invoice-dollar',  'class' => 'bg-soft-warning'],
             ['label' => 'Attente Remplacement', 'val' => $stats['attente_remplacement'], 'icon' => 'fa-exchange-alt', 'class' => 'bg-soft-warning'],
-            ['label' => 'Attente Pièces', 'val' => $stats['attente_pieces'],       'icon' => 'fa-hourglass-half',       'class' => 'bg-soft-danger'],
             ['label' => 'Prêts à livrer', 'val' => $stats['prets'],                'icon' => 'fa-hand-holding-heart',   'class' => 'bg-soft-success'],
-            ['label' => 'Facturés',       'val' => $stats['facture'],              'icon' => 'fa-file-invoice',         'class' => 'bg-soft-primary'],
             ['label' => 'Clôturés',       'val' => $stats['cloture'],              'icon' => 'fa-archive',              'class' => 'bg-soft-dark'],
         ];
 

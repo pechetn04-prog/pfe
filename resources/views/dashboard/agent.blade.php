@@ -19,7 +19,7 @@
 
 
 
-        <div class="row row-cols-xl-4 row-cols-md-3 row-cols-2 g-3 mb-4">
+        <div class="row row-cols-xl-3 row-cols-md-3 row-cols-2 g-3 mb-4">
             @foreach($all_kpis as $k)
                 <div class="col">
                     <div class="card kpi-card shadow-sm h-100">
@@ -76,8 +76,8 @@
                                     <div class="text-muted extra-small">IMEI: {{ $d->imei ?? '—' }}</div>
                                 </td>
                                 <td>
-                                    <span class="badge-status-pill bg-{{ $d->badge_color }} bg-opacity-10 text-{{ $d->badge_color }}">
-                                        <i class="fas fa-circle"></i> {{ $d->badge_label }}
+                                    <span class="status-badge-capsule {{ $d->statut_class }} text-uppercase">
+                                        {{ $d->statut_text }}
                                     </span>
                                 </td>
                                 <td class="text-end pe-4">

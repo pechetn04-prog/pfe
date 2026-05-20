@@ -14,6 +14,7 @@ use App\Models\ParametreSociete;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Notifications\PieceManquanteNotification;
 
 /**
  * Réalisation de l'Intervention
@@ -173,7 +174,7 @@ class InterventionController extends Controller
         if ($nouveauStatut === 'ATTENTE_PIECE') {
             $admins = User::where('role', 'Admin')->get();
             foreach ($admins as $admin) {
-                $admin->notify(new \App\Notifications\PieceManquanteNotification($dossier));
+                $admin->notify(new PieceManquanteNotification($dossier));
             }
         }
 

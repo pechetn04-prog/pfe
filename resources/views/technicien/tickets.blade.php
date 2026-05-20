@@ -74,7 +74,7 @@
                             </span>
                         </td>
                         <td>
-                            <span class="badge {{ $dossier->statut_class }} rounded-pill px-3">
+                            <span class="badge status-badge-capsule status-{{ strtolower($dossier->statut) }} rounded-pill px-3">
                                 {{ $dossier->statut_label }}
                             </span>
                         </td>

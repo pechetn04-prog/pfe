@@ -28,11 +28,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-                <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                </div>
-            @endif
 
             <div class="row g-4">
                 <div class="col-md-8">
@@ -53,6 +48,18 @@
                                     <p class="text-muted mb-0 small">Créé le : {{ $devis->date_creation ? $devis->date_creation->format('d/m/Y') : $devis->created_at->format('d/m/Y') }}</p>
                                 </div>
                             </div>
+
+                            @if($devis->statut === 'REFUSE')
+                            <div class="alert alert-danger border-0 rounded-3 p-3 mb-4 d-flex align-items-center shadow-sm" style="background-color: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444 !important;">
+                                <div class="bg-danger bg-opacity-10 text-danger p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-exclamation-triangle fa-lg"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold mb-1" style="color: #991b1b; font-size: 0.95rem;">Motif du refus</div>
+                                    <div class="small fw-semibold" style="color: #7f1d1d; opacity: 0.95;">{{ $devis->dossier->commentaire_refus ?: 'Aucun motif de refus n\'a été spécifié.' }}</div>
+                                </div>
+                            </div>
+                            @endif
 
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-4">

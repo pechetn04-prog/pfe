@@ -32,9 +32,7 @@
                     <li class="nav-item mb-1"><a href="{{ route('admin.demandes_rejet.index') }}"
                              class="nav-link d-flex align-items-center {{ request()->routeIs('admin.demandes_rejet.*') ? 'active' : '' }}"><i
                                  class="fas fa-exclamation-triangle me-3"></i> Demandes de Retrait</a></li>
-                    <li class="nav-item mb-1"><a href="{{ route('dossiers.index', ['statut' => 'CLOTURE']) }}"
-                             class="nav-link d-flex align-items-center {{ request('statut') === 'CLOTURE' ? 'active' : '' }}"><i
-                                 class="fas fa-archive me-3"></i> Archives Clôturées</a></li>
+                   
                     <li class="nav-item mb-1"><a href="{{ route('admin.statistiques') }}"
                              class="nav-link d-flex align-items-center {{ request()->routeIs('admin.statistiques') ? 'active' : '' }}"><i
                                  class="fas fa-chart-bar me-3"></i> Statistiques</a></li>
@@ -47,6 +45,9 @@
                     <li class="nav-item mb-1"><a href="{{ route('users.index') }}"
                              class="nav-link d-flex align-items-center {{ request()->routeIs('users.*') ? 'active' : '' }}"><i
                                  class="fas fa-users-cog me-3"></i> Utilisateurs</a></li>
+                                  <li class="nav-item mb-1"><a href="{{ route('dossiers.index', ['statut' => 'CLOTURE']) }}"
+                             class="nav-link d-flex align-items-center {{ request('statut') === 'CLOTURE' ? 'active' : '' }}"><i
+                                 class="fas fa-archive me-3"></i> Archives Clôturées</a></li>
                     <li class="nav-item mb-1"><a href="{{ route('ventes.index') }}"
                              class="nav-link d-flex align-items-center {{ request()->routeIs('ventes.*') ? 'active' : '' }}"><i
                                  class="fas fa-shopping-cart me-3"></i> Ventes</a></li>

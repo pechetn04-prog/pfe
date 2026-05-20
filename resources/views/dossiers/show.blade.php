@@ -711,9 +711,7 @@
                                     <li class="mb-2"><strong>Communication Client</strong> : Visible par le client sur son
                                         interface de suivi. Utilisez ce mode pour les demandes d'informations ou mises à
                                         jour.</li>
-                                    <li><strong>Note Interne</strong> : Visible uniquement par l'équipe administrative et
-                                        les techniciens. Utilisez ce mode pour les détails techniques ou observations
-                                        d'atelier.</li>
+                                    <li><strong>Note Interne</strong> : Visible uniquement par l'équipe administrative.</li>
                                 </ul>
                             </div>
                         </div>

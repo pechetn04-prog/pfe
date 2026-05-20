@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dossier;
+use App\Models\DemandeRejet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -75,23 +76,7 @@ class TechnicienDashboardController extends Controller
             ->take(10)
             ->get();
 
-        // Association esthétique des statuts (Couleurs et badges)
-        $statColors = [
-            'REPARE' => 'success',
-            'FACTURE' => 'success',
-            'LIVRE' => 'success',
-            'CLOTURE' => 'dark',
-            'IRREPARABLE' => 'danger',
-            'DEVIS_REFUSE' => 'danger',
-            'AFFECTE' => 'secondary',
-            'EN_DIAGNOSTIC' => 'info',
-            'EN_ATTENTE_DEVIS' => 'warning',
-            'EN_REPARATION' => 'primary',
-            'ATTENTE_PIECE' => 'warning',
-        ];
-
-        $dossiersTermines->transform(function ($d) use ($statColors) {
-            $d->badge_color = $statColors[$d->statut] ?? 'secondary';
+        $dossiersTermines->transform(function ($d) {
             $d->garantie_color = $d->sous_garantie ? 'success' : 'danger';
             $d->garantie_text = $d->sous_garantie ? 'SOUS GARANTIE' : 'HORS GARANTIE';
             return $d;
@@ -112,14 +97,14 @@ class TechnicienDashboardController extends Controller
         $user = Auth::user();
         
         // 1. Demandes en cours (statut = EN_ATTENTE)
-        $demandesEnCours = \App\Models\DemandeRejet::where('user_id', $user->id)
+        $demandesEnCours = DemandeRejet::where('user_id', $user->id)
             ->where('statut', 'EN_ATTENTE')
             ->with(['dossier.appareil'])
             ->latest()
             ->get();
 
         // 2. Historique (statut != EN_ATTENTE)
-        $historique = \App\Models\DemandeRejet::where('user_id', $user->id)
+        $historique = DemandeRejet::where('user_id', $user->id)
             ->where('statut', '!=', 'EN_ATTENTE')
             ->with(['dossier.appareil'])
             ->latest()

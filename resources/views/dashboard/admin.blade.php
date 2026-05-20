@@ -61,7 +61,7 @@
         @endif
 
         {{-- KPIs principaux Style Premium --}}
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-3 mb-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-3 g-3 mb-4">
 
             @foreach($adminKpis as $k)
                 <div class="col">
@@ -80,9 +80,9 @@
             @endforeach
         </div>
 
+        {{-- Dossiers Récents (2ème Position - Élargi pour une lisibilité maximale) --}}
         <div class="row g-3 mb-4">
-            {{-- Dossiers récents --}}
-            <div class="col-xl-8">
+            <div class="col-12">
                 <div class="card border-0 shadow-sm overflow-hidden card-admin-box-15">
                     <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                         <h6 class="fw-bold mb-0 text-dark">
@@ -106,7 +106,6 @@
                             </thead>
                             <tbody>
                                 @foreach($recentDossiers as $d)
-
                                     <tr>
                                         <td class="ps-4 py-3">
                                             <div class="fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
@@ -119,10 +118,9 @@
                                                 {{ $d->client->telephone ?? '—' }}</div>
                                         </td>
                                         <td>
-                                            <span
-                                                class="badge {{ $statClasses[$d->statut] ?? 'bg-secondary' }} rounded-pill px-3 py-1 font-size-065">
-                                                {{ str_replace('_', ' ', $d->statut) }}
-                                            </span>
+                                             <span class="status-badge-capsule {{ $d->statut_class }} text-uppercase font-size-065">
+                                                 {{ $d->statut_text }}
+                                             </span>
                                         </td>
                                         <td class="text-muted small">
                                             {{ $d->created_at ? $d->created_at->format('d/m/Y') : '—' }}</td>
@@ -139,82 +137,102 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- Colonne de droite : Alertes et Blocages --}}
-            <div class="col-xl-4">
-                
-                {{-- Dossiers en attente de remplacement --}}
-                @if($dossiersAttenteRemplacement->count() > 0)
-                <div class="card border-0 shadow-sm mb-4 card-replacement-waiting">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h6 class="fw-bold mb-0 text-dark">
-                            <span class="p-2 bg-warning bg-opacity-10 rounded-3 me-2"><i class="fas fa-exchange-alt text-warning"></i></span>
-                            En Attente Remplacement
-                        </h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="list-group list-group-flush">
-                            @foreach($dossiersAttenteRemplacement as $d)
-                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-2">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <div class="small fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
-                                        <div class="text-muted fw-bold font-size-065">{{ $d->appareil->modele ?? '—' }}</div>
+        {{-- Alertes et Blocages (3ème Position) --}}
+        @php
+            // Calculer la taille de colonne en fonction du nombre de sections actives
+            $activeSectionsCount = 1; // Alertes Stock est toujours présente
+            if($dossiersAttenteRemplacement->count() > 0) $activeSectionsCount++;
+            if($dossiersAttentePieces->count() > 0) $activeSectionsCount++;
+            
+            $colClass = 'col-xl-4 col-md-6';
+            if ($activeSectionsCount == 2) {
+                $colClass = 'col-xl-6 col-md-6';
+            } elseif ($activeSectionsCount == 1) {
+                $colClass = 'col-xl-12';
+            }
+        @endphp
+
+        <div class="row g-3 mb-4">
+            
+            {{-- Dossiers en attente de remplacement --}}
+            @if($dossiersAttenteRemplacement->count() > 0)
+                <div class="{{ $colClass }}">
+                    <div class="card border-0 shadow-sm h-100 card-replacement-waiting">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h6 class="fw-bold mb-0 text-dark">
+                                <span class="p-2 bg-warning bg-opacity-10 rounded-3 me-2"><i class="fas fa-exchange-alt text-warning"></i></span>
+                                En Attente Remplacement
+                            </h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                @foreach($dossiersAttenteRemplacement as $d)
+                                <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="small fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
+                                            <div class="text-muted fw-bold font-size-065">{{ $d->appareil->modele ?? '—' }}</div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="small text-muted fw-bold font-size-06">{{ $d->updated_at->diffForHumans() }}</div>
+                                            <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1 font-size-06 font-weight-800">À VALIDER</span>
+                                        </div>
                                     </div>
-                                    <div class="text-end">
-                                        <div class="small text-muted fw-bold font-size-06">{{ $d->updated_at->diffForHumans() }}</div>
-                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1 font-size-06 font-weight-800">À VALIDER</span>
-                                    </div>
-                                </div>
+                                </a>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 text-center pb-3 pt-2 mt-auto">
+                            <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_VALIDATION_REMPLACEMENT']) }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">
+                                Voir tout
                             </a>
-                            @endforeach
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0 text-center pb-3 pt-2">
-                        <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_VALIDATION_REMPLACEMENT']) }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">
-                            Voir tout
-                        </a>
-                    </div>
                 </div>
-                @endif
-                
-                {{-- Dossiers en attente de pièces --}}
-                @if($dossiersAttentePieces->count() > 0)
-                <div class="card border-0 shadow-sm mb-4 card-stat-box">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h6 class="fw-bold mb-0 text-dark">
-                            <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-clock text-danger"></i></span>
-                            En Attente Pièces
-                        </h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="list-group list-group-flush">
-                            @foreach($dossiersAttentePieces as $d)
-                            <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-2">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <div class="small fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
-                                        <div class="text-muted fw-bold font-size-065">{{ $d->appareil->modele ?? '—' }}</div>
+            @endif
+
+            {{-- Dossiers en attente de pièces --}}
+            @if($dossiersAttentePieces->count() > 0)
+                <div class="{{ $colClass }}">
+                    <div class="card border-0 shadow-sm h-100 card-stat-box">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h6 class="fw-bold mb-0 text-dark">
+                                <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-clock text-danger"></i></span>
+                                En Attente Pièces
+                            </h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                @foreach($dossiersAttentePieces as $d)
+                                <a href="{{ route('dossiers.show', $d->id) }}" class="list-group-item list-group-item-action border-0 border-bottom mx-2 px-2 py-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="small fw-bolder text-dark font-weight-800">#{{ $d->num_dossier }}</div>
+                                            <div class="text-muted fw-bold font-size-065">{{ $d->appareil->modele ?? '—' }}</div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="small text-muted fw-bold font-size-06">{{ $d->updated_at->diffForHumans() }}</div>
+                                            <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 font-size-06 font-weight-800">BLOQUÉ</span>
+                                        </div>
                                     </div>
-                                    <div class="text-end">
-                                        <div class="small text-muted fw-bold font-size-06">{{ $d->updated_at->diffForHumans() }}</div>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 font-size-06 font-weight-800">BLOQUÉ</span>
-                                    </div>
-                                </div>
+                                </a>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 text-center pb-3 pt-2 mt-auto">
+                            <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_PIECE']) }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">
+                                Voir tout
                             </a>
-                            @endforeach
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0 text-center pb-3 pt-2">
-                        <a href="{{ route('dossiers.index', ['statut' => 'ATTENTE_PIECE']) }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">
-                            Voir tout
-                        </a>
-                    </div>
                 </div>
-                @endif
+            @endif
 
-                {{-- Alertes de Stock --}}
-                <div class="card border-0 shadow-sm mb-4 card-stat-box">
+            {{-- Alertes de Stock --}}
+            <div class="{{ $colClass }}">
+                <div class="card border-0 shadow-sm h-100 card-stat-box">
                     <div class="card-header bg-white border-0 py-3">
                         <h6 class="fw-bold mb-0 text-dark">
                             <span class="p-2 bg-danger bg-opacity-10 rounded-3 me-2"><i class="fas fa-exclamation-circle text-danger"></i></span>
@@ -245,14 +263,13 @@
                         </div>
                     </div>
                     @if($stockAlerts->count() > 0)
-                        <div class="card-footer bg-white border-0 text-center pb-3 pt-2">
+                        <div class="card-footer bg-white border-0 text-center pb-3 pt-2 mt-auto">
                             <a href="{{ route('stock.index') }}" class="btn btn-sm btn-light rounded-pill px-4 fw-bold shadow-sm">Gérer le stock</a>
                         </div>
                     @endif
                 </div>
-
-
             </div>
+
         </div>
 
     </div>

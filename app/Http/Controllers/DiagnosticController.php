@@ -7,10 +7,13 @@ use App\Models\Piece;
 use App\Models\SuiviDossier;
 use App\Models\TarifMo;
 use App\Models\Dossier;
+use App\Models\User;
+use App\Models\ParametreSociete;
 use App\Http\Requests\StoreDiagnosticRequest;
+use App\Notifications\SimpleNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ParametreSociete;
+use Illuminate\Support\Facades\Notification;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 // Ce contrôleur gère l'évaluation technique et l'établissement des rapports de diagnostic.
@@ -143,7 +146,7 @@ class DiagnosticController extends Controller
         // Envoi des notifications automatiques (Client & Administration)
         if ($dossier->client) {
             try {
-                $dossier->client->notify(new \App\Notifications\SimpleNotification(
+                $dossier->client->notify(new SimpleNotification(
                     'Le diagnostic de votre appareil est terminé.',
                     $dossier
                 ));
@@ -152,9 +155,9 @@ class DiagnosticController extends Controller
             }
         }
 
-        $adminsAgents = \App\Models\User::whereIn('role', ['Admin', 'Agent'])->get();
+        $agents = User::where('role', 'Agent')->get();
         try {
-            \Illuminate\Support\Facades\Notification::send($adminsAgents, new \App\Notifications\SimpleNotification(
+            Notification::send($agents, new SimpleNotification(
                 'Diagnostic terminé pour le dossier #' . $dossier->id . '. Action requise selon le nouveau statut : ' . $nouveauStatut,
                 $dossier
             ));
@@ -177,7 +180,7 @@ class DiagnosticController extends Controller
         }
 
         $diag = $dossier->diagnostic;
-        $company = \App\Models\ParametreSociete::first();
+        $company = ParametreSociete::first();
 
         $isReparable = !in_array($dossier->statut, ['IRREPARABLE', 'ATTENTE_VALIDATION_REMPLACEMENT', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_REFUSE', 'REMPLACEMENT_PRET']);
         $exclusionGarantie = $dossier->garantie_annulee || !empty($diag->motif_exclusion);

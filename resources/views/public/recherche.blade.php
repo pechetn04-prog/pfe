@@ -13,12 +13,7 @@
  
             <h1>Suivi de réparation</h1>
             <p class="subtitle">Consultez l'état d'avancement de votre appareil en temps réel.</p>
- 
-            @if(session('error'))
-                <div class="alert alert-danger border-0 rounded-3 small mb-4 py-2">
-                    <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
-                </div>
-            @endif
+
  
             <form action="{{ route('client.search') }}" method="POST">
                 @csrf

@@ -65,6 +65,11 @@
     color: #2563eb;
 }
 
+.bg-soft-sky {
+    background-color: #e0f2fe;
+    color: #0284c7;
+}
+
 .bg-soft-warning {
     background-color: #fff7ed;
     color: #f59e0b;
@@ -97,6 +102,7 @@
 
 /* Importance Overrides for KPI Colors */
 .bg-soft-primary { background-color: #eff6ff !important; color: #2563eb !important; }
+.bg-soft-sky { background-color: #e0f2fe !important; color: #0284c7 !important; }
 .bg-soft-success { background-color: #f0fdf4 !important; color: #10b981 !important; }
 .bg-soft-warning { background-color: #fff7ed !important; color: #f59e0b !important; }
 .bg-soft-danger { background-color: #fef2f2 !important; color: #ef4444 !important; }
@@ -127,7 +133,7 @@
 /* Card KPI Modifiers for Dashboards */
 .card-client-kpi-1 {
     border-radius: 20px !important;
-    background: linear-gradient(135deg, #1e69ff 0%, #0047d5 100%) !important;
+    background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
     color: white !important;
 }
 

@@ -22,11 +22,11 @@
             <div class="col-lg-5">
                 <div class="premium-card">
                     <div class="status-hero">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                            style="width: 70px; height: 70px; background-color: {{ $statusConfig['color'] }}15;">
-                            <i class="fas {{ $statusConfig['icon'] }} fs-3" style="color: {{ $statusConfig['color'] }};"></i>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 {{ $statusConfig['bg_class'] }}"
+                            style="width: 70px; height: 70px;">
+                            <i class="fas {{ $statusConfig['icon'] }} fs-3 {{ $statusConfig['class'] }}"></i>
                         </div>
-                        <h2 class="fw-800 mb-1" style="color: {{ $statusConfig['color'] }}; font-size: 22px;">
+                        <h2 class="fw-800 mb-1 {{ $statusConfig['class'] }}" style="font-size: 22px;">
                             {{ $statusConfig['label'] }}</h2>
                         <p class="text-muted small mb-0">{{ $statusConfig['desc'] }}</p>
                     </div>

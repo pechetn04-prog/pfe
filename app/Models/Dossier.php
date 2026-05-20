@@ -32,6 +32,7 @@ class Dossier extends Model
         'etat_appareil',
         'imei_remplacement',
         'modele_remplacement',
+        'commentaire_refus',
     ];
 
     protected $casts = [

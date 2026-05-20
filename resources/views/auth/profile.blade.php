@@ -19,13 +19,6 @@
             </div>
         @endif
 
-        @if(session('success'))
-
-            <div class="alert alert-success border-0 shadow-sm mb-4">
-                <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-            </div>
-        @endif
-
         <div class="card border-0 shadow-sm profile-card">
             <div class="card-body p-4">
                 <form action="{{ route('profile.update') }}" method="POST">

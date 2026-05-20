@@ -8,6 +8,7 @@ use App\Http\Requests\StorePieceRequest;
 use App\Http\Requests\UpdatePieceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ParametreSociete;
 
 // Ce contrôleur pilote la gestion des stocks de pièces de rechange (UC14 - Gestion du stock).
 // Gère l'index des pièces, les statistiques de valeur d'inventaire, les alertes de rupture, et le cycle de vie du catalogue.
@@ -41,7 +42,7 @@ class PieceController extends Controller
         
         // Liste distincte des catégories actives pour le menu de filtrage
         $categories = Piece::distinct()->pluck('categorie')->filter();
-        $parametre = \App\Models\ParametreSociete::first();
+        $parametre = ParametreSociete::first();
 
         return view('stock.index', compact('pieces', 'categories', 'parametre', 'stats'));
     }
@@ -49,7 +50,7 @@ class PieceController extends Controller
     // Affiche le formulaire d'ajout d'une nouvelle pièce au stock.
     public function create()
     {
-        $parametre = \App\Models\ParametreSociete::first();
+        $parametre = ParametreSociete::first();
         return view('stock.create', compact('parametre'));
     }
 
@@ -64,7 +65,7 @@ class PieceController extends Controller
     // Affiche le formulaire de modification d'une pièce.
     public function edit(Piece $piece)
     {
-        $parametre = \App\Models\ParametreSociete::first();
+        $parametre = ParametreSociete::first();
         return view('stock.edit', compact('piece', 'parametre'));
     }
 

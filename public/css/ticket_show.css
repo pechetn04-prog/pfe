@@ -299,3 +299,37 @@
     background-color: #1a2332 !important;
     color: white !important;
 }
+
+/* ============================================================
+ * 6. CENTRALIZED STATUS THEMES (DECOUPLED FROM CONTROLLERS)
+ * ============================================================ */
+.status-theme-recu { color: #64748b !important; }
+.bg-status-theme-recu-soft { background-color: rgba(100, 116, 139, 0.1) !important; }
+
+.status-theme-en_diagnostic { color: #f59e0b !important; }
+.bg-status-theme-en_diagnostic-soft { background-color: rgba(245, 158, 11, 0.1) !important; }
+
+.status-theme-en_attente_devis { color: #ea580c !important; }
+.bg-status-theme-en_attente_devis-soft { background-color: rgba(234, 88, 12, 0.1) !important; }
+
+.status-theme-en_reparation { color: #2563eb !important; }
+.bg-status-theme-en_reparation-soft { background-color: rgba(37, 99, 235, 0.1) !important; }
+
+.status-theme-repare { color: #10b981 !important; }
+.bg-status-theme-repare-soft { background-color: rgba(16, 185, 129, 0.1) !important; }
+
+.status-theme-livre { color: #059669 !important; }
+.bg-status-theme-livre-soft { background-color: rgba(5, 150, 105, 0.1) !important; }
+
+.status-theme-attente_piece { color: #ef4444 !important; }
+.bg-status-theme-attente_piece-soft { background-color: rgba(239, 68, 68, 0.1) !important; }
+
+.status-theme-irreparable { color: #b91c1c !important; }
+.bg-status-theme-irreparable-soft { background-color: rgba(185, 28, 28, 0.1) !important; }
+
+.status-theme-remplacement_pret { color: #10b981 !important; }
+.bg-status-theme-remplacement_pret-soft { background-color: rgba(16, 185, 129, 0.1) !important; }
+
+.status-theme-attente_validation_remplacement { color: #ea580c !important; }
+.bg-status-theme-attente_validation_remplacement-soft { background-color: rgba(234, 88, 12, 0.1) !important; }
+

@@ -10,6 +10,8 @@ use App\Http\Requests\StoreFactureRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\ParametreSociete;
+use App\Notifications\FactureCreatedNotification;
 
 class FactureController extends Controller
 {
@@ -129,7 +131,7 @@ class FactureController extends Controller
 
         // Générer le PDF et le sauvegarder
         $facture->load('pieces', 'tarifsMo', 'dossier.client', 'dossier.appareil');
-        $company = \App\Models\ParametreSociete::first();
+        $company = ParametreSociete::first();
         $totals = $this->prepareFactureData($facture);
         $pdf = Pdf::loadView('factures.pdf', array_merge(compact('facture', 'company'), $totals));
 
@@ -157,7 +159,7 @@ class FactureController extends Controller
         // Notification au client
         $client = $dossier->client;
         if ($client && $client->email && !str_contains($client->email, '@maisontel.dz')) {
-            $client->notify(new \App\Notifications\FactureCreatedNotification($facture));
+            $client->notify(new FactureCreatedNotification($facture));
         }
 
         return redirect()
@@ -230,7 +232,7 @@ class FactureController extends Controller
     public function pdf(Facture $facture)
     {
         $facture->load('pieces', 'tarifsMo', 'dossier.client', 'dossier.appareil');
-        $company = \App\Models\ParametreSociete::first();
+        $company = ParametreSociete::first();
 
         $totals = $this->prepareFactureData($facture);
 

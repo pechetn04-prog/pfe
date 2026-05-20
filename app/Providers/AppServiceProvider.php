@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
+use App\Models\ParametreSociete;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,5 +31,9 @@ class AppServiceProvider extends ServiceProvider
             'Facture'      => \App\Models\Facture::class,
             'User'         => \App\Models\User::class,
         ]);
+
+        View::composer('partials.sidebar', function ($view) {
+            $view->with('societe', ParametreSociete::first());
+        });
     }
 }

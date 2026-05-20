@@ -195,10 +195,9 @@
                                             <div class="small fw-bold text-muted">{{ $d->appareil->modele ?? '—' }}</div>
                                         </td>
                                         <td class="text-end pe-4">
-                                            <span
-                                                class="badge-status-pill bg-{{ $d->badge_color }} bg-opacity-10 text-{{ $d->badge_color }}">
-                                                <i class="fas fa-circle"></i> {{ str_replace('_', ' ', $d->statut) }}
-                                            </span>
+                                             <span class="status-badge-capsule {{ $d->statut_class }} text-uppercase">
+                                                 {{ $d->statut_text }}
+                                             </span>
                                         </td>
                                     </tr>
                                 @empty

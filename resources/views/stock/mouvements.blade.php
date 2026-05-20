@@ -83,11 +83,18 @@
                                     {{ $m->type == 'sortie' ? '-' : '+' }}{{ $m->quantite }}
                                 </td>
                                 <td>
-                                    <div class="small text-muted mb-1">{{ $m->motif }}</div>
+                                    @php
+                                        // Nettoyage du motif redondant (retirer la mention répétitive du dossier si le badge est présent)
+                                        $displayMotif = $m->motif;
+                                        if ($m->reference_type === 'App\Models\Intervention' && $m->reference && $m->reference->dossier) {
+                                            $displayMotif = str_replace(' pour dossier #' . $m->reference->dossier->num_dossier, '', $displayMotif);
+                                        }
+                                    @endphp
+                                    <div class="small text-muted mb-1" style="font-size: 0.85rem; font-weight: 500; color: #475569 !important;">{{ $displayMotif }}</div>
                                     @if($m->reference_type === 'App\Models\Intervention' && $m->reference)
                                         <a href="{{ route('dossiers.show', $m->reference->dossier_id) }}"
-                                            class="badge bg-soft-info text-decoration-none py-2 px-3">
-                                            <i class="fas fa-folder-open me-1"></i> Dossier #{{ $m->reference->dossier->num_dossier ?? '???' }}
+                                            class="badge-dossier text-decoration-none">
+                                            <i class="fas fa-folder-open"></i> Dossier #{{ $m->reference->dossier->num_dossier ?? '???' }}
                                         </a>
                                     @endif
                                 </td>

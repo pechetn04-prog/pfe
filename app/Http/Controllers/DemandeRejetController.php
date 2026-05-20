@@ -9,8 +9,11 @@ use App\Models\User;
 use App\Http\Requests\StoreDemandeRejetRequest;
 use App\Http\Requests\ApproveDemandeRejetRequest;
 use App\Http\Requests\RejectDemandeRejetRequest;
+use App\Notifications\DemandeRejetNotification;
+use App\Notifications\GenericNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 // Ce contrôleur pilote le traitement des demandes de retrait/désaffectation de dossiers par les techniciens (UC12).
 // Permet aux techniciens de soumettre un dossier pour désaffectation et aux administrateurs de l'approuver ou le refuser.
@@ -54,7 +57,7 @@ class DemandeRejetController extends Controller
             ->first();
 
         if ($existante) {
-            return back()->with('error', 'Une demande de retrait est déjà en cours d\'examen pour ce dossier.');
+            return back()->with('error', 'Une demande de retrait is déjà en cours d\'examen pour ce dossier.');
         }
 
         DemandeRejet::create([
@@ -68,7 +71,7 @@ class DemandeRejetController extends Controller
         $admins = User::where('role', 'Admin')->get();
         foreach ($admins as $admin) {
             try {
-                $admin->notify(new \App\Notifications\DemandeRejetNotification($dossier, Auth::user()));
+                $admin->notify(new DemandeRejetNotification($dossier, Auth::user()));
             } catch (\Exception $e) {
                 // Fail-safe
             }
@@ -88,7 +91,7 @@ class DemandeRejetController extends Controller
         }
 
         // Transaction SQL sécurisée pour assurer la cohérence de l'état SAV
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $demande, $dossier) {
+        DB::transaction(function () use ($request, $demande, $dossier) {
             $demande->update([
                 'statut'                => 'ACCEPTE',
                 'commentaire_admin'     => $request->commentaire_admin,
@@ -116,7 +119,7 @@ class DemandeRejetController extends Controller
             // Notifications en temps réel
             // 1. Notifier le technicien demandeur que sa demande est acceptée
             if ($demande->user) {
-                $demande->user->notify(new \App\Notifications\GenericNotification(
+                $demande->user->notify(new GenericNotification(
                     "Demande de désaffectation acceptée (#{$dossier->num_dossier})",
                     "Votre demande de retrait pour le dossier #{$dossier->num_dossier} a été approuvée par l'administrateur. Commentaire : " . $request->commentaire_admin,
                     route('dossiers.show', $dossier->id)
@@ -125,7 +128,7 @@ class DemandeRejetController extends Controller
 
             // 2. Notifier le nouveau technicien affecté
             if ($nouveauTech) {
-                $nouveauTech->notify(new \App\Notifications\GenericNotification(
+                $nouveauTech->notify(new GenericNotification(
                     "Nouveau dossier assigné (#{$dossier->num_dossier})",
                     "Vous avez été assigné au dossier #{$dossier->num_dossier} suite à une réaffectation.",
                     route('dossiers.show', $dossier->id)
@@ -147,7 +150,7 @@ class DemandeRejetController extends Controller
         ]);
 
         // Tracing historique sur le dossier
-        \App\Models\SuiviDossier::create([
+        SuiviDossier::create([
             'dossier_id'     => $demande->dossier_id,
             'user_id'        => auth()->id(),
             'ancien_statut'  => $demande->dossier->statut,
@@ -158,7 +161,7 @@ class DemandeRejetController extends Controller
         // Notification en temps réel
         // Notifier le technicien demandeur que sa demande est refusée
         if ($demande->user) {
-            $demande->user->notify(new \App\Notifications\GenericNotification(
+            $demande->user->notify(new GenericNotification(
                 "Demande de désaffectation refusée (#{$demande->dossier->num_dossier})",
                 "Votre demande de retrait pour le dossier #{$demande->dossier->num_dossier} a été refusée par l'administrateur. Motif : " . $request->commentaire_admin,
                 route('dossiers.show', $demande->dossier_id)

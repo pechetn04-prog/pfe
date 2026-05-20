@@ -185,7 +185,7 @@
                                     l'Intervention
                                 </label>
                                 <textarea name="compte_rendu" class="form-control border-light shadow-none p-3 compte-rendu-textarea" rows="5"
-                                    placeholder="Décrivez en détail l'intervention technique réalisée, les tests effectués, ainsi que vos remarques ou commentaires spécifiques sur ce dossier..."
+                                    placeholder="Décrivez en détail l'intervention technique réalisée"
                                     required></textarea>
                             </div>
 

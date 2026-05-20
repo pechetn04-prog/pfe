@@ -9,14 +9,6 @@
         <h1 class="display-6 fw-bold mb-1 text-premium-navy">Paramètres société</h1>
         <p class="text-muted">Configurez les informations utilisées dans les devis, factures et bons de réception.</p>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4 alert-societe-success">
-            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     <form action="{{ route('parametres-societe.update') }}" method="POST" enctype="multipart/form-data">
         @csrf @method('PUT')
 

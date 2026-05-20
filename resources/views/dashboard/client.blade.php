@@ -94,8 +94,8 @@
                         </td>
                         <td class="text-muted small">{{ \Carbon\Carbon::parse($d->date_reception)->format('d/m/Y') }}</td>
                         <td class="text-center">
-                            <span class="badge bg-{{ $d->badge_color }} rounded-pill px-3 py-2 small fw-bold">
-                                {{ $d->badge_label }}
+                            <span class="status-badge-capsule {{ $d->statut_class }} text-uppercase">
+                                {{ $d->statut_text }}
                             </span>
                         </td>
                         <td class="text-end pe-4">

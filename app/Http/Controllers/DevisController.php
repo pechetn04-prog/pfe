@@ -7,7 +7,10 @@ use App\Models\Piece;
 use App\Models\TarifMo;
 use App\Models\Dossier;
 use App\Models\SuiviDossier;
+use App\Models\ParametreSociete;
 use App\Http\Requests\StoreDevisRequest;
+use App\Notifications\DevisDisponibleNotification;
+use App\Notifications\GenericNotification;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -98,7 +101,7 @@ class DevisController extends Controller
         // Notification automatique si le client est enregistré
         if ($dossier->client) {
             try {
-                $dossier->client->notify(new \App\Notifications\DevisDisponibleNotification($dossier, $devis));
+                $dossier->client->notify(new DevisDisponibleNotification($dossier, $devis));
             } catch (\Exception $e) {
                 // Ignorer si l'envoi de mail échoue
             }
@@ -158,7 +161,7 @@ class DevisController extends Controller
 
         // Notification au technicien assigné
         if ($dossier->technicien) {
-            $dossier->technicien->notify(new \App\Notifications\GenericNotification(
+            $dossier->technicien->notify(new GenericNotification(
                 "Devis accepté - Lancer réparation (#{$dossier->num_dossier})",
                 "Le devis a été accepté pour le dossier #{$dossier->num_dossier}. Vous pouvez maintenant commencer la réparation.",
                 route('dossiers.show', $dossier->id)
@@ -203,7 +206,7 @@ class DevisController extends Controller
             'commentaire' => 'Devis refusé. Motif : ' . $request->commentaire_refus,
         ]);
 
-        return redirect()->route('dossiers.show', $dossier->id)
+        return redirect()->route('devis.show', $devis->id)
             ->with('success', 'Devis refusé. Dossier en attente de restitution.');
     }
 
@@ -211,7 +214,7 @@ class DevisController extends Controller
     public function pdf(Devis $devis)
     {
         $devis->load('dossier.client', 'pieces', 'tarifsMo', 'dossier.appareil');
-        $company = \App\Models\ParametreSociete::first();
+        $company = ParametreSociete::first();
 
         $devisData = $this->prepareDevisData($devis);
 

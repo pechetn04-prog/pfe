@@ -7,6 +7,7 @@ use App\Models\Piece;
 use App\Models\Dossier;
 use App\Models\User;
 use App\Models\Devis;
+use App\Models\DemandeRejet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,8 +33,8 @@ class AdminDashboardController extends Controller
 
             // Flux spécifiques (demandes d'échange sous garantie et demandes de retrait)
             'attente_validation_remplacement' => Dossier::where('statut', 'ATTENTE_VALIDATION_REMPLACEMENT')->count(),
-            'demandes_rejet_count' => \App\Models\DemandeRejet::where('statut', 'EN_ATTENTE')->count(),
-            'demandes_rejet_recent' => \App\Models\DemandeRejet::with(['dossier', 'user'])
+            'demandes_rejet_count' => DemandeRejet::where('statut', 'EN_ATTENTE')->count(),
+            'demandes_rejet_recent' => DemandeRejet::with(['dossier', 'user'])
                 ->where('statut', 'EN_ATTENTE')
                 ->latest()
                 ->take(3)
@@ -63,7 +64,7 @@ class AdminDashboardController extends Controller
         ];
 
         $stats['status_distribution'] = [];
-        $dossierCounts = Dossier::select('statut', \DB::raw('count(*) as count'))
+        $dossierCounts = Dossier::select('statut', DB::raw('count(*) as count'))
             ->groupBy('statut')
             ->get();
 
@@ -122,27 +123,12 @@ class AdminDashboardController extends Controller
 
         // Mapping esthétique des 7 KPIs pour la grille premium du dashboard
         $adminKpis = [
-            ['label' => 'TOTAL DOSSIERS', 'val' => $stats['total'], 'icon' => 'fa-folder-open', 'class' => 'bg-soft-primary'],
-            ['label' => 'NOUVEAUX REÇUS', 'val' => $stats['recu'], 'icon' => 'fa-inbox', 'class' => 'bg-soft-danger'],
+            ['label' => 'TOTAL DOSSIERS', 'val' => $stats['total'], 'icon' => 'fa-folder-open', 'class' => 'bg-soft-sky'],
             ['label' => 'ATTENTE DEVIS', 'val' => $stats['attente_devis'], 'icon' => 'fa-file-invoice-dollar', 'class' => 'bg-soft-info'],
             ['label' => 'ATTENTE PIÈCES', 'val' => $stats['attente_pieces'], 'icon' => 'fa-clock', 'class' => 'bg-soft-danger'],
             ['label' => 'ATTENTE REMPLACEMENT', 'val' => $stats['attente_validation_remplacement'], 'icon' => 'fa-exchange-alt', 'class' => 'bg-soft-warning text-warning'],
             ['label' => 'IRRÉPARABLES', 'val' => $stats['irreparable'], 'icon' => 'fa-times-circle', 'class' => 'bg-soft-danger text-danger'],
             ['label' => 'LIVRÉS / CLOS', 'val' => $stats['cloture'], 'icon' => 'fa-check-double', 'class' => 'bg-soft-slate'],
-        ];
-
-        // Nomenclature des classes CSS pour les statuts
-        $statClasses = [
-            'RECU' => 'bg-light text-muted',
-            'AFFECTE' => 'bg-secondary text-white',
-            'EN_DIAGNOSTIC' => 'bg-info text-dark',
-            'EN_REPARATION' => 'bg-primary text-white',
-            'EN_ATTENTE_DEVIS' => 'bg-warning text-dark',
-            'REPARE' => 'bg-success text-white',
-            'FACTURE' => 'bg-success text-white',
-            'LIVRE' => 'bg-success text-white',
-            'CLOTURE' => 'bg-dark text-white',
-            'IRREPARABLE' => 'bg-danger text-white',
         ];
 
         return view('dashboard.admin', compact(
@@ -154,8 +140,7 @@ class AdminDashboardController extends Controller
             'stockAlerts',
             'recentDossiers',
             'techniciens',
-            'adminKpis',
-            'statClasses'
+            'adminKpis'
         ));
     }
 

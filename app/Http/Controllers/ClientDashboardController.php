@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dossier;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -18,7 +19,7 @@ class ClientDashboardController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index(\Illuminate\Http\Request $request)
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -49,28 +50,6 @@ class ClientDashboardController extends Controller
         }
 
         $dossiers = $query->get();
-
-        // Mapping visuel des statuts
-        $badgeColors = [
-            'REPARE'                            => 'success', 
-            'LIVRE'                             => 'success', 
-            'CLOTURE'                           => 'dark',
-            'IRREPARABLE'                       => 'danger', 
-            'DEVIS_REFUSE'                      => 'danger',
-            'EN_REPARATION'                     => 'primary', 
-            'EN_DIAGNOSTIC'                     => 'info',
-            'EN_ATTENTE_DEVIS'                  => 'warning',
-            'RECU'                              => 'secondary',
-            'AFFECTE'                           => 'info',
-            'REMPLACEMENT_PRET'                 => 'success',
-            'ATTENTE_VALIDATION_REMPLACEMENT'   => 'warning'
-        ];
-
-        $dossiers->transform(function ($d) use ($badgeColors) {
-            $d->badge_color = $badgeColors[$d->statut] ?? 'secondary';
-            $d->badge_label = str_replace('_', ' ', $d->statut);
-            return $d;
-        });
 
         return view('dashboard.client', compact(
             'user', 
