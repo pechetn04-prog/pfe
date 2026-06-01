@@ -23,12 +23,15 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h5 fw-bold mb-0 text-dark">Gestion détaillée du dossier</h1>
             <div class="d-flex align-items-center gap-2">
-                <a href="{{ route('dossiers.reception.pdf', $dossier->id) }}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark border shadow-sm">
-                    <i class="fas fa-file-invoice me-1"></i> Bon
+                <a href="{{ route('dossiers.reception.pdf', $dossier->id) }}" target="_blank" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark border shadow-sm">
+                    <i class="fas fa-file-invoice me-1"></i> Bon de réception
                 </a>
-                <a href="{{ route('dossiers.etiquette', $dossier->id) }}" class="btn btn-dark btn-sm rounded-pill px-3 fw-bold shadow-sm">
+                <a href="{{ route('dossiers.etiquette', $dossier->id) }}" target="_blank" class="btn btn-dark btn-sm rounded-pill px-3 fw-bold shadow-sm">
                     <i class="fas fa-tag me-1"></i> Étiquette
                 </a>
+
+
+                
             </div>
         </div>
 
@@ -117,7 +120,7 @@
                         @endif
 
                         {{-- Attente Pièce --}}
-                        @if($dossier->statut === 'ATTENTE_PIECE' && in_array(auth()->user()->role, ['Admin', 'Agent']))
+                        @if($dossier->statut === 'ATTENTE_PIECE' && auth()->user()->role === 'Admin')
                             <form action="{{ route('dossiers.marquerPieceRecue', $dossier->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-light text-primary btn-sm rounded-pill px-3 fw-bold shadow-sm">
@@ -278,12 +281,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-4">
-                                    <label class="small text-muted text-uppercase fw-bold mb-2 d-block info-block-label">ÉTAT EXTÉRIEUR / OBSERVATIONS</label>
-                                    <div class="p-3 rounded-3 info-block-wrapper">
-                                        <span class="small fw-bold text-dark">{{ $dossier->etat_appareil ?: 'Aucune observation' }}</span>
-                                    </div>
-                                </div>
+                        
 
                                 <div>
                                     <label class="small text-muted text-uppercase fw-bold mb-2 d-block info-block-label">ACCESSOIRES DÉPOSÉS</label>
@@ -333,7 +331,9 @@
                                     </a>
                                 @endif
                             </div>
-                            <div class="card-body">
+                            <div class="card-body">Aucun message pour le moment.
+
+
                                 @if($dossier->diagnostic)
                                     <div class="mb-4">
                                         <label class="small text-muted text-uppercase fw-bold mb-2 d-block"
@@ -604,7 +604,7 @@
                                             <div class="h4 fw-bold mb-0">
                                                 {{ number_format($dossier->facture->montant_total, 3, '.', ' ') }} DT</div>
                                         </div>
-                                        <span class="badge rounded-pill px-3 bg-success">PAYÉ / FACTURÉ</span>
+                                        <span class="badge rounded-pill px-3 bg-success">FACTURÉ</span>
                                     </div>
                                 @elseif(in_array(auth()->user()->role, ['Admin', 'Agent']) && $dossier->statut === 'REPARE')
                                     <div class="text-center py-4">
@@ -725,8 +725,7 @@
                     <div class="col-lg-8">
                         <div class="card shadow-sm border-0" style="border-radius: 20px;">
                             <div class="card-header bg-white py-3 border-0">
-                                <h6 class="m-0 fw-bold text-dark"><i class="far fa-clock text-primary me-2"></i> Journal des
-                                    évènements</h6>
+                                <h6 class="m-0 fw-bold text-dark"><i class="far fa-clock text-primary me-2"></i> Journal des évènements</h6>
                             </div>
                             <div class="card-body p-4">
                                 <div class="timeline-v2">

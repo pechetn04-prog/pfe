@@ -1,19 +1,27 @@
 /**
- * SAV Premium - Gestion des Utilisateurs
+ * SAV Premium - Module de Gestion des Utilisateurs
+ * Feuille de style dédiée au contrôle des comptes, attribution des rôles (Admin, Agent, Technicien) et statistiques.
  */
 
+/* Titre principal sombre et imposant avec lettrage condensé chic */
 .users-title {
     color: #1a2332;
     font-weight: 800;
     letter-spacing: -0.5px;
 }
 
+/* Carte de présentation principale à bords très arrondis (20px) et ombre premium */
 .users-card {
     border-radius: 20px;
     border: none;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
+/* --------------------------------------------------------------------------
+   STYLE DU TABLEAU DES UTILISATEURS
+   -------------------------------------------------------------------------- */
+
+/* En-tête de tableau grise, majuscule et aérée pour une présentation claire */
 .table-users thead th {
     background-color: #fcfdfe;
     color: #64748b;
@@ -25,23 +33,31 @@
     border-bottom: 2px solid #f1f5f9;
 }
 
+/* Cellules de données spacieuses pour afficher les informations de compte */
 .table-users tbody td {
     padding: 0.65rem 1.5rem;
     border-bottom: 1px solid #f1f5f9;
     font-size: 0.85rem;
 }
 
+/* Identité nominale mise en valeur (police géométrique Outfit) */
 .user-name {
     font-weight: 700;
     color: #1e293b;
     font-family: 'Outfit', sans-serif;
 }
 
+/* Adresse email secondaire */
 .user-email {
     color: #64748b;
     font-size: 0.85rem;
 }
 
+/* --------------------------------------------------------------------------
+   BADGES DE RÔLES COLORÉS (ROLE BADGES SYSTEM)
+   -------------------------------------------------------------------------- */
+
+/* Structure de base en pilule plate */
 .role-badge {
     font-weight: 700;
     font-size: 0.65rem;
@@ -50,21 +66,30 @@
     letter-spacing: 0.3px;
 }
 
-.role-admin { background: #fee2e2; color: #b91c1c; }
-.role-agent { background: #e0f2fe; color: #0369a1; }
-.role-technicien { background: #fef9c3; color: #854d0e; }
-.role-client { background: #f1f5f9; color: #475569; }
+/* Palettes de couleurs douces adaptées pour différencier immédiatement les fonctions */
+.role-admin { background: #fee2e2; color: #b91c1c; }       /* Rouge d'alerte pour l'Admin */
+.role-agent { background: #e0f2fe; color: #0369a1; }       /* Bleu azur pour l'Agent d'accueil */
+.role-technicien { background: #fef9c3; color: #854d0e; }  /* Jaune ambré pour le Technicien atelier */
+.role-client { background: #f1f5f9; color: #475569; }      /* Gris neutre pour le Client final */
+
+/* --------------------------------------------------------------------------
+   COMMUTATEUR DE STATUT DE COMPTE (ACTIVE / DESACTIVE SWITCH)
+   -------------------------------------------------------------------------- */
 
 .status-switch {
     width: 3.5rem !important;
     height: 1.75rem !important;
 }
 
+/* Coloration verte de réussite lorsque le compte utilisateur est actif */
 .status-switch:checked {
     background-color: #10b981 !important;
     border-color: #10b981 !important;
 }
 
+/* --------------------------------------------------------------------------
+   BOUTON DE MODIFICATION COMPACT AVEC SURVOL DYNAMIQUE (EDIT ACTION)
+   -------------------------------------------------------------------------- */
 .btn-action-edit {
     width: 42px;
     height: 42px;
@@ -78,6 +103,7 @@
     transition: all 0.2s ease;
 }
 
+/* Élévation physique, surbrillance bleue et ombre portée au survol */
 .btn-action-edit:hover {
     background: #2563eb;
     color: white;
@@ -85,6 +111,10 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
 }
+
+/* --------------------------------------------------------------------------
+   PANNEAU DE FILTRAGE DES UTILISATEURS
+   -------------------------------------------------------------------------- */
 
 .filter-container {
     background: white;
@@ -109,21 +139,28 @@
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
 }
 
-/* Classes additionnelles pour éliminer le CSS en ligne de la liste des utilisateurs */
+/* --------------------------------------------------------------------------
+   CLASSES COMPOSANTES ET ÉLÉMENTS DE VUE NETTOYÉS (SANS CSS INLINE)
+   -------------------------------------------------------------------------- */
+
+/* Carte de statistiques des effectifs de rôles */
 .card-user-stat {
     border-radius: 15px !important;
 }
 
+/* Enveloppe circulaire pour les icônes de statistiques */
 .icon-wrapper-stat {
     width: 50px !important;
     height: 50px !important;
 }
 
+/* Fonds d'icônes pastel assortis aux rôles */
 .icon-wrapper-blue { background: #eff6ff !important; }
 .icon-wrapper-green { background: #f0fdf4 !important; }
 .icon-wrapper-red { background: #fef2f2 !important; }
 .icon-wrapper-orange { background: #fff7ed !important; }
 
+/* Libellés de statistiques condensés */
 .text-caps-stat {
     font-size: 0.6rem !important;
     letter-spacing: 0.5px !important;
@@ -138,6 +175,7 @@
     border-radius: 20px !important;
 }
 
+/* Limite en largeur pour l'adresse physique afin d'éviter l'éclatement du tableau */
 .user-address-cell {
     max-width: 150px !important;
 }
@@ -146,14 +184,17 @@
     max-width: 900px !important;
 }
 
+/* Boîte affichant les spécialités techniques du technicien (ex: Apple, Samsung) */
 .card-specialite {
     border-radius: 12px !important;
 }
 
+/* Carte de formulaire d'ajout d'utilisateur */
 .card-user-form {
     border-radius: 15px !important;
 }
 
+/* Cacher initialement (utilisé pour les transitions JS) */
 .d-none-init {
     display: none;
 }

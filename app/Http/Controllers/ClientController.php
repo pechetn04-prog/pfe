@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * ClientController
- * Gère le suivi public (UC11) et le portail client authentifié (UC10, UC06).
+ * Gère le suivi public et le portail client authentifié.
  */
 class ClientController extends Controller
 {
-    // ─── UC11 : SUIVI PUBLIC (sans connexion) ───────────────────────────────
+    // SUIVI PUBLIC (sans connexion) ───────────────────────────────
 
     /**
      * Page de recherche publique.
@@ -54,7 +54,7 @@ class ClientController extends Controller
     }
 
     /**
-     * UC11 — Affichage public simplifié du dossier (données sensibles masquées).
+     * Affichage public simplifié du dossier (données sensibles masquées).
      */
     public function suiviPublic($id)
     {
@@ -64,27 +64,15 @@ class ClientController extends Controller
             }
         ])->findOrFail($id);
 
-        $statusConfigs = [
-            'RECU' => ['icon' => 'fa-box-open', 'label' => 'Reçu', 'desc' => 'Appareil bien réceptionné.'],
-            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'label' => 'Diagnostic', 'desc' => 'Analyse technique en cours.'],
-            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'label' => 'Devis Prêt', 'desc' => 'En attente de votre validation.'],
-            'EN_REPARATION' => ['icon' => 'fa-wrench', 'label' => 'Réparation', 'desc' => 'Intervention technique en cours.'],
-            'REPARE' => ['icon' => 'fa-check-double', 'label' => 'Réparé !', 'desc' => 'Prêt pour le retrait.'],
-            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'label' => 'Livré', 'desc' => 'Appareil restitué au client.'],
-            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'label' => 'Attente Pièces', 'desc' => 'En attente de composants.'],
-            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'label' => 'Irréparable', 'desc' => 'Dossier classé non réparable.'],
-            'REMPLACEMENT_PRET' => ['icon' => 'fa-sync-alt', 'label' => 'Remplacement Prêt', 'desc' => 'Nouvel appareil disponible.'],
-        ];
-
-        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
+        $statusConfig = $this->getStatusConfig($dossier->statut, true);
 
         return view('public.suivi', compact('dossier', 'statusConfig'));
     }
 
-    // ─── UC10 : PORTAIL CLIENT AUTHENTIFIÉ ─────────────────────────────────
+    //  PORTAIL CLIENT AUTHENTIFIÉ ─────────────────────────────────
 
     /**
-     * UC10 — Détail d'un dossier pour le client connecté.
+     * Détail d'un dossier pour le client connecté.
      */
     public function show($id)
     {
@@ -94,42 +82,30 @@ class ClientController extends Controller
             'facture',
         ])->findOrFail($id);
 
-        // Autoriser si l'utilisateur est le propriétaire OU s'il est Admin/Agent
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($dossier->client_id !== $user->id && !in_array($user->role, ['Admin', 'Agent'])) {
-                abort(403, 'Accès refusé à ce dossier.');
-            }
+        // Autoriser uniquement si l'utilisateur connecté est le propriétaire du dossier (ou Admin/Agent)
+        $user = Auth::user();
+        if (!$user || ($dossier->client_id !== $user->id && !in_array($user->role, ['Admin', 'Agent']))) {
+            abort(403, 'Accès refusé à ce dossier.');
         }
 
-        $statusConfigs = [
-            'RECU' => ['icon' => 'fa-box-open', 'label' => 'Dossier Reçu', 'desc' => 'Votre appareil a bien été réceptionné.'],
-            'EN_DIAGNOSTIC' => ['icon' => 'fa-microscope', 'label' => 'En Diagnostic', 'desc' => 'Nos techniciens analysent la panne.'],
-            'EN_ATTENTE_DEVIS' => ['icon' => 'fa-file-invoice-dollar', 'label' => 'Attente Devis', 'desc' => 'Un devis est prêt pour validation.'],
-            'EN_REPARATION' => ['icon' => 'fa-wrench', 'label' => 'En Réparation', 'desc' => 'L\'intervention technique est en cours.'],
-            'REPARE' => ['icon' => 'fa-check-double', 'label' => 'Réparé !', 'desc' => 'Votre appareil est prêt pour le retrait.'],
-            'LIVRE' => ['icon' => 'fa-hand-holding-heart', 'label' => 'Remis / Livré', 'desc' => 'Merci de votre confiance !'],
-            'ATTENTE_PIECE' => ['icon' => 'fa-hourglass-start', 'label' => 'Attente Pièces', 'desc' => 'Nous attendons les pièces détachées.'],
-            'IRREPARABLE' => ['icon' => 'fa-exclamation-triangle', 'label' => 'Irréparable', 'desc' => 'Malheureusement, l\'appareil n\'est pas réparable.'],
-        ];
-
-        $statusConfig = $statusConfigs[$dossier->statut] ?? ['icon' => 'fa-info-circle', 'label' => $dossier->statut, 'desc' => 'Suivi en cours...'];
+        $statusConfig = $this->getStatusConfig($dossier->statut, false);
 
         return view('client.ticket', compact('dossier', 'statusConfig'));
     }
 
-    // ─── UC06 : VALIDATION DEVIS PAR LE CLIENT ──────────────────────────────
+    //VALIDATION DEVIS PAR LE CLIENT ──────────────────────────────
 
     /**
-     * UC06 — Le client accepte le devis.
+     * Le client accepte le devis.
      */
     public function accepterDevis($id)
     {
         $dossier = Dossier::findOrFail($id);
 
-        // Vérifier accès
-        if (Auth::check() && $dossier->client_id !== Auth::id()) {
-            abort(403);
+        // Vérifier accès : l'utilisateur doit être connecté et être le propriétaire du dossier
+        $user = Auth::user();
+        if (!$user || $dossier->client_id !== $user->id) {
+            abort(403, 'Accès refusé.');
         }
 
         $devis = Devis::where('dossier_id', $dossier->id)
@@ -155,7 +131,7 @@ class ClientController extends Controller
             'commentaire' => 'Client a accepté le devis. Réparation autorisée.',
         ]);
 
-        // Notification au technicien assigné
+        // Notification au technicien assigné que devis est accepté et que la réparation peut commencer
         if ($dossier->technicien) {
             $dossier->technicien->notify(new GenericNotification(
                 "Devis accepté - Lancer réparation (#{$dossier->num_dossier})",
@@ -168,14 +144,16 @@ class ClientController extends Controller
     }
 
     /**
-     * UC06 — Le client refuse le devis.
+     * Le client refuse le devis.
      */
     public function refuserDevis($id)
     {
         $dossier = Dossier::findOrFail($id);
 
-        if (Auth::check() && $dossier->client_id !== Auth::id()) {
-            abort(403);
+        // Vérifier accès : l'utilisateur doit être connecté et être le propriétaire du dossier
+        $user = Auth::user();
+        if (!$user || $dossier->client_id !== $user->id) {
+            abort(403, 'Accès refusé.');
         }
 
         $devis = Devis::where('dossier_id', $dossier->id)
@@ -207,5 +185,61 @@ class ClientController extends Controller
         return back()->with('success', 'Devis refusé. Nous vous contacterons pour la restitution.');
     }
 
+    /**
+     * Récupère la configuration visuelle d'un statut (icône, étiquette, description).
+     * Gère les versions pour le suivi public simplifié et le portail connecté complet.
+     */
+    private function getStatusConfig(string $statut, bool $isPublic = false): array
+    {
+        $configs = [
+            'RECU' => [
+                'icon' => 'fa-box-open',
+                'label' => $isPublic ? 'Reçu' : 'Dossier Reçu',
+                'desc' => $isPublic ? 'Appareil bien réceptionné.' : 'Votre appareil a bien été réceptionné.'
+            ],
+            'EN_DIAGNOSTIC' => [
+                'icon' => 'fa-microscope',
+                
+                'label' => $isPublic ? 'Diagnostic' : 'En Diagnostic',
+                'desc' => $isPublic ? 'Analyse technique en cours.' : 'Nos techniciens analysent la panne.'
+            ],
+            'EN_ATTENTE_DEVIS' => [
+                'icon' => 'fa-file-invoice-dollar',
+                'label' => $isPublic ? 'Devis Prêt' : 'Attente Devis',
+                'desc' => $isPublic ? 'En attente de votre validation.' : 'Un devis est prêt pour validation.'
+            ],
+            'EN_REPARATION' => [
+                'icon' => 'fa-wrench',
+                'label' => $isPublic ? 'Réparation' : 'En Réparation',
+                'desc' => $isPublic ? 'Intervention technique en cours.' : 'L\'intervention technique est en cours.'
+            ],
+            'REPARE' => [
+                'icon' => 'fa-check-double',
+                'label' => 'Réparé !',
+                'desc' => $isPublic ? 'Prêt pour le retrait.' : 'Votre appareil est prêt pour le retrait.'
+            ],
+            'LIVRE' => [
+                'icon' => 'fa-hand-holding-heart',
+                'label' => $isPublic ? 'Livré' : 'Remis / Livré',
+                'desc' => $isPublic ? 'Appareil restitué au client.' : 'Merci de votre confiance !'
+            ],
+            'ATTENTE_PIECE' => [
+                'icon' => 'fa-hourglass-start',
+                'label' => 'Attente Pièces',
+                'desc' => $isPublic ? 'En attente de composants.' : 'Nous attendons les pièces détachées.'
+            ],
+            'IRREPARABLE' => [
+                'icon' => 'fa-exclamation-triangle',
+                'label' => 'Irréparable',
+                'desc' => $isPublic ? 'Dossier classé non réparable.' : 'Malheureusement, l\'appareil n\'est pas réparable.'
+            ],
+            'REMPLACEMENT_PRET' => [
+                'icon' => 'fa-sync-alt',
+                'label' => 'Remplacement Prêt',
+                'desc' => 'Nouvel appareil disponible.'
+            ],
+        ];
 
+        return $configs[$statut] ?? ['icon' => 'fa-info-circle', 'label' => $statut, 'desc' => 'Suivi en cours...'];
+    }
 }

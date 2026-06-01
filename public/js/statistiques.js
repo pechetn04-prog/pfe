@@ -1,14 +1,11 @@
 /*
- * ====================================================================
- * LOGIQUE ET REPRÉSENTATION DES STATISTIQUES AVANCÉES (CHART.JS)
- * ====================================================================
+
  * Ce script gère l'initialisation et l'affichage des graphiques statistiques
  * de performance de l'application SAV :
  * 1. techChart (Bar Chart) : Volume de dossiers traités par technicien.
  * 2. retardChart (Doughnut Chart) : Distribution des retards de traitement 
  *    par tranche de temps (<24h, 24-48h, 48-72h, >72h).
  * 
- * Données brutes fournies dynamiquement par Laravel via techChartData et retardChartData.
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -46,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    
     // 2. Initialisation du graphique de retard de prise en charge (Doughnut Chart)
     const retardCtx = document.getElementById('retardChart');
     if (retardCtx && window.retardChartData) {

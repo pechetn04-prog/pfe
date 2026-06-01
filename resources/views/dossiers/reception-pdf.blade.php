@@ -32,14 +32,14 @@
         }
 
         .header-table {
-            border-bottom: 2px solid #2563eb;
+            border-bottom: 2px solid #ff0000;
             margin-bottom: 30px;
         }
 
         .logo {
             font-size: 32px;
             font-weight: bold;
-            color: #2563eb;
+            color: #ff0000;
         }
 
         .doc-info {
@@ -55,7 +55,7 @@
         .doc-info .ref {
             font-size: 20px;
             font-weight: bold;
-            color: #2563eb;
+            color: #ff0000;
         }
 
         .section-title {
@@ -156,22 +156,32 @@
 <body>
     <table class="table header-table">
         <tr>
-            <td class="logo">
+            <td class="logo" style="width: 55%;">
                 @if($company && $company->logo)
-                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 120px;">
+                    <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 60px; margin-bottom: 5px;"><br>
                 @else
-                    {{ $company->nom_societe ?? 'MAISON TEL' }}<br>
-                    <span style="font-size: 10px; font-weight: normal; color: #64748b;">SERVICE APRÈS-VENTE</span>
+                    <span style="font-size: 22px; font-weight: bold; color: #2563eb;">{{ $company->nom_societe ?? 'MAISON TEL' }}</span><br>
+                    <span style="font-size: 9px; font-weight: normal; color: #64748b; display: block; margin-bottom: 4px;">SERVICE APRÈS-VENTE</span>
                 @endif
+                <div style="font-size: 9px; font-weight: normal; color: #475569; line-height: 1.4; margin-top: 5px;">
+                    @if($company && $company->numero_fiscal)
+                        <strong>MF :</strong> {{ $company->numero_fiscal }}<br>
+                    @endif
+                    @if($company && $company->adresse)
+                        <strong>Adresse :</strong> {{ $company->adresse }}<br>
+                    @endif
+                    @if($company && $company->email)
+                        <strong>Email :</strong> {{ $company->email }}<br>
+                    @endif
+                    @if($company && $company->telephone)
+                        <strong>Tél :</strong> {{ $company->telephone }}
+                    @endif
+                </div>
             </td>
-            <td class="doc-info">
+            <td class="doc-info" style="width: 45%; text-align: right; vertical-align: top;">
                 <h1>BON DE RÉCEPTION</h1>
                 <div class="ref">#{{ $dossier->num_dossier }}</div>
                 <div style="margin-top: 5px;">Date : {{ $dossier->date_reception->format('d/m/Y H:i') }}</div>
-                @if($company && $company->numero_fiscal)
-                    <div style="font-size: 8px; color: #64748b; margin-top: 5px;">Matricule Fiscal : {{ $company->numero_fiscal }}
-                    </div>
-                @endif
             </td>
         </tr>
     </table>
@@ -238,15 +248,6 @@
         </tr>
     </table>
 
-    <div class="terms">
-        <strong>Conditions Générales de Réception :</strong><br>
-        1. Le client reconnaît l'état de l'appareil tel que décrit ci-dessus.
-        2. Maison Tel n'est pas responsable de la perte de données stockées dans l'appareil. Veuillez effectuer une
-        sauvegarde avant dépôt.
-        3. Tout appareil non récupéré après 3 mois sera considéré comme abandonné.
-        4. Pour les appareils hors garantie, un devis sera établi. Les frais de diagnostic peuvent être facturés en cas
-        de refus du devis.
-    </div>
 
     <div class="footer">
         {{ $company->nom_societe ?? 'Maison Tel' }} — {{ $company->adresse ?? '' }} — Tél:

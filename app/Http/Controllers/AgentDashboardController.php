@@ -6,17 +6,14 @@ use App\Models\Dossier;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class AgentDashboardController
  * 
- * Gère le tableau de bord opérationnel pour les agents du Service Après-Vente (UC01 / UC05).
+ * Gère le tableau de bord opérationnel pour les agents du Service Après-Vente
  * Fournit les KPI en temps réel et la liste des dossiers récents avec statut de prise en charge.
  */
 class AgentDashboardController extends Controller
 {
     /**
      * Affiche l'index du tableau de bord de l'agent.
-     *
-     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -28,34 +25,16 @@ class AgentDashboardController extends Controller
         // ---------------------------------------------------------
         $stats = [
             'total'                => Dossier::count(),
-            'recu'                 => Dossier::where('statut', 'RECU')->count(),
             'affecte'              => Dossier::where('statut', 'AFFECTE')->count(),
-            'en_diagnostic'        => Dossier::where('statut', 'EN_DIAGNOSTIC')->count(),
             'attente_devis'        => Dossier::where('statut', 'EN_ATTENTE_DEVIS')->count(),
-            'en_reparation'        => Dossier::where('statut', 'EN_REPARATION')->count(),
-            'attente_pieces'       => Dossier::where('statut', 'ATTENTE_PIECE')->count(),
             'prets'                => Dossier::whereIn('statut', ['REPARE', 'FACTURE', 'REMPLACEMENT_VALIDE', 'REMPLACEMENT_PRET', 'REMPLACEMENT_REFUSE'])->count(),
-            'prets_aujourdhui'     => Dossier::whereIn('statut', ['REPARE', 'FACTURE'])->whereDate('date_reparation', now())->count(),
             'attente_remplacement' => Dossier::where('statut', 'ATTENTE_VALIDATION_REMPLACEMENT')->count(),
-            'facture'              => Dossier::where('statut', 'FACTURE')->count(),
             'cloture'              => Dossier::where('statut', 'CLOTURE')->count(),
         ];
 
-        // Calcul des pourcentages par rapport au volume total
-        $pct = [];
-        foreach ($stats as $key => $value) {
-            $pct[$key] = $total > 0 ? round(($value / $total) * 100, 1) : 0;
-        }
 
-        // Configuration visuelle des indicateurs clés (KPIs)
-        $all_kpis = [
-            ['label' => 'Total Tickets',  'val' => $stats['total'],                'icon' => 'fa-folder-open',          'class' => 'bg-soft-sky'],
-            ['label' => 'Affectés',       'val' => $stats['affecte'],              'icon' => 'fa-user-check',           'class' => 'bg-soft-info'],
-            ['label' => 'Attente Devis',  'val' => $stats['attente_devis'],        'icon' => 'fa-file-invoice-dollar',  'class' => 'bg-soft-warning'],
-            ['label' => 'Attente Remplacement', 'val' => $stats['attente_remplacement'], 'icon' => 'fa-exchange-alt', 'class' => 'bg-soft-warning'],
-            ['label' => 'Prêts à livrer', 'val' => $stats['prets'],                'icon' => 'fa-hand-holding-heart',   'class' => 'bg-soft-success'],
-            ['label' => 'Clôturés',       'val' => $stats['cloture'],              'icon' => 'fa-archive',              'class' => 'bg-soft-dark'],
-        ];
+
+
 
         // ---------------------------------------------------------
         // 2. ACTIVITÉS RÉCENTES (DOSSIERS RÉCEMMENT MIS À JOUR)
@@ -106,6 +85,6 @@ class AgentDashboardController extends Controller
             return $d;
         });
 
-        return view('dashboard.agent', compact('user', 'stats', 'pct', 'recentDossiers', 'all_kpis'));
+        return view('dashboard.agent', compact('user', 'stats', 'recentDossiers'));
     }
 }

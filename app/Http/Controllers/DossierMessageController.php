@@ -4,22 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Dossier;
 use App\Models\DossierMessage;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreDossierMessageRequest;
 use Illuminate\Support\Facades\Auth;
 
-// Ce contrôleur gère la communication (messages internes de l'atelier et notes d'information publique) liée à un dossier SAV.
+/**
+ * Class DossierMessageController
+ * 
+ * Ce contrôleur pilote la communication collaborative rattachée à une fiche SAV.
+ * Il permet d'échanger des notes d'atelier à caractère strictement interne (visibles par le staff)
+ * ou des messages publics (visibles par le client sur son espace de suivi).
+ */
 class DossierMessageController extends Controller
 {
-    // Enregistre un message ou une note dans le fil de discussion du dossier.
-    public function store(Request $request, Dossier $dossier)
+    /**
+     * Enregistre une note ou un message dans le fil de discussion du dossier SAV.
+     * 
+     * Cette méthode valide la saisie, applique le préfixe spécial "[INT] " s'il s'agit d'un message interne
+     * afin de le masquer pour les clients, persiste l'enregistrement et effectue une redirection
+     * ciblée en fonction du rôle de l'utilisateur pour préserver la cohérence de l'interface utilisateur.
+     * Bloque toute écriture si le dossier est clôturé.
+     */
+    public function store(StoreDossierMessageRequest $request, Dossier $dossier)
     {
+
         if ($dossier->statut === 'CLOTURE') {
             return back()->with('error', "Ce dossier est clôturé. L'envoi de messages est désactivé.");
         }
-        $request->validate([
-            'message' => 'required|string|max:1000',
-            'type' => 'nullable|string|in:public,internal',
-        ]);
 
         // Préfixe distinctif pour marquer visuellement les messages internes de l'atelier
         $prefix = ($request->type === 'internal') ? '[INT] ' : '';

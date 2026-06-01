@@ -1,162 +1,187 @@
-/* 
-   Fichier CSS pour les Cartes KPI du Tableau de Bord - Style Maison Tel Premium
-*/
-
+/* Style principal de chaque carte de statistique (KPI Card) */
 .kpi-card {
-    border: none;
-    border-radius: 10px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    height: 100%;
+    border: none;                                 /* Supprime la bordure par défaut de la carte */
+    border-radius: 10px;                          /* Arrondit les quatre coins de la carte de 10 pixels */
+    background: #ffffff !important;               /* COULEUR DE FOND GLOBALE DES CARTES (Modifier ici pour changer de couleur) */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);   /* Ajoute une ombre très douce sous la carte */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Gère la fluidité de l'animation de survol */
+    height: 100%;                                 /* Force la carte à prendre toute la hauteur de sa colonne */
 }
 
+/* Effet d'animation lorsque la souris passe sur la carte */
 .kpi-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);                  /* Soulève la carte de 2 pixels vers le haut */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);   /* Rend l'ombre plus sombre pour un effet 3D */
 }
 
+/* Contenu interne de la carte (padding et alignement) */
 .kpi-card .card-body {
-    padding: 0.45rem 0.9rem !important;
-    display: flex;
-    align-items: center;
+    padding: 0.45rem 0.9rem !important;           /* Marges internes de la carte */
+    display: flex;                                /* Aligne les éléments horizontalement (Icône + Texte) */
+    align-items: center;                          /* Centre verticalement l'icône et le texte */
 }
 
+/* Conteneur de l'icône (petit carré de couleur sous l'icône) */
 .kpi-icon-wrapper {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 6px !important;
-    flex-shrink: 0;
+    width: 28px !important;                       /* Force la largeur du conteneur à 28px */
+    height: 28px !important;                      /* Force la hauteur du conteneur à 28px */
+    min-width: 28px !important;                  /* Empêche le conteneur de se déformer */
+    border-radius: 6px;                           /* Arrondit les coins du conteneur d'icône */
+    display: flex;                                /* Permet le centrage de l'icône à l'intérieur */
+    align-items: center;                          /* Centre verticalement l'icône dans son carré */
+    justify-content: center;                      /* Centre horizontalement l'icône dans son carré */
+    margin-right: 6px !important;                 /* Espace à droite de l'icône pour écarter le texte */
+    flex-shrink: 0;                               /* Empêche le carré de s'écraser si le texte est long */
 }
 
+/* Style de la balise i (icône FontAwesome) à l'intérieur du conteneur */
 .kpi-icon-wrapper i {
-    font-size: 0.75rem !important;
+    font-size: 1.2rem !important;                /* Règle la taille de l'icône */
 }
 
+/* Bloc contenant le texte (Valeur numérique + Libellé) */
 .kpi-content {
-    display: flex;
-    flex-direction: column;
+    display: flex;                                /* Active le mode flexbox pour le conteneur de texte */
+    flex-direction: column;      
+                     /* Aligne les lignes de texte verticalement (l'une sous l'autre) */
 }
 
+/* Style du grand chiffre/nombre de la statistique */
 .kpi-value {
-    font-size: 1.4rem !important;
-    font-weight: 800;
-    line-height: 1.1;
-    color: #1e293b;
+    font-size: 1.4rem !important;                 /* Règle la taille de police du grand chiffre */
+    font-weight: 800;                             /* Écrit le chiffre en très gras (épaisseur 800) */
+    line-height: 1.1;                             /* Règle la hauteur de ligne pour compacter le texte */
+    color: #1e293b;                               /* Couleur gris foncé pour une lecture optimale */
 }
 
+/* Style du texte de libellé descriptif sous le chiffre */
 .kpi-label {
-    font-size: 0.7rem !important;
-    font-weight: 800;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 1px;
+    font-size: 1rem !important;                 /* Écrit le libellé en petit */
+    font-weight: 800;                             /* Met le texte en gras pour le faire ressortir */
+    color: #64748b;                               /* Couleur gris ardoise adoucie */
+    text-transform: uppercase;                    /* Écrit automatiquement le texte en lettres capitales */
+    letter-spacing: 0.5px;                        /* Règle l'espacement entre les lettres */
+    margin-top: 1px;                              /* Ajoute un petit espace de 1px au-dessus */
 }
 
-/* Couleurs personnalisées pour les icônes */
+/* --- SECTION : COULEURS DES PETITS CARRES D'ICONES (STYLE DOUX) --- */
+
+/* Couleur douce primaire (Bleu) */
 .bg-soft-primary {
-    background-color: #eff6ff;
-    color: #2563eb;
+    background-color: #eff6ff;                    /* Fond bleu très clair */
+    color: #2563eb;                               /* Icône en bleu vif */
 }
 
+/* Couleur douce ciel (Cyan/Sky) */
 .bg-soft-sky {
-    background-color: #e0f2fe;
-    color: #0284c7;
+    background-color: #e0f2fe;                    /* Fond bleu ciel clair */
+    color: #0284c7;                               /* Icône en bleu océan */
 }
 
+/* Couleur douce avertissement (Orange/Jaune) */
 .bg-soft-warning {
-    background-color: #fff7ed;
-    color: #f59e0b;
+    background-color: #fff7ed;                    /* Fond orange/jaune très clair */
+    color: #f59e0b;                               /* Icône en ambre/jaune */
 }
 
+/* Couleur douce information (Bleu clair/Cyan) */
 .bg-soft-info {
-    background-color: #f0f9ff;
-    color: #0ea5e9;
+    background-color: #f0f9ff;                    /* Fond cyan très doux */
+    color: #0ea5e9;                               /* Icône en bleu info */
 }
 
+/* Couleur douce succès (Vert) */
 .bg-soft-success {
-    background-color: #f0fdf4;
-    color: #10b981;
+    background-color: #f0fdf4;                    /* Fond vert très clair */
+    color: #10b981;                               /* Icône en vert menthe */
 }
 
+/* Couleur douce danger (Rouge) */
 .bg-soft-danger {
-    background-color: #fef2f2;
-    color: #ef4444;
+    background-color: #fef2f2;                    /* Fond rouge/rose très clair */
+    color: #ef4444;                               /* Icône en rouge vif */
 }
 
+/* Couleur douce violette (Purple) */
 .bg-soft-purple {
-    background-color: #f5f3ff;
-    color: #8b5cf6;
+    background-color: #f5f3ff;                    /* Fond violet très clair */
+    color: #8b5cf6;                               /* Icône en violet foncé */
 }
 
+/* Couleur douce ardoise (Slate Gray) */
 .bg-soft-slate {
-    background-color: #f8fafc;
-    color: #64748b;
+    background-color: #f8fafc;                    /* Fond gris ardoise très clair */
+    color: #64748b;                               /* Icône en gris */
 }
 
-/* Importance Overrides for KPI Colors */
-.bg-soft-primary { background-color: #eff6ff !important; color: #2563eb !important; }
-.bg-soft-sky { background-color: #e0f2fe !important; color: #0284c7 !important; }
-.bg-soft-success { background-color: #f0fdf4 !important; color: #10b981 !important; }
-.bg-soft-warning { background-color: #fff7ed !important; color: #f59e0b !important; }
-.bg-soft-danger { background-color: #fef2f2 !important; color: #ef4444 !important; }
-.bg-soft-info { background-color: #f0f9ff !important; color: #0ea5e9 !important; }
-.bg-soft-secondary { background-color: #f8fafc !important; color: #64748b !important; }
-.bg-soft-dark { background-color: #f1f5f9 !important; color: #1e293b !important; }
+/* --- SECTION : FORÇAGE DES COULEURS DES ICONES (SÉCURITÉ D'AFFICHAGE) --- */
 
-/* Pulse Animation for KPIs */
+.bg-soft-primary { background-color: #eff6ff !important; color: #2563eb !important; }     /* Force le bleu */
+.bg-soft-sky { background-color: #e0f2fe !important; color: #0284c7 !important; }         /* Force le bleu ciel */
+.bg-soft-success { background-color: #f0fdf4 !important; color: #10b981 !important; }     /* Force le vert */
+.bg-soft-warning { background-color: #fff7ed !important; color: #f59e0b !important; }     /* Force le jaune/orange */
+.bg-soft-danger { background-color: #fef2f2 !important; color: #ef4444 !important; }       /* Force le rouge */
+.bg-soft-info { background-color: #f0f9ff !important; color: #0ea5e9 !important; }         /* Force le cyan */
+.bg-soft-secondary { background-color: #f8fafc !important; color: #64748b !important; }   /* Force le gris secondaire */
+.bg-soft-dark { background-color: #f1f5f9 !important; color: #1e293b !important; }        /* Force le noir/sombre */
+
+/* --- SECTION : ANIMATION DE PULSATION (EFFET DE MOUVEMENT) --- */
+
+/* Déclare la classe qui active la pulsation en continu */
 .animate-pulse {
-    animation: pulse 2s infinite;
+    animation: pulse 2s infinite;                 /* Exécute l'animation "pulse" en boucle de 2 secondes */
 }
 
+/* Définition des étapes de l'animation de pulsation */
 @keyframes pulse {
     0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+        transform: scale(1);                      /* Étape 0% : Taille normale (100%) */
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); /* Pas d'ombre de propagation */
     }
     70% {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 10px rgba(251, 191, 36, 0);
+        transform: scale(1.05);                   /* Étape 70% : Zoom léger à 105% */
+        box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); /* Génère un halo lumineux transparent */
     }
     100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+        transform: scale(1);                      /* Étape 100% : Retour à la taille normale */
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); /* Disparition complète du halo */
     }
 }
 
-/* Card KPI Modifiers for Dashboards */
+/* --- SECTION : COULEURS ET MODIFICATEURS SPÉCIFIQUES --- */
+
+/* Carte KPI spécifique au client n°1 (Style avec dégradé bleu) */
 .card-client-kpi-1 {
-    border-radius: 20px !important;
-    background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
-    color: white !important;
+    border-radius: 20px !important;               /* Arrondit fortement les coins à 20px */
+    background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important; /* Dégradé moderne bleu */
+    color: white !important;                      /* Force l'écriture du texte en blanc */
 }
 
+/* Carte KPI spécifique au client n°2 (Style blanc uni) */
 .card-client-kpi-2 {
-    border-radius: 20px !important;
-    background: #ffffff !important;
+    border-radius: 20px !important;               /* Arrondit fortement les coins à 20px */
+    background: #ffffff !important;               /* Force le fond en blanc */
 }
 
+/* Conteneur d'icône circulaire de 50 pixels */
 .icon-circle-wrapper-50 {
-    width: 50px !important;
-    height: 50px !important;
+    width: 50px !important;                       /* Fixe la largeur du cercle à 50px */
+    height: 50px !important;                      /* Fixe la hauteur du cercle à 50px */
 }
 
+/* Conteneur de tableau spécifique pour les clients */
 .card-client-table-container {
-    border-radius: 20px !important;
+    border-radius: 20px !important;               /* Arrondit les angles du bloc tableau à 20px */
 }
 
+/* Bannière d'alerte spécifique pour les Administrateurs */
 .card-admin-alert-banner {
-    border-radius: 15px !important;
-    background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%) !important;
-    border-left: 5px solid #f59e0b !important;
+    border-radius: 15px !important;               /* Arrondit les coins à 15px */
+    background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%) !important; /* Dégradé doux jaune/orange */
+    border-left: 5px solid #f59e0b !important;   /* Ajoute une barre verticale orange à gauche */
 }
 
+/* Boîte générique d'angle 15px pour l'administration */
 .card-admin-box-15 {
-    border-radius: 15px !important;
+    border-radius: 15px !important;               /* Force l'arrondi à 15px */
 }

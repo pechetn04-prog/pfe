@@ -1,16 +1,9 @@
-/**
- * SAV Premium - Tickets Index (Liste des dossiers) Styling
- * 
- * Ce fichier regroupe tous les styles visuels de la page d'accueil de gestion des dossiers (tickets).
- * 1. KPI Cards : Bloc de statistiques avec survol 3D et dégradés.
- * 2. Filters Block : Formulaire de filtrage ergonomique et réactif.
- * 3. Dossiers Table : Grille de données premium avec transitions d'accentuation et survol fluide.
- * 4. Custom Badges : Badges sémantiques aux couleurs douces pour les statuts et garanties.
- */
 
-/* ============================================================
- * 1. CARTES KPI (STATISTIQUES & RAPPORTS)
- * ============================================================ */
+
+/* ==========================================================================
+   1. Cartes KPI (Statistiques & Rapports)
+   ========================================================================== */
+/* Carte d'indicateur avec transition douce au survol */
 .kpi-card {
     border-radius: 16px !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -18,11 +11,13 @@
     border: none !important;
 }
 
+/* Soulèvement de la carte et ombre portée subtile au survol */
 .kpi-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.06) !important;
 }
 
+/* Conteneur de l'icône de l'indicateur */
 .kpi-icon-wrapper {
     width: 60px;
     height: 60px;
@@ -33,19 +28,21 @@
     transition: all 0.3s ease;
 }
 
+/* Légère rotation 3D et agrandissement de l'icône au survol de la carte */
 .kpi-card:hover .kpi-icon-wrapper {
     transform: scale(1.08) rotate(3deg);
 }
 
-/* ============================================================
- * 2. COMPOSANT DE FILTRAGE DES DOSSIERS
- * ============================================================ */
+/* ==========================================================================
+   2. Bloc de Filtrage Opérationnel
+   ========================================================================== */
 .filter-card {
     border-radius: 20px !important;
     background-color: #ffffff;
     border: none !important;
 }
 
+/* Champs et listes déroulantes de filtrage */
 .filter-input, .filter-select {
     border-radius: 10px !important;
     background-color: #f8fafc !important;
@@ -56,15 +53,17 @@
     transition: all 0.25s ease;
 }
 
+/* Changement de couleur et lueur de focus bleue lors de la sélection */
 .filter-input:focus, .filter-select:focus {
     background-color: #ffffff !important;
     border-color: #2563eb !important;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
 }
 
-/* ============================================================
- * 3. TABLEAU DES DOSSIERS (DATA GRID)
- * ============================================================ */
+/* ==========================================================================
+   3. Tableau des Dossiers (Grille de données)
+   ========================================================================== */
+/* Conteneur global du tableau (Carte blanche) */
 .dossiers-table-card {
     border-radius: 20px !important;
     background-color: #ffffff;
@@ -75,6 +74,7 @@
     background-color: #f8fafc !important;
 }
 
+/* En-tête de colonnes (micro-typographie haut de gamme) */
 .dossier-table th {
     padding: 16px 20px !important;
     font-size: 0.72rem !important;
@@ -84,6 +84,7 @@
     border-bottom: 2px solid #f1f5f9 !important;
 }
 
+/* Cellules de données d'un dossier */
 .dossier-table td {
     padding: 16px 20px !important;
     border-bottom: 1px solid #f1f5f9 !important;
@@ -96,6 +97,7 @@
     transition: background-color 0.2s ease;
 }
 
+/* Effet de surbrillance lors du survol d'un dossier */
 .dossier-table tbody tr:hover {
     background-color: #f8fafc !important;
 }
@@ -104,7 +106,7 @@
     color: #0f172a;
 }
 
-/* Lien interactif sur le N° de Ticket */
+/* Lien d'ouverture rapide sur le N° de Dossier */
 .dossier-num-link {
     font-weight: 800;
     color: #1e293b;
@@ -112,11 +114,12 @@
     transition: color 0.2s ease;
 }
 
+/* Coloration bleue au survol */
 .dossier-num-link:hover {
     color: #2563eb !important;
 }
 
-/* Boutons d'Action Circulaires */
+/* Boutons d'action rapides circulaires (Explorer, Modifier, etc.) */
 .action-btn-circle {
     width: 34px;
     height: 34px;
@@ -130,6 +133,7 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Agrandissement et mise en valeur bleue au survol */
 .action-btn-circle:hover {
     background-color: #2563eb !important;
     color: #ffffff !important;
@@ -138,9 +142,10 @@
     box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15) !important;
 }
 
-/* ============================================================
- * 4. BADGES STATUTS & GARANTIES CAPSULES
- * ============================================================ */
+/* ==========================================================================
+   4. Badges Capsules (Statuts & Garanties)
+   ========================================================================== */
+/* Badge pilule pour le statut opérationnel du dossier */
 .status-badge-capsule {
     border-radius: 50rem !important;
     padding: 6px 14px !important;
@@ -152,6 +157,7 @@
     display: inline-block;
 }
 
+/* Badge pilule pour l'état de la garantie */
 .warranty-badge-capsule {
     border-radius: 50rem !important;
     padding: 6px 14px !important;
@@ -162,25 +168,30 @@
     display: inline-block;
 }
 
+/* SOUS GARANTIE : Vert émeraude sur fond vert pastel très doux */
 .warranty-badge-capsule.under-warranty {
     background-color: #ecfdf5 !important;
     color: #10b981 !important;
     border: 1px solid rgba(16, 185, 129, 0.25) !important;
 }
 
+/* HORS GARANTIE : Rouge sur fond rouge pastel très doux */
 .warranty-badge-capsule.out-of-warranty {
     background-color: #fef2f2 !important;
     color: #ef4444 !important;
     border: 1px solid rgba(239, 68, 68, 0.25) !important;
 }
 
+/* GARANTIE EXCLUE : Orange ambré sur fond jaune/orange pastel très doux */
 .warranty-badge-capsule.excluded-warranty {
     background-color: #fffbeb !important;
     color: #f59e0b !important;
     border: 1px solid rgba(245, 158, 11, 0.25) !important;
 }
 
-/* Dossier Detail and Modals styling */
+/* ==========================================================================
+   5. Fenêtres Modales & Boîtes Annexes (Détails Dossier)
+   ========================================================================== */
 .card-dossier-box-15 {
     border-radius: 15px !important;
 }
@@ -193,6 +204,7 @@
     border-radius: 15px !important;
 }
 
+/* Bouton de retour d'exploration */
 .btn-back-dossier {
     width: 32px !important;
     height: 32px !important;
@@ -200,6 +212,7 @@
     color: #1e69ff !important;
 }
 
+/* Conteneur d'icône circulaire standard */
 .icon-circle-wrapper-35 {
     width: 35px !important;
     height: 35px !important;

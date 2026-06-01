@@ -6,8 +6,9 @@
 
 
 @section('content')
+    {{-- Conteneur principal de la page de diagnostic --}}
     <div class="container-fluid px-4 py-4">
-        {{-- Header --}}
+        {{-- En-tête : Titre de la page, numéro du dossier en cours et actions rapides --}}
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="h3 fw-bold mb-0 text-gray-800">Expertise & Diagnostic Technique</h1>
@@ -15,20 +16,23 @@
                     Phase d'expertise</p>
             </div>
             <div class="d-flex gap-2">
+                {{-- Bouton pour ouvrir la boîte de dialogue (modal) de demande de retrait --}}
                 <button type="button" class="btn btn-outline-danger rounded-pill px-4 fw-bold" data-bs-toggle="modal"
                     data-bs-target="#modalRetrait">
                     <i class="fas fa-undo-alt me-1"></i> Demander Retrait
                 </button>
+                {{-- Bouton pour annuler et retourner à la liste des tickets affectés au technicien --}}
                 <a href="{{ route('technicien.tickets') }}" class="btn btn-secondary rounded-pill px-4">
                     <i class="fas fa-times me-2"></i> Annuler
                 </a>
             </div>
         </div>
 
+        {{-- Formulaire principal de soumission du diagnostic technique (inclut l'upload de photo) --}}
         <form action="{{ route('diagnostics.store', $dossier->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row g-4">
-                {{-- SIDEBAR: Infos Dossier --}}
+                {{-- BARRE LATÉRALE (SIDEBAR) : Résumé des informations du dossier SAV --}}
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-sm sticky-top card-diagnostic-sidebar">
                         <div class="card-header bg-white border-0 py-3">
@@ -37,6 +41,7 @@
                             </h6>
                         </div>
                         <div class="card-body p-4 pt-0">
+                            {{-- Informations d'identification de l'appareil --}}
                             <div class="mb-4">
                                 <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Appareil &
                                     Identification</label>
@@ -44,6 +49,7 @@
                                     <div class="fw-bold h5 mb-1">{{ $dossier->appareil->modele ?? 'Modèle Inconnu' }}</div>
                                     <div class="small text-muted font-monospace">IMEI: {{ $dossier->imei }}</div>
                                     <div class="mt-2">
+                                        {{-- Badge indiquant si l'appareil est couvert par la garantie --}}
                                         <span
                                             class="badge rounded-pill {{ $dossier->sous_garantie ? 'bg-success' : 'bg-secondary' }}">
                                             {{ $dossier->sous_garantie ? '✓ SOUS GARANTIE' : 'HORS GARANTIE' }}
@@ -52,6 +58,7 @@
                                 </div>
                             </div>
 
+                            {{-- Description du problème déclarée initialement par le client --}}
                             <div class="mb-4">
                                 <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Panne Déclarée par le
                                     Client</label>
@@ -60,6 +67,7 @@
                                 </div>
                             </div>
 
+                            {{-- Date de réception physique du matériel en atelier --}}
                             <div class="mb-0">
                                 <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Informations de
                                     Réception</label>
@@ -72,7 +80,7 @@
                         </div>
                     </div>
 
-                    {{-- PIÈCE JOINTE --}}
+                    {{-- Section d'importation de pièce jointe (constat visuel en photo) --}}
                     <div class="card border-0 shadow-sm mt-4 card-diagnostic-box">
                         <div class="card-header bg-white border-0 py-3 text-center">
                             <h6 class="m-0 fw-bold text-muted small text-uppercase">
@@ -80,6 +88,7 @@
                             </h6>
                         </div>
                         <div class="card-body p-4 pt-0 text-center">
+                            {{-- Zone glisser-déposer / clic pour charger une image --}}
                             <div class="upload-area border border-2 border-dashed rounded-4 p-4 bg-light mb-2 cursor-pointer position-relative">
                                 <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
                                 <div class="small fw-bold text-dark" id="file-label">Choisir une photo</div>
@@ -90,10 +99,10 @@
                     </div>
                 </div>
 
-                {{-- MAIN FORM --}}
+                {{-- FORMULAIRE PRINCIPAL (MAIN FORM) : Saisie des données du diagnostic --}}
                 <div class="col-lg-8">
                     <div class="d-flex flex-column gap-4">
-                        {{-- 1. Constat & Recommandation --}}
+                        {{-- 1. Section : Analyse Technique & Observations --}}
                         <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div class="card-header bg-white border-0 py-3">
                                 <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
@@ -101,6 +110,7 @@
                                 </h6>
                             </div>
                             <div class="card-body p-4">
+                                {{-- Constat technique obligatoire --}}
                                 <div class="mb-4">
                                     <label class="form-label fw-bold small text-uppercase text-muted">Constat Technique
                                         <span class="text-danger">*</span></label>
@@ -109,6 +119,7 @@
                                         placeholder="Décrivez précisément les défauts constatés après expertise technique..."
                                         required></textarea>
                                 </div>
+                                {{-- Recommandations ou solutions préconisées par le technicien --}}
                                 <div class="mb-0">
                                     <label class="form-label fw-bold small text-uppercase text-muted">Recommandations &
                                         Solutions</label>
@@ -119,13 +130,14 @@
                             </div>
                         </div>
 
-                        {{-- 2. Pièces Détachées --}}
+                        {{-- 2. Section : Pièces Détachées Nécessaires --}}
                         <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div
                                 class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                                 <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
                                     <i class="fas fa-microchip me-2"></i>2. PIÈCES DÉTACHÉES NÉCESSAIRES
                                 </h6>
+                                {{-- Bouton pour ajouter dynamiquement une nouvelle ligne de pièce via Javascript --}}
                                 <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm"
                                     id="add-piece-row">
                                     <i class="fas fa-plus me-1"></i> Ajouter une ligne
@@ -142,6 +154,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="border-top border-light">
+                                            {{-- Ligne modèle par défaut pour la sélection d'une pièce --}}
                                             <tr class="piece-row">
                                                 <td class="ps-4">
                                                     <select name="pieces[0][id]"
@@ -160,6 +173,7 @@
                                                         value="1" min="1">
                                                 </td>
                                                 <td class="text-end pe-4">
+                                                    {{-- Bouton de suppression de la ligne --}}
                                                     <button type="button"
                                                         class="btn btn-light btn-sm rounded-circle shadow-sm remove-row btn-remove-circle">
                                                         <i class="fas fa-times"></i>
@@ -172,13 +186,14 @@
                             </div>
                         </div>
 
-                        {{-- 3. Main d'œuvre --}}
+                        {{-- 3. Section : Prestations Techniques / Main d'œuvre --}}
                         <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div
                                 class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                                 <h6 class="m-0 fw-bold text-primary d-flex align-items-center">
                                     <i class="fas fa-user-cog me-2"></i>3. PRESTATIONS TECHNIQUES
                                 </h6>
+                                {{-- Bouton pour ajouter dynamiquement une ligne de prestation (main d'œuvre) via Javascript --}}
                                 <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm"
                                     id="add-presta-row">
                                     <i class="fas fa-plus me-1"></i> Ajouter une ligne
@@ -195,6 +210,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="border-top border-light">
+                                            {{-- Ligne modèle par défaut pour la sélection d'une prestation horaire/forfaitaire --}}
                                             <tr class="presta-row">
                                                 <td class="ps-4">
                                                     <select name="labors[]"
@@ -207,8 +223,10 @@
                                                         @endforeach
                                                     </select>
                                                 </td>
+                                                {{-- Zone d'affichage dynamique du prix de la main d'œuvre --}}
                                                 <td class="text-center fw-bold text-primary price-display h6 mb-0">—</td>
                                                 <td class="text-end pe-4">
+                                                    {{-- Bouton de suppression de la ligne --}}
                                                     <button type="button"
                                                         class="btn btn-light btn-sm rounded-circle shadow-sm remove-row btn-remove-circle">
                                                         <i class="fas fa-times"></i>
@@ -221,12 +239,13 @@
                             </div>
                         </div>
 
-                        {{-- 4. Décision & Validation --}}
+                        {{-- 4. Section : Décision finale & validation de réparabilité --}}
                         <div class="card border-0 shadow-sm card-diagnostic-box">
                             <div class="card-body p-4">
                                 <label class="small fw-bold text-uppercase text-muted mb-3 d-block">Est ce que on peut
                                     reparer appareil?</label>
                                 <div class="row align-items-center g-4">
+                                    {{-- Sélecteurs d'état (Oui/Non) avec boutons radio stylisés --}}
                                     <div class="col-md-7">
                                         <div class="row g-3">
                                             <div class="col-md-6">
@@ -261,6 +280,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{-- Options d'exclusion de garantie (Visible uniquement si l'appareil était sous garantie) --}}
                                     @if($dossier->sous_garantie)
                                         <div class="col-md-5">
                                             <div
@@ -272,7 +292,8 @@
                                                         EXCLUSION DE GARANTIE
                                                     </label>
                                                 </div>
-                                                <div id="exclusion-details" class="display-none">
+                                                {{-- Formulaire d'informations complémentaires d'exclusion (démasqué par JS lors de la sélection de la case) --}}
+                                                <div id="exclusion-details" style="display: none;">
                                                     <select name="motif_exclusion" class="form-select form-select-sm bg-white border-danger border-opacity-25 mb-2 font-size-075">
                                                         <option value="Usage non conforme">Usage non conforme</option>
                                                         <option value="Choc / Casse">Choc / Casse</option>
@@ -280,7 +301,8 @@
                                                         <option value="Tentative de réparation tierce">Tentative de réparation tierce</option>
                                                         <option value="Autre">Autre</option>
                                                     </select>
-                                                    <textarea name="exclusion_commentaire" class="form-control form-control-sm border-danger border-opacity-25 font-size-075" rows="2" placeholder="Précisez le motif de l'exclusion..."></textarea>
+                                                    <textarea name="exclusion_commentaire" class="form-control form-control-sm border-danger border-opacity-25 font-size-075" rows="2" 
+                                                    placeholder="Précisez le motif de l'exclusion..."></textarea>
                                                 </div>
                                                 <small class="text-muted d-block mt-auto" id="exclusion-hint">Usage non conforme (Choc,
                                                     Humidité...)</small>
@@ -289,6 +311,7 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- Section de pied de carte contenant le bouton de validation finale --}}
                             <div class="card-footer bg-light border-0 p-4 text-end">
                                 <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
                                     <i class="fas fa-save me-2"></i> ENREGISTRER LE DIAGNOSTIC TECHNIQUE
@@ -301,7 +324,7 @@
         </form>
     </div>
 
-    {{-- MODAL : Retrait du dossier --}}
+    {{-- MODAL : Retrait du dossier (Permet au technicien de se désister ou de rejeter le dossier) --}}
     <div class="modal fade" id="modalRetrait" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow modal-diagnostic-radius">
@@ -334,5 +357,6 @@
 @endsection
 
 @push('scripts')
+    {{-- Script JavaScript dédié pour la gestion de l'interactivité dynamique (ajout/suppression de lignes, calculs) --}}
     <script src="{{ asset('js/diagnostic_create.js') }}"></script>
 @endpush

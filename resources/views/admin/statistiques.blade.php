@@ -3,38 +3,39 @@
 @section('title', 'Statistiques et Analyses')
 
 @section('content')
+    <!-- Conteneur principal des statistiques SAV -->
     <div class="container-fluid px-4">
+        <!-- En-tête de la page -->
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
                 <h1 class="h3 fw-bold mb-0">Statistiques et Analyses</h1>
                 <small class="text-muted">Analyse de performance du service SAV</small>
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="window.print()">
-                    <i class="fas fa-print me-1"></i> Imprimer
-                </button>
-            </div>
         </div>
 
-        {{-- Barre de Filtres --}}
+        {{-- 1. Barre de Filtres Temporels --}}
+        <!-- Permet de filtrer l'intégralité des KPIs, graphiques et tableaux par plage de dates -->
         <div class="card border-0 shadow-sm mb-4 card-stats-rounded">
             <div class="card-body py-3">
                 <form action="{{ route('admin.statistiques') }}" method="GET" class="row g-3 align-items-end">
+                    <!-- Filtre : Date de début -->
                     <div class="col-md-4">
                         <label class="form-label small fw-bold text-muted text-uppercase label-stats-caps">Date de début</label>
                         <input type="date" name="date_debut" class="form-control form-control-sm rounded-3"
                             value="{{ $dateDebut->format('Y-m-d') }}">
                     </div>
+                    <!-- Filtre : Date de fin -->
                     <div class="col-md-4">
                         <label class="form-label small fw-bold text-muted text-uppercase label-stats-caps">Date de fin</label>
                         <input type="date" name="date_fin" class="form-control form-control-sm rounded-3"
                             value="{{ $dateFin->format('Y-m-d') }}">
                     </div>
+                    <!-- Actions : Valider le filtre ou réinitialiser la période -->
                     <div class="col-md-4 d-flex gap-2">
                         <button type="submit" class="btn btn-primary btn-sm flex-grow-1 rounded-3 fw-bold">
                             <i class="fas fa-filter me-2"></i> Filtrer
                         </button>
-                        <a href="{{ route('admin.statistiques') }}" class="btn btn-light btn-sm rounded-3">
+                        <a href="{{ route('admin.statistiques') }}" class="btn btn-light btn-sm rounded-3" title="Réinitialiser les filtres">
                             <i class="fas fa-sync-alt"></i>
                         </a>
                     </div>
@@ -42,8 +43,9 @@
             </div>
         </div>
 
-        {{-- Cartes KPI --}}
+        {{-- 2. Cartes KPI (Indicateurs clés de performance) --}}
         <div class="row g-3 mb-4">
+            <!-- KPI 1 : Volume total de dossiers de réparation pris en charge -->
             <div class="col-xl-3 col-md-6">
                 <div class="card border-0 shadow-sm text-white h-100 overflow-hidden kpi-gradient-blue">
                     <div class="card-body p-4 position-relative">
@@ -54,6 +56,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- KPI 2 : Chiffre d'affaires cumulé sur les factures réglées/générées -->
             <div class="col-xl-3 col-md-6">
                 <div class="card border-0 shadow-sm text-white h-100 overflow-hidden kpi-gradient-green">
                     <div class="card-body p-4 position-relative">
@@ -65,6 +69,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- KPI 3 : Taux d'acceptation  des devis soumis aux clients -->
             <div class="col-xl-3 col-md-6">
                 <div class="card border-0 shadow-sm text-white h-100 overflow-hidden kpi-gradient-orange">
                     <div class="card-body p-4 position-relative">
@@ -75,6 +81,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- KPI 4 : Proportion de dossiers accusant un retard de prise en charge (>24h) -->
             <div class="col-xl-3 col-md-6">
                 <div class="card border-0 shadow-sm text-white h-100 overflow-hidden kpi-gradient-red">
                     <div class="card-body p-4 position-relative">
@@ -89,8 +97,9 @@
             </div>
         </div>
 
-        {{-- Graphiques de répartition opérationnelle et contractuelle --}}
+        {{-- 3. Graphiques opérationnels généraux (Statuts et Garanties) --}}
         <div class="row g-4 mb-4">
+            <!-- Graphique : Répartition des dossiers par statut opérationnel (%) -->
             <div class="col-lg-6">
                 <div class="card border-0 shadow-sm h-100 card-stats-rounded">
                     <div class="card-header bg-white border-0 py-3">
@@ -104,6 +113,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Graphique : Distribution des états de garanties des appareils déposés -->
             <div class="col-lg-6">
                 <div class="card border-0 shadow-sm h-100 card-stats-rounded">
                     <div class="card-header bg-white border-0 py-3">
@@ -119,7 +130,9 @@
             </div>
         </div>
 
+        {{-- 4. Graphiques de performance (Activité par Technicien et Délais de Retard) --}}
         <div class="row g-4 mb-4">
+            <!-- Histogramme : Nombre de dossiers pris en charge par technicien -->
             <div class="col-xl-8">
                 <div class="card border-0 shadow-sm card-stats-rounded">
                     <div class="card-header bg-white border-0 py-3">
@@ -133,6 +146,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Graphique d'analyse temporelle : Répartition des durées de retard (Doughnut) -->
             <div class="col-xl-4">
                 <div class="card border-0 shadow-sm card-stats-rounded">
                     <div class="card-header bg-white border-0 py-3">
@@ -148,8 +163,9 @@
             </div>
         </div>
 
-        {{-- Tableaux de Top --}}
+        {{-- 5. Tableaux analytiques de synthèse (Pannes, Pièces et Modèles) --}}
         <div class="row g-4">
+            <!-- Tableau : Top 10 des typologies de pannes déclarées les plus fréquentes -->
             <div class="col-xl-4">
                 <div class="card border-0 shadow-sm h-100 card-stats-rounded">
                     <div class="card-header bg-white border-0 py-3">
@@ -176,6 +192,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tableau : Top 5 des composants / pièces détachées consommées en atelier -->
             <div class="col-xl-4">
                 <div class="card border-0 shadow-sm h-100 card-stats-rounded">
                     <div class="card-header bg-white border-0 py-3">
@@ -202,6 +220,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tableau : Top 10 des modèles de smartphones / terminaux déposés au SAV -->
             <div class="col-xl-4">
                 <div class="card border-0 shadow-sm h-100 card-stats-rounded">
                     <div class="card-header bg-white border-0 py-3">
@@ -231,21 +251,36 @@
         </div>
     </div>
 
+    {{-- 6. Scripts JavaScript & Injection des variables --}}
     @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Chargement de la bibliothèque graphique Chart.js via CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>//chart.js travaille avec js seulement 
+        
         <script>
-            // Passage des données Laravel au JS externe pour les graphiques
+            /**
+             * PASSERELLE / PONT PHP ➔ JAVASCRIPT
+             * On serialize les collections et tableaux associatifs Laravel en JSON
+             * pour les stocker dans des variables globales JavaScript attachées à 'window'.
+             * Ces données seront lues directement par 'public/js/statistiques.js'.
+             */
+             
+            // 1. Données d'activité des techniciens (Noms et volumes de dossiers traités)
             window.techChartData = {
                 labels: {!! json_encode($dossiersParTech->pluck('name')) !!},
                 values: {!! json_encode($dossiersParTech->pluck('dossiers_count')) !!}
             };
+            
+            // 2. Délais de traitement des retards (Tranches horaires : <24h, 24-48h, 48-72h, >72h)
             window.retardChartData = [{{ $retards['0-24h'] }}, {{ $retards['24-48h'] }}, {{ $retards['48-72h'] }}, {{ $retards['>72h'] }}];
 
+            // 3. Distributions statistiques des statuts et états de garanties
             window.dashboardStats = {
                 status_distribution: {!! json_encode($statusDistribution) !!},
                 warranty_distribution: {!! json_encode($warrantyDistribution) !!}
             };
         </script>
+        
+        <!-- Chargement de la logique d'initialisation et d'affichage des graphiques Chart.js -->
         <script src="{{ asset('js/statistiques.js') }}"></script>
     @endpush
 @endsection

@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-// Notification de confirmation de réception d'un appareil et transmission des accès de compte client (UC01 / UC02).
+// Notification de confirmation de réception d'un appareil et transmission des accès de compte client.
 class TicketCreatedNotification extends Notification
 {
     use Queueable;
@@ -28,7 +28,7 @@ class TicketCreatedNotification extends Notification
         return ['mail', 'database'];
     }
 
-    // Génère le message d'e-mail avec identifiants pour le client.
+    // Génère le message d'email avec identifiants pour le client.
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)

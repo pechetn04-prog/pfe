@@ -116,7 +116,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold small text-uppercase">Prix Unitaire (TTC) <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" step="0.01" name="prix_unitaire" class="form-control" value="0" required>
+                                    <input type="number" min="0" step="0.01" name="prix_unitaire" class="form-control" value="0" required>
                                     <span class="input-group-text">{{ $parametre->devise ?? 'DT' }}</span>
                                 </div>
                             </div>
@@ -172,7 +172,6 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted small text-uppercase fw-bold">
                     <tr>
-                        <th class="ps-4" style="width: 80px;">ID</th>
                         <th>Désignation / Réf.</th>
                         <th class="text-center">Catégorie</th>
                         <th class="text-center">Stock</th>
@@ -185,7 +184,7 @@
                 <tbody>
                     @forelse($pieces as $piece)
                     <tr>
-                        <td class="ps-4 text-muted small">#{{ $piece->id }}</td>
+                        
                         <td>
                             <div class="fw-bold text-dark">{{ $piece->nom }}</div>
                             <div class="text-muted small" style="font-size: 0.75rem;">{{ $piece->reference }}</div>

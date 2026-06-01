@@ -8,52 +8,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class TechnicienDashboardController
  * 
- * Gère le tableau de bord technique (UC01 / UC08 / UC09).
+ * Gère le tableau de bord technique
  * Centralise les dossiers assignés au technicien pour diagnostic, réparation, et historique.
  */
 class TechnicienDashboardController extends Controller
 {
     /**
      * Affiche l'index du tableau de bord pour le technicien connecté.
-     *
-     * @return \Illuminate\View\View
      */
     public function index()
     {
         $user = Auth::user();
 
         // ---------------------------------------------------------
-        // 1. STATISTIQUES ET INDICATEURS CLÉS (KPIs)
+        // 1. STATISTIQUES ET INDICATEURS
         // ---------------------------------------------------------
         $totalAssigne = Dossier::where('technicien_id', $user->id)->count();
-        $aDiagnostiquer = Dossier::where('technicien_id', $user->id)->where('statut', 'AFFECTE')->count();
+        $aDiagnostiquer = Dossier::where('technicien_id', $user->id)->whereIn('statut', ['AFFECTE', 'EN_DIAGNOSTIC'])->count();
         $enReparation = Dossier::where('technicien_id', $user->id)->where('statut', 'EN_REPARATION')->count();
         $terminesMois = Dossier::where('technicien_id', $user->id)
             ->whereIn('statut', ['REPARE', 'IRREPARABLE', 'LIVRE'])
             ->whereMonth('updated_at', now()->month)
             ->count();
         $attentePieces = Dossier::where('technicien_id', $user->id)->where('statut', 'ATTENTE_PIECE')->count();
+        $attenteDevis = Dossier::where('technicien_id', $user->id)->where('statut', 'EN_ATTENTE_DEVIS')->count();
 
         $dossiersEnCours = Dossier::where('technicien_id', $user->id)
             ->whereNotIn('statut', ['LIVRE', 'CLOTURE'])
             ->count();
 
-        // Tableau des KPIs structuré pour le rendu passif côté vue
-        $tech_kpis = [
-            ['label' => 'Total Assignés', 'val' => $totalAssigne, 'icon' => 'fa-briefcase', 'class' => 'bg-soft-primary'],
-            ['label' => 'En Diagnostic', 'val' => $aDiagnostiquer, 'icon' => 'fa-search', 'class' => 'bg-soft-warning'],
-            ['label' => 'En Réparation', 'val' => $enReparation, 'icon' => 'fa-tools', 'class' => 'bg-soft-success'],
-            ['label' => 'Attente Pièces', 'val' => $attentePieces, 'icon' => 'fa-hourglass-half', 'class' => 'bg-soft-danger'],
-            ['label' => 'Terminés (Mois)', 'val' => $terminesMois, 'icon' => 'fa-check-double', 'class' => 'bg-soft-info'],
-        ];
+
 
         // ---------------------------------------------------------
         // 2. FLUX DE TRAVAIL TECHNIQUE (LISTES D'ACTIVITÉS)
         // ---------------------------------------------------------
 
-        // Dossiers assignés en attente d'analyse technique (UC08)
+        // Dossiers assignés en attente d'analyse technique 
         $dossiersDiagnostique = Dossier::where('technicien_id', $user->id)
             ->whereIn('statut', ['AFFECTE', 'EN_DIAGNOSTIC'])
             ->with(['client', 'appareil'])
@@ -61,7 +52,7 @@ class TechnicienDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Dossiers actuellement en cours d'intervention sur table (UC09)
+        // Dossiers actuellement en cours d'intervention sur table 
         $dossiersReparation = Dossier::where('technicien_id', $user->id)
             ->where('statut', 'EN_REPARATION')
             ->with(['client', 'appareil'])
@@ -83,7 +74,12 @@ class TechnicienDashboardController extends Controller
         });
 
         return view('dashboard.technicien', compact(
-            'tech_kpis',
+            'totalAssigne',
+            'aDiagnostiquer',
+            'enReparation',
+            'attentePieces',
+            'attenteDevis',
+            'terminesMois',
             'dossiersEnCours',
             'dossiersDiagnostique',
             'dossiersReparation',

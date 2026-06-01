@@ -26,6 +26,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DemandeRejetController;
+use App\Http\Controllers\RemplacementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,9 +53,6 @@ Route::get('/debug-db', function () {
 Route::get('/suivi', [ClientController::class, 'index'])->name('client.suivi');
 Route::match(['GET', 'POST'], '/client/search', [ClientController::class, 'search'])->name('client.search');
 Route::get('/client/suivi/{id}', [ClientController::class, 'suiviPublic'])->name('client.suivi.public');
-Route::get('/suivi/dossier/{id}', [ClientController::class, 'show'])->name('client.ticket.view');
-Route::post('/suivi/dossier/{id}/devis/accepter', [ClientController::class, 'accepterDevis'])->name('client.devis.accepter.public');
-Route::post('/suivi/dossier/{id}/devis/refuser', [ClientController::class, 'refuserDevis'])->name('client.devis.refuser.public');
 
 
 /*
@@ -99,7 +97,6 @@ Route::middleware('auth')->group(function () {
     // Routes Dossiers partagées
     Route::get('/dossiers/check-imei', [DossierController::class, 'checkImei'])->name('dossiers.checkImei');
     Route::get('/dossiers/suggest-technicians', [DossierController::class, 'suggestTechnicians'])->name('dossiers.suggestTechnicians');
-    Route::post('/dossiers/{dossier}/assign', [DossierController::class, 'assign'])->name('dossiers.assign');
 
     /*
     |----------------------------------------------------------------------
@@ -137,12 +134,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/tarifs-mo', [\App\Http\Controllers\TarifMoController::class, 'index'])->name('admin.tarifs_mo.index');
         Route::post('/admin/tarifs-mo', [\App\Http\Controllers\TarifMoController::class, 'store'])->name('admin.tarifs_mo.store');
         Route::put('/admin/tarifs-mo/{tarifMo}', [\App\Http\Controllers\TarifMoController::class, 'update'])->name('admin.tarifs_mo.update');
-        Route::delete('/admin/tarifs-mo/{tarifMo}', [\App\Http\Controllers\TarifMoController::class, 'destroy'])->name('admin.tarifs_mo.destroy');
-        Route::patch('/admin/tarifs-mo/{tarifMo}/toggle', [\App\Http\Controllers\TarifMoController::class, 'toggleStatus'])->name('admin.tarifs_mo.toggle');
 
         // Validation Remplacement
-        Route::post('/dossiers/{dossier}/valider-remplacement', [DossierController::class, 'validateReplacement'])->name('dossiers.validerRemplacement');
-        Route::post('/dossiers/{dossier}/refuser-remplacement', [DossierController::class, 'refuseReplacement'])->name('dossiers.refuserRemplacement');
+        Route::post('/dossiers/{dossier}/valider-remplacement', [RemplacementController::class, 'validateReplacement'])->name('dossiers.validerRemplacement');
+        Route::post('/dossiers/{dossier}/refuser-remplacement', [RemplacementController::class, 'refuseReplacement'])->name('dossiers.refuserRemplacement');
 
         // Pièce introuvable (Admin)
         Route::post('/dossiers/{dossier}/piece-introuvable', [DossierController::class, 'pieceIntrouvable'])->name('dossiers.pieceIntrouvable');
@@ -195,8 +190,8 @@ Route::middleware('auth')->group(function () {
         });
 
         // Préparer Remplacement
-        Route::get('/dossiers/{dossier}/preparer-remplacement', [DossierController::class, 'preparerRemplacement'])->name('dossiers.preparerRemplacement');
-        Route::post('/dossiers/{dossier}/preparer-remplacement', [DossierController::class, 'storeRemplacement'])->name('dossiers.storeRemplacement');
+        Route::get('/dossiers/{dossier}/preparer-remplacement', [RemplacementController::class, 'preparerRemplacement'])->name('dossiers.preparerRemplacement');
+        Route::post('/dossiers/{dossier}/preparer-remplacement', [RemplacementController::class, 'storeRemplacement'])->name('dossiers.storeRemplacement');
 
         Route::get('/dossiers/{dossier}/etiquette', [DossierController::class, 'etiquette'])->name('dossiers.etiquette');
 

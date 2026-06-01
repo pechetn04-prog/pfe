@@ -6,8 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Exécute les migrations pour initialiser la base de données.
+     */
     public function up(): void
     {
+        // Table des utilisateurs : Gère l'ensemble des comptes de l'application (Admin, Agent SAV, Technicien, Client)
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -23,12 +27,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        // Table des jetons : Stocke temporairement les tokens de réinitialisation des mots de passe oubliés
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
+        // Table des sessions : Gère le stockage et l'état des sessions actives des utilisateurs connectés
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
@@ -39,6 +45,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Annule les migrations en supprimant toutes les tables associées.
+     */
     public function down(): void
     {
         Schema::dropIfExists('users');

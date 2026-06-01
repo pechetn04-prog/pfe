@@ -18,7 +18,7 @@
         }
 
         .header {
-            border-bottom: 2px solid #2563eb;
+            border-bottom: 2px solid #ff0000;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
@@ -37,7 +37,7 @@
         .company-name {
             font-size: 24px;
             font-weight: bold;
-            color: #2563eb;
+            color: #ff0000;
             margin-bottom: 5px;
         }
 
@@ -61,7 +61,7 @@
         }
 
         .table th {
-            background-color: #2563eb;
+            background-color: #ff0000;
             color: white;
             padding: 10px;
             text-align: left;
@@ -90,7 +90,7 @@
         .grand-total {
             font-size: 16px;
             font-weight: bold;
-            color: #2563eb;
+            color: #ff0000;
             background-color: #eff6ff;
             padding: 10px;
             border-radius: 5px;
@@ -134,7 +134,7 @@
                     </div>
                 </td>
                 <td style="width: 45%; text-align: right; vertical-align: top;">
-                    <div class="invoice-title" style="font-size: 22px; font-weight: bold; color: #2563eb; margin-bottom: 5px;">FACTURE</div>
+                    <div class="invoice-title" style="font-size: 22px; font-weight: bold; color: #ff0000; margin-bottom: 5px;">FACTURE</div>
                     <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 5px;">#{{ $facture->numero }}</div>
                     <div style="color: #555; font-size: 11px; line-height: 1.4;">
                         Date : {{ \Carbon\Carbon::parse($facture->date_facture)->format('d/m/Y') }}<br>
@@ -146,13 +146,13 @@
 
         <div class="client-info">
             <div style="float: left; width: 50%;">
-                <div style="font-weight: bold; color: #2563eb; margin-bottom: 5px;">CLIENT :</div>
+                <div style="font-weight: bold; color: #ff0000; margin-bottom: 5px;">CLIENT :</div>
                 <div style="font-size: 14px; font-weight: bold;">{{ $facture->dossier->client->name ?? '—' }}</div>
                 <div>{{ $facture->dossier->client->email ?? '—' }}</div>
                 <div>Tél : {{ $facture->dossier->client->telephone ?? '—' }}</div>
             </div>
             <div style="float: right; width: 50%; text-align: right;">
-                <div style="font-weight: bold; color: #2563eb; margin-bottom: 5px;">APPAREIL & IDENTIFICATION :</div>
+                <div style="font-weight: bold; color: #ff0000; margin-bottom: 5px;">APPAREIL & IDENTIFICATION :</div>
                 <div style="font-size: 14px; font-weight: bold;">{{ $facture->dossier->appareil->modele ?? '—' }}</div>
                 <div>IMEI : <span style="font-family: monospace;">{{ $facture->dossier->imei ?? '—' }}</span></div>
                 @if($facture->dossier->garantie_annulee)
@@ -213,40 +213,36 @@
             </tbody>
         </table>
 
-        <div class="totals">
-            <div class="total-row">
-                <span style="float: left;">Total Hors Taxe :</span>
-                <span style="float: right;">{{ number_format($htTotal, 3, ',', ' ') }}
-                    {{ optional($company)->devise ?? 'DT' }}</span>
-                <div class="clear"></div>
-            </div>
-            <div class="total-row">
-                <span style="float: left;">TVA (19%) :</span>
-                <span style="float: right;">{{ number_format($tvaTotal, 3, ',', ' ') }}
-                    {{ optional($company)->devise ?? 'DT' }}</span>
-                <div class="clear"></div>
-            </div>
-            <div class="total-row">
-                <span style="float: left; font-weight: bold;">Total Brut TTC :</span>
-                <span style="float: right; font-weight: bold;">{{ number_format($ttcTotal, 3, ',', ' ') }}
-                    {{ optional($company)->devise ?? 'DT' }}</span>
-                <div class="clear"></div>
-            </div>
+        <table style="float: right; width: 300px; margin-top: 30px; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: left; font-size: 12px;">Total Hors Taxe :</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-size: 12px;">{{ number_format($htTotal, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: left; font-size: 12px;">TVA (19%) :</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-size: 12px;">{{ number_format($tvaTotal, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: left; font-size: 12px; font-weight: bold;">Total Brut TTC :</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-size: 12px; font-weight: bold;">{{ number_format($ttcTotal, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+            </tr>
             @if($facture->remise > 0)
-                <div class="total-row" style="color: #dc2626;">
-                    <span style="float: left;">Remise ({{ $facture->remise }}%) :</span>
-                    <span style="float: right;">- {{ number_format($montantRemise, 3, ',', ' ') }}
-                        {{ optional($company)->devise ?? 'DT' }}</span>
-                    <div class="clear"></div>
-                </div>
+                <tr style="color: #dc2626;">
+                    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: left; font-size: 12px;">Remise ({{ $facture->remise }}%) :</td>
+                    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-size: 12px;">- {{ number_format($montantRemise, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+                </tr>
             @endif
-            <div class="grand-total">
-                <span style="float: left;">NET À PAYER TTC :</span>
-                <span style="float: right;">{{ number_format($facture->montant_total, 3, ',', ' ') }}
-                    {{ optional($company)->devise ?? 'DT' }}</span>
-                <div class="clear"></div>
-            </div>
-        </div>
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <table style="width: 100%; background-color: #eff6ff; border-radius: 5px; padding: 10px; border-collapse: collapse;">
+                        <tr>
+                            <td style="font-size: 16px; font-weight: bold; color: #ff0000; text-align: left; padding: 0;">NET À PAYER TTC :</td>
+                            <td style="font-size: 16px; font-weight: bold; color: #ff0000; text-align: right; padding: 0;">{{ number_format($facture->montant_total, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
         <div class="clear"></div>
 
 

@@ -42,9 +42,9 @@ class VenteController extends Controller
 
         // Transformation de la collection pour intégrer les calculs métier
         $ventes->getCollection()->transform(function ($vente) {
-            // Calcul de la date d'expiration de la garantie commerciale (UC03)
-            $finGarantie = $vente->date_vente->copy()->addMonths($vente->duree_garantie_mois);
-            $vente->fin_garantie_formatted = $finGarantie->format('d/m/Y');
+            // Calcul de la date d'expiration de la garantie commerciale (UC03) via le contrôleur
+            $finGarantie = self::dateExpiration($vente);
+            $vente->fin_garantie_formatted = $finGarantie ? $finGarantie->format('d/m/Y') : '—';
             
             // Attribution dynamique de la classe CSS du badge selon le type d'enregistrement
             $vente->badge_class = $vente->type === 'REMPLACEMENT' ? 'bg-soft-info text-info' : 'bg-light text-dark';
@@ -82,5 +82,30 @@ class VenteController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new VentesTemplateExport, 'modele_import_ventes.xlsx');
+    }
+
+    /**
+     * Vérifie si une vente est encore sous garantie.
+     */
+    public static function estSousGarantie(Vente $vente): bool
+    {
+        if (!$vente->date_vente || !$vente->duree_garantie_mois) {
+            return false;
+        }
+        
+        $expiration = \Carbon\Carbon::parse($vente->date_vente)->addMonths($vente->duree_garantie_mois);
+        return now()->lt($expiration);
+    }
+
+    /**
+     * Calcule la date d'expiration de la garantie.
+     */
+    public static function dateExpiration(Vente $vente): ?\Carbon\Carbon
+    {
+        if (!$vente->date_vente || !$vente->duree_garantie_mois) {
+            return null;
+        }
+        
+        return \Carbon\Carbon::parse($vente->date_vente)->addMonths($vente->duree_garantie_mois);
     }
 }

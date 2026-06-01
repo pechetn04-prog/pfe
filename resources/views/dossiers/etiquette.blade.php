@@ -31,7 +31,7 @@
     <div>
         <div class="etiquette">
             <div class="header">
-                <div class="logo">📱 Maison Tel</div>
+                <div class="logo">Maison Tel</div>
                 <div class="num">#{{ $dossier->num_dossier }}</div>
             </div>
             <div class="row">

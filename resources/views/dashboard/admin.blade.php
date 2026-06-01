@@ -63,21 +63,95 @@
         {{-- KPIs principaux Style Premium --}}
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-3 g-3 mb-4">
 
-            @foreach($adminKpis as $k)
-                <div class="col">
-                    <div class="card kpi-card">
-                        <div class="card-body">
-                            <div class="kpi-icon-wrapper {{ $k['class'] }}">
-                                <i class="fas {{ $k['icon'] }}"></i>
-                            </div>
-                            <div class="kpi-content">
-                                <div class="kpi-value font-weight-800">{{ $k['val'] }}</div>
-                                <div class="kpi-label">{{ $k['label'] }}</div>
-                            </div>
+            {{-- TOTAL DOSSIERS --}}
+            <div class="col">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="kpi-icon-wrapper bg-soft-sky">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value font-weight-800">{{ $stats['total'] }}</div>
+                            <div class="kpi-label">TOTAL DOSSIERS</div>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            </div>
+
+            {{-- ATTENTE DEVIS --}}
+            <div class="col">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="kpi-icon-wrapper bg-soft-info">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value font-weight-800">{{ $stats['attente_devis'] }}</div>
+                            <div class="kpi-label">ATTENTE DEVIS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ATTENTE PIÈCES --}}
+            <div class="col">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="kpi-icon-wrapper bg-soft-danger">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value font-weight-800">{{ $stats['attente_pieces'] }}</div>
+                            <div class="kpi-label">ATTENTE PIÈCES</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ATTENTE REMPLACEMENT --}}
+            <div class="col">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="kpi-icon-wrapper bg-soft-warning">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value font-weight-800">{{ $stats['attente_validation_remplacement'] }}</div>
+                            <div class="kpi-label">ATTENTE REMPLACEMENT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- IRRÉPARABLES --}}
+            <div class="col">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="kpi-icon-wrapper bg-soft-danger">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value font-weight-800">{{ $stats['irreparable'] }}</div>
+                            <div class="kpi-label">IRRÉPARABLES</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- LIVRÉS / CLOS --}}
+            <div class="col">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="kpi-icon-wrapper bg-soft-secondary">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <div class="kpi-value font-weight-800">{{ $stats['cloture'] }}</div>
+                            <div class="kpi-label">LIVRÉS / CLOS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {{-- Dossiers Récents (2ème Position - Élargi pour une lisibilité maximale) --}}

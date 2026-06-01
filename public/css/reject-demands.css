@@ -1,72 +1,89 @@
 /**
- * SAV Premium - Reject Demands Module Stylesheet
- * Custom table interactive hover effects and call-to-action transition mechanics.
+ * SAV Premium - Module de Demandes de Rejet, Retrait et Réaffectation
+ * Styles des tableaux interactifs, effets de survol et transitions des appels à l'action.
  */
 
-/* ============================================================
- * 1. TABLE INTERACTIVE HOVER EFFECTS
- * ============================================================ */
+/* ==========================================================================
+   1. EFFETS DE SURVOL INTERACTIFS DES TABLEAUX (TABLE HOVER EFFECTS)
+   ========================================================================== */
 
-/* Effet de survol fluide avec légère mise à l'échelle sur les demandes de retrait */
-.table-hover tbody tr:hover {
+/* Effet de survol fluide et agrandissement micro-contrôlé uniquement sur les tableaux de demandes */
+.card-rejet-list .table-hover tbody tr:hover,
+.card-reaffectation-pending .table-hover tbody tr:hover,
+.table-rejet-hover tbody tr:hover {
     background-color: rgba(59, 130, 246, 0.02) !important;
     transform: scale(1.002);
+    /* Utilisation d'une courbe de Bézier cubique pour une transition hautement premium */
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ============================================================
- * 2. CARDS & BUTTONS TRANSITIONS
- * ============================================================ */
+/* ==========================================================================
+   2. TRANSITIONS DES CARTES ET BOUTONS SPECIFIQUES AU MODULE
+   ========================================================================== */
 
-/* Transition fluide des cartes de statistiques */
-.card {
+/* Transition fluide globale sur la boîte et les cartes du module */
+.card-rejet-list,
+.card-reaffectation-pending,
+.card-reaffectation-history,
+.card-stat-box {
     transition: all 0.3s ease;
 }
 
-/* Personnalisation des boutons de validation (Acceptation / Refus) */
-.btn-success {
+/* Personnalisation des boutons de validation (succès) du module */
+.card-rejet-list .btn-success,
+.card-reaffectation-pending .btn-success {
     background-color: #10b981 !important;
     border: none !important;
 }
 
-.btn-success:hover {
+.card-rejet-list .btn-success:hover,
+.card-reaffectation-pending .btn-success:hover {
     background-color: #059669 !important;
     transform: translateY(-2px);
 }
 
-.btn-outline-danger:hover {
+/* Effets d'élévation sur les boutons de danger/rejet */
+.card-rejet-list .btn-outline-danger:hover,
+.card-reaffectation-pending .btn-outline-danger:hover {
     transform: translateY(-2px);
 }
 
-/* ============================================================
- * 3. TYPOGRAPHY & BADGES
- * ============================================================ */
+/* ==========================================================================
+   3. TYPOGRAPHIE ET BADGES (TYPOGRAPHY & BADGES)
+   ========================================================================== */
 
-/* Texte secondaire en italique */
+/* Texte secondaire stylisé en italique */
 .italic {
     font-style: italic !important;
 }
 
-/* Badges mis en relief avec espacement des lettres */
+/* Badges mis en relief avec espacement des lettres pour un effet moderne */
 .badge {
     letter-spacing: 0.5px;
     font-weight: 700;
 }
 
-/* Classes pour éliminer le CSS en ligne des demandes de réaffectation */
+/* --------------------------------------------------------------------------
+   CLASSES DE STRUCTURE ET D'ÉLIMINATION DU CSS INLINE
+   (Pour les demandes de réaffectation de technicien)
+   -------------------------------------------------------------------------- */
+
 .badge-header-total {
     font-size: 0.8rem !important;
 }
 
+/* Carte de demande en attente avec indicateur orange à gauche */
 .card-reaffectation-pending {
     border-radius: 15px !important;
     border-left: 4px solid #f59e0b !important;
 }
 
+/* Historique des réaffectations */
 .card-reaffectation-history {
     border-radius: 15px !important;
 }
 
+/* Boîte d'icône centrée de manière réactive */
 .icon-reaffectation-box {
     width: 32px !important;
     height: 32px !important;
@@ -79,14 +96,17 @@
     font-size: 0.75rem !important;
 }
 
+/* Affichage du numéro IMEI sous-titré */
 .imei-text-sub {
     font-size: 0.7rem !important;
 }
 
+/* Affichage temporel discret */
 .time-text-sub {
     font-size: 0.65rem !important;
 }
 
+/* Retour à la ligne forcé pour les raisons de demande longues */
 .raison-text-wrap {
     max-width: 350px !important;
     word-break: break-word !important;
@@ -105,12 +125,16 @@
     font-size: 0.5rem !important;
 }
 
+/* Alignement et gestion de wrap des commentaires de l'administrateur */
 .commentaire-admin-text {
     max-width: 250px !important;
     word-break: break-word !important;
 }
 
-/* Classes pour éliminer le CSS en ligne de l'administration des demandes de retrait */
+/* --------------------------------------------------------------------------
+   CLASSES POUR L'ADMINISTRATION DES DEMANDES DE RETRAIT DE DOSSIER
+   -------------------------------------------------------------------------- */
+
 .card-stat-box {
     border-radius: 15px !important;
 }
@@ -136,10 +160,12 @@
     white-space: normal !important;
 }
 
+/* Boîte modale stylisée avec bordures arrondies pour les rejets */
 .modal-content-rejet {
     border-radius: 20px !important;
 }
 
+/* Carte atténuée pour l'historique des actions passées */
 .historique-card {
     border-radius: 15px !important;
     opacity: 0.85 !important;

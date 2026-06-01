@@ -59,74 +59,69 @@
             </div>
         </div>
 
-        <div class="row g-4">
-
-            {{-- Compte-rendu --}}
-            <div class="col-md-8">
-                <div class="card border-0 shadow-sm mb-4 card-intervention-show-box">
-                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                        <h6 class="fw-bold"><i class="fas fa-clipboard-list me-2 text-primary"></i>Rapport d'Atelier /
-                            Compte-rendu</h6>
-                    </div>
-                    <div class="card-body px-4 pb-4">
-                        <div class="p-3 rounded-3 bg-light border text-dark rapport-atelier-body">
-                            {{ $intervention->rapport_technique ?? $intervention->compte_rendu ?? 'Aucun détail fourni.' }}
-                        </div>
+        {{-- Carte Unique Fusionnée : Rapport & Matériel --}}
+        <div class="card border-0 shadow-sm mb-4 card-intervention-show-box">
+            <div class="card-body p-4">
+                {{-- Section 1 : Rapport d'Atelier / Compte-rendu --}}
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-clipboard-list me-2 text-primary"></i>Rapport d'Atelier / Compte-rendu</h6>
+                    <div class="p-3 rounded-3 bg-light border text-dark rapport-atelier-body" style="min-height: 80px !important;">
+                        {{ $intervention->rapport_technique ?? $intervention->compte_rendu ?? 'Aucun détail fourni.' }}
                     </div>
                 </div>
 
-                {{-- Photo Jointes --}}
-                @if($intervention->photo_intervention)
-                    <div class="card border-0 shadow-sm card-intervention-show-box">
-                        <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                            <h6 class="fw-bold"><i class="fas fa-camera me-2 text-primary"></i>Preuve Visuelle / Photo</h6>
-                        </div>
-                        <div class="card-body px-4 pb-4 text-center">
-                            <div class="rounded-3 overflow-hidden border d-inline-block shadow-sm photo-wrapper">
-                                <img src="{{ asset('storage/' . $intervention->photo_intervention) }}"
-                                    alt="Photo d'Intervention" class="img-fluid photo-preview">
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
+                {{-- Séparateur horizontal discret --}}
+                <hr class="text-muted my-4 opacity-25">
 
-            {{-- Infos dossier --}}
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm h-100 card-intervention-show-box">
-                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                        <h6 class="fw-bold"><i class="fas fa-info-circle me-2 text-primary"></i>Informations Matériel</h6>
-                    </div>
-                    <div class="card-body px-4 pb-4">
-                        <div class="mb-3">
+                {{-- Section 2 : Informations Matériel --}}
+                <div>
+                    <h6 class="fw-bold mb-3"><i class="fas fa-info-circle me-2 text-primary"></i>Informations Matériel</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
                             <div class="small text-muted mb-1">Modèle de l'appareil</div>
-                            <div class="fw-bold text-dark">{{ $intervention->dossier->appareil->modele ?? '—' }}</div>
+                            <div class="fw-bold text-dark fs-5">{{ $intervention->dossier->appareil->modele ?? '—' }}</div>
                         </div>
-
-                        <div class="mb-3">
+                        
+                        <div class="col-md-4">
                             <div class="small text-muted mb-1">Numéro IMEI</div>
-                            <div class="fw-bold font-monospace text-secondary font-size-09">
+                            <div class="fw-bold font-monospace text-secondary fs-5">
                                 {{ $intervention->dossier->imei }}</div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="col-md-4">
                             <div class="small text-muted mb-1">Garantie active</div>
-                            <span
-                                class="badge {{ $intervention->dossier->sous_garantie ? 'bg-success' : 'bg-secondary' }} rounded-pill px-3 py-1">
-                                {{ $intervention->dossier->sous_garantie ? 'Sous Garantie' : 'Hors Garantie' }}
-                            </span>
-                        </div>
-
-                        @if($intervention->dossier->fin_garantie)
-                            <div class="mb-3">
-                                <div class="small text-muted mb-1">Fin de garantie</div>
-                                <div class="small text-dark fw-bold">
-                                    {{ \Carbon\Carbon::parse($intervention->dossier->fin_garantie)->format('d/m/Y') }}</div>
+                            <div class="d-flex align-items-center gap-2 mt-1">
+                                <span class="badge {{ $intervention->dossier->sous_garantie ? 'bg-success' : 'bg-secondary' }} rounded-pill px-3 py-2 fw-bold text-uppercase" style="font-size: 0.75rem;">
+                                    {{ $intervention->dossier->sous_garantie ? 'Sous Garantie' : 'Hors Garantie' }}
+                                </span>
+                                @if($intervention->dossier->fin_garantie)
+                                    <small class="text-muted fw-bold">
+                                        (Jusqu'au {{ \Carbon\Carbon::parse($intervention->dossier->fin_garantie)->format('d/m/Y') }})
+                                    </small>
+                                @endif
                             </div>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        {{-- Preuve visuelle / Photo en dessous si existante --}}
+        @if($intervention->photo_intervention)
+            <div class="card border-0 shadow-sm mb-4 card-intervention-show-box">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h6 class="fw-bold"><i class="fas fa-camera me-2 text-primary"></i>Preuve Visuelle / Photo</h6>
+                </div>
+                <div class="card-body px-4 pb-4 text-center">
+                    <div class="rounded-3 overflow-hidden border d-inline-block shadow-sm photo-wrapper">
+                        <img src="{{ asset('storage/' . $intervention->photo_intervention) }}"
+                            alt="Photo d'Intervention" class="img-fluid photo-preview">
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <div class="row g-4">
 
             {{-- Pièces utilisées --}}
             @if($intervention->pieces->count() > 0)
@@ -143,7 +138,6 @@
                                         <th class="ps-4">Référence</th>
                                         <th>Désignation de la Pièce</th>
                                         <th class="text-center">Quantité</th>
-                                        <th class="text-end pe-4">Statut Stock</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,11 +146,7 @@
                                             <td class="ps-4 small font-monospace text-muted">{{ $piece->reference ?? '—' }}</td>
                                             <td class="fw-semibold text-dark">{{ $piece->nom }}</td>
                                             <td class="text-center fw-bold">{{ $piece->pivot->quantite ?? 1 }}</td>
-                                            <td class="text-end pe-4">
-                                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 fw-bold">
-                                                    <i class="fas fa-check me-1"></i>Décompté
-                                                </span>
-                                            </td>
+                                          
                                         </tr>
                                     @endforeach
                                 </tbody>

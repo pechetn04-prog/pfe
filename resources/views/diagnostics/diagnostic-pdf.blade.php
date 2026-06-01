@@ -5,25 +5,26 @@
     <meta charset="UTF-8">
     <title>Rapport de Diagnostic — #{{ $dossier->num_dossier }}</title>
     <style>
-        /* Styles de base du document PDF */
+        /* Styles de base du document PDF compacté pour une seule page A4 */
         body {
             font-family: Arial, sans-serif;
-            font-size: 11px;
+            font-size: 10px;
             color: #333;
             margin: 0;
             padding: 0;
+            line-height: 1.3;
         }
 
         /* Conteneur principal */
         .invoice-box {
-            padding: 30px;
+            padding: 20px;
         }
 
         /* En-tête avec bordure Smartec */
         .header {
             border-bottom: 2px solid #dc2626;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .company-info {
@@ -38,14 +39,14 @@
         }
 
         .company-name {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: bold;
             color: #dc2626;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .invoice-title {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: bold;
             color: #333;
         }
@@ -54,13 +55,13 @@
         .section-title {
             background: #fef2f2;
             border-bottom: 1px solid #fecaca;
-            padding: 6px 12px;
+            padding: 4px 8px;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
             color: #991b1b;
-            margin-bottom: 12px;
-            margin-top: 20px;
+            margin-bottom: 6px;
+            margin-top: 10px;
         }
 
         .info-table {
@@ -69,7 +70,7 @@
         }
 
         .info-table td {
-            padding: 8px;
+            padding: 4px 6px;
             border-bottom: 1px solid #f1f5f9;
             vertical-align: top;
         }
@@ -77,7 +78,7 @@
         .label {
             color: #64748b;
             font-weight: bold;
-            width: 35%;
+            width: 30%;
         }
 
         .val {
@@ -87,39 +88,39 @@
 
         .box {
             border: 1px solid #e2e8f0;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
             background-color: #fcfcfc;
-            min-height: 40px;
-            line-height: 1.6;
+            min-height: 25px;
+            line-height: 1.4;
         }
 
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 8px;
         }
 
         .table th {
             background-color: #f1f5f9;
             color: #475569;
-            padding: 8px;
+            padding: 6px 8px;
             text-align: left;
-            font-size: 9px;
+            font-size: 8px;
             text-transform: uppercase;
         }
 
         .table td {
-            padding: 8px;
+            padding: 5px 8px;
             border-bottom: 1px solid #eee;
         }
 
         .decision-box {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
             text-align: center;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -138,13 +139,13 @@
 
         .footer {
             position: fixed;
-            bottom: 30px;
-            left: 30px;
-            right: 30px;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
             text-align: center;
             border-top: 1px solid #eee;
-            padding-top: 10px;
-            font-size: 9px;
+            padding-top: 6px;
+            font-size: 8px;
             color: #777;
         }
 
@@ -153,17 +154,17 @@
         }
 
         .signature {
-            margin-top: 40px;
+            margin-top: 15px;
         }
 
         .signature-box {
             float: left;
             width: 45%;
             border: 1px solid #eee;
-            height: 100px;
-            padding: 10px;
+            height: 60px;
+            padding: 8px;
             color: #94a3b8;
-            font-size: 10px;
+            font-size: 9px;
         }
     </style>
 </head>
@@ -175,7 +176,7 @@
             <div class="company-info">
                 @if($company && $company->logo)
                     <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo"
-                        style="max-height: 120px; margin-bottom: 8px;"><br>
+                        style="max-height: 65px; margin-bottom: 4px;"><br>
                 @else
                     <div class="company-name">{{ $company->nom_societe ?? 'MAISON TEL' }}</div>
                 @endif
@@ -184,7 +185,7 @@
             </div>
             <div class="invoice-info">
                 <div class="invoice-title">RAPPORT DE DIAGNOSTIC</div>
-                <div style="font-size: 18px; font-weight: bold; margin: 5px 0; color: #dc2626;">
+                <div style="font-size: 15px; font-weight: bold; margin: 3px 0; color: #dc2626;">
                     #{{ $dossier->num_dossier }}</div>
                 <div>Date : {{ $dateImpression }}</div>
             </div>

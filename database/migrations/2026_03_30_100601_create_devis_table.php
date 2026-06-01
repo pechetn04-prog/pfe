@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('devis', function (Blueprint $table) {
             $table->id();
             $table->string('numero')->unique()->nullable();
-            $table->foreignId('dossier_id')->unique()->constrained('dossiers')->cascadeOnDelete();
+            $table->foreignId('dossier_id')->unique()->constrained('dossiers')->cascadeOnDelete();//dossier sup => devis sup
             $table->decimal('montant_total', 12, 2)->default(0);
             $table->decimal('frais_mod', 12, 2)->default(0);
             $table->decimal('remise', 12, 2)->default(0);

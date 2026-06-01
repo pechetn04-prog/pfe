@@ -26,6 +26,7 @@ class StatistiqueController extends Controller
             ? Carbon::parse($request->input('date_fin'))->endOfDay()
             : now()->endOfDay();
 
+            
         // Requête de base sur la période sélectionnée
         $query = Dossier::whereBetween('dossiers.created_at', [$dateDebut, $dateFin]);
 
@@ -43,7 +44,15 @@ class StatistiqueController extends Controller
             ->count();
         $tauxAcceptation = $totalDevis > 0 ? round(($devisAcceptes / $totalDevis) * 100, 1) : 0;
 
+
+
+
+
         // Analyse des délais de traitement (durées de résolution)
+
+        //subHours(24) : retire 24 heures à une date.
+        //copy() : fait une copie de la date pour ne pas modifier l'originale.
+        //clone $query : fait une copie de la requête afin d'effectuer plusieurs calculs différents.
         $now = now();
         $retards = [
             '0-24h' => (clone $query)->whereNotIn('statut', ['CLOTURE', 'LIVRE'])
@@ -63,6 +72,7 @@ class StatistiqueController extends Controller
         $totalRetard = $retards['24-48h'] + $retards['48-72h'] + $retards['>72h'];
         $tauxRetard = $totalDossiers > 0 ? round(($totalRetard / $totalDossiers) * 100, 1) : 0;
 
+
         // Analyse de la performance des collaborateurs (Techniciens)
         $dossiersParTech = User::where('role', 'Technicien')
             ->withCount([
@@ -71,13 +81,34 @@ class StatistiqueController extends Controller
                 }
             ])->get();
 
-        // Top 10 des pannes déclarées les plus fréquentes (Analyse des défaillances)
-        $topPannes = (clone $query)->select('panne_declaree', DB::raw('count(*) as total'))
+        // Top 10 des catégories de pannes prédéfinies les plus fréquentes
+        
+        $pannesRaw = (clone $query)
+            ->select('panne_declaree')
             ->whereNotNull('panne_declaree')
-            ->groupBy('panne_declaree')
-            ->orderByDesc('total')
-            ->take(10)
-            ->get();
+            ->where('panne_declaree', 'like', '[%')
+            ->get()
+            ->pluck('panne_declaree');
+
+        $pannesCount = [];
+        foreach ($pannesRaw as $panneDeclaree) {
+            // Extraire le contenu entre les premiers crochets : [Cat1, Cat2]
+            if (preg_match('/^\[([^\]]+)\]/', $panneDeclaree, $matches)) {
+                $categories = array_map('trim', explode(',', $matches[1]));
+                foreach ($categories as $cat) {
+                    if ($cat !== '') {
+                        $pannesCount[$cat] = ($pannesCount[$cat] ?? 0) + 1;
+                    }
+                }
+            }
+        }
+        // Trier par fréquence décroissante et prendre le top 10
+        //arsort function php Trier un tableau par valeurs en ordre décroissant tout en conservant les clés.
+        arsort($pannesCount);
+        $topPannes = collect(array_slice($pannesCount, 0, 10, true))
+            ->map(fn($count, $label) => (object)['panne_declaree' => $label, 'total' => $count])
+            ->values();
+
 
         // Top 5 des pièces détachées les plus consommées en atelier
         $topPieces = DB::table('ligne_pieces')
@@ -100,7 +131,6 @@ class StatistiqueController extends Controller
         // Distribution globale de tous les statuts individuels sur la période filtrée
         // Traduction esthétique des statuts techniques pour le graphique
         $statusLabels = [
-            'RECU'                            => 'Reçu',
             'AFFECTE'                         => 'Affecté',
             'EN_DIAGNOSTIC'                   => 'En Diagnostic',
             'EN_ATTENTE_DEVIS'                => 'En Attente Devis',
@@ -109,35 +139,42 @@ class StatistiqueController extends Controller
             'REPARE'                          => 'Réparé',
             'IRREPARABLE'                     => 'Irréparable',
             'ATTENTE_PIECE'                   => 'Attente Pièce',
-            'ATTENTE_VALIDATION_REMPLACEMENT' => 'Attente Remplacement',
-            'ATTENTE_REMPLACEMENT'            => 'Attente Remplacement Prêt',
-            'REMPLACEMENT_PRET'               => 'Remplacement Prêt',
             'FACTURE'                         => 'Facturé',
             'LIVRE'                           => 'Restitué',
             'CLOTURE'                         => 'Clôturé',
-            'ANNULE'                          => 'Annulé',
             'REMPLACEMENT_VALIDE'             => 'Remplacement Validé',
             'REMPLACEMENT_REFUSE'             => 'Remplacement Refusé'
         ];
 
         // Regroupement SQL et comptage des dossiers par statut sur la période filtrée
         $statusDistribution = [];
+        // Initialisation de tous les statuts à 0 pour qu'ils soient tous affichés dans le graphique
+        foreach ($statusLabels as $label) {
+            $statusDistribution[$label] = 0;
+        }
+
         $dossierCounts = (clone $query)->select('statut', \DB::raw('count(*) as count'))
             ->groupBy('statut')
             ->get();
 
         foreach ($dossierCounts as $dc) {
-            $label = $statusLabels[$dc->statut] ?? str_replace('_', ' ', $dc->statut);
-            $statusDistribution[$label] = $dc->count;
+            if (isset($statusLabels[$dc->statut])) {
+                $label = $statusLabels[$dc->statut];
+                $statusDistribution[$label] = $dc->count;
+            }
         }
 
-        // Répartition des dossiers selon l'éligibilité à la garantie commerciale sur la période filtrée
+        // Répartition des dossiers selon l'éligibilité à la garantie sur la période filtrée
         $warrantyDistribution = [
+            //C'est comme une photocopie (clone $query) pour pouvoir faire plusieurs requêtes différentes à partir de la même base sans interférer les unes avec les autres.
             'Sous Garantie'   => (clone $query)->where('sous_garantie', true)->where('garantie_annulee', false)->count(),
             'Hors Garantie'   => (clone $query)->where('sous_garantie', false)->count(),
             'Garantie Exclue' => (clone $query)->where('garantie_annulee', true)->count(),
         ];
-
+//envoyer les données du Controller vers la View
+//return view() affiche la page Blade, tandis que compact() 
+//permet de transmettre les données calculées dans le contrôleur 
+//vers la vue afin de les afficher dans le tableau de bord des statistiques.
         return view('admin.statistiques', compact(
             'totalDossiers',
             'chiffreAffaires',

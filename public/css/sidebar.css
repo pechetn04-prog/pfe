@@ -1,35 +1,28 @@
-/**
- * SAV Premium - Sidebar Navigation Component
- * 
- * Ce fichier gère le style et la mise en page de la barre de navigation latérale (Sidebar).
- * Caractéristiques techniques principales :
- * 1. Hauteur totale verrouillée (`100vh`) avec ancrage collant (`position: sticky`) pour rester fixe lors du scroll.
- * 2. Structure Flexbox pour empiler verticalement le logo, les liens et le bouton de déconnexion.
- * 3. Barre de défilement webkit ultra-fine personnalisée pour naviguer dans les menus sans encombrement.
- * 4. Micro-animations et états actifs colorés (bleu premium et ombres douces) pour guider l'utilisateur.
- */
+/* ==========================================================================
+   FEUILLE DE STYLE : BARRE DE NAVIGATION LATÉRALE (SIDEBAR)
+   ========================================================================== */
 
 /* === 1. Structure du conteneur principal de la Sidebar === */
 .sidebar {
     background-color: #111827;
-    /* Gris anthracite très sombre (look moderne haut de gamme) */
+    /* Gris anthracite très sombre (look moderne haut de gamme, excellent contraste) */
     border-right: none;
     transition: all 0.3s ease;
     width: 260px;
-    /* Largeur standard de confort pour les textes de liens */
+    /* Largeur standard de confort pour afficher les textes de liens sans coupure */
     height: 100vh;
-    /* Remplit exactement la hauteur de l'écran visible */
+    /* Remplit exactement la hauteur totale de l'écran visible */
     display: flex;
     flex-direction: column;
-    /* Empilement vertical des rubriques */
+    /* Empilement vertical des rubriques (Header, Navigation, Pied de page) */
     position: sticky;
-    /* Reste fixe à l'écran lors du défilement de la page */
+    /* Reste fixe à l'écran lors du défilement du contenu principal de l'application */
     top: 0;
     overflow: hidden;
-    /* Évite l'apparition d'une double scrollbar générale */
+    /* Évite l'apparition d'une double scrollbar générale sur la page */
 }
 
-/* === Logo & Fallback Badges === */
+/* === Logo & Badges de secours en cas d'absence d'image === */
 .sidebar-logo-img {
     max-height: 60px;
     object-fit: contain;
@@ -42,26 +35,27 @@
     height: 35px;
 }
 
+/* Corps central de la sidebar contenant les liens de menu */
 .sidebar-content {
     flex: 1;
-    /* Prend tout l'espace vertical libre */
+    /* Occupe dynamiquement tout l'espace vertical disponible */
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    /* Permet le défilement vertical si le menu est très long */
+    /* Permet le défilement autonome du menu si les rubriques dépassent de l'écran */
     padding-bottom: 2.5rem !important;
-    /* Espace de confort généreux pour éviter les coupures ou chevauchements */
+    /* Espace de confort généreux en bas pour éviter les coupures ou chevauchements */
 }
 
-/* === 2. Personnalisation de la Barre de Défilement Interne === */
+/* === 2. Personnalisation de la Barre de Défilement Interne (Webkit Scrollbar) === */
 .sidebar-content::-webkit-scrollbar {
     width: 4px;
-    /* Largeur ultra-fine de discrétion */
+    /* Largeur ultra-fine pour un design discret et minimaliste */
 }
 
 .sidebar-content::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
-    /* Puce de défilement grise translucide */
+    /* Puce de défilement blanche translucide pour ne pas surcharger l'interface */
     border-radius: 10px;
 }
 
@@ -70,19 +64,19 @@
     color: rgba(255, 255, 255, 0.6);
     font-weight: 500;
     padding: 0.8rem 1.2rem;
-    /* Marges internes confortables pour le clic tactile/souris */
+    /* Marges internes confortables facilitant le clic tactile et à la souris */
     border-radius: 10px;
-    /* Coins arrondis premium */
+    /* Coins arrondis premium pour un style "bubble" moderne */
     transition: all 0.2s ease;
-    /* Transition douce de changement de couleur */
+    /* Transition douce de couleur au survol */
     font-size: 0.85rem;
     margin-bottom: 4px;
     border: none;
     text-decoration: none;
-    /* Supprime le soulignement par défaut des liens */
+    /* Supprime le soulignement natif des liens hypertexte */
     display: flex;
     align-items: center;
-    /* Aligne l'icône et le texte sur la même ligne verticale */
+    /* Aligne parfaitement l'icône FontAwesome et le texte sur le même axe vertical */
 }
 
 /* Effet de survol standard (Léger éclaircissement du fond) */
@@ -91,21 +85,21 @@
     color: #ffffff;
 }
 
-/* État actif (Lien correspondant à la page actuellement visitée) */
+/* État actif (Lien correspondant à la page actuellement visitée par l'utilisateur) */
 .nav-link.active {
     background: #2563eb !important;
-    /* Bleu premium distinctif */
+    /* Couleur bleue distinctive */
     color: white !important;
     font-weight: 600;
-    /* Ombre de lueur bleue sous l'élément actif */
+    /* Ombre de lueur bleue subtile sous l'élément actif pour un aspect moderne */
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
-/* Dimensionnement des icônes de la navigation */
+/* Dimensionnement et espacement des icônes de la navigation */
 .nav-link i {
     font-size: 1rem;
     width: 28px;
-    /* Largeur fixe garantissant un alignement vertical parfait du texte à droite */
+    /* Largeur fixe garantissant un alignement vertical parfait du texte de gauche à droite */
     opacity: 0.7;
 }
 
@@ -113,15 +107,15 @@
     opacity: 1;
 }
 
-/* === 4. Titres de Rubriques / Catégories de Menus === */
+/* === 4. Titres de Rubriques / Catégories de Menus (ex: GESTION, PARAMÈTRES) === */
 .sidebar .text-muted.text-uppercase {
     color: rgba(255, 255, 255, 0.3) !important;
-    /* Gris discret pour ne pas distraire l'œil */
+    /* Tons gris discrets pour structurer le menu sans distraction visuelle */
     font-size: 0.6rem !important;
     margin-top: 1.5rem !important;
     margin-bottom: 0.75rem !important;
     letter-spacing: 1px;
-    /* Espacement large des lettres pour un style "badge" élégant */
+    /* Espacement des lettres pour un effet "badge" minimaliste chic */
     font-weight: 700;
     padding-left: 1.2rem;
 }
@@ -129,7 +123,7 @@
 /* === 5. Bouton de Déconnexion (logout-btn) === */
 .logout-btn {
     color: #fb7185 !important;
-    /* Teinte rose-rouge pour symboliser la mise en garde de déconnexion */
+    /* Teinte rouge-rose douce symbolisant une action d'alerte ou de sortie */
     font-weight: 600;
     margin-top: 2rem;
     background: transparent !important;
@@ -143,7 +137,8 @@
     opacity: 0.8;
 }
 
-/* === 6. Surcharges de Sécurité (Compatibilité et spécificité accrue) === */
+/* === 6. Surcharges de Spécificité pour contrer les règles globales de Bootstrap === */
+/* Garantit que les liens dans la sidebar respectent strictement notre design système */
 
 .sidebar .nav-link {
     color: #cbd5e1 !important;
@@ -156,6 +151,7 @@
     transition: all 0.2s;
 }
 
+/* Comportement au survol spécifique avec des couleurs de fond adaptées */
 .sidebar .nav-link:hover {
     background-color: #242e42;
     color: #ffffff !important;
@@ -165,6 +161,7 @@
     color: #ffffff;
 }
 
+/* Application prioritaire de la couleur active bleue */
 .sidebar .nav-link.active {
     background-color: #2563eb !important;
     color: #ffffff !important;

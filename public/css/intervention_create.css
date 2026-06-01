@@ -1,31 +1,32 @@
-/* 
-   SAV Pro - Simple Light Theme
-   Clean, professional, and minimal white theme
-*/
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-/* Variables :root centralisées dans theme.css */
-
+/* --------------------------------------------------------------------------
+   STYLE GLOBAL DE LA PAGE D'INTERVENTION
+   -------------------------------------------------------------------------- */
 body.intervention-page {
     background-color: var(--bg-main) !important;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     color: var(--text-main);
 }
 
+/* Conteneur principal limité en largeur pour une meilleure lisibilité */
 .intervention-container {
     max-width: 1100px;
     margin: 0 auto;
 }
 
-/* Header Section */
+/* --------------------------------------------------------------------------
+   EN-TÊTE DE LA PAGE (PAGE HEADER)
+   -------------------------------------------------------------------------- */
 .page-header h1 {
     font-size: 1.5rem;
     font-weight: 700;
     color: #0f172a;
 }
 
-/* Premium Card (Simple Version) */
+/* --------------------------------------------------------------------------
+   CARTES DE TYPE "PREMIUM" (CONTENEURS SEMANTIQUES)
+   -------------------------------------------------------------------------- */
 .premium-card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -49,7 +50,9 @@ body.intervention-page {
     color: #475569;
 }
 
-/* Inputs & Forms */
+/* --------------------------------------------------------------------------
+   CHAMPS DE FORMULAIRE PREMIUM (FORM CONTROLS)
+   -------------------------------------------------------------------------- */
 .form-control-premium {
     background-color: var(--input-bg) !important;
     border: 1px solid var(--border-color) !important;
@@ -58,12 +61,15 @@ body.intervention-page {
     padding: 10px 14px !important;
 }
 
+/* Focus avec effet lumineux doux (glow) */
 .form-control-premium:focus {
     border-color: var(--accent-primary) !important;
     box-shadow: 0 0 0 3px rgba(61, 139, 255, 0.1) !important;
 }
 
-/* Table Styling */
+/* --------------------------------------------------------------------------
+   TABLEAUX COMPOSANTS "PREMIUM"
+   -------------------------------------------------------------------------- */
 .premium-table th {
     color: var(--text-muted);
     font-weight: 600;
@@ -80,7 +86,9 @@ body.intervention-page {
     border-bottom: 1px solid var(--border-color);
 }
 
-/* Badges */
+/* --------------------------------------------------------------------------
+   BADGES PLATS AUX COULEURS DOUCES (SOFT BADGES)
+   -------------------------------------------------------------------------- */
 .badge-soft {
     padding: 4px 10px;
     border-radius: 6px;
@@ -92,7 +100,9 @@ body.intervention-page {
 .badge-danger-soft { background: #fee2e2; color: #b91c1c; }
 .badge-warning-soft { background: #fef3c7; color: #b45309; }
 
-/* Buttons */
+/* --------------------------------------------------------------------------
+   BOUTONS ET ACTIONS
+   -------------------------------------------------------------------------- */
 .btn-premium {
     padding: 10px 24px;
     border-radius: 8px;
@@ -112,6 +122,7 @@ body.intervention-page {
     color: var(--text-main);
 }
 
+/* Actions inline dans les tableaux */
 .btn-table-action {
     background: #f1f5f9;
     border: 1px solid var(--border-color);
@@ -121,7 +132,9 @@ body.intervention-page {
     border-radius: 6px;
 }
 
-/* Custom Select2 */
+/* --------------------------------------------------------------------------
+   PERSONNALISATION PRESCRISE POUR LE SELECTEUR SELECT2 (RECHERCHE AVANCÉE PIÈCES)
+   -------------------------------------------------------------------------- */
 .select2-container--premium .select2-selection--single {
     background-color: #fff !important;
     border: 1px solid var(--border-color) !important;
@@ -140,7 +153,9 @@ body.intervention-page {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
 }
 
-/* Side Info */
+/* --------------------------------------------------------------------------
+   AFFICHAGE DES INFORMATIONS EN PANNEAU LATÉRAL (SIDE DETAILS)
+   -------------------------------------------------------------------------- */
 .info-label {
     font-size: 0.65rem;
     font-weight: 700;
@@ -154,15 +169,57 @@ body.intervention-page {
     margin-bottom: 12px;
 }
 
-/* --- OVERRIDES & ADDITIONAL STYLES (MOVED FROM create.blade.php) --- */
-.status-selector { background-color: var(--btn-bg) !important; border: 2px solid transparent !important; transition: all 0.2s; }
-.status-selector .icon-circle { width: 35px; height: 35px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; color: var(--btn-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.status-selector .title { color: var(--btn-color); }
-.btn-check:checked + .status-selector { border-color: var(--btn-color) !important; transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-.card-select:hover { background-color: #e2e8f0 !important; }
-.upload-area:hover { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
+/* --------------------------------------------------------------------------
+   SURCHARGES ET ÉLÉMENTS DYNAMIQUES D'INTERACTION
+   (Transférés pour nettoyer les styles inline de la vue create.blade.php)
+   -------------------------------------------------------------------------- */
 
-/* Classes pour éliminer le CSS en ligne de la création d'interventions */
+/* Sélecteur de statut interactif sous forme de tuiles */
+.status-selector { 
+    background-color: var(--btn-bg) !important; 
+    border: 2px solid transparent !important; 
+    transition: all 0.2s; 
+}
+
+/* Cercle contenant l'icône dans les sélecteurs de statut */
+.status-selector .icon-circle { 
+    width: 35px; 
+    height: 35px; 
+    border-radius: 50%; 
+    background: #fff; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: var(--btn-color); 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+}
+
+.status-selector .title { 
+    color: var(--btn-color); 
+}
+
+/* Changement d'état visuel lors de la sélection (radio coché) */
+.btn-check:checked + .status-selector { 
+    border-color: var(--btn-color) !important; 
+    transform: translateY(-3px); 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+}
+
+/* Effets de survol (hover) interactifs */
+.card-select:hover { 
+    background-color: #e2e8f0 !important; 
+}
+
+/* Zone d'importation de fichiers par glisser-déposer */
+.upload-area:hover { 
+    border-color: #3b82f6 !important; 
+    background-color: #eff6ff !important; 
+}
+
+/* --------------------------------------------------------------------------
+   CLASSES UTILITAIRES ET COMPOSANTS DE STRUCTURE MODERNE
+   (Permet d'éliminer totalement le CSS inline pour un code propre)
+   -------------------------------------------------------------------------- */
 .modal-content-rounded {
     border-radius: 15px !important;
 }
@@ -175,6 +232,7 @@ body.intervention-page {
     font-size: 0.75rem !important;
 }
 
+/* Tailles de police normalisées (Typography Helpers) */
 .font-size-075 {
     font-size: 0.75rem !important;
 }
@@ -187,6 +245,7 @@ body.intervention-page {
     font-size: 0.65rem !important;
 }
 
+/* Transitions fluides pour l'upload */
 .upload-area-transition {
     transition: all 0.3s !important;
 }
@@ -195,11 +254,13 @@ body.intervention-page {
     cursor: pointer !important;
 }
 
+/* Zone de texte de compte rendu d'atelier */
 .compte-rendu-textarea {
     border-radius: 12px !important;
     background-color: #f8fafc !important;
 }
 
+/* Largeurs de cellules et alignements standardisés pour les tables */
 .th-center-w-100 {
     width: 100px !important;
     text-align: center !important;
@@ -215,6 +276,7 @@ body.intervention-page {
     text-align: end !important;
 }
 
+/* Définition des palettes de couleur sémantiques par variables CSS pour les statuts */
 .status-selector-repare {
     --btn-color: #10b981 !important;
     --btn-bg: #f0fdf4 !important;
@@ -230,7 +292,9 @@ body.intervention-page {
     --btn-bg: #eff6ff !important;
 }
 
-/* Classes pour éliminer le CSS en ligne du rapport d'intervention (show) */
+/* --------------------------------------------------------------------------
+   STYLE DU RAPPORT D'INTERVENTION (PAGE DE CONSULTATION - SHOW)
+   -------------------------------------------------------------------------- */
 .container-max-1000 {
     max-width: 1000px !important;
 }
@@ -246,8 +310,11 @@ body.intervention-page {
 .rapport-atelier-body {
     min-height: 120px !important;
     white-space: pre-wrap !important;
+    text-align: left !important;
+    display: block !important;
 }
 
+/* Gestion réactive des images et aperçus photos */
 .photo-wrapper {
     max-width: 100% !important;
 }
@@ -261,7 +328,12 @@ body.intervention-page {
     font-size: 0.9rem !important;
 }
 
-/* Classes sémantiques pour éliminer la logique de style du contrôleur */
+/* --------------------------------------------------------------------------
+   CLASSES SÉMANTIQUES : DÉCOUPLAGE DES STYLES DU CONTRÔLEUR
+   (Évite d'écrire des couleurs en dur dans la logique backend PHP)
+   -------------------------------------------------------------------------- */
+
+/* Bordures colorées dynamiques selon l'issue de l'intervention */
 .card-verdict-repare {
     border-left: 5px solid #10b981 !important;
 }
@@ -275,13 +347,13 @@ body.intervention-page {
     border-left: 5px solid #6b7280 !important;
 }
 
+/* Badges colorés dynamiques selon l'issue de l'intervention */
 .badge-verdict-repare {
     background-color: #10b981 !important;
     color: white !important;
 }
 .badge-verdict-irreparable {
     background-color: #ef4444 !important;
-    color: white !important;
 }
 .badge-verdict-attente {
     background-color: #f59e0b !important;

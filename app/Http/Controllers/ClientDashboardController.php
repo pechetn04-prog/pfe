@@ -9,15 +9,13 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Class ClientDashboardController
  * 
- * Gère le tableau de bord du portail client authentifié (UC10).
+ * Gère le tableau de bord du portail client authentifié 
  * Fournit la liste des dossiers de réparation d'un client avec indicateurs en temps réel.
  */
 class ClientDashboardController extends Controller
 {
     /**
      * Affiche l'index du tableau de bord client avec ses dossiers.
-     *
-     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {

@@ -14,6 +14,16 @@
             <h1>Suivi de réparation</h1>
             <p class="subtitle">Consultez l'état d'avancement de votre appareil en temps réel.</p>
 
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mb-4 text-start small border-0" 
+                     style="border-radius: 12px; font-size: 0.85rem; background-color: #fef2f2; color: #dc2626; border-left: 4px solid #dc2626 !important; padding-right: 2.5rem;">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-exclamation-triangle me-2 mt-1"></i>
+                        <div>{{ session('error') }}</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" style="font-size: 0.7rem; padding: 1.15rem;"></button>
+                </div>
+            @endif
  
             <form action="{{ route('client.search') }}" method="POST">
                 @csrf

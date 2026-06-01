@@ -7,30 +7,32 @@ use App\Http\Requests\UpdateParametreSocieteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+// Gestion des paramètres et coordonnées de l'entreprise.
 class ParametreSocieteController extends Controller
 {
-    // Affiche le formulaire d'édition des paramètres de la société (Identité, Logo, Coordonnées).
+    // Affiche le formulaire de modification des paramètres.
     public function edit()
     {
-        // Récupère la première configuration existante, ou en crée une nouvelle instance vide
+        // Récupère les paramètres existants ou crée une instance vide
         $parametre = ParametreSociete::first() ?: new ParametreSociete();
-        return view('admin.parametres.societe.edit', compact('parametre'));
+        return view('societe.edit', compact('parametre'));
     }
 
-    // Met à jour les paramètres de la société avec gestion de l'upload du logo.
+    
+    // Met à jour les paramètres et gère le téléchargement du logo.
     public function update(UpdateParametreSocieteRequest $request)
     {
         $parametre = ParametreSociete::first() ?: new ParametreSociete();
         
         $data = $request->validated();
 
-        // Gestion de l'upload et de la mise à jour du logo de l'entreprise
+        // Gestion du logo de l'entreprise
         if ($request->hasFile('logo')) {
-            // Suppression de l'ancien fichier logo s'il existe déjà
+            // Supprime l'ancien logo si présent
             if ($parametre->logo) {
                 Storage::disk('public')->delete($parametre->logo);
             }
-            // Enregistrement du nouveau logo dans le disque public (dossier logos)
+            // Enregistre le nouveau logo
             $data['logo'] = $request->file('logo')->store('logos', 'public');
         }
 

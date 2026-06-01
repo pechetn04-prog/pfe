@@ -1,14 +1,4 @@
-/* ====================================================================
- * COMPOSANT DE RECHERCHE UNIFIÉ ET DYNAMIQUE (SEARCH BAR)
- * ====================================================================
- * Ce fichier gère le style esthétique et l'interactivité de la barre
- * de recherche globale située dans l'en-tête (Topbar) de l'application.
- * 
- * Effet Premium implémenté :
- * - Au clic (focus-within), la barre s'élargit de manière très fluide
- *   de 300px à 450px en utilisant une transition physique haut de gamme (cubic-bezier).
- * - Le fond passe d'un gris bleuté à un blanc éclatant avec une ombre de lueur bleue.
- * ==================================================================== */
+
 
 /* Conteneur principal de la recherche dans la Topbar */
 .search-bar {

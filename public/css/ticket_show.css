@@ -1,19 +1,10 @@
-/**
- * SAV Premium - Client Ticket & Dossier Details Styling
- * 
- * Ce fichier gère le style visuel de la fiche détaillée d'un dossier (Admin/Agent)
- * et du suivi de ticket (Client). Il regroupe :
- * 1. La barre d'onglets premium (`#dossierTabs`) avec transitions de glissement
- *    et soulignement dynamique de l'onglet actif.
- * 2. La timeline verticale de suivi des étapes de réparation (`.custom-timeline`),
- *    avec marqueurs sphériques colorés, lueurs de pulsation et barre centrale.
- * 3. Les badges sémantiques adoucis (`.bg-soft-*`) pour un look professionnel moderne.
- * 4. Les animations de soulèvement 3D au survol des cartes interactives (ex: Devis/Factures PDF).
- */
+/* ==========================================================================
+   FEUILLE DE STYLE : FICHE DE DÉTAIL D'UN TICKET / DOSSIER SAV (SHOW VIEW)
+   ========================================================================== */
 
-/* ============================================================
- * 1. BARRE D'ONGLETS PREMIUM (TABS NAVIGATION)
- * ============================================================ */
+/* ==========================================================================
+   1. BARRE D'ONGLETS PREMIUM (TABS NAVIGATION)
+   ========================================================================== */
 
 /* Conteneur principal gris clair en forme de capsule */
 #dossierTabs {
@@ -25,7 +16,7 @@
     margin-bottom: 2rem;
 }
 
-/* Boutons de navigation individuels */
+/* Boutons de navigation individuels des onglets */
 #dossierTabs .nav-link {
     border: none !important;
     color: #64748b !important; /* Gris ardoise élégant */
@@ -38,7 +29,7 @@
     margin: 0 4px;
 }
 
-/* Icônes intégrées aux onglets */
+/* Icônes FontAwesome intégrées aux onglets */
 #dossierTabs .nav-link i {
     margin-right: 8px;
     font-size: 1rem;
@@ -58,20 +49,20 @@
     color: #1e69ff !important;
 }
 
-/* Effet de survol des onglets non sélectionnés */
+/* Effet de survol des onglets non sélectionnés (réactivité visuelle) */
 #dossierTabs .nav-link:not(.active):hover {
     color: #1e69ff !important;
     background-color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* ============================================================
- * 2. TIMELINE VERTICALE DE SUIVI DE RÉPARATION
- * ============================================================ */
+/* ==========================================================================
+   2. TIMELINE VERTICALE DE SUIVI DE RÉPARATION (CHRONOLOGIE)
+   ========================================================================== */
 
 /* Conteneur principal de la timeline */
 .custom-timeline {
     position: relative;
-    padding-left: 30px; /* Espace à gauche pour accueillir la ligne centrale */
+    padding-left: 30px; /* Espace à gauche pour accueillir la ligne verticale centrale */
 }
 
 /* Ligne centrale verticale grise */
@@ -93,7 +84,7 @@
 /* Marqueur sphérique indiquant une étape passée ou en cours */
 .timeline-marker {
     position: absolute;
-    left: -30px; /* Positionnement parfait par rapport à la ligne centrale */
+    left: -30px; /* Positionnement parfait aligné sur la ligne centrale */
     top: 5px;
     width: 14px;
     height: 14px;
@@ -108,7 +99,7 @@
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
-/* Variante alternative de timeline v2 */
+/* Variante alternative de timeline v2 (style condensé) */
 .timeline-v2 .timeline-item {
     border-left: 2px solid #eef2f7 !important;
 }
@@ -117,39 +108,59 @@
     left: -6px !important;
 }
 
-/* ============================================================
- * 3. BADGES SÉMANTIQUES ET BOUTONS ADOUCIS
- * ============================================================ */
+/* ==========================================================================
+   3. BADGES SÉMANTIQUES ET BOUTONS ADOUCIS (SOFT PALETTE)
+   ========================================================================== */
 .bg-soft-primary { background-color: #eff6ff !important; }
 .btn-soft-primary { background-color: #eff6ff !important; color: #2563eb !important; border: none !important; }
 .bg-soft-success { background-color: #ecfdf5 !important; }
 .bg-soft-danger { background-color: #fef2f2 !important; }
+.bg-soft-info { background-color: #e0f2fe !important; }
+.bg-soft-warning { background-color: #fef3c7 !important; }
+.bg-soft-dark { background-color: #f1f5f9 !important; }
+.bg-soft-secondary { background-color: #f3f4f6 !important; }
 .btn-white { background-color: white !important; color: #2563eb !important; border: 1px solid #e2e8f0 !important; }
 
-/* ============================================================
- * 4. MICRO-ANIMATIONS DE SURVOL (INTERACTION CARTES)
- * ============================================================ */
+/* ==========================================================================
+   4. MICRO-ANIMATIONS DE SURVOL ET NETTOYAGE DES STYLES INLINE
+   ========================================================================== */
 .transition-all {
     transition: all 0.2s ease-in-out;
 }
 
-/* Soulèvement 3D fluide et ombre intense au survol */
+/* Soulèvement 3D fluide et ombre portée douce au survol */
 .transition-all:hover {
     transform: translateY(-3px); /* Effet de lévitation */
     box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Classes additionnelles pour éliminer les styles en ligne de ticket.blade.php */
+/* Enveloppe générale de la vue détaillée du ticket */
 .ticket-wrapper {
     background-color: #f8fafc !important;
     min-height: 90vh !important;
 }
 
+/* Bouton de retour à la liste avec cercle semi-translucide interactif */
 .btn-back-ticket {
-    width: 45px !important;
-    height: 45px !important;
+    width: 42px !important;
+    height: 42px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
 }
 
+.btn-back-ticket:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: #2563eb !important;
+    background-color: #eff6ff !important;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.15) !important;
+}
+
+.btn-back-ticket:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Bannière supérieure résumant les appels d'action */
 .card-action-banner {
     border-radius: 20px !important;
     background: #2563eb !important;
@@ -161,6 +172,7 @@
     height: 45px !important;
 }
 
+/* Fiche d'informations relatives à l'appareil en réparation */
 .card-info-appareil {
     border-radius: 24px !important;
     background: white !important;
@@ -170,11 +182,13 @@
     font-size: 0.95rem !important;
 }
 
+/* Cadre du Tchat Interne d'atelier (Suivi technicien-agent) */
 .card-chat-sav {
     border-radius: 24px !important;
     background: white !important;
 }
 
+/* Limite en hauteur du fil des messages avec défilement automatique */
 .chat-box-scroll {
     max-height: 300px !important;
     overflow-y: auto !important;
@@ -192,6 +206,7 @@
     box-shadow: none !important;
 }
 
+/* Carte contenant l'historique complet des statuts */
 .card-timeline-history {
     border-radius: 24px !important;
     background: white !important;
@@ -201,6 +216,7 @@
     font-size: 0.75rem !important;
 }
 
+/* Bloc d'affichage principal du statut courant */
 .card-status-hero {
     border-radius: 30px !important;
     background: white !important;
@@ -211,6 +227,7 @@
     height: 80px !important;
 }
 
+/* Zone de téléchargement des documents joints (Fiche de réception / Devis PDF) */
 .card-docs-pdf {
     border-radius: 24px !important;
     background: white !important;
@@ -229,9 +246,9 @@
     max-width: 85% !important;
 }
 
-/* ============================================================
- * 5. ZOOM ET SURVOLS INTERACTIFS
- * ============================================================ */
+/* ==========================================================================
+   5. BLOCS D'INFORMATIONS DU CLIENT & DE L'APPAREIL (DETAILS GRID)
+   ========================================================================== */
 .hover-zoom {
     transition: all 0.2s ease-in-out;
 }
@@ -241,7 +258,6 @@
     box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
 }
 
-/* Bandeau d'action recommandé */
 .action-banner-card {
     border-radius: 12px !important;
 }
@@ -251,12 +267,12 @@
     opacity: 0.9 !important;
 }
 
-/* Blocs d'informations Client & Appareil */
 .info-section-title {
     color: #1a2332 !important;
     font-size: 0.85rem !important;
 }
 
+/* Conteneur individuel pour une paire Label/Valeur d'information technique */
 .info-block-wrapper {
     background-color: #f8fafc !important;
     border: 1px solid #edf2f7 !important;
@@ -268,6 +284,7 @@
     color: #64748b !important;
 }
 
+/* Affichage de la marque / modèle en grosse police ardoise foncée */
 .info-block-value-large {
     font-size: 1rem !important;
     color: #1a2332 !important;
@@ -284,25 +301,30 @@
     color: #1a2332 !important;
 }
 
+/* Numéro IMEI mis en relief en bleu interactif */
 .info-block-value-imei {
     font-size: 1rem !important;
     color: #1e69ff !important;
     font-weight: 700 !important;
 }
 
+/* Indicateur vert pastel de remplacement d'appareil sous garantie */
 .info-block-replacement {
     background-color: #f0fdf4 !important;
     border: 1px solid #bcf0da !important;
 }
 
+/* En-tête de section des affectations techniques */
 .assignment-header {
     background-color: #1a2332 !important;
     color: white !important;
 }
 
-/* ============================================================
- * 6. CENTRALIZED STATUS THEMES (DECOUPLED FROM CONTROLLERS)
- * ============================================================ */
+/* ==========================================================================
+   6. THÈMES DE STATUT CENTRALISÉS : DÉCOUPLAGE DES CONTRÔLEURS
+   (Assure le respect de l'architecture MVC en centralisant le style visuel ici)
+   ========================================================================== */
+
 .status-theme-recu { color: #64748b !important; }
 .bg-status-theme-recu-soft { background-color: rgba(100, 116, 139, 0.1) !important; }
 

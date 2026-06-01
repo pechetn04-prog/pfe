@@ -134,6 +134,8 @@
 .btn-outline-primary:hover {
     background: #6366f1;
     color: white;
+    transform: translateY(-2px);                     /* Soulèvement du bouton de 2px */
+    box-shadow: 0 6px 15px rgba(99, 102, 241, 0.25); /* Ombre de lueur douce */
 }
 
 /* Boutons compacts de petite taille (ex: actions dans un tableau) */

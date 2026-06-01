@@ -23,25 +23,7 @@ class Vente extends Model
         'date_vente' => 'datetime',
     ];
 
-    /**
-     * Vérifie si l'appareil est encore sous garantie.
-     */
-    public function getEstSousGarantieAttribute()
-    {
-        if (!$this->date_vente || !$this->duree_garantie_mois) return false;
-        
-        $expiration = \Carbon\Carbon::parse($this->date_vente)->addMonths($this->duree_garantie_mois);
-        return now()->lt($expiration);
-    }
 
-    /**
-     * Calcule la date de fin de garantie.
-     */
-    public function getDateExpirationAttribute()
-    {
-        if (!$this->date_vente || !$this->duree_garantie_mois) return null;
-        return \Carbon\Carbon::parse($this->date_vente)->addMonths($this->duree_garantie_mois);
-    }
 
     /**
      * Relation vers l'appareil enregistré dans le SAV.

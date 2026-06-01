@@ -16,11 +16,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-// Ce contrôleur gère l'évaluation technique et l'établissement des rapports de diagnostic.
-// Pilote la logique de décision automatique (passages en Réparation, Attente Devis, Attente Remplacement, etc.).
+/**
+ * DiagnosticController
+ *
+ * Ce contrôleur gère l'évaluation technique et l'établissement des rapports de diagnostic.
+ * Il pilote la logique de décision automatique (passages en Réparation, Attente Devis, Attente Remplacement, etc.).
+ */
 class DiagnosticController extends Controller
 {
-    // Affiche le formulaire de saisie de diagnostic et passe automatiquement l'état à 'EN_DIAGNOSTIC'.
+    /**
+     * Affiche le formulaire de saisie de diagnostic et passe automatiquement l'état à 'EN_DIAGNOSTIC'.
+     */
     public function create(Dossier $dossier)
     {
         // Règle de sécurité : Un technicien ne peut diagnostiquer que les dossiers qui lui sont attribués
@@ -42,12 +48,14 @@ class DiagnosticController extends Controller
         }
 
         $pieces = Piece::all();
-        $tarifsMo = TarifMo::where('actif', true)->get();
+        $tarifsMo = TarifMo::all();
 
         return view('diagnostics.create', compact('dossier', 'pieces', 'tarifsMo'));
     }
 
-    // Enregistre le rapport de diagnostic finalisé et applique les règles de décision automatique.
+    /**
+     * Enregistre le rapport de diagnostic finalisé et applique les règles de décision automatique.
+     */
     public function store(StoreDiagnosticRequest $request, Dossier $dossier)
     {
         // Gestion de l'image justificative de la panne
@@ -169,7 +177,9 @@ class DiagnosticController extends Controller
             ->with('success', 'Diagnostic enregistré. Statut actuel du dossier : ' . $nouveauStatut);
     }
 
-    // Affiche les résultats complets du diagnostic technique.
+    /**
+     * Affiche les résultats complets du diagnostic technique.
+     */
     public function show(Dossier $dossier)
     {
         $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo', 'client', 'technicien', 'appareil');

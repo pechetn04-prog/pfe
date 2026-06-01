@@ -1,19 +1,27 @@
 /**
- * SAV Premium - Mouvements de Stock
+ * SAV Premium - Module de Mouvements de Stock
+ * Feuille de style dédiée à la traçabilité des pièces détachées (Entrées, Sorties et Historique)
  */
 
+/* Titre principal moderne avec espacement négatif des lettres pour un rendu condensé chic */
 .mouvements-title {
     color: #1a2332;
     font-weight: 800;
     letter-spacing: -0.5px;
 }
 
+/* Carte de présentation premium aux coins très arrondis et ombre subtile */
 .mouvements-card {
     border-radius: 20px;
     border: none;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
+/* --------------------------------------------------------------------------
+   STYLE DES TABLEAUX DE MOUVEMENTS DE STOCK
+   -------------------------------------------------------------------------- */
+
+/* En-tête du tableau aux majuscules aérées et arrière-plan adouci */
 .table-mouvements thead th {
     background-color: #fcfdfe;
     color: #64748b;
@@ -25,11 +33,17 @@
     border-bottom: 2px solid #f1f5f9;
 }
 
+/* Cellules de données spacieuses pour une lecture agréable */
 .table-mouvements tbody td {
     padding: 1.5rem;
     border-bottom: 1px solid #f1f5f9;
 }
 
+/* --------------------------------------------------------------------------
+   BADGES DE STATUTS / TYPE DE MOUVEMENT (ENTRÉE vs SORTIE)
+   -------------------------------------------------------------------------- */
+
+/* Structure de base en forme de pilule (pill badge) */
 .mouv-type-badge {
     padding: 0.5em 1.25em;
     font-weight: 700;
@@ -39,18 +53,30 @@
     text-transform: uppercase;
 }
 
+/* Palette de couleur douce (soft green / soft red) pour éviter l'agression visuelle */
 .badge-entree { background: #dcfce7; color: #166534; }
 .badge-sortie { background: #fee2e2; color: #991b1b; }
 
+/* --------------------------------------------------------------------------
+   INDICATEUR DE QUANTITÉ DYNAMIQUE
+   -------------------------------------------------------------------------- */
+
+/* Chiffre de quantité imposant utilisant la police géométrique Outfit */
 .qty-text {
     font-weight: 800;
     font-size: 1.1rem;
     font-family: 'Outfit', sans-serif;
 }
 
+/* Coloration sémantique selon l'impact sur le stock (+ en vert, - en rouge) */
 .qty-plus { color: #10b981; }
 .qty-minus { color: #ef4444; }
 
+/* --------------------------------------------------------------------------
+   RÉFÉRENCE DE PIÈCE TECHNIQUE
+   -------------------------------------------------------------------------- */
+
+/* Rendu en chasse fixe (monospaced) pour distinguer facilement les codes de pièces */
 .piece-ref {
     font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-size: 0.75rem;
@@ -60,10 +86,15 @@
     color: #475569;
 }
 
+/* Nom du technicien / opérateur mis en valeur */
 .op-name {
     font-weight: 700;
     color: #1e293b;
 }
+
+/* --------------------------------------------------------------------------
+   PANNEAU DE FILTRAGE DES MOUVEMENTS
+   -------------------------------------------------------------------------- */
 
 .filter-mouv {
     background: white;
@@ -81,7 +112,10 @@
     color: #475569;
 }
 
-/* Badge Dossier Premium pour l'historique */
+/* --------------------------------------------------------------------------
+   BADGE DOSSIER PREMIUM POUR L'HISTORIQUE DE SORTIE
+   (Lien hypertexte interactif pointant vers le dossier concerné)
+   -------------------------------------------------------------------------- */
 .badge-dossier {
     background-color: rgba(14, 165, 233, 0.08) !important;
     color: #0ea5e9 !important;
@@ -100,12 +134,14 @@
     margin-top: 0.25rem !important;
 }
 
+/* Effet interactif de remplissage au survol (hover highlight) */
 .badge-dossier:hover {
     background-color: #0ea5e9 !important;
     color: #ffffff !important;
     box-shadow: 0 4px 10px rgba(14, 165, 233, 0.25) !important;
 }
 
+/* Espacement de l'icône de dossier */
 .badge-dossier i {
     margin-right: 0.35rem !important;
     font-size: 0.8rem !important;

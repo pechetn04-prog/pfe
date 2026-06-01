@@ -12,13 +12,29 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-// Ce contrôleur gère le tableau de bord de l'administrateur (UC01) et le module analytique (UC15).
-// Fournit les indicateurs clés de performance (KPIs) opérationnels et financiers pour le SAV.
+/**
+ * Class AdminDashboardController
+ * 
+ * Ce contrôleur gère le tableau de bord de l'administrateur et le module analytique
+ * Il centralise et fournit l'ensemble des indicateurs clés de performance (KPIs) opérationnels,
+ * logistiques et financiers pour le pilotage stratégique du Service Après-Vente (SAV).
+ */
 class AdminDashboardController extends Controller
 {
-    // Affiche l'index du tableau de bord de l'administrateur avec synthèse des dossiers, alertes et indicateurs.
+    /**
+     * Affiche le tableau de bord de l'administrateur.
+     * 
+     * Cette méthode extrait de nombreuses statistiques indispensables à la prise de décision :
+     * - Volumétrie des dossiers par statut individuel (pour les graphiques)
+     * - Répartition selon l'éligibilité à la garantie commerciale (UC03)
+     * - Alertes de stock critique (composants sous le seuil d'alerte, UC14)
+     * - Dossiers récents en diagnostic, en réparation atelier et en attente de réapprovisionnement
+     * - Demandes de retrait ou réaffectation de dossiers soumises par les techniciens (UC12)
+     * - Liste des techniciens actifs pour des assignations rapides
+     */
     public function index()
     {
+
         // Statistiques globales et volumétrie des dossiers
         $stats = [
             'total' => Dossier::count(),
@@ -64,6 +80,11 @@ class AdminDashboardController extends Controller
         ];
 
         $stats['status_distribution'] = [];
+        // Initialisation de tous les statuts à 0 pour assurer leur affichage complet
+        foreach ($statusLabels as $label) {
+            $stats['status_distribution'][$label] = 0;
+        }
+
         $dossierCounts = Dossier::select('statut', DB::raw('count(*) as count'))
             ->groupBy('statut')
             ->get();
@@ -81,8 +102,7 @@ class AdminDashboardController extends Controller
         ];
 
         // Alertes de stock critique (quantité en stock <= seuil d'alerte configuré) (UC14)
-        $stockAlerts = Piece::where('actif', true)
-            ->whereRaw('quantite <= seuil_alerte')
+        $stockAlerts = Piece::whereRaw('quantite <= seuil_alerte')
             ->orderBy('quantite', 'asc')
             ->take(10)
             ->get();
@@ -94,21 +114,21 @@ class AdminDashboardController extends Controller
             ->take(6)
             ->get();
 
-        // Dossiers actuellement en cours d'intervention sur table (UC09)
+        // Dossiers actuellement en cours d'intervention sur table
         $dossiersReparation = Dossier::with(['client', 'appareil'])
             ->where('statut', 'EN_REPARATION')
             ->latest()
             ->take(6)
             ->get();
 
-        // Dossiers bloqués en attente de réapprovisionnement de pièces (UC14)
+        // Dossiers bloqués en attente de réapprovisionnement de pièces
         $dossiersAttentePieces = Dossier::with(['client', 'appareil'])
             ->where('statut', 'ATTENTE_PIECE')
             ->latest()
             ->take(6)
             ->get();
 
-        // Dossiers en attente de validation de remplacement sous garantie (UC04)
+        // Dossiers en attente de validation de remplacement sous garantie
         $dossiersAttenteRemplacement = Dossier::with(['client', 'appareil'])
             ->where('statut', 'ATTENTE_VALIDATION_REMPLACEMENT')
             ->latest()
@@ -121,16 +141,6 @@ class AdminDashboardController extends Controller
         // Liste des techniciens actifs pour les assignations rapides
         $techniciens = User::where('role', 'Technicien')->where('actif', true)->get();
 
-        // Mapping esthétique des 7 KPIs pour la grille premium du dashboard
-        $adminKpis = [
-            ['label' => 'TOTAL DOSSIERS', 'val' => $stats['total'], 'icon' => 'fa-folder-open', 'class' => 'bg-soft-sky'],
-            ['label' => 'ATTENTE DEVIS', 'val' => $stats['attente_devis'], 'icon' => 'fa-file-invoice-dollar', 'class' => 'bg-soft-info'],
-            ['label' => 'ATTENTE PIÈCES', 'val' => $stats['attente_pieces'], 'icon' => 'fa-clock', 'class' => 'bg-soft-danger'],
-            ['label' => 'ATTENTE REMPLACEMENT', 'val' => $stats['attente_validation_remplacement'], 'icon' => 'fa-exchange-alt', 'class' => 'bg-soft-warning text-warning'],
-            ['label' => 'IRRÉPARABLES', 'val' => $stats['irreparable'], 'icon' => 'fa-times-circle', 'class' => 'bg-soft-danger text-danger'],
-            ['label' => 'LIVRÉS / CLOS', 'val' => $stats['cloture'], 'icon' => 'fa-check-double', 'class' => 'bg-soft-slate'],
-        ];
-
         return view('dashboard.admin', compact(
             'stats',
             'dossiersDiagnostique',
@@ -139,8 +149,7 @@ class AdminDashboardController extends Controller
             'dossiersAttenteRemplacement',
             'stockAlerts',
             'recentDossiers',
-            'techniciens',
-            'adminKpis'
+            'techniciens'
         ));
     }
 

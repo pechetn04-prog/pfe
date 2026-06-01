@@ -1,9 +1,14 @@
 /**
- * SAV Premium - Authentication Design System
- * Consolidates all authentication styles for a professional, high-end look.
+ * SAV Premium - Système de Design de l'Authentification
+ * 
+ * Ce fichier regroupe l'ensemble des règles graphiques et styles visuels appliqués
+ * aux pages de connexion, d'oubli de mot de passe, de réinitialisation et de profil.
+ * Il assure une expérience utilisateur homogène, moderne et haut de gamme.
  */
 
-/* 1. Global Auth Layout */
+/* ==========================================================================
+   1. Structure & Layout Global d'Authentification
+   ========================================================================== */
 .auth-page {
     min-height: 100vh;
     display: flex;
@@ -30,7 +35,9 @@
     }
 }
 
-/* 2. Premium Auth Card */
+/* ==========================================================================
+   2. Carte d'Authentification (Effet Glassmorphism)
+   ========================================================================== */
 .auth-card {
     width: 100%;
     max-width: 480px;
@@ -44,7 +51,9 @@
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 3. Typography & Headers */
+/* ==========================================================================
+   3. En-tête de Formulaire & Titres
+   ========================================================================== */
 .auth-header {
     text-align: center;
     margin-bottom: 35px;
@@ -63,7 +72,9 @@
     font-size: 0.95rem;
 }
 
-/* 4. Form Styling */
+/* ==========================================================================
+   4. Formulaires & Champs de Saisie (Inputs)
+   ========================================================================== */
 .auth-form .form-label {
     font-weight: 700;
     color: #475569;
@@ -90,7 +101,9 @@
     outline: none;
 }
 
-/* 5. Action Buttons - Simplified */
+/* ==========================================================================
+   5. Boutons de Soumission Principaux
+   ========================================================================== */
 .btn-auth-submit {
     background: #1e3a8a;
     color: white;
@@ -110,7 +123,9 @@
     opacity: 0.9;
 }
 
-/* 6. Secondary Actions & Links */
+/* ==========================================================================
+   6. Liens Secondaires & Actions Alternatives
+   ========================================================================== */
 .auth-footer {
     margin-top: 30px;
     text-align: center;
@@ -156,7 +171,9 @@
     border-color: #1e3a8a;
 }
 
-/* 7. Alerts */
+/* ==========================================================================
+   7. Alertes & Messages Flash (Erreur / Succès)
+   ========================================================================== */
 .alert-premium {
     border-radius: 12px;
     padding: 15px;
@@ -165,7 +182,9 @@
     font-weight: 600;
 }
 
-/* 8. Profile Styles */
+/* ==========================================================================
+   8. Profil & Retours Utilisateurs
+   ========================================================================== */
 .profile-container {
     max-width: 600px !important;
 }

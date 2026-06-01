@@ -9,15 +9,17 @@ class DashboardController extends Controller
 {
     /**
      * Redirige l'utilisateur vers le tableau de bord approprié selon son rôle.
-     */
+          */
     public function index()
     {
         $user = Auth::user();
 
+        // Si l'utilisateur n'est pas connecté, retour à la connexion
         if (!$user) {
             return redirect()->route('login');
         }
 
+        // Aiguillage conditionnel selon le rôle défini en base de données
         switch ($user->role) {
             case 'Admin':
                 return redirect()->route('admin.dashboard');
@@ -32,3 +34,4 @@ class DashboardController extends Controller
         }
     }
 }
+

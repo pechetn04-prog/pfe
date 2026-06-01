@@ -1,8 +1,10 @@
-/* 
- * Styles pour la page de recherche publique SAV.
- * Externalisé pour respecter la séparation des préoccupations (Separation of Concerns).
- */
+/* ==========================================================================
+   FEUILLE DE STYLE : INTERFACE DE RECHERCHE ET SUIVI DE DOSSIER PUBLIC
+   ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   STYLE GLOBAL ET MISE EN PAGE - PORTAIL PUBLIC
+   -------------------------------------------------------------------------- */
 body.public-search {
     background-color: #f8fafc;
     font-family: 'Outfit', 'Inter', sans-serif;
@@ -13,25 +15,53 @@ body.public-search {
     justify-content: center;
     margin: 0;
 }
+
+/* Centrage vertical de l'interface sur 100% de la hauteur disponible */
+body.public-search > .d-flex {
+    width: 100%;
+    height: 100vh;
+}
+
+body.public-search .main-content {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.public-search .content-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
  
+/* Conteneur principal de recherche limité à une largeur lisible sur mobile */
 .search-container {
     width: 100%;
     max-width: 480px;
     padding: 20px;
 }
  
+/* --------------------------------------------------------------------------
+   COMPOSANT : CARTE PROFESSIONNELLE DE RECHERCHE (CARD PRO)
+   -------------------------------------------------------------------------- */
 .card-pro {
     background: #ffffff;
     border-radius: 20px;
+    /* Ombre portée douce (soft shadow) multi-niveaux pour un aspect surélevé premium */
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
     padding: 60px 40px;
     text-align: center;
 }
  
+/* Enveloppe de marque / Logo centré */
 .logo-container {
     width: 48px;
     height: 48px;
-    background: #2563eb;
+    background: #1e3a8a;
     color: white;
     border-radius: 10px;
     display: flex;
@@ -41,6 +71,7 @@ body.public-search {
     margin: 0 auto 30px;
 }
  
+/* Titrage principal impactant */
 h1 {
     font-size: 26px;
     font-weight: 800;
@@ -56,12 +87,16 @@ h1 {
     line-height: 1.5;
 }
  
+/* Positionnement absolu de l'icône de recherche interne au champ de saisie */
 .search-input-icon {
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
 }
 
+/* --------------------------------------------------------------------------
+   CHAMPS ET BOUTONS DE SAISIE PROFESSIONNELS (INPUT & BUTTON PRO)
+   -------------------------------------------------------------------------- */
 .input-pro {
     width: 100%;
     background: #f8fafc;
@@ -77,16 +112,17 @@ h1 {
     color: #94a3b8;
 }
  
+/* Focus moderne avec glow bleu */
 .input-pro:focus {
     outline: none;
-    border-color: #2563eb;
+    border-color: #1e3a8a;
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.05);
+    box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.05);
 }
  
 .btn-pro {
     width: 100%;
-    background: #2563eb;
+    background: #1e3a8a;
     color: white;
     border: none;
     border-radius: 12px;
@@ -98,10 +134,14 @@ h1 {
 }
  
 .btn-pro:hover {
-    background: #1d4ed8;
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+    background: #1e3a8a;
+    opacity: 0.9;
+    box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.2);
 }
  
+/* --------------------------------------------------------------------------
+   PIED DE PAGE (FOOTER PORTAIL)
+   -------------------------------------------------------------------------- */
 .footer {
     margin-top: 35px;
     font-size: 13px;
@@ -109,7 +149,7 @@ h1 {
 }
  
 .footer a {
-    color: #2563eb;
+    color: #1e3a8a;
     text-decoration: none;
     font-weight: 600;
 }
@@ -118,11 +158,11 @@ h1 {
     color: #94a3b8 !important;
 }
 
-/* ============================================================
- * VUE DE SUIVI PUBLIC (suivi.blade.php)
- * ============================================================ */
+/* ==========================================================================
+   VUE DE SUIVI PUBLIC DE DOSSIER (suivi.blade.php)
+   ========================================================================== */
 
-/* Surcharge du body pour la page de suivi de dossier */
+/* Surcharge du body spécifique pour l'affichage chronologique et informatif du dossier */
 .suivi-body {
     display: block !important;
     height: auto !important;
@@ -135,6 +175,7 @@ h1 {
     margin: 0 auto;
 }
 
+/* Carte de présentation premium */
 .premium-card {
     background: #ffffff;
     border-radius: 24px;
@@ -143,6 +184,7 @@ h1 {
     height: 100%;
 }
 
+/* En-tête / Bannière affichant le statut actuel du dossier */
 .status-hero {
     background: #f8fafc;
     border-radius: 20px;
@@ -150,12 +192,16 @@ h1 {
     text-align: center;
 }
 
+/* --------------------------------------------------------------------------
+   FIL CHRONOLOGIQUE D'ÉTAT DU DOSSIER (TIMELINE SUIVI)
+   -------------------------------------------------------------------------- */
 .timeline-container {
     position: relative;
     padding-left: 30px;
     margin-top: 20px;
 }
 
+/* Ligne verticale de la timeline */
 .timeline-container::before {
     content: '';
     position: absolute;
@@ -171,6 +217,7 @@ h1 {
     margin-bottom: 25px;
 }
 
+/* Repère visuel (bulle) de la timeline */
 .timeline-marker {
     position: absolute;
     left: -30px;
@@ -179,14 +226,18 @@ h1 {
     height: 14px;
     border-radius: 50%;
     background: white;
-    border: 3px solid #2563eb;
+    border: 3px solid #1e3a8a;
     z-index: 1;
 }
 
+/* Effet lumineux sur le repère le plus récent (premier élément de la liste) */
 .timeline-item:first-child .timeline-marker {
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1);
 }
 
+/* --------------------------------------------------------------------------
+   LISTES ET RANGÉES D'INFORMATIONS DU DOSSIER (INFO LIST)
+   -------------------------------------------------------------------------- */
 .info-list {
     margin-top: 25px;
 }
@@ -215,6 +266,7 @@ h1 {
     font-size: 14px;
 }
 
+/* En-têtes de sous-section avec espacements iconographiques */
 .section-title {
     font-weight: 800;
     font-size: 18px;
@@ -225,8 +277,8 @@ h1 {
     gap: 10px;
 }
 
-/* Badge adouci */
+/* Utilitaires de couleur */
 .bg-soft-primary {
-    background-color: rgba(37, 99, 235, 0.1) !important;
+    background-color: rgba(30, 58, 138, 0.1) !important;
 }
 

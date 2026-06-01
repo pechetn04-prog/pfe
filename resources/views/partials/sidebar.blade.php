@@ -1,7 +1,5 @@
 @auth
-    @php
-        $societe = \App\Models\ParametreSociete::first();
-    @endphp
+    
     <div class="sidebar flex-column flex-shrink-0 p-0 shadow-sm vh-100 sticky-top">
         {{-- Header Logo (Fixe) --}}
         <div class="p-4">

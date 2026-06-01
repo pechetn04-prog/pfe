@@ -5,28 +5,27 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+// Gestion des notifications des utilisateurs.
 class NotificationController extends Controller
 {
-    /**
-     * Marquer une notification comme lue.
-     */
+    // Marque une notification spécifique comme lue.
     public function markAsRead($id)
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
+        
+        // Recherche la notification et la marque comme lue
         $notification = $user->notifications()->findOrFail($id);
         $notification->markAsRead();
 
         return response()->json(['success' => true]);
     }
 
-    /**
-     * Marquer toutes les notifications comme lues.
-     */
+    // Marque toutes les notifications de l'utilisateur comme lues.
     public function markAllAsRead()
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
+        
+        // Marque en masse toutes les notifications non lues comme lues
         $user->unreadNotifications->markAsRead();
 
         return response()->json(['success' => true]);

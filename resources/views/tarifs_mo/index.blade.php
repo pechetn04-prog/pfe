@@ -30,7 +30,7 @@
                     <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold shadow-sm">FILTRER</button>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route('admin.tarifs_mo.index') }}" class="btn btn-light border-0 w-100 rounded-3 fw-bold btn-mo-raz">RAZ</a>
+                    <a href="{{ route('admin.tarifs_mo.index') }}" class="btn btn-light border-0 w-100 rounded-3 fw-bold btn-mo-raz">Réinitialiser</a>
                 </div>
             </form>
         </div>
@@ -43,7 +43,6 @@
                     <tr class="small text-muted text-uppercase">
                         <th class="ps-4">Type d'intervention</th>
                         <th>Montant</th>
-                        <th class="text-center">Statut</th>
                         <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
@@ -52,21 +51,8 @@
                     <tr>
                         <td class="ps-4 fw-bold">{{ $tarif->type_intervention }}</td>
                         <td class="fw-bold text-primary">{{ number_format($tarif->montant, 3, ',', ' ') }} DT</td>
-                        <td class="text-center">
-                            @if($tarif->actif)
-                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 small fw-bold">
-                                    <i class="fas fa-check-circle me-1"></i> ACTIF
-                                </span>
-                            @else
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-1 small fw-bold">
-                                    <i class="fas fa-times-circle me-1"></i> INACTIF
-                                </span>
-                            @endif
-                        </td>
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end align-items-center gap-3">
-
-
                                 <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#editModal{{ $tarif->id }}">
                                     <i class="fas fa-edit me-1"></i> Modifier
                                 </button>
@@ -88,7 +74,7 @@
                                             </div>
                                             <div class="mb-0">
                                                 <label class="form-label small fw-bold text-muted text-uppercase">Montant (DT)</label>
-                                                <input type="number" step="0.001" name="montant" class="form-control bg-light border-0" value="{{ $tarif->montant }}" required>
+                                                <input type="number" min="0" step="0.001" name="montant" class="form-control bg-light border-0" value="{{ $tarif->montant }}" required>
                                             </div>
                                         </div>
                                         <div class="modal-footer border-0 pt-0">
@@ -120,7 +106,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Montant (DT)</label>
-                    <input type="number" step="0.001" name="montant" class="form-control" required>
+                    <input type="number" min="0" step="0.001" name="montant" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">

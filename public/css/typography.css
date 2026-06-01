@@ -68,15 +68,15 @@ p {
 }
 
 /* === 3. Optimisation Typographique des Tableaux de Données (Dossiers/Stock) === */
-/* Condense les en-têtes et lignes pour afficher plus d'informations sans scroll */
+/* Condense les en-têtes et lignes tout en maintenant une excellente lisibilité */
 .table:not(.table-statistiques) th {
     padding: 0.75rem 1rem !important;
-    font-size: 0.7rem !important;
+    font-size: 0.8rem !important;
 }
 
 .table:not(.table-statistiques) td {
     padding: 0.65rem 1rem !important;
-    font-size: 0.85rem !important;
+    font-size: 0.95rem !important;
 }
 
 .card-body {

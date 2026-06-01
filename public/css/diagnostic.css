@@ -1,9 +1,10 @@
 /* 
- * Diagnostic Premium Design System
- * Focus: Technical, clean, and professional.
+ * SAV Premium - Système de Design du Diagnostic Technique
+ * Focus : Interface technique, claire, moderne et ergonomique pour l'atelier.
  */
 
 :root {
+    /* Variables de design system : palette de couleurs Slate et Primary */
     --slate-50: #f8fafc;
     --slate-100: #f1f5f9;
     --slate-200: #e2e8f0;
@@ -12,11 +13,13 @@
     --primary-hover: #2563eb;
 }
 
+/* Zone d'affichage globale du module de diagnostic */
 .diagnostic-container {
     background-color: var(--slate-100);
     min-height: 100vh;
 }
 
+/* Carte de contenu principale (premium avec ombrage et micro-animation) */
 .card-premium {
     border: none;
     border-radius: 1rem;
@@ -24,10 +27,12 @@
     transition: transform 0.2s ease;
 }
 
+/* Soulèvement au survol de la carte */
 .card-premium:hover {
     transform: translateY(-2px);
 }
 
+/* Groupes de libellés pour les informations techniques */
 .info-group label {
     font-size: 0.75rem;
     font-weight: 700;
@@ -37,17 +42,20 @@
     display: block;
 }
 
+/* Zone d'importation glisser-déposer de la photo de la panne */
 .upload-area {
     border: 2px dashed #cbd5e1;
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
+/* Changement de couleur au survol de la zone de dépôt */
 .upload-area:hover {
     border-color: var(--primary-color);
     background-color: #eff6ff;
 }
 
+/* Boutons d'action technique entièrement arrondis */
 .btn-premium {
     border-radius: 50rem;
     padding: 0.75rem 2rem;
@@ -55,11 +63,13 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Champs et sélecteurs de pièces à intégrer au diagnostic */
 .piece-row select, .piece-row input {
     border: none;
     background-color: #f8fafc;
 }
 
+/* Ligne d'ajout de frais de main-d'œuvre */
 .ligne-mo-row {
     display: flex;
     gap: 1rem;
@@ -71,6 +81,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
+/* Boutons de décision (Réparable / Irréparable) */
 .decision-btn {
     padding: 1rem;
     border-radius: 1rem;
@@ -79,6 +90,8 @@
 }
 
 /* --- OVERRIDES & ADDITIONAL STYLES (MOVED FROM create.blade.php) --- */
+
+/* Sélecteur d'état interactif (Bouton d'exclusion de garantie) */
 .status-selector {
     background-color: var(--btn-bg) !important;
     border: 2px solid transparent !important;
@@ -86,6 +99,7 @@
     cursor: pointer;
 }
 
+/* Cercle de l'icône dans le sélecteur d'état */
 .status-selector .icon-circle {
     width: 35px;
     height: 35px;
@@ -98,47 +112,57 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
+/* Texte interne du sélecteur */
 .status-selector .title {
     color: var(--btn-color);
 }
 
+/* Style appliqué lorsque l'état est sélectionné (coché) */
 .btn-check:checked+.status-selector {
     border-color: var(--btn-color) !important;
     transform: translateY(-3px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+/* Alerte critique rouge pour les exclusions de garanties */
 .alert-diagnostic-danger {
     border-radius: 12px !important;
     background-color: #fef2f2 !important;
     border-left: 4px solid #ef4444 !important;
 }
 
+/* Espacement interligne optimisé pour la lisibilité */
 .line-height-16 {
     line-height: 1.6 !important;
 }
 
+/* Barre latérale flottante des infos du diagnostic */
 .card-diagnostic-sidebar {
     border-radius: 16px !important;
     top: 1.5rem !important;
 }
 
+/* Carte de contenu auxiliaire */
 .card-diagnostic-box {
     border-radius: 16px !important;
 }
 
+/* Curseur indicateur d'interactivité */
 .cursor-pointer-custom {
     cursor: pointer !important;
 }
 
+/* Typographie réduite pour les labels secondaires */
 .font-size-065 {
     font-size: 0.65rem !important;
 }
 
+/* Espacement des lettres pour les éléments de texte */
 .letter-spacing-05 {
     letter-spacing: 0.5px !important;
 }
 
+/* Largeurs de colonnes spécifiques pour les grilles d'ajouts */
 .w-col-120 {
     width: 120px !important;
 }
@@ -151,6 +175,7 @@
     width: 180px !important;
 }
 
+/* Boutons ronds de suppression de ligne */
 .btn-remove-circle {
     width: 32px !important;
     height: 32px !important;
@@ -159,42 +184,53 @@
     justify-content: center !important;
 }
 
+/* Variables de couleurs personnalisées : Bouton OUI (Vert) */
 .status-selector-oui {
     --btn-color: #10b981 !important;
     --btn-bg: #f0fdf4 !important;
 }
 
+/* Variables de couleurs personnalisées : Bouton NON (Rouge) */
 .status-selector-non {
     --btn-color: #ef4444 !important;
     --btn-bg: #fef2f2 !important;
 }
 
+/* Masquage utilitaire d'éléments */
 .display-none {
     display: none !important;
 }
 
+/* Taille de police standard réduite */
 .font-size-075 {
     font-size: 0.75rem !important;
 }
 
+/* Rayon de courbure des fenêtres modales */
 .modal-diagnostic-radius {
     border-radius: 20px !important;
 }
 
+/* Contrainte de largeur maximale pour le conteneur principal */
 .container-max-1000 {
     max-width: 1000px !important;
 }
 
+/* Cartes de rendu final sur la fiche de diagnostic */
 .card-diagnostic-show-box {
     border-radius: 14px !important;
 }
 
+/* Hauteur minimale pour les zones de constat */
 .constat-body {
     min-height: 100px !important;
+    white-space: pre-wrap !important;
+    text-align: left !important;
+    display: block !important;
 }
 
+/* Boîte de recommandations techniques (couleur miel chaleureuse) */
 .recommandation-body {
     background: #fffbeb !important;
     border: 1px solid #fde68a !important;
 }
-

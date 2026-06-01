@@ -30,7 +30,7 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label class="form-label fw-bold text-muted small text-uppercase">Nom complet <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control bg-light border-0" value="{{ old('name') }}" required placeholder="Ex: Jean Dupont">
+                        <input type="text" name="name" class="form-control bg-light border-0" value="{{ old('name') }}" required placeholder="foulen ben foulen">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold text-muted small text-uppercase">Adresse Email <span class="text-danger">*</span></label>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold text-muted small text-uppercase">Téléphone</label>
-                        <input type="text" name="telephone" class="form-control bg-light border-0" value="{{ old('telephone') }}" placeholder="Ex: 05 55 55 55 55">
+                        <input type="text" name="telephone" class="form-control bg-light border-0" value="{{ old('telephone') }}" placeholder="00 000 000">
                     </div>
                 </div>
 

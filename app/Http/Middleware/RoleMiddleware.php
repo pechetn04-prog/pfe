@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 // Ce middleware filtre les requêtes HTTP selon le rôle de l'utilisateur connecté (Admin, Agent, Technicien, Client).
-// Assure la sécurité des routes et prévient les accès non autorisés (UC11 / Rôles & Permissions).
+// Assure la sécurité des routes et prévient les accès non autorisés (Rôles & Permissions).
 class RoleMiddleware
 {
     // Gère la requête entrante.

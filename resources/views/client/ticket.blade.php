@@ -9,16 +9,15 @@
 
                 {{-- En-tête avec navigation --}}
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-3">
                         <a href="{{ route('client.dashboard') }}"
-                            class="btn btn-white border shadow-sm rounded-pill p-2 d-flex align-items-center justify-content-center me-3 btn-back-ticket">
+                            class="btn btn-white border shadow-sm rounded-pill d-flex align-items-center justify-content-center btn-back-ticket">
                             <i class="fas fa-arrow-left text-primary"></i>
                         </a>
-                        <div>
-                            <h1 class="h3 fw-bold mb-0 text-dark">Suivi de réparation</h1>
-                            <span
-                                class="badge bg-soft-primary text-primary px-3 py-1 rounded-pill small">#{{ $dossier->num_dossier }}</span>
-                        </div>
+                        <h1 class="h3 fw-bold mb-0 text-dark d-flex align-items-center flex-wrap gap-2">
+                            <span>Suivi de réparation</span>
+                            <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-pill small fw-semibold">#{{ $dossier->num_dossier }}</span>
+                        </h1>
                     </div>
                     <div class="text-end d-none d-md-block">
                         <div class="text-muted small mb-1">Reçu le</div>
@@ -189,15 +188,60 @@
                             </div>
                             <div class="card-body p-4 pt-0">
                                 <div class="custom-timeline">
+                                    @php
+                                        $statusLabels = [
+                                            'RECU' => 'Reçu',
+                                            'EN_DIAGNOSTIC' => 'En Diagnostic',
+                                            'EN_ATTENTE_DEVIS' => 'Attente Devis',
+                                            'EN_REPARATION' => 'En Réparation',
+                                            'REPARE' => 'Réparé',
+                                            'LIVRE' => 'Livré',
+                                            'CLOTURE' => 'Clôturé',
+                                            'ATTENTE_PIECE' => 'Attente Pièces',
+                                            'IRREPARABLE' => 'Irréparable',
+                                            'DEVIS_REFUSE' => 'Devis Refusé',
+                                            'REMPLACEMENT_PRET' => 'Remplacement Prêt',
+                                            'REMPLACEMENT_VALIDE' => 'Remplacement Validé',
+                                            'REMPLACEMENT_REFUSE' => 'Remplacement Refusé',
+                                            'FACTURE' => 'Facturé',
+                                        ];
+                                        $statusClasses = [
+                                            'RECU' => 'bg-soft-secondary text-secondary',
+                                            'EN_DIAGNOSTIC' => 'bg-soft-secondary text-secondary',
+                                            'EN_ATTENTE_DEVIS' => 'bg-soft-secondary text-secondary',
+                                            'EN_REPARATION' => 'bg-soft-secondary text-secondary',
+                                            'REPARE' => 'bg-soft-secondary text-secondary',
+                                            'LIVRE' => 'bg-soft-secondary text-secondary',
+                                            'CLOTURE' => 'bg-soft-secondary text-secondary',
+                                            'ATTENTE_PIECE' => 'bg-soft-secondary text-secondary',
+                                            'IRREPARABLE' => 'bg-soft-secondary text-secondary',
+                                            'DEVIS_REFUSE' => 'bg-soft-secondary text-secondary',
+                                            'REMPLACEMENT_PRET' => 'bg-soft-secondary text-secondary',
+                                            'REMPLACEMENT_VALIDE' => 'bg-soft-secondary text-secondary',
+                                            'REMPLACEMENT_REFUSE' => 'bg-soft-secondary text-secondary',
+                                            'FACTURE' => 'bg-soft-secondary text-secondary',
+                                        ];
+                                    @endphp
                                     @forelse($dossier->suivi->sortByDesc('created_at') as $suivi)
+                                        @php
+                                            $statutKey = $suivi->nouveau_statut;
+                                            $badgeClass = $statusClasses[$statutKey] ?? 'bg-soft-secondary text-secondary';
+                                            $statutLabel = $statusLabels[$statutKey] ?? $statutKey;
+                                        @endphp
                                         <div class="timeline-item">
                                             <div class="timeline-marker"></div>
                                             <div class="timeline-content pb-4">
                                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                                    <span
-                                                        class="small fw-bold text-primary">{{ \Carbon\Carbon::parse($suivi->created_at)->diffForHumans() }}</span>
-                                                    <span
-                                                        class="text-muted timeline-micro-time">{{ \Carbon\Carbon::parse($suivi->created_at)->format('H:i') }}</span>
+                                                    @if($statutKey)
+                                                        <span class="badge {{ $badgeClass }} px-3 py-1 rounded-pill small fw-bold">
+                                                            {{ $statutLabel }}
+                                                        </span>
+                                                    @else
+                                                        <div></div>
+                                                    @endif
+                                                    <span class="text-muted timeline-micro-time fw-bold">
+                                                        <i class="far fa-calendar-alt me-1"></i>{{ \Carbon\Carbon::parse($suivi->created_at)->format('d/m/Y H:i') }}
+                                                    </span>
                                                 </div>
                                                 <div class="text-dark small">{{ $suivi->commentaire }}</div>
                                             </div>
@@ -285,6 +329,24 @@
                                                 <div class="text-start">
                                                     <div class="fw-bold text-dark small">Devis de Réparation</div>
                                                     <div class="text-muted doc-sub-text">Offre tarifaire</div>
+                                                </div>
+                                            </div>
+                                            <i class="fas fa-download text-muted small"></i>
+                                        </a>
+                                    @endif
+
+                                    {{-- Rapport d'Intervention --}}
+                                    @if($dossier->intervention)
+                                        <a href="{{ route('dossiers.intervention.pdf', $dossier->id) }}"
+                                            class="btn btn-white border d-flex align-items-center justify-content-between p-3 rounded-4 transition-all"
+                                            target="_blank">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-soft-primary text-primary rounded-3 p-2 me-3">
+                                                    <i class="fas fa-tools"></i>
+                                                </div>
+                                                <div class="text-start">
+                                                    <div class="fw-bold text-dark small">Rapport d'Intervention</div>
+                                                    <div class="text-muted doc-sub-text">Détail des réparations effectuées</div>
                                                 </div>
                                             </div>
                                             <i class="fas fa-download text-muted small"></i>

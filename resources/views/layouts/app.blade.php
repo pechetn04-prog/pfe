@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bibliothèques de styles externes (Bootstrap, FontAwesome) -->
+    <!-- Bibliothèques de styles externes (Bootstrap, FontAwesome) bibliothèque d'icônes)-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -58,7 +58,7 @@
 
 </head>
 
-<body>
+<body class="@yield('body-class')">
     <div class="d-flex">
         <!-- Barre Latérale (Sidebar) -->
         @include('partials.sidebar')
@@ -116,14 +116,30 @@
                                     @endif
                                 </li>
                                 <div id="notifications-list" style="max-height: 350px; overflow-y: auto;">
-                                    @forelse(auth()->user()->notifications->take(10) as $notification)
+                                    @forelse(auth()->user()->unreadNotifications->take(10) as $notification)
+                                        @php
+                                            $isClient = auth()->user()->role === 'Client';
+                                            $isTech = auth()->user()->role === 'Technicien';
+                                            
+                                            if ($isClient) {
+                                                $dossierId = $notification->data['dossier_id'] ?? null;
+                                                $notifUrl = $dossierId ? route('client.ticket', $dossierId) : '#';
+                                                $cursorType = $dossierId ? 'pointer' : 'default';
+                                            } elseif ($isTech) {
+                                                $notifUrl = '#';
+                                                $cursorType = 'default';
+                                            } else {
+                                                $notifUrl = $notification->data['url'] ?? '#';
+                                                $cursorType = 'pointer';
+                                            }
+                                        @endphp
                                         <li class="px-3 py-3 border-bottom notification-item {{ $notification->read_at ? 'bg-white opacity-75' : 'bg-light' }}"
-                                            onclick="markRead('{{ $notification->id }}', '{{ $notification->data['url'] ?? '#' }}')"
-                                            style="cursor: pointer; transition: all 0.2s;">
+                                            onclick="markRead('{{ $notification->id }}', '{{ $notifUrl }}')"
+                                            style="cursor: {{ $cursorType }}; transition: all 0.2s;">
                                             <div class="d-flex justify-content-between align-items-start mb-1">
                                                 <div
                                                     class="small fw-bold {{ $notification->read_at ? 'text-muted' : 'text-dark' }}">
-                                                    {{ $notification->data['title'] ?? 'Notification' }}</div>
+                                                    {{ $notification->data['title'] ?? '' }}</div>
                                                 @if(!$notification->read_at)
                                                     <div class="bg-primary rounded-circle" style="width: 8px; height: 8px;"></div>
                                                 @endif
@@ -131,6 +147,8 @@
                                             <div class="text-muted small mb-1" style="font-size: 0.75rem; line-height: 1.4;">
                                                 {{ $notification->data['message'] ?? '' }}</div>
                                             <div class="text-muted extra-small"><i
+                                                                      
+
                                                     class="far fa-clock me-1"></i>{{ $notification->created_at->diffForHumans() }}
                                             </div>
                                         </li>
@@ -138,10 +156,7 @@
                                         <li class="px-3 py-5 text-center text-muted fw-bold">Aucune alerte</li>
                                     @endforelse
                                 </div>
-                                <li class="p-2 text-center">
-                                    <a href="#" class="text-primary small fw-bold text-decoration-none">Voir tout
-                                        l'historique</a>
-                                </li>
+                               
                             </ul>
                         </div>
 
@@ -192,20 +207,22 @@
             <!-- Content Area -->
             <div class="content-area py-4 px-4">
 
-                @if(session('success'))
-                    <div class="alert alert-premium alert-premium-success alert-dismissible fade show">
-                        <i class="fas fa-check-circle alert-icon"></i>
-                        <div class="alert-content">{{ session('success') }}</div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
+                @if(!Route::is('client.suivi') && !Route::is('client.search'))
+                    @if(session('success'))
+                        <div class="alert alert-premium alert-premium-success alert-dismissible fade show">
+                            <i class="fas fa-check-circle alert-icon"></i>
+                            <div class="alert-content">{{ session('success') }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
 
-                @if(session('error'))
-                    <div class="alert alert-premium alert-premium-danger alert-dismissible fade show">
-                        <i class="fas fa-exclamation-triangle alert-icon"></i>
-                        <div class="alert-content">{{ session('error') }}</div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
+                    @if(session('error'))
+                        <div class="alert alert-premium alert-premium-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-triangle alert-icon"></i>
+                            <div class="alert-content">{{ session('error') }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
                 @endif
 
                 @yield('content')
@@ -219,6 +236,7 @@
         // Passage du Token CSRF au JS externe
         window.csrfToken = '{{ csrf_token() }}';
     </script>
+    <script src="{{ asset('js/alerts.js') }}"></script>
     <script src="{{ asset('js/notifications.js') }}"></script>
     @stack('scripts')
 </body>

@@ -14,29 +14,84 @@
                 <small class="text-muted fw-bold">Bienvenue, {{ auth()->user()->name }} —
                     {{ now()->translatedFormat('d F Y') }}</small>
             </div>
-            <div class="text-end">
-                <span class="badge bg-soft-info py-2 px-3 rounded-pill fw-bold font-size-08">
-                    <i class="fas fa-microscope me-2"></i>{{ $dossiersEnCours }} Dossiers Actifs
-                </span>
-            </div>
+           
         </div>
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-4">
-            @foreach($tech_kpis as $k)
-                <div class="col">
-                    <div class="card kpi-card shadow-sm h-100">
-                        <div class="card-body d-flex align-items-center p-3">
-                            <div class="kpi-icon-wrapper {{ $k['class'] }}">
-                                <i class="fas {{ $k['icon'] }} fa-lg"></i>
-                            </div>
-                            <div>
-                                <div class="kpi-value">{{ $k['val'] }}</div>
-                                <div class="kpi-label">{{ $k['label'] }}</div>
-                            </div>
+            {{-- Total Assignés --}}
+            <div class="col">
+                <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="kpi-icon-wrapper bg-soft-primary">
+                            <i class="fas fa-briefcase fa-lg"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ $totalAssigne }}</div>
+                            <div class="kpi-label">Total Assignés</div>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            </div>
+
+            {{-- En Diagnostic --}}
+            <div class="col">
+                <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="kpi-icon-wrapper bg-soft-warning">
+                            <i class="fas fa-search fa-lg"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ $aDiagnostiquer }}</div>
+                            <div class="kpi-label">En Diagnostic</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Attente Devis --}}
+            <div class="col">
+                <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="kpi-icon-wrapper bg-soft-info">
+                            <i class="fas fa-file-invoice-dollar fa-lg"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ $attenteDevis }}</div>
+                            <div class="kpi-label">Attente Devis</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- En Réparation --}}
+            <div class="col">
+                <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="kpi-icon-wrapper bg-soft-success">
+                            <i class="fas fa-tools fa-lg"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ $enReparation }}</div>
+                            <div class="kpi-label">En Réparation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Attente Pièces --}}
+            <div class="col">
+                <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="kpi-icon-wrapper bg-soft-danger">
+                            <i class="fas fa-hourglass-half fa-lg"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ $attentePieces }}</div>
+                            <div class="kpi-label">Attente Pièces</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row g-4 mb-4">

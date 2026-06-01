@@ -1,15 +1,4 @@
-/* ================================================================
- * theme.css — Fichier de design centralisé pour le SAV
- * ================================================================
- * COMMENT ÇA MARCHE ?
- * On définit des "variables CSS" (aussi appelées Custom Properties)
- * dans :root (la racine du document = toute la page).
- * Ensuite, dans n'importe quel autre fichier CSS, on écrit :
- *     color: var(--btn-primary);
- * au lieu de répéter :
- *     color: #2563eb;
- * Si on veut changer le bleu partout → on change UNIQUEMENT ici.
- * ================================================================ */
+
 
 :root {
 
@@ -31,9 +20,11 @@
     --color-red-700: #b91c1c;
     --color-red-100: #fee2e2;
 
+    /* Orange vif et orange pastel - pour signaler l'attention ou la mise en attente de pièce */
     --color-orange-500: #f97316;
     --color-orange-100: #ffedd5;
 
+    /* Jaune vif et jaune pastel - pour signaler les avertissements de garantie exclue */
     --color-yellow-400: #facc15;
     --color-yellow-100: #fef9c3;
 
@@ -59,7 +50,7 @@
     --text-main: #1e293b;
     --text-muted: #64748b;
     --bg-page: #f8fafc;
-    --bg-card: #ffffff;
+    --bg-card: #ff0000;
     --border-color: #e2e8f0;
     --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 

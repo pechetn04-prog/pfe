@@ -18,7 +18,7 @@
         }
 
         .header {
-            border-bottom: 2px solid #2563eb;
+            border-bottom: 2px solid #ff0000;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
@@ -37,7 +37,7 @@
         .company-name {
             font-size: 22px;
             font-weight: bold;
-            color: #2563eb;
+            color: #ff0000;
             margin-bottom: 5px;
         }
 
@@ -62,7 +62,7 @@
         }
 
         .table th {
-            background-color: #2563eb;
+            background-color: #000000;
             color: white;
             padding: 10px;
             text-align: left;
@@ -91,7 +91,7 @@
         .grand-total {
             font-size: 15px;
             font-weight: bold;
-            color: #2563eb;
+            color: #ff0000;
             background-color: #eff6ff;
             padding: 10px;
             border-radius: 5px;
@@ -118,13 +118,14 @@
 
 <body>
     <div class="invoice-box">
-        <table style="width: 100%; border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px;">
+        <table style="width: 100%; border-bottom: 2px solid #fc0000; padding-bottom: 15px; margin-bottom: 20px;">
             <tr>
                 <td style="width: 55%; vertical-align: top;">
                     @if($company && $company->logo)
                         <img src="{{ public_path('storage/' . $company->logo) }}" alt="Logo" style="max-height: 80px; margin-bottom: 8px;"><br>
                     @else
-                        <div class="company-name" style="font-size: 22px; font-weight: bold; color: #2563eb; margin-bottom: 5px;">{{ optional($company)->nom_societe ?? 'MAISON TEL' }}</div>
+                        <div class="company-name" style="font-size: 22px; font-weight: bold; 
+                        color: #ff0000; margin-bottom: 5px;">{{ optional($company)->nom_societe ?? 'MAISON TEL' }}</div>
                     @endif
                     <div style="color: #555; font-size: 11px; line-height: 1.4;">
                         {{ optional($company)->adresse ?? 'Adresse non configurée' }}<br>
@@ -135,7 +136,8 @@
                     </div>
                 </td>
                 <td style="width: 45%; text-align: right; vertical-align: top;">
-                    <div class="invoice-title" style="font-size: 22px; font-weight: bold; color: #2563eb; margin-bottom: 5px;">DEVIS DE RÉPARATION</div>
+                    <div class="invoice-title" style="font-size: 22px; font-weight: bold; 
+                    color: #ff0000; margin-bottom: 5px;">DEVIS DE RÉPARATION</div>
                     <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 5px;">#{{ $devis->numero }}</div>
                     <div style="color: #555; font-size: 11px; line-height: 1.4;">
                         Date : {{ \Carbon\Carbon::parse($devis->created_at)->format('d/m/Y') }}<br>
@@ -148,7 +150,7 @@
 
         <div class="client-info">
             <div style="float: left; width: 50%;">
-                <div style="font-weight: bold; color: #2563eb; margin-bottom: 5px; font-size: 10px; text-transform: uppercase;">CLIENT :</div>
+                <div style="font-weight: bold; color: #ff0000; margin-bottom: 5px; font-size: 10px; text-transform: uppercase;">CLIENT :</div>
                 <div style="font-size: 13px; font-weight: bold; color: #1a2332;">{{ $devis->dossier->client->name ?? '—' }}</div>
                 @if($devis->dossier->client->email)
                     <div style="margin-top: 3px;">Email : {{ $devis->dossier->client->email }}</div>
@@ -156,7 +158,7 @@
                 <div style="margin-top: 3px;">Tél : {{ $devis->dossier->client->telephone ?? '—' }}</div>
             </div>
             <div style="float: right; width: 50%; text-align: right;">
-                <div style="font-weight: bold; color: #2563eb; margin-bottom: 5px; font-size: 10px; text-transform: uppercase;">APPAREIL & IDENTIFICATION :</div>
+                <div style="font-weight: bold; color: #ff0000; margin-bottom: 5px; font-size: 10px; text-transform: uppercase;">APPAREIL & IDENTIFICATION :</div>
                 <div style="font-size: 13px; font-weight: bold; color: #1a2332;">{{ $devis->dossier->appareil->modele ?? '—' }}</div>
                 <div style="margin-top: 3px;">IMEI : <span style="font-family: monospace;">{{ $devis->dossier->imei ?? '—' }}</span></div>
                 @if($devis->dossier->garantie_annulee)
@@ -194,27 +196,26 @@
 
 
 
-        <div class="totals">
-            <div class="total-row">
-                <span style="float: left;">Total Hors Taxe :</span>
-                <span style="float: right;">{{ number_format($htTotal, 3, ',', ' ') }}
-                    {{ optional($company)->devise ?? 'DT' }}</span>
-                <div class="clear"></div>
-            </div>
-            <div class="total-row">
-                <span style="float: left;">TVA (19%) :</span>
-                <span style="float: right;">{{ number_format($tvaTotal, 3, ',', ' ') }}
-                    {{ optional($company)->devise ?? 'DT' }}</span>
-                <div class="clear"></div>
-            </div>
-
-            <div class="grand-total">
-                <span style="float: left;">TOTAL TTC :</span>
-                <span style="float: right;">{{ number_format($devis->montant_total, 3, ',', ' ') }}
-                    {{ optional($company)->devise ?? 'DT' }}</span>
-                <div class="clear"></div>
-            </div>
-        </div>
+        <table style="float: right; width: 280px; margin-top: 25px; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 6px 0; border-bottom: 1px solid #eee; text-align: left; font-size: 11px;">Total Hors Taxe :</td>
+                <td style="padding: 6px 0; border-bottom: 1px solid #eee; text-align: right; font-size: 11px;">{{ number_format($htTotal, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 6px 0; border-bottom: 1px solid #eee; text-align: left; font-size: 11px;">TVA (19%) :</td>
+                <td style="padding: 6px 0; border-bottom: 1px solid #eee; text-align: right; font-size: 11px;">{{ number_format($tvaTotal, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 8px;">
+                    <table style="width: 100%; background-color: #eff6ff; border-radius: 5px; padding: 10px; border-collapse: collapse;">
+                        <tr>
+                            <td style="font-size: 15px; font-weight: bold; color: #ff0000; text-align: left; padding: 0;">TOTAL TTC :</td>
+                            <td style="font-size: 15px; font-weight: bold; color: #ff0000; text-align: right; padding: 0;">{{ number_format($devis->montant_total, 3, ',', ' ') }} {{ optional($company)->devise ?? 'DT' }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
         <div class="clear"></div>
 
         <div style="margin-top: 50px; border-top: 1px dashed #ddd; padding-top: 15px;">

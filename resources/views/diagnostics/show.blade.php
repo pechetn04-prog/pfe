@@ -26,6 +26,8 @@
             </div>
             <!-- Actions : Génération PDF et saisie (si non fait) -->
             <div class="d-flex gap-2">
+                <!-- Avec target="_blank" (s'ouvre dans un nouvel onglet) -->
+
                 <a href="{{ route('dossiers.diagnostic.pdf', $dossier->id) }}" target="_blank"
                     class="btn btn-sm btn-outline-danger px-3">
                     <i class="fas fa-file-pdf me-1"></i> PDF
@@ -48,107 +50,103 @@
                 @endif
             </div>
         @else
-
-
-            <div class="row g-4">
-
-                {{-- Constat --}}
-                <div class="col-md-8">
-                    <div class="card border-0 shadow-sm h-100 card-diagnostic-show-box">
-                        <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                            <h6 class="fw-bold"><i class="fas fa-clipboard me-2 text-primary"></i>Constat Technique</h6>
+        
+             {{-- Carte Unique Fusionnée : Constat & Informations --}}
+        <div class="card border-0 shadow-sm mb-4 card-diagnostic-show-box">
+            <div class="card-body p-4">
+                {{-- Section 1 : Informations --}}
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-info-circle me-2 text-primary"></i>Informations</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">Technicien Expert</div>
+                            <div class="fw-bold text-dark">{{ $dossier->technicien->name ?? '—' }}</div>
+                            <div class="small text-secondary mt-1"><i class="far fa-clock me-1"></i>Le {{ $diag->created_at->format('d/m/Y à H:i') }}</div>
                         </div>
-                        <div class="card-body px-4 pb-4">
-                            <div class="p-3 rounded-3 bg-light border constat-body">
-                                {{ $diag->constat ?? $diag->constat_technique ?? 'Non renseigné' }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Infos dossier --}}
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100 card-diagnostic-show-box">
-                        <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                            <h6 class="fw-bold"><i class="fas fa-info-circle me-2 text-primary"></i>Informations</h6>
-                        </div>
-                        <div class="card-body px-4 pb-4">
-                            <div class="mb-3">
-                                <div class="small text-muted">Technicien Expert</div>
-                                <div class="fw-bold text-dark">{{ $dossier->technicien->name ?? '—' }}</div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="small text-muted">Date du Diagnostic</div>
-                                <div class="fw-semibold text-secondary">{{ $diag->created_at->format('d/m/Y à H:i') }}</div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="small text-muted">IMEI / SN</div>
-                                <div class="fw-semibold font-monospace text-dark">{{ $dossier->imei }}</div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="small text-muted">Garantie</div>
+                        
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">IMEI / SN & Garantie</div>
+                            <div class="fw-bold font-monospace text-dark mb-1">{{ $dossier->imei }}</div>
+                            <div>
                                 @if($dossier->garantie_annulee || !empty($diag->motif_exclusion))
-                                    <span class="badge bg-warning text-dark rounded-pill fw-bold">
-                                        GARANTIE EXCLUE
+                                    <span class="badge bg-warning text-dark rounded-pill fw-bold text-uppercase" style="font-size: 0.65rem;">
+                                        Garantie Exclue
                                     </span>
                                 @elseif($dossier->sous_garantie)
-                                    <span class="badge bg-success rounded-pill">
+                                    <span class="badge bg-success rounded-pill fw-bold text-uppercase" style="font-size: 0.65rem;">
                                         Sous garantie
                                     </span>
                                 @else
-                                    <span class="badge bg-secondary rounded-pill">
+                                    <span class="badge bg-secondary rounded-pill fw-bold text-uppercase" style="font-size: 0.65rem;">
                                         Hors garantie
                                     </span>
                                 @endif
                             </div>
-                            <div class="mb-3">
-                                <div class="small text-muted">Décision d'Expertise</div>
-                                @if($isReparable)
-                                    @if($isGarantieValide)
-                                        <span class="badge bg-success text-white rounded-pill fw-bold d-block text-wrap text-start p-2">
-                                            <i class="fas fa-tools me-1"></i> APPAREIL RÉPARABLE <br>
-                                            <small class="fw-normal opacity-75">Réparation gratuite (sous garantie)</small>
-                                        </span>
-                                    @else
-                                        <span class="badge bg-primary text-white rounded-pill fw-bold d-block text-wrap text-start p-2">
-                                            <i class="fas fa-file-invoice-dollar me-1"></i> APPAREIL RÉPARABLE <br>
-                                            <small class="fw-normal opacity-75">Hors garantie (Attente Devis)</small>
-                                        </span>
-                                    @endif
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">Décision d'Expertise</div>
+                            @if($isReparable)
+                                @if($isGarantieValide)
+                                    <span class="badge bg-success text-white rounded-pill fw-bold d-block text-wrap text-start p-2" style="font-size: 0.75rem;">
+                                        <i class="fas fa-tools me-1"></i> APPAREIL RÉPARABLE <br>
+                                        <small class="fw-normal opacity-75">Réparation gratuite (sous garantie)</small>
+                                    </span>
                                 @else
-                                    @if($isGarantieValide)
-                                        <span class="badge bg-warning text-dark rounded-pill fw-bold d-block text-wrap text-start p-2">
-                                            <i class="fas fa-exchange-alt me-1"></i> ON NE PEUT PAS RÉPARER <br>
-                                            <small class="fw-normal opacity-85 text-dark">En attente validation remplacement</small>
-                                        </span>
-                                    @else
-                                        <span class="badge bg-danger text-white rounded-pill fw-bold d-block text-wrap text-start p-2">
-                                            <i class="fas fa-times-circle me-1"></i> ON NE PEUT PAS RÉPARER <br>
-                                            <small class="fw-normal opacity-75">Hors garantie (Restitution)</small>
-                                        </span>
-                                    @endif
+                                    <span class="badge bg-primary text-white rounded-pill fw-bold d-block text-wrap text-start p-2" style="font-size: 0.75rem;">
+                                        <i class="fas fa-file-invoice-dollar me-1"></i> APPAREIL RÉPARABLE <br>
+                                        <small class="fw-normal opacity-75">Hors garantie (Attente Devis)</small>
+                                    </span>
                                 @endif
-                            </div>
-                            @if(!empty($diag->motif_exclusion))
-                                <div class="mb-3">
-                                    <div class="small text-muted">Motif exclusion garantie</div>
-                                    <div class="text-danger small fw-semibold">
-                                        <i class="fas fa-exclamation-triangle me-1"></i> {{ $diag->motif_exclusion }}
-                                    </div>
-                                </div>
+                            @else
+                                @if($isGarantieValide)
+                                    <span class="badge bg-warning text-dark rounded-pill fw-bold d-block text-wrap text-start p-2" style="font-size: 0.75rem;">
+                                        <i class="fas fa-exchange-alt me-1"></i> ON NE PEUT PAS RÉPARER <br>
+                                        <small class="fw-normal opacity-85 text-dark">En attente validation remplacement</small>
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger text-white rounded-pill fw-bold d-block text-wrap text-start p-2" style="font-size: 0.75rem;">
+                                        <i class="fas fa-times-circle me-1"></i> ON NE PEUT PAS RÉPARER <br>
+                                        <small class="fw-normal opacity-75">Hors garantie (Restitution)</small>
+                                    </span>
+                                @endif
                             @endif
-                            @if(!empty($diag->exclusion_commentaire))
-                                <div class="mb-3">
-                                    <div class="small text-muted">Commentaire d'exclusion</div>
-                                    <div class="text-muted small">
-                                        {{ $diag->exclusion_commentaire }}
-                                    </div>
-                                </div>
-                            @endif
-                           
                         </div>
                     </div>
                 </div>
+
+                {{-- Séparateur horizontal discret --}}
+                <hr class="text-muted my-4 opacity-25">
+
+                {{-- Section 2 : Constat Technique --}}
+                <div>
+                    <h6 class="fw-bold mb-3"><i class="fas fa-clipboard me-2 text-primary"></i>Constat Technique</h6>
+                    <div class="p-3 rounded-3 bg-light border constat-body" style="min-height: 80px !important;">
+                        {{ $diag->constat ?? $diag->constat_technique ?? 'Non renseigné' }}
+                    </div>
+                </div>
+
+                {{-- Motif / Commentaire d'exclusion si applicable --}}
+                @if(!empty($diag->motif_exclusion) || !empty($diag->exclusion_commentaire))
+                    <div class="mt-3 p-3 bg-light rounded-3 border-start border-danger border-4">
+                        @if(!empty($diag->motif_exclusion))
+                            <div class="mb-1">
+                                <span class="small text-muted text-uppercase fw-bold">Motif d'exclusion de garantie :</span>
+                                <span class="text-danger small fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> {{ $diag->motif_exclusion }}</span>
+                            </div>
+                        @endif
+                        @if(!empty($diag->exclusion_commentaire))
+                            <div>
+                                <span class="small text-muted text-uppercase fw-bold">Commentaire d'exclusion :</span>
+                                <span class="text-muted small">{{ $diag->exclusion_commentaire }}</span>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+            </div>
+        </div>
+
+            <div class="row g-4">
 
                 {{-- Recommandation --}}
                 @if($diag->recommandation ?? false)

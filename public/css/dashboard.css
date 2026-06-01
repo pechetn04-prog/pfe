@@ -1,56 +1,78 @@
 /**
- * SAV Premium - Dashboard System (Non-KPI card layout elements)
+ * SAV Premium - Système de Design du Tableau de Bord (Dashboard)
+ * 
+ * Ce fichier gère l'habillage graphique des éléments structurels des tableaux de bord :
+ * 1. Titres et en-têtes
+ * 2. Tableaux de bord de suivi (listes de dossiers récents)
+ * 3. Badges d'état (badges arrondis colorés)
+ * 4. Classes utilitaires de dimensionnement et typographie.
  */
 
+/* ==========================================================================
+   1. En-tête de Section & Titres
+   ========================================================================== */
 .dash-title {
     color: #1a2332;
     font-weight: 800;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.5px; /* Espacement de lettres resserré pour un aspect moderne */
 }
 
-/* Dashboard Tables */
+/* ==========================================================================
+   2. Tableaux de Suivi Opérationnels (Tables)
+   ========================================================================== */
+/* Conteneur de tableau sous forme de carte ombrée */
 .dash-card-table {
     border: none;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    border-radius: 20px; /* Bords bien arrondis */
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); /* Ombre douce */
 }
 
+/* En-tête du tableau (Ligne de titre des colonnes) */
 .dash-table thead th {
     background: #fcfdfe;
     color: #64748b;
     font-size: 0.7rem;
     font-weight: 800;
-    text-transform: uppercase;
+    text-transform: uppercase; /* Titres en majuscules */
     letter-spacing: 0.05em;
     padding: 1rem 1.5rem;
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid #f1f5f9; /* Ligne de séparation basse */
 }
 
+/* Cellules de données du tableau (Lignes d'enregistrements) */
 .dash-table tbody td {
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid #f1f5f9;
 }
 
+/* Effet de surbrillance légère au survol d'une ligne */
 .dash-table tbody tr:hover {
     background-color: #fcfdfe;
 }
 
+/* ==========================================================================
+   3. Badges de Statuts Pilules (Status Pills)
+   ========================================================================== */
 .badge-status-pill {
     padding: 0.6em 1.25em;
     font-weight: 800;
     font-size: 0.65rem;
-    border-radius: 50px;
+    border-radius: 50px; /* Style pilule entièrement arrondi */
     letter-spacing: 0.3px;
     display: inline-flex;
     align-items: center;
 }
 
+/* Indicateur à puce ronde à l'intérieur du badge d'état */
 .badge-status-pill i {
     font-size: 0.4rem;
     margin-right: 6px;
 }
 
-/* Utility layout dimension overrides */
+/* ==========================================================================
+   4. Classes Utilitaires (Sizing & Typographie)
+   ========================================================================== */
+/* Dimensions maximales et minimales de colonnes */
 .max-width-250 {
     max-width: 250px !important;
 }
@@ -63,6 +85,7 @@
     max-width: 150px !important;
 }
 
+/* Tailles de police (micro-typographie haut de gamme) */
 .font-size-065 {
     font-size: 0.65rem !important;
 }
@@ -75,6 +98,7 @@
     font-size: 0.6rem !important;
 }
 
+/* Graisses et poids typographiques */
 .font-weight-800 {
     font-weight: 800 !important;
 }

@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
 
-// Notification simple et directe pour notifier les utilisateurs internes ou le client (UC04).
+// Notification simple et directe pour notifier les utilisateurs internes ou le client
 class SimpleNotification extends Notification
 {
     private $message;

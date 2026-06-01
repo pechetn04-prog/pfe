@@ -25,38 +25,14 @@ use App\Notifications\PieceManquanteNotification;
 class InterventionController extends Controller
 {
     /**
-     * Affiche le formulaire de création ou de modification d'une intervention.
-     * Récupère automatiquement les pièces et tarifs de main-d'œuvre pré-saisis dans le diagnostic
-     * pour faciliter la saisie par le technicien en atelier.
+     * Affiche le formulaire de création  d'une intervention.
      */
     public function create(Dossier $dossier)
     {
-        // Chargement optimisé des relations pour éviter les requêtes N+1
-        $dossier->load('diagnostic.pieces', 'diagnostic.tarifsMo', 'intervention.pieces', 'intervention.tarifsMo');
         $pieces = Piece::all();
-        $tarifsMo = TarifMo::where('actif', true)->get();
+        $tarifsMo = TarifMo::all();
 
-        // 1. Détermination des pièces déjà suggérées ou consommées
-        $preSelectedPieces = collect();
-        if ($dossier->intervention && $dossier->intervention->pieces->count() > 0) {
-            // Si une intervention existe déjà, on pré-sélectionne les pièces de l'intervention
-            $preSelectedPieces = $dossier->intervention->pieces;
-        } elseif ($dossier->diagnostic && $dossier->diagnostic->pieces->count() > 0) {
-            // Sinon, on pré-charge les pièces estimées lors de la phase de diagnostic
-            $preSelectedPieces = $dossier->diagnostic->pieces;
-        }
-
-        // 2. Détermination des prestations de Main-d'Œuvre (MO) déjà facturées ou estimées
-        $preSelectedLabors = collect();
-        if ($dossier->intervention && $dossier->intervention->tarifsMo->count() > 0) {
-            // Si une intervention existe, on pré-charge ses prestations
-            $preSelectedLabors = $dossier->intervention->tarifsMo;
-        } elseif ($dossier->diagnostic && $dossier->diagnostic->tarifsMo->count() > 0) {
-            // Sinon, on pré-charge la main-d'œuvre planifiée lors du diagnostic
-            $preSelectedLabors = $dossier->diagnostic->tarifsMo;
-        }
-
-        return view('interventions.create', compact('dossier', 'pieces', 'tarifsMo', 'preSelectedPieces', 'preSelectedLabors'));
+        return view('interventions.create', compact('dossier', 'pieces', 'tarifsMo'));
     }
 
     /**
@@ -114,7 +90,7 @@ class InterventionController extends Controller
                 if ($nouveauStatut !== 'ATTENTE_PIECE') {
                     $piece->decrement('quantite', $quantite);
 
-                    // Enregistrement du mouvement de stock sortant (Gestion de stock)
+                    // Enregistrement du mouvement de stock (Gestion de stock)
                     MouvementStock::create([
                         'piece_id' => $piece->id,
                         'type' => 'SORTIE',

@@ -1,17 +1,25 @@
 /**
- * SAV Premium - Ventes & Registre
+ * SAV Premium - Module de Ventes et Registre des Appareils
+ * Feuille de style dédiée au suivi des ventes d'appareils et à l'importation de fichiers clients.
  */
 
+/* Titre principal avec espacement resserré des lettres pour un effet compact premium */
 .ventes-title {
     letter-spacing: -0.5px;
 }
 
+/* Carte de présentation à ombre douce et coins arrondis standardisés */
 .ventes-card {
     border-radius: 16px;
     border: none;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* --------------------------------------------------------------------------
+   STYLE DU TABLEAU DE SUIVI DES VENTES
+   -------------------------------------------------------------------------- */
+
+/* En-tête de tableau grise, majuscule et aérée pour une lisibilité accrue */
 .table-ventes thead th {
     background-color: #f8fafc;
     color: #64748b;
@@ -22,17 +30,20 @@
     border-bottom: 1px solid #e2e8f0;
 }
 
+/* Cellules de données du tableau */
 .table-ventes tbody td {
     padding: 0.65rem 1.5rem;
     border-bottom: 1px solid #f1f5f9;
 }
 
+/* Cellule de numéro IMEI mise en relief en gras bleu (police géométrique Outfit) */
 .imei-cell {
     font-weight: 800;
     color: #2563eb;
     font-family: 'Outfit', sans-serif;
 }
 
+/* Badge plat indiquant la catégorie ou le type de vente */
 .vente-type-badge {
     padding: 0.5em 1em;
     font-weight: 700;
@@ -40,18 +51,21 @@
     letter-spacing: 0.3px;
 }
 
+/* Variante de badge bleu azur plat avec bordure fine */
 .bg-soft-info {
     background-color: #e0f2fe;
     color: #0369a1;
     border: 1px solid #bae6fd;
 }
 
+/* Nom du modèle d'appareil en gras sombre */
 .modele-text {
     font-weight: 800;
     color: #1e293b;
     margin-bottom: 2px;
 }
 
+/* Identité et email du client acheteur */
 .client-name {
     font-weight: 800;
     color: #1e293b;
@@ -62,6 +76,10 @@
     color: #64748b;
 }
 
+/* --------------------------------------------------------------------------
+   BARRE DE RECHERCHE ET CHAMP DE FILTRAGE
+   -------------------------------------------------------------------------- */
+
 .search-container {
     background: #ffffff;
     border-radius: 12px;
@@ -70,6 +88,7 @@
     border: 1px solid #e2e8f0;
 }
 
+/* Groupe de saisie englobant l'icône de loupe sans bordure de séparation interne */
 .search-input-group {
     background: #f8fafc;
     border-radius: 10px;
@@ -88,12 +107,17 @@
     padding-left: 20px;
 }
 
-/* Classes additionnelles pour éliminer le CSS en ligne */
+/* --------------------------------------------------------------------------
+   CLASSES COMPOSANTES ET ÉLÉMENTS DE VUE NETTOYÉS (SANS CSS INLINE)
+   -------------------------------------------------------------------------- */
+
+/* Bouton spécialisé pour le téléchargement et l'import de données Excel/CSV */
 .btn-import-excel {
     font-size: 0.8rem !important;
     letter-spacing: 0.5px !important;
 }
 
+/* Alerte de danger adoucie (rose/rouge) pour signaler des erreurs d'import */
 .alert-ventes-danger {
     border-radius: 12px !important;
     background-color: #fef2f2 !important;
@@ -104,15 +128,18 @@
     border-radius: 15px !important;
 }
 
+/* Bouton de réinitialisation des filtres */
 .btn-raz-ventes {
     background: #f1f5f9 !important;
     color: #64748b !important;
 }
 
+/* Fenêtre modale des ventes aux coins très arrondis */
 .modal-content-ventes {
     border-radius: 20px !important;
 }
 
+/* Rendu en chasse fixe (monospace) affichant la structure attendue des colonnes Excel */
 .modal-structure-cols {
     font-family: monospace !important;
     font-size: 0.7rem !important;
@@ -121,7 +148,9 @@
     border-style: dashed !important;
 }
 
+/* Texte informatif et explicatif de la modale */
 .modal-info-text {
     font-size: 0.7rem !important;
     line-height: 1.4 !important;
 }
+

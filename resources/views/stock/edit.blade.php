@@ -47,7 +47,7 @@
                     <div class="col-md-6">
                         <label class="form-label fw-bold small text-muted text-uppercase mb-2 text-uppercase-small">PRIX UNITAIRE (TTC) <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="number" step="0.001" name="prix_unitaire" class="form-control form-control-lg border-0 bg-light rounded-pill-start px-4 input-premium-text" value="{{ $piece->prix_unitaire }}" required>
+                            <input type="number" min="0" step="0.001" name="prix_unitaire" class="form-control form-control-lg border-0 bg-light rounded-pill-start px-4 input-premium-text" value="{{ $piece->prix_unitaire }}" required>
                             <span class="input-group-text border-0 bg-primary bg-opacity-10 text-primary fw-bold px-4 input-addon-pill-end">{{ $parametre->devise ?? 'DT' }}</span>
                         </div>
                     </div>

@@ -45,7 +45,7 @@ class DemandeRejetController extends Controller
             ])
             ->get();
 
-        return view('admin.demandes_rejet.index', compact('demandes', 'total', 'enAttente', 'acceptees', 'refusees', 'techniciens'));
+        return view('demandes_rejet.index', compact('demandes', 'total', 'enAttente', 'acceptees', 'refusees', 'techniciens'));
     }
 
     public function store(StoreDemandeRejetRequest $request, Dossier $dossier)

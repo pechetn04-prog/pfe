@@ -5,39 +5,48 @@
  */
 
 /* 1. Transitions et Effets de Survol */
+
+/* Classe pour activer une transition fluide sur toutes les propriétés */
 .transition-all {
-    transition: all 0.3s ease;
+    transition: all 0.3s ease;                    /* Effectue une transition fluide de 0.3 seconde */
 }
 
+/* Effet d'agrandissement léger au survol de la souris */
 .hover-scale:hover {
-    transform: scale(1.03);
+    transform: scale(1.03);                       /* Agrantit l'élément de 3% lors du survol */
 }
 
 /* 2. Animation Pulse pour les alertes orange */
+
+/* Classe pour activer l'effet de pulsation orange clignotant */
 .pulse-warning {
-    animation: pulse-orange 2s infinite;
+    animation: pulse-orange 2s infinite;          /* Joue l'animation pulse-orange en boucle de 2s */
 }
 
+/* Définition des étapes clés de l'animation pulse-orange */
 @keyframes pulse-orange {
     0% {
-        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); /* Halo orange très serré et visible */
     }
     70% {
-        box-shadow: 0 0 0 12px rgba(245, 158, 11, 0);
+        box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); /* Propagation et disparition du halo */
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); /* Extinction complète de la lumière */
     }
 }
 
 /* 3. Utilitaires de Tableaux Admin */
+
+/* En-têtes de colonnes de taille réduite */
 .table-th-small {
-    font-size: 0.65rem !important;
+    font-size: 0.65rem !important;                /* Force la taille de police en micro de 0.65rem */
 }
 
 /* 4. Cartes Spécifiques du Tableau de Bord */
-.card-replacement-waiting {
-    border-radius: 15px !important;
-    border-left: 4px solid #f59e0b !important;
-}
 
+/* Style pour la carte d'attente de validation de remplacement */
+.card-replacement-waiting {
+    border-radius: 15px !important;               /* Force les angles de la carte à être arrondis à 15px */
+    border-left: 4px solid #f59e0b !important;   /* Force une bordure épaisse orange sur le côté gauche */
+}

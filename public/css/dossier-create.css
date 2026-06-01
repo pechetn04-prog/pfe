@@ -1,41 +1,40 @@
-/* ====================================================================
- * FORMULAIRE DE CRÉATION DE DOSSIER SAV (DOSSIER CREATION SYSTEM)
- * ====================================================================
- * Ce fichier gère le style esthétique et la mise en page spécifique du
- * formulaire de création et d'enregistrement d'un nouveau ticket SAV.
- * ==================================================================== */
 
-/* Couleur d'arrière-plan claire et douce pour les sections */
+/* 1. Sections & Conteneurs */
+/* Arrière-plan clair et neutre pour séparer visuellement les blocs du formulaire */
 .bg-light { 
     background-color: #f8fafc !important; 
 }
 
-/* Effet au survol des cases à cocher personnalisées (effet tactile) */
+/* 2. Cases à cocher personnalisées (Custom Checkboxes) */
+/* Effet de retour tactile doux et changement de couleur de bordure au survol */
 .custom-check:hover { 
     background-color: #f1f5f9 !important; 
     border-color: #2563eb !important; 
 }
 
-/* Couleur de la case à cocher active (Bleu primaire de la marque) */
+/* Couleur d'accentuation bleu royal lorsque la case est cochée (active) */
 .form-check-input:checked { 
     background-color: #2563eb; 
     border-color: #2563eb; 
 }
 
-/* Alignement et largeur minimale des icônes dans les groupes d'input */
+/* 3. Groupes de saisie (Input Groups) */
+/* Alignement et largeur minimale pour homogénéiser les icônes de saisies */
 .input-group-text { 
     min-width: 45px; 
     justify-content: center; 
 }
 
-/* Effet de focus premium sur les champs de saisie (lueur bleue subtile) */
+/* 4. Champs de saisie (Focus States) */
+/* Effet de lueur (halo de focus bleu subtil) pour guider l'attention de l'utilisateur */
 .form-control:focus, .form-select:focus { 
     background-color: #fff !important; 
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); 
     border-color: #2563eb !important; 
 }
 
-/* Boutons secondaires clairs au survol */
+/* 5. Boutons de navigation secondaires */
+/* Changement d'arrière-plan discret sur le bouton blanc lors du survol */
 .btn-white:hover { 
     background-color: #f8fafc; 
 }

@@ -3,179 +3,204 @@
    Design Corporatif Moderne avec graphiques plein écran et cartes de données contrastées.
 */
 
-/* Variables :root et gradients centralisés dans theme.css */
-
+/* Conteneur principal de la page de statistiques */
 .stats-container {
-    padding: 2rem;
-    width: 100%;
+    padding: 2rem;                                /* Ajoute un espace de marge interne de 2rem tout autour */
+    width: 100%;                                  /* Force le conteneur à prendre toute la largeur disponible */
 }
 
-/* KPI Cards */
+/* Cartes de statistiques KPI */
 .kpi-card {
-    border: none;
-    border-radius: 1.25rem;
-    padding: 1.5rem;
-    color: white;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.2s;
-    height: 100%;
+    border: none;                                 /* Supprime la bordure par défaut de la carte */
+    border-radius: 1.25rem;                        /* Arrondit les quatre coins à 1.25rem (environ 20px) */
+    padding: 1.5rem;                              /* Ajoute un espace de marge interne à la carte */
+    color: white;                                 /* Force la couleur du texte en blanc par défaut */
+    box-shadow: var(--card-shadow);               /* Applique l'ombre premium définie dans theme.css */
+    transition: transform 0.2s;                   /* Fluidifie l'animation lors du survol de la carte */
+    height: 100%;                                 /* Force la carte à prendre toute la hauteur de sa colonne */
 }
 
+/* Effet interactif de survol de la carte */
 .kpi-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px);                  /* Soulève légèrement la carte de 5px vers le haut */
 }
 
-.kpi-card.blue { background: var(--primary-gradient); }
-.kpi-card.green { background: var(--success-gradient); }
-.kpi-card.orange { background: var(--warning-gradient); }
-.kpi-card.red { background: var(--danger-gradient); }
-.kpi-card.purple { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); }
+/* Gradients et couleurs spécifiques des cartes KPI */
+.kpi-card.blue { background: var(--primary-gradient); }   /* Applique le dégradé bleu primaire */
+.kpi-card.green { background: var(--success-gradient); }  /* Applique le dégradé vert succès */
+.kpi-card.orange { background: var(--warning-gradient); } /* Applique le dégradé orange avertissement */
+.kpi-card.red { background: var(--danger-gradient); }     /* Applique le dégradé rouge danger */
+.kpi-card.purple { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); } /* Applique un dégradé violet personnalisé */
 
+/* Libellé descriptif de la statistique */
 .kpi-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.9;
+    font-size: 0.875rem;                          /* Taille de police intermédiaire */
+    font-weight: 600;                             /* Met le libellé en gras */
+    text-transform: uppercase;                    /* Écrit le libellé en lettres capitales */
+    letter-spacing: 0.05em;                       /* Règle l'écartement des lettres */
+    opacity: 0.9;                                 /* Rend le texte légèrement translucide à 90% */
 }
 
+/* Grand chiffre ou valeur de la statistique */
 .kpi-value {
-    font-size: 2.25rem;
-    font-weight: 800;
-    margin: 0.5rem 0;
+    font-size: 2.25rem;                           /* Règle la taille du chiffre en très grand */
+    font-weight: 800;                             /* Écrit le chiffre en gras très épais */
+    margin: 0.5rem 0;                             /* Ajoute une marge au-dessus et en dessous de 0.5rem */
 }
 
+/* Icône illustrative en arrière-plan de la carte */
 .kpi-icon {
-    font-size: 2.5rem;
-    opacity: 0.3;
-    position: absolute;
-    right: 1.5rem;
-    bottom: 1.5rem;
+    font-size: 2.5rem;                            /* Règle la taille de l'icône en grand */
+    opacity: 0.3;                                 /* Rend l'icône très discrète (transparence à 30%) */
+    position: absolute;                           /* Positionne l'icône de façon absolue */
+    right: 1.5rem;                                /* Place l'icône à 1.5rem du bord droit */
+    bottom: 1.5rem;                               /* Place l'icône à 1.5rem du bord inférieur */
 }
 
-/* Section Containers */
+/* Bloc conteneur de section (Graphiques, Tableaux) */
 .stats-section {
-    background: white;
-    border-radius: 1.25rem;
-    padding: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-    border: 1px solid #f1f5f9;
+    background: white;                            /* Fond blanc pour la section */
+    border-radius: 1.25rem;                        /* Arrondit les quatre coins de la section à 20px */
+    padding: 2rem;                                /* Espace interne de la section */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Ajoute une ombre légère sous la section */
+    margin-bottom: 2rem;                          /* Espace sous la section pour l'écarter de la suivante */
+    border: 1px solid #f1f5f9;                    /* Bordure gris très clair et discret */
 }
 
+/* Titre principal de la section */
 .section-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    font-size: 1.25rem;                           /* Règle la taille de police du titre */
+    font-weight: 700;                             /* Écrit le titre en gras */
+    color: #1e293b;                               /* Couleur gris foncé professionnelle */
+    margin-bottom: 1.5rem;                        /* Ajoute une marge sous le titre */
+    display: flex;                                /* Permet d'aligner l'icône et le texte côte à côte */
+    align-items: center;                          /* Centre verticalement l'icône et le titre */
+    gap: 0.75rem;                                 /* Espace de 12px entre l'icône et le texte */
 }
 
+/* Couleur de l'icône à côté du titre de la section */
 .section-title i {
-    color: #2563eb;
+    color: #2563eb;                               /* Force la couleur de l'icône en bleu vif */
 }
 
-/* Tables */
+/* Style de tableau de statistiques */
 .stats-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    width: 100%;                                  /* Force le tableau à prendre toute la largeur */
+    border-collapse: separate;                    /* Permet de séparer les bordures pour des arrondis parfaits */
+    border-spacing: 0;                            /* Supprime l'espace par défaut entre les cellules */
 }
 
+/* En-tête des colonnes du tableau (Th) */
 .stats-table th {
-    background: #f8fafc;
-    padding: 1rem;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: #64748b;
-    border-bottom: 2px solid #f1f5f9;
+    background: #f8fafc;                          /* Fond gris très clair pour l'en-tête */
+    padding: 1rem;                                /* Marge interne des cellules d'en-tête */
+    font-size: 0.75rem;                           /* Écrit les en-têtes en petit */
+    text-transform: uppercase;                    /* Écrit en lettres capitales */
+    font-weight: 700;                             /* Met les titres en gras */
+    color: #64748b;                               /* Couleur gris ardoise adoucie */
+    border-bottom: 2px solid #f1f5f9;            /* Ligne de séparation sous l'en-tête */
 }
 
+/* Cellules de données du tableau (Td) */
 .stats-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 0.875rem;
-    color: #334155;
+    padding: 1rem;                                /* Marge interne des cellules de données */
+    border-bottom: 1px solid #f1f5f9;            /* Ligne de séparation fine sous chaque cellule */
+    font-size: 0.875rem;                          /* Taille de police standard */
+    color: #334155;                               /* Couleur gris foncé pour une lecture optimale */
 }
 
+/* Effet de survol sur les lignes du tableau */
 .stats-table tr:hover td {
-    background: #fdfdfd;
+    background: #fdfdfd;                          /* Change subtilement le fond de la ligne survolée */
 }
 
-/* Chart Canvas Wrapper */
+/* Conteneur de graphique (Canvas Chart.js) */
 .chart-wrapper {
-    position: relative;
-    height: 350px;
-    width: 100%;
+    position: relative;                           /* Positionnement relatif pour le bon dimensionnement */
+    height: 350px;                                /* Fixe la hauteur du graphique à 350px */
+    width: 100%;                                  /* Force la largeur du graphique à 100% */
 }
 
+/* Styles réactifs (Mobile) */
 @media (max-width: 768px) {
+    /* Ajustement du conteneur en mode mobile */
     .stats-container {
-        padding: 1rem;
+        padding: 1rem;                            /* Réduit la marge interne à 1rem */
     }
     
+    /* Ajustement de la taille du chiffre KPI en mobile */
     .kpi-value {
-        font-size: 1.75rem;
+        font-size: 1.75rem;                        /* Réduit la taille pour éviter les débordements */
     }
 }
 
-/* Classes additionnelles pour éliminer les styles en ligne */
+/* --- SECTION : CLASSES UTILES SANS STYLE EN LIGNE (CLEAN HTML) --- */
+
+/* Arrondit les coins des cartes de statistiques */
 .card-stats-rounded {
-    border-radius: 15px !important;
+    border-radius: 15px !important;               /* Force l'arrondi à 15px */
 }
 
+/* Règle la taille de police mini pour les libellés */
 .label-stats-caps {
-    font-size: 0.65rem !important;
+    font-size: 0.65rem !important;                /* Règle la taille à 0.65rem */
 }
 
+/* Gradient de fond spécifique bleu ciel */
 .kpi-gradient-blue {
-    border-radius: 15px !important;
-    background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+    border-radius: 15px !important;               /* Force l'arrondi à 15px */
+    background: linear-gradient(135deg, #0ea5e9, #0284c7) !important; /* Dégradé bleu ciel moderne */
 }
 
+/* Gradient de fond spécifique vert forêt */
 .kpi-gradient-green {
-    border-radius: 15px !important;
-    background: linear-gradient(135deg, #065f46, #10b981) !important;
+    border-radius: 15px !important;               /* Force l'arrondi à 15px */
+    background: linear-gradient(135deg, #065f46, #10b981) !important; /* Dégradé vert profond */
 }
 
+/* Gradient de fond spécifique ambre/orange */
 .kpi-gradient-orange {
-    border-radius: 15px !important;
-    background: linear-gradient(135deg, #92400e, #f59e0b) !important;
+    border-radius: 15px !important;               /* Force l'arrondi à 15px */
+    background: linear-gradient(135deg, #92400e, #f59e0b) !important; /* Dégradé orange ambre */
 }
 
+/* Gradient de fond spécifique rouge rubis */
 .kpi-gradient-red {
-    border-radius: 15px !important;
-    background: linear-gradient(135deg, #991b1b, #ef4444) !important;
+    border-radius: 15px !important;               /* Force l'arrondi à 15px */
+    background: linear-gradient(135deg, #991b1b, #ef4444) !important; /* Dégradé rouge vif */
 }
 
+/* Titre principal de KPI en lettres capitales */
 .kpi-caps-title {
-    font-size: 0.65rem !important;
-    opacity: 0.8 !important;
-    letter-spacing: 0.5px !important;
+    font-size: 0.65rem !important;                /* Taille mini de 0.65rem */
+    opacity: 0.8 !important;                      /* Translucide à 80% */
+    letter-spacing: 0.5px !important;             /* Règle l'écart entre les lettres */
 }
 
+/* Sous-titre de carte de statistiques */
 .kpi-subtitle {
-    opacity: 0.7 !important;
+    opacity: 0.7 !important;                      /* Translucide à 70% pour créer une hiérarchie */
 }
 
+/* Icône géante en arrière-plan d'une carte */
 .kpi-bg-icon {
-    right: -10px !important;
-    bottom: -10px !important;
-    font-size: 5rem !important;
-    opacity: 0.1 !important;
+    right: -10px !important;                      /* Décale légèrement l'icône vers la droite */
+    bottom: -10px !important;                     /* Décale légèrement l'icône vers le bas */
+    font-size: 5rem !important;                   /* Taille géante de l'icône */
+    opacity: 0.1 !important;                      /* Icône presque invisible (transparence à 10%) */
 }
 
+/* Symbole monétaire en plus petit à côté du chiffre */
 .small-currency {
-    font-size: 1rem !important;
+    font-size: 1rem !important;                   /* Taille normale de 1rem */
 }
 
+/* Fixe la hauteur d'un conteneur de graphique */
 .chart-height-wrapper {
-    height: 300px !important;
+    height: 300px !important;                     /* Force la hauteur du graphique à 300px */
 }
 
+/* En-tête de tableau en micro-police */
 .table-header-micro {
-    font-size: 0.6rem !important;
+    font-size: 0.6rem !important;                 /* Taille micro de 0.6rem */
 }

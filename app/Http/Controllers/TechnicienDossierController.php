@@ -7,8 +7,7 @@ use App\Models\Piece;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-// Ce contrôleur gère la consultation des dossiers (tickets) assignés au technicien authentifié (UC13).
-// Il formate les indicateurs de garantie et les styles des statuts pour l'affichage de l'espace atelier.
+// Ce contrôleur gère la consultation des dossiers  assignés au technicien authentifié
 class TechnicienDossierController extends Controller
 {
     // Affiche la liste paginée des tickets de réparation affectés au technicien avec filtres.
@@ -72,9 +71,9 @@ class TechnicienDossierController extends Controller
             'LIVRE' => 'bg-success',
         ];
 
-        // Formatage des données dans le contrôleur (respect du pattern MVC)
+        // Formatage des données dans le contrôleur 
         $dossiers->getCollection()->transform(function ($d) use ($map, $statuts) {
-            // Logique de calcul de l'éligibilité de la garantie commerciale (UC03)
+            // Logique de calcul de l'éligibilité de la garantie commerciale
             if ($d->garantie_annulee) {
                 $d->garantie_color = 'warning';
                 $d->garantie_text = 'GARANTIE EXCLUE';

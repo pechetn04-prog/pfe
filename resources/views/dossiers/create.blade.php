@@ -97,7 +97,7 @@
                                                 class="fas fa-phone text-muted opacity-50"></i></span>
                                         <input type="text" name="client_telephone" id="client_telephone"
                                             class="form-control bg-transparent border-0 py-2 fw-bold"
-                                            placeholder="0X XX XX XX XX" required value="{{ old('client_telephone') }}">
+                                            placeholder="00 000 000" required value="{{ old('client_telephone') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">

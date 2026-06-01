@@ -5,7 +5,7 @@ namespace App\Notifications;
 use App\Models\Dossier;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Notification; //hérite du système notifications Laravel.
 
 // Notification envoyée à l'administrateur lorsqu'un technicien demande le retrait d'un dossier (UC05).
 class DemandeRejetNotification extends Notification

@@ -1,10 +1,10 @@
-/* 
- * Design Système Premium SAV - Maison Tel
- * Fichier d'Utilitaires Généraux & Intégrations Tierces (ex: Select2)
- * Épuré de toutes les redondances (Layouts, variables, et cartes hérités de common.css/theme.css)
- */
+/* ==========================================================================
+   FEUILLE DE STYLE GÉNÉRALE : UTILITAIRES ET COMPOSANTS DIVERS (STYLE)
+   ========================================================================== */
 
-/* 1. Intégrations de Bibliothèques Externes (ex: Select2) */
+/* === 1. Intégrations et personnalisations de Bibliothèques Externes (Select2) === */
+
+/* Ajustements pour le sélecteur Select2 classique afin d'harmoniser sa hauteur avec nos inputs */
 .select2-container--default .select2-selection--single {
     height: 45px;
     border: none;
@@ -13,11 +13,14 @@
     padding-top: 8px;
 }
 
+/* Alignement vertical de la flèche indicatrice de Select2 */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 45px;
 }
 
-/* 2. Lignes de Formulaire Dynamiques (Main d'œuvre) */
+/* === 2. Lignes de Formulaire Dynamiques (Main d'œuvre - MO) === */
+
+/* Conteneur flexbox pour l'ajout dynamique de lignes de main d'œuvre (tarif et description) */
 .ligne-mo-row {
     display: flex;
     gap: 15px;
@@ -29,7 +32,9 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-/* 3. Dégradés Premium pour les Statistiques */
+/* === 3. Dégradés Premium pour les Statistiques (Dashboard Administrateur) === */
+/* Dégradés angulaires à 135 degrés apportant du relief et de la modernité aux cartes de stats */
+
 .bg-gradient-blue {
     background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
 }
@@ -46,7 +51,9 @@
     background: linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%);
 }
 
-/* 4. Tableaux de Statistiques Spécifiques */
+/* === 4. Tableaux de Statistiques Spécifiques === */
+
+/* Espacements uniformes pour les tableaux de statistiques du tableau de bord */
 .custom-stats-table th {
     padding: 12px 8px;
     border-bottom: 2px solid #f1f5f9;
@@ -57,15 +64,19 @@
     border-bottom: 1px solid #f1f5f9;
 }
 
-/* 5. Utilitaires de Typographie & Micro-Animations */
+/* === 5. Utilitaires de Typographie, Structure & Micro-Animations (Helpers) === */
+
+/* Graisse de police ultra-grasse */
 .fw-black {
     font-weight: 900;
 }
 
+/* Bordure arrondie généreuse de 1rem (16px) pour les cartes */
 .rounded-4 {
     border-radius: 1rem !important;
 }
 
+/* Police ultra-fine pour les mentions discrètes */
 .extra-small {
     font-size: 0.75rem;
 }
@@ -74,18 +85,22 @@
     font-style: italic;
 }
 
+/* Séparateur horizontal très discret */
 .border-bottom-subtle {
     border-bottom: 1px solid #f1f5f9;
 }
 
+/* Arrière-plan grisé très doux */
 .bg-light-subtle {
     background-color: #fbfcfd;
 }
 
+/* Micro-interaction d'élévation dynamique (effet de lévitation au survol) */
 .hover-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Soulèvement de 3px vers le haut et apparition d'une ombre portée diffuse au survol */
 .hover-lift:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);

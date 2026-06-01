@@ -1,24 +1,23 @@
-/**
- * SAV Premium - Stock & Inventory Stylesheet
- * Custom layouts, table styling, and interactive forms for managing spare parts.
- */
+/* ==========================================================================
+   FEUILLE DE STYLE : GESTION D'INVENTAIRE ET PIÈCES DÉTACHÉES (STOCK)
+   ========================================================================== */
 
-/* ============================================================
- * 1. GENERAL INTERACTIVE CONTROLS
- * ============================================================ */
+/* ==========================================================================
+   1. CONTRÔLES INTERACTIFS GÉNÉRAUX (GENERAL INTERACTIVE CONTROLS)
+   ========================================================================== */
 
-/* Switchs de formulaires de stock (Vert de réussite) */
+/* Interrupteurs (Switches) de formulaires : coloration verte de réussite à l'activation */
 .form-switch .form-check-input:checked {
     background-color: #28a745;
     border-color: #28a745;
 }
 
-/* Curseur cliquable sur les badges d'inventaire */
+/* Rétablissement du pointeur curseur de clic sur les badges cliquables */
 .cursor-pointer {
     cursor: pointer;
 }
 
-/* Style des badges circulaires d'alertes de stock */
+/* Badges circulaires pour les compteurs d'alertes de stock critique */
 .badge.rounded-circle {
     display: inline-flex;
     align-items: center;
@@ -26,41 +25,49 @@
     font-weight: 600;
 }
 
-/* ============================================================
- * 2. FORM ACTION BUTTONS & FIELDS (CREATION / EDIT)
- * ============================================================ */
+/* ==========================================================================
+   2. BOUTONS D'ACTION ET CHAMPS DE SAISIE (CRÉATION ET ÉDITION DE PIÈCE)
+   ========================================================================= */
 
-/* Bordures semi-arrondies spécifiques pour les groupes d'entrées avec devise */
+/* Bordures semi-arrondies spécifiques pour les groupes d'entrées avec devise (ex: prix) */
 .rounded-pill-start {
     border-top-left-radius: 50rem !important;
     border-bottom-left-radius: 50rem !important;
 }
 
-/* Boutons de soumission de formulaires à survol dynamique */
+/* Animation fluide de soulèvement sur les boutons de validation */
 .hover-scale {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Surélévation et halo lumineux violet premium au survol */
 .hover-scale:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2) !important;
 }
 
-/* Focus coloré des inputs et sélections (Effet bleu premium) */
+/* Focus coloré unifié des inputs et sélecteurs (Effet d'éclat indigo doux) */
 .form-control:focus, .form-select:focus {
     background-color: #ffffff !important;
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
     border-color: #6366f1 !important;
 }
 
+/* --------------------------------------------------------------------------
+   CLASSES D'ÉLIMINATION DES STYLES INLINE (BOÎTES MODALES ET CARTES)
+   -------------------------------------------------------------------------- */
+
+/* Coins arrondis pour les conteneurs de stock */
 .card-stock-box-15 {
     border-radius: 15px !important;
 }
 
+/* Fenêtre modale de stock avec coins arrondis harmonieux */
 .modal-stock-box-15 {
     border-radius: 15px !important;
 }
 
+/* Raccordement arrondi de l'en-tête de la modale pour éviter les débordements angulaires */
 .modal-header-radius-15 {
     border-top-left-radius: 15px !important;
     border-top-right-radius: 15px !important;

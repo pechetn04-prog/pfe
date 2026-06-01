@@ -19,5 +19,11 @@ class ParametreSociete extends Model
         'devise',
         'adresse',
         'logo',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

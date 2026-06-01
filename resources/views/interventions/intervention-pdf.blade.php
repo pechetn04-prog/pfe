@@ -18,7 +18,7 @@
         }
 
         .header {
-            border-bottom: 2px solid #10b981;
+            border-bottom: 2px solid #ff0000;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
@@ -37,7 +37,7 @@
         .company-name {
             font-size: 22px;
             font-weight: bold;
-            color: #10b981;
+            color: #ff0000;
             margin-bottom: 5px;
         }
 
@@ -49,12 +49,12 @@
 
         .section-title {
             background: #f0fdf4;
-            border-bottom: 1px solid #bbf7d0;
+            border-bottom: 1px solid #ff0000;
             padding: 6px 12px;
             font-weight: bold;
             font-size: 10px;
             text-transform: uppercase;
-            color: #166534;
+            color: #ff0000;
             margin-bottom: 12px;
             margin-top: 20px;
         }
@@ -94,11 +94,12 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            
         }
 
         .table th {
             background-color: #f0fdf4;
-            color: #166534;
+            color: #ff0000;
             padding: 8px;
             text-align: left;
             font-size: 9px;
@@ -144,7 +145,7 @@
 
 <body>
     <div class="invoice-box">
-        <table style="width: 100%; border-bottom: 2px solid #10b981; padding-bottom: 15px; margin-bottom: 20px;">
+        <table style="width: 100%; border-bottom: 2px solid #ff0000; padding-bottom: 15px; margin-bottom: 20px;">
             <tr>
                 <td style="width: 55%; vertical-align: top;">
                     @if($company && $company->logo)
@@ -152,7 +153,7 @@
                             style="max-height: 80px; margin-bottom: 8px;"><br>
                     @else
                         <div class="company-name"
-                            style="font-size: 22px; font-weight: bold; color: #10b981; margin-bottom: 5px;">
+                            style="font-size: 22px; font-weight: bold; color: #ff0000; margin-bottom: 5px;">
                             {{ $company->nom_societe ?? 'MAISON TEL' }}</div>
                     @endif
                     <div style="color: #555; font-size: 11px; line-height: 1.4;">
@@ -165,7 +166,7 @@
                 </td>
                 <td style="width: 45%; text-align: right; vertical-align: top;">
                     <div class="invoice-title"
-                        style="font-size: 22px; font-weight: bold; color: #10b981; margin-bottom: 5px;">RAPPORT
+                        style="font-size: 22px; font-weight: bold; color: #ff0000; margin-bottom: 5px;">RAPPORT
                         D'INTERVENTION</div>
                     <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 5px;">
                         #{{ $dossier->num_dossier }}</div>

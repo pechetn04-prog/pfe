@@ -441,22 +441,55 @@ body {
 /* ============================================================
  * 13. CENTRALIZED SAV STATUS BADGE CAPSULES (DESIGN SYSTEM)
  * ============================================================ */
+/* RECU : Gris clair neutre - Appareil bien réceptionné */
 .status-badge-capsule.status-recu { background: #f1f5f9 !important; color: #475569 !important; }
+
+/* AFFECTE : Bleu classique - Technicien assigné au dossier */
 .status-badge-capsule.status-affecte { background: #3b82f6 !important; color: #ffffff !important; }
+
+/* EN_DIAGNOSTIC : Orange ambré - Expertise technique en cours */
 .status-badge-capsule.status-en_diagnostic { background: #f59e0b !important; color: #ffffff !important; }
+
+/* EN_ATTENTE_DEVIS : Violet indigo - Devis en attente d'élaboration ou de validation */
 .status-badge-capsule.status-en_attente_devis { background: #6366f1 !important; color: #ffffff !important; }
+
+/* EN_REPARATION : Bleu ciel - Intervention technique en atelier */
 .status-badge-capsule.status-en_reparation { background: #0ea5e9 !important; color: #ffffff !important; }
+
+/* REPARE : Vert émeraude - Réparation réussie, prêt pour facturation */
 .status-badge-capsule.status-repare { background: #10b981 !important; color: #ffffff !important; }
+
+/* FACTURE : Bleu foncé roi - Facture générée, en attente de restitution */
 .status-badge-capsule.status-facture { background: #1e40af !important; color: #ffffff !important; }
+
+/* LIVRE : Vert foncé forestier - Appareil remis au client */
 .status-badge-capsule.status-livre { background: #16a34a !important; color: #ffffff !important; }
+
+/* CLOTURE : Ardoise foncé/Charbon - Dossier archivé et clos définitivement */
 .status-badge-capsule.status-cloture { background: #1e293b !important; color: #ffffff !important; }
+
+/* DEVIS_REFUSE : Gris acier - Devis décliné par le client */
 .status-badge-capsule.status-devis_refuse { background: #64748b !important; color: #ffffff !important; }
+
+/* IRREPARABLE : Rouge vif - Appareil déclaré hors d'usage */
 .status-badge-capsule.status-irreparable { background: #dc2626 !important; color: #ffffff !important; }
+
+/* ANNULE : Gris souris - Prise en charge annulée */
 .status-badge-capsule.status-annule { background: #94a3b8 !important; color: #ffffff !important; }
+
+/* ATTENTE_PIECE : Orange corail - Suspendu en attente de composants de rechange */
 .status-badge-capsule.status-attente_piece { background: #f97316 !important; color: #ffffff !important; }
+
+/* ATTENTE_VALIDATION_REMPLACEMENT : Violet - Demande d'échange d'appareil soumise */
 .status-badge-capsule.status-attente_validation_remplacement { background: #a855f7 !important; color: #ffffff !important; }
+
+/* REMPLACEMENT_VALIDE : Vert brillant - Échange approuvé par la direction */
 .status-badge-capsule.status-remplacement_valide { background: #22c55e !important; color: #ffffff !important; }
+
+/* REMPLACEMENT_REFUSE : Rouge - Proposition d'échange déclinée */
 .status-badge-capsule.status-remplacement_refuse { background: #ef4444 !important; color: #ffffff !important; }
+
+/* REMPLACEMENT_PRET : Cyan - Nouvel appareil disponible pour retrait */
 .status-badge-capsule.status-remplacement_pret { background: #06b6d4 !important; color: #ffffff !important; }
 
 /* ============================================================

@@ -80,10 +80,56 @@
                         Historique de suivi
                     </h5>
                     <div class="timeline-container">
+                        @php
+                            $statusLabels = [
+                                'RECU' => 'Reçu',
+                                'EN_DIAGNOSTIC' => 'En Diagnostic',
+                                'EN_ATTENTE_DEVIS' => 'Attente Devis',
+                                'EN_REPARATION' => 'En Réparation',
+                                'REPARE' => 'Réparé',
+                                'LIVRE' => 'Livré',
+                                'CLOTURE' => 'Clôturé',
+                                'ATTENTE_PIECE' => 'Attente Pièces',
+                                'IRREPARABLE' => 'Irréparable',
+                                'DEVIS_REFUSE' => 'Devis Refusé',
+                                'REMPLACEMENT_PRET' => 'Remplacement Prêt',
+                                'REMPLACEMENT_VALIDE' => 'Remplacement Validé',
+                                'REMPLACEMENT_REFUSE' => 'Remplacement Refusé',
+                                'FACTURE' => 'Facturé',
+                            ];
+                            $statusClasses = [
+                                'RECU' => 'bg-soft-secondary text-secondary',
+                                'EN_DIAGNOSTIC' => 'bg-soft-secondary text-secondary',
+                                'EN_ATTENTE_DEVIS' => 'bg-soft-secondary text-secondary',
+                                'EN_REPARATION' => 'bg-soft-secondary text-secondary',
+                                'REPARE' => 'bg-soft-secondary text-secondary',
+                                'LIVRE' => 'bg-soft-secondary text-secondary',
+                                'CLOTURE' => 'bg-soft-secondary text-secondary',
+                                'ATTENTE_PIECE' => 'bg-soft-secondary text-secondary',
+                                'IRREPARABLE' => 'bg-soft-secondary text-secondary',
+                                'DEVIS_REFUSE' => 'bg-soft-secondary text-secondary',
+                                'REMPLACEMENT_PRET' => 'bg-soft-secondary text-secondary',
+                                'REMPLACEMENT_VALIDE' => 'bg-soft-secondary text-secondary',
+                                'REMPLACEMENT_REFUSE' => 'bg-soft-secondary text-secondary',
+                                'FACTURE' => 'bg-soft-secondary text-secondary',
+                            ];
+                        @endphp
                         @forelse($dossier->suivi->sortByDesc('created_at') as $suivi)
+                            @php
+                                $statutKey = $suivi->nouveau_statut;
+                                $badgeClass = $statusClasses[$statutKey] ?? 'bg-soft-secondary text-secondary';
+                                $statutLabel = $statusLabels[$statutKey] ?? $statutKey;
+                            @endphp
                             <div class="timeline-item">
                                 <div class="timeline-marker"></div>
-                                <div class="d-flex justify-content-between mb-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    @if($statutKey)
+                                        <span class="badge {{ $badgeClass }} px-2 py-1 rounded-pill extra-small fw-bold" style="font-size: 10px;">
+                                            {{ $statutLabel }}
+                                        </span>
+                                    @else
+                                        <div></div>
+                                    @endif
                                     <span class="text-muted extra-small"
                                         style="font-size: 11px;">{{ $suivi->created_at->format('d/m/Y H:i') }}</span>
                                 </div>

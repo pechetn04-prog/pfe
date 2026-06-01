@@ -24,7 +24,7 @@
                         {{-- Section 1 : Pièces Consommées (Intervention) --}}
                         <div class="card border-0 shadow-sm mb-4 card-invoice-billing">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
-                                <div class="bg-soft-primary p-2 rounded-3 me-3">
+                                <div class="icon-box-soft bg-soft-primary p-2 rounded-3 me-3">
                                     <i class="fas fa-microchip text-primary"></i>
                                 </div>
                                 <h6 class="fw-bold mb-0">1. Pièces consommées (Atelier)</h6>
@@ -42,16 +42,11 @@
                                         </thead>
                                         <tbody>
                                             @forelse($dossier->intervention->pieces as $piece)
-                                                @php 
-                                                    $qty = $piece->pivot->quantite ?? 1;
-                                                    $pu = $piece->pivot->prix_unitaire ?? $piece->prix_unitaire;
-                                                    $totalLigne = $qty * $pu;
-                                                @endphp
                                                 <tr>
                                                     <td class="fw-bold text-dark">{{ $piece->nom }}</td>
-                                                    <td class="text-center fw-bold">{{ $qty }}</td>
-                                                    <td class="text-end text-muted">{{ number_format($pu, 3, '.', ' ') }} DT</td>
-                                                    <td class="text-end fw-bold text-primary pe-3">{{ number_format($totalLigne, 3, '.', ' ') }} DT</td>
+                                                    <td class="text-center fw-bold">{{ $piece->qty }}</td>
+                                                    <td class="text-end text-muted">{{ number_format($piece->pu, 3, '.', ' ') }} DT</td>
+                                                    <td class="text-end fw-bold text-primary pe-3">{{ number_format($piece->total_ligne, 3, '.', ' ') }} DT</td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -70,7 +65,7 @@
                         <div class="card border-0 shadow-sm mb-4 card-invoice-billing">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-soft-info p-2 rounded-3 me-3">
+                                    <div class="icon-box-soft bg-soft-info p-2 rounded-3 me-3">
                                         <i class="fas fa-hand-holding-heart text-info"></i>
                                     </div>
                                     <h6 class="fw-bold mb-0">2. Prestations & Main d'œuvre</h6>
@@ -143,7 +138,7 @@
                                         @endif
                                     </div>
                                     <div class="input-group input-group-lg bg-light rounded-pill overflow-hidden border-0">
-                                        <input type="number" name="remise" id="remise-input" class="form-control bg-transparent border-0 text-center fw-bold h4 mb-0" value="{{ $defaultRemise }}" min="0" max="100" {{ $isGarantieValide ? 'readonly' : '' }}>
+                                        <input type="number" name="remise" id="remise-input" class="form-control bg-transparent border-0 text-center fw-bold h4 mb-0" value="{{ $defaultRemise }}" min="0" max="100">
                                         <span class="input-group-text bg-transparent border-0 fw-bold">%</span>
                                     </div>
                                 </div>

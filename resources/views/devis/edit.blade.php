@@ -27,7 +27,7 @@
                         {{-- Section 1 : Pièces --}}
                         <div class="card border-0 shadow-sm mb-4 card-devis-box-15">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
-                                <div class="bg-soft-primary p-2 rounded-3 me-3">
+                                <div class="icon-box-soft bg-soft-primary p-2 rounded-3 me-3">
                                     <i class="fas fa-microchip text-primary"></i>
                                 </div>
                                 <h6 class="fw-bold mb-0">1. Pièces détachées</h6>
@@ -78,7 +78,7 @@
                         {{-- Section 2 : Prestations --}}
                         <div class="card border-0 shadow-sm mb-4 card-devis-box-15">
                             <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
-                                <div class="bg-soft-info p-2 rounded-3 me-3">
+                                <div class="icon-box-soft bg-soft-info p-2 rounded-3 me-3">
                                     <i class="fas fa-hand-holding-heart text-info"></i>
                                 </div>
                                 <h6 class="fw-bold mb-0">2. Prestations & Main d'œuvre</h6>

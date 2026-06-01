@@ -11,9 +11,11 @@
                 <h1 class="h3 users-title mb-0">Gestion des Utilisateurs</h1>
                 <small class="text-muted fw-bold">Contrôle des accès et comptes système</small>
             </div>
-            <a href="{{ route('users.create') }}" class="btn btn-primary px-4 shadow-sm fw-bold">
-                <i class="fas fa-plus me-2"></i> Créer un compte
-            </a>
+            @if(auth()->user()->role === 'Admin')
+                <a href="{{ route('users.create') }}" class="btn btn-primary px-4 shadow-sm fw-bold">
+                    <i class="fas fa-plus me-2"></i> Créer un compte
+                </a>
+            @endif
         </div>
 
     <div class="row g-3 mb-4">
@@ -95,7 +97,7 @@
                     <i class="fas fa-filter me-2"></i> FILTRER
                 </button>
                 <a href="{{ route('users.index') }}" class="btn btn-light border-0 fw-bold btn-raz-users">
-                    <i class="fas fa-undo me-2"></i> RAZ
+                    <i class="fas fa-undo me-2"></i> Réinitialiser
                 </a>
             </div>
         </form>
@@ -103,13 +105,13 @@
 
     <div class="card border-0 shadow-sm overflow-hidden card-users-list">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table mb-0 align-middle">
                 <thead>
                     <tr class="bg-light">
-                        <th class="ps-4">Utilisateur</th>
+                        <th class="ps-4">Nom et Prénom</th>
+                        <th>Email</th>
                         <th>Rôle</th>
                         <th>Contact</th>
-                        <th>Localisation</th>
                         <th class="text-end pe-4">État & Actions</th>
                     </tr>
                 </thead>
@@ -118,6 +120,8 @@
                         <tr>
                             <td class="ps-4">
                                 <div class="user-name fw-bold">{{ $user->name }}</div>
+                            </td>
+                            <td>
                                 <div class="user-email small text-muted">{{ $user->email }}</div>
                             </td>
                             <td>
@@ -126,10 +130,7 @@
                             <td>
                                 <div class="small fw-bold text-dark">{{ $user->telephone ?? '—' }}</div>
                             </td>
-                            <td>
-                                <div class="small text-muted text-truncate user-address-cell">
-                                    {{ $user->adresse ?? '—' }}</div>
-                            </td>
+                          
                             <td class="text-end pe-4">
                                 <div class="d-flex align-items-center justify-content-end gap-3">
                                     <div class="form-check form-switch mb-0"

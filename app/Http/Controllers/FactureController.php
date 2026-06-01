@@ -15,22 +15,24 @@ use App\Notifications\FactureCreatedNotification;
 
 class FactureController extends Controller
 {
-    // UC08 - Afficher le formulaire de création de facture.
+    // Afficher le formulaire de création de facture.
     // Prépare les données financières de l'intervention (pièces, main d'œuvre) et vérifie l'état de la garantie.
     public function create(Dossier $dossier)
     {
         // 1. Chargement des relations nécessaires pour optimiser les requêtes (Eager Loading)
         $dossier->load('intervention.pieces', 'intervention.tarifsMo');
-        $tarifsMo = TarifMo::where('actif', true)->orderBy('type_intervention')->get();
+        $tarifsMo = TarifMo::orderBy('type_intervention')->get();
 
-        // 2. Calcul du coût total des pièces de rechange consommées lors de l'intervention
+        // 2. Calcul du coût total des pièces de rechange consommées lors de l'intervention et préparation des données
         $totalPieces = 0;
         if ($dossier->intervention && $dossier->intervention->pieces) {
-            foreach ($dossier->intervention->pieces as $piece) {
-                $qty = $piece->pivot->quantite ?? 1;
-                $pu = $piece->pivot->prix_unitaire ?? $piece->prix_unitaire;
-                $totalPieces += ($qty * $pu);
-            }
+            $dossier->intervention->pieces->transform(function ($piece) use (&$totalPieces) {
+                $piece->qty = $piece->pivot->quantite ?? 1;
+                $piece->pu = $piece->pivot->prix_unitaire ?? $piece->prix_unitaire;
+                $piece->total_ligne = $piece->qty * $piece->pu;
+                $totalPieces += $piece->total_ligne;
+                return $piece;
+            });
         }
 
         // 3. Calcul du coût total de la main d'œuvre (frais d'intervention technique)
@@ -156,9 +158,9 @@ class FactureController extends Controller
             'commentaire' => 'Facture de réparation générée et enregistrée.',
         ]);
 
-        // Notification au client
+        // Notification au client (Tous les e-mails sont notifiés, y compris le domaine interne @maisontel.tn)
         $client = $dossier->client;
-        if ($client && $client->email && !str_contains($client->email, '@maisontel.dz')) {
+        if ($client && $client->email) {
             $client->notify(new FactureCreatedNotification($facture));
         }
 

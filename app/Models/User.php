@@ -11,6 +11,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+   
     protected $fillable = [
         'name',
         'email',
@@ -23,10 +24,24 @@ class User extends Authenticatable
 
     ];
 
+     /**
+     * Liste des spécialités techniques de l'atelier SAV.
+     */
+    public const SPECIALITES = [
+        'Écran & Affichage',
+        'Batterie & Alimentation',
+        'Connectique & Ports',
+        'Caméra',
+        'Audio',
+        'Connectivité',
+        'Logiciel & Système',
+        'Dommages Physiques',
+        'Sécurité & Accès'
+    ];
+
+
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -35,8 +50,6 @@ class User extends Authenticatable
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
      */
     protected function casts(): array
     {

@@ -8,82 +8,56 @@ use App\Http\Requests\StoreMouvementStockRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-/**
- * MouvementStockController
- * 
- * Ce contrôleur pilote la traçabilité complète de l'inventaire matériel du SAV.
- * Il permet d'afficher l'historique complet des flux de pièces (UC03)
- * et d'enregistrer des ajustements manuels de stock (entrées de réapprovisionnement / sorties).
- */
+// Gère l'historique et les mouvements manuels (entrées/sorties) du stock.
 class MouvementStockController extends Controller
 {
-    /**
-     * Affiche l'historique complet et filtrable des mouvements de stock.
-     * 
-     * Cette vue affiche l'historique des flux matériels trié par ordre chronologique décroissant.
-     * Des filtres de recherche permettent de cibler une pièce spécifique ou un type (ENTRÉE/SORTIE).
-     */
+    // Affiche la liste des mouvements de stock avec filtres.
     public function index(Request $request)
     {
-        // Construction de la requête avec eager loading des relations clés pour éviter le problème N+1
         $query = MouvementStock::with(['piece', 'user', 'reference.dossier'])
             ->latest();
 
-        // Filtrage dynamique selon la pièce détachée sélectionnée
+        // Filtrer par pièce
         if ($request->filled('piece_id')) {
             $query->where('piece_id', $request->piece_id);
         }
 
-        // Filtrage dynamique selon le type de flux (entrée/sortie)
+        // Filtrer par type (entrée / sortie)
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
 
-        // Pagination des flux à 25 entrées par page pour optimiser les performances de rendu
         $mouvements = $query->paginate(25);
         
-        // Extraction de toutes les pièces pour le sélecteur d'inventaire
         $pieces = Piece::orderBy('nom')->get(['id', 'nom', 'reference']);
 
         return view('stock.mouvements', compact('mouvements', 'pieces'));
     }
 
-    /**
-     * Redirige vers l'inventaire en cas de tentative d'accès direct au formulaire de création.
-     * 
-     * Le workflow préconise de cliquer sur le bouton "Mouvement" depuis l'inventaire global pour une meilleure ergonomie.
-     */
+    // Redirige vers la liste principale du stock.
     public function create()
     {
         return redirect()->route('stock.index')->with('info', 'Utilisez le bouton "Mouvement" sur l\'inventaire pour enregistrer un mouvement.');
     }
 
-    /**
-     * Enregistre un mouvement de stock manuel (Ajustement d'inventaire).
-     * 
-     * Réalise la mise à jour physique de la quantité en magasin de la pièce détachée,
-     * puis écrit la trace historique correspondante dans l'audit trail global des stocks.
-     */
+    // Enregistre une entrée ou une sortie de stock.
     public function store(StoreMouvementStockRequest $request)
     {
-        // Récupération de la pièce détachée ciblée par l'ajustement
         $piece = Piece::findOrFail($request->piece_id);
         $quantite = $request->quantite;
-        $type = strtolower($request->type); // Normalisation en minuscules ('entree' ou 'sortie')
+        $type = strtolower($request->type); // 'entree' ou 'sortie'
 
-        // Traitement sécurisé de la sortie de stock avec vérification de la disponibilité physique
+        // Gestion de la sortie de stock
         if ($type === 'sortie') {
             if ($piece->quantite < $quantite) {
                 return back()->with('error', "Stock insuffisant. Stock actuel disponible : {$piece->quantite}");
             }
-            // Décrémentation physique de la quantité en magasin
-            $piece->decrement('quantite', $quantite);
+            $piece->decrement('quantite', $quantite); // Diminuer la quantité
         } else {
-            // Incrémentation physique (entrée / réapprovisionnement)
-            $piece->increment('quantite', $quantite);
+            $piece->increment('quantite', $quantite); // Augmenter la quantité
         }
 
-        // Création de l'enregistrement de traçabilité historique du flux
+        // Enregistrer l'historique du mouvement
         MouvementStock::create([
             'piece_id' => $piece->id,
             'user_id'  => Auth::id(),
